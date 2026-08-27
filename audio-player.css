@@ -3,8 +3,7 @@
   --audio-ink: #171717;
   --audio-rule: rgba(23, 23, 23, .28);
   --audio-oxblood: #7b2635;
-  --audio-ochre: #a87928;
-  --audio-green: #315b45;
+  --audio-ochre: #87621f;
 }
 
 body.ashwood-has-audio {
@@ -69,10 +68,10 @@ body.ashwood-has-audio-room {
   letter-spacing: .1em;
   text-transform: uppercase;
 }
-.ashwood-audio__eyebrow { margin: 0 0 3px; color: var(--audio-green); opacity: .82; }
+.ashwood-audio__eyebrow { margin: 0 0 3px; color: var(--audio-ochre); opacity: .82; }
 .ashwood-audio__title { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ashwood-audio__time { font-variant-numeric: tabular-nums; opacity: .62; white-space: nowrap; }
-.ashwood-audio__room { display: none; border-top: 1px solid rgba(168, 121, 40, .42); padding: 18px 12px 14px; }
+.ashwood-audio__room { display: none; border-top: 1px solid rgba(180, 135, 50, .42); padding: 18px 12px 14px; }
 .ashwood-audio--room .ashwood-audio__room { display: block; }
 .ashwood-audio--room { width: min(680px, calc(100vw - 28px)); }
 .ashwood-audio__control { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: 12px; margin-bottom: 14px; }
