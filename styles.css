@@ -39,6 +39,7 @@ button { font: inherit; }
 .page-intro { max-width: 980px; }
 .eyebrow { margin: 0 0 20px; }
 h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height: .9; font-weight: 500; letter-spacing: -.055em; }
+.iridescent-word { display: inline-block; color: transparent; background: linear-gradient(110deg, var(--ashwood-oxblood), var(--ashwood-gold), #758b70, var(--ashwood-ochre), var(--ashwood-oxblood)); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; animation: ashwood-iridescence 7s ease-in-out infinite; }
 .note { max-width: 520px; margin: 30px 0 0; font-size: 15px; line-height: 1.55; }
 .easter-egg { max-width: 520px; margin-top: 48px; border-top: 1px solid var(--ashwood-rule); padding-top: 14px; color: var(--ashwood-muted); font-size: 13px; line-height: 1.55; }
 .easter-egg summary { cursor: pointer; color: var(--ashwood-ochre); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
@@ -74,6 +75,7 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
   42% { transform: translateX(0) scale(.88); opacity: .42; }
   72% { transform: translateX(0) scale(1.04); opacity: .72; }
 }
+@keyframes ashwood-iridescence { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
 /* Music listening room */
 .music-intro { max-width: 1040px; }
@@ -112,4 +114,4 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
   .listen-track__actions { justify-content: flex-start; }
 }
 @media (max-width: 640px) { :root { --ashwood-gutter: 18px; } .ashwood-frame,.shell { padding-top: 22px; padding-bottom: 30px; } .intro { padding: 10vh 0 12vh; } .ashwood-nav,.future-nav { gap: 16px 22px; } .link-list a { align-items: flex-start; flex-direction: column; gap: 5px; } .listen-track__identity { align-items: flex-start; gap: 14px; } .listen-track__actions button { width: 100%; text-align: left; } }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ashwood-nav a,.future-nav a,.journal-nav a,.ashwood-nav a::after,.future-nav a::after,.journal-nav a::after { transition: none; animation: none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ashwood-nav a,.future-nav a,.journal-nav a,.ashwood-nav a::after,.future-nav a::after,.journal-nav a::after { transition: none; animation: none; } .iridescent-word { animation: none; background-position: 50% 50%; } }
