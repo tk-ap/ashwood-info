@@ -50,7 +50,14 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
 .ashwood-nav a::after,.future-nav a::after,.journal-nav a::after { content: "TAP IN →"; max-width: 0; margin-left: 0; opacity: 0; transform: translateX(-8px); overflow: hidden; white-space: nowrap; font-size: .78em; letter-spacing: .12em; transition: max-width .32s ease, margin-left .32s ease, opacity .22s ease, transform .32s ease; }
 .ashwood-nav a:hover,.ashwood-nav a:focus-visible,.future-nav a:hover,.future-nav a:focus-visible,.journal-nav a:hover,.journal-nav a:focus-visible { transform: translateX(4px); letter-spacing: .11em; text-decoration: none; }
 .ashwood-nav a:hover::after,.ashwood-nav a:focus-visible::after,.future-nav a:hover::after,.future-nav a:focus-visible::after,.journal-nav a:hover::after,.journal-nav a:focus-visible::after { max-width: 7.5em; margin-left: 10px; opacity: .62; transform: translateX(0); }
+.ashwood-nav a:hover::after,.ashwood-nav a:focus-visible::after,.future-nav a:hover::after,.future-nav a:focus-visible::after,.journal-nav a:hover::after,.journal-nav a:focus-visible::after { animation: ashwood-tap-in .42s cubic-bezier(.2,.8,.2,1) .16s both; transform-origin: left center; }
 .ashwood-nav a[aria-current="page"],.future-nav a[aria-current="page"],.journal-nav a[aria-current="page"] { font-weight: 700; }
+
+@keyframes ashwood-tap-in {
+  0%,100% { transform: translateX(0) scale(1); }
+  42% { transform: translateX(0) scale(.88); opacity: .42; }
+  72% { transform: translateX(0) scale(1.04); opacity: .72; }
+}
 
 /* Music listening room */
 .music-intro { max-width: 1040px; }
@@ -89,4 +96,4 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
   .listen-track__actions { justify-content: flex-start; }
 }
 @media (max-width: 640px) { :root { --ashwood-gutter: 18px; } .ashwood-frame,.shell { padding-top: 22px; padding-bottom: 30px; } .intro { padding: 10vh 0 12vh; } .ashwood-nav,.future-nav { gap: 16px 22px; } .link-list a { align-items: flex-start; flex-direction: column; gap: 5px; } .listen-track__identity { align-items: flex-start; gap: 14px; } .listen-track__actions button { width: 100%; text-align: left; } }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ashwood-nav a,.future-nav a,.journal-nav a,.ashwood-nav a::after,.future-nav a::after,.journal-nav a::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ashwood-nav a,.future-nav a,.journal-nav a,.ashwood-nav a::after,.future-nav a::after,.journal-nav a::after { transition: none; animation: none; } }
