@@ -41,7 +41,19 @@ button { font: inherit; }
 .ashwood-meta,.section-label,.eyebrow { font-size: var(--ashwood-meta); letter-spacing: var(--ashwood-tracking); text-transform: uppercase; }
 .section-label { opacity: .58; }
 .intro { max-width: 760px; margin: auto 0; padding: 12vh 0 14vh; }
-.page-intro { max-width: 980px; }
+.page-intro { position: relative; max-width: 980px; }
+.memory-line { position: relative; z-index: 3; max-width: 34rem; }
+.memory-trigger { display: inline; margin: 0; padding: 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; color: var(--ashwood-ochre); cursor: pointer; font: inherit; letter-spacing: .06em; line-height: inherit; }
+.memory-trigger:hover,.memory-trigger:focus-visible { color: var(--ashwood-oxblood); }
+.family-archive { position: absolute; top: clamp(9rem, 14vw, 13rem); right: clamp(-5rem, -3vw, -1rem); z-index: 2; width: min(24vw, 270px); opacity: 0; pointer-events: none; transform: translate3d(20px, 0, 0); transition: opacity 220ms ease, transform 300ms cubic-bezier(.2,.8,.2,1), visibility 0s linear 300ms; visibility: hidden; }
+.page-intro.family-archive--open .family-archive,.family-archive:hover { opacity: 1; pointer-events: auto; transform: translate3d(0, 0, 0); transition-delay: 0s; visibility: visible; }
+.about-memory { width: 100%; margin: 0; overflow: hidden; box-shadow: 0 18px 42px rgba(0,0,0,.16); transform: translateX(0); transition: transform 240ms ease, filter 240ms ease; }
+.about-memory + .about-memory { margin-top: -10px; }
+.about-memory--second { width: 89%; margin-left: 8%; transform: translateX(4%); }
+.about-memory--third { width: 93%; margin-left: -6%; transform: translateX(-4%); }
+.about-memory img { display: block; width: 100%; height: auto; }
+.about-memory figcaption { margin-top: 7px; color: var(--ashwood-muted); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+.about-memory:hover { filter: brightness(1.05); transform: translateX(0) scale(1.025); z-index: 2; }
 .eyebrow { margin: 0 0 20px; }
 h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height: .9; font-weight: 500; letter-spacing: -.055em; }
 .iridescent-word { display: inline-block; color: var(--ashwood-ink); text-decoration: none; transition: color .2s ease; }
@@ -126,5 +138,5 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
   .listen-track { grid-template-columns: 1fr; align-items: start; }
   .listen-track__actions { justify-content: flex-start; }
 }
-@media (max-width: 640px) { :root { --ashwood-gutter: 18px; } .ashwood-frame,.shell { padding-top: 22px; padding-bottom: 30px; } .intro { padding: 10vh 0 12vh; } .ashwood-nav,.future-nav { gap: 16px 22px; } .link-list a { align-items: flex-start; flex-direction: column; gap: 5px; } .listen-track__identity { align-items: flex-start; gap: 14px; } .listen-track__actions button { width: 100%; text-align: left; } }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ashwood-nav a,.future-nav a,.journal-nav a,.ashwood-nav a::after,.future-nav a::after,.journal-nav a::after { transition: none; animation: none; } .iridescent-word:hover,.iridescent-word:focus-visible { animation: none; background-position: 50% 50%; } }
+@media (max-width: 640px) { :root { --ashwood-gutter: 18px; } .ashwood-frame,.shell { padding-top: 22px; padding-bottom: 30px; } .intro { padding: 10vh 0 12vh; } .page-intro { max-width: 100%; } .family-archive { position: relative; top: auto; right: auto; width: min(78vw, 330px); margin: 22px 0 0 auto; transform: translate3d(0, -8px, 0); } .page-intro.family-archive--open .family-archive,.family-archive:hover { transform: translate3d(0, 0, 0); } .ashwood-nav,.future-nav { gap: 16px 22px; } .link-list a { align-items: flex-start; flex-direction: column; gap: 5px; } .listen-track__identity { align-items: flex-start; gap: 14px; } .listen-track__actions button { width: 100%; text-align: left; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ashwood-nav a,.future-nav a,.journal-nav a,.ashwood-nav a::after,.future-nav a::after,.journal-nav a::after,.family-archive,.about-memory { transition: none; animation: none; } .iridescent-word:hover,.iridescent-word:focus-visible { animation: none; background-position: 50% 50%; } }
