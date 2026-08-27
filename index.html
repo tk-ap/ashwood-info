@@ -28,27 +28,27 @@
       <section class="principles-field" aria-label="ASHWOOD working principles">
         <p class="principles-field__hint">Explore the field to find the points of intrigue.</p>
         <button class="principle-hotspot principle-hotspot--brief" type="button">
-          <span class="principle-hotspot__dot" aria-hidden="true"></span><span class="principle-hotspot__label">Brief</span>
+          <span class="principle-hotspot__mark" aria-hidden="true"></span><span class="principle-hotspot__label">Brief</span>
           <span class="principle-hotspot__quote">“I translate complex work into concise, decision-ready updates for senior leaders.”</span>
         </button>
         <button class="principle-hotspot principle-hotspot--signal" type="button">
-          <span class="principle-hotspot__dot" aria-hidden="true"></span><span class="principle-hotspot__label">Signal</span>
+          <span class="principle-hotspot__mark" aria-hidden="true"></span><span class="principle-hotspot__label">Signal</span>
           <span class="principle-hotspot__quote">“I prioritize what matters most, anticipate risks, and help leaders move faster with better information.”</span>
         </button>
         <button class="principle-hotspot principle-hotspot--system" type="button">
-          <span class="principle-hotspot__dot" aria-hidden="true"></span><span class="principle-hotspot__label">System</span>
+          <span class="principle-hotspot__mark" aria-hidden="true"></span><span class="principle-hotspot__label">System</span>
           <span class="principle-hotspot__quote">“I design scalable systems and procedures that reduce friction and improve reliability.”</span>
         </button>
         <button class="principle-hotspot principle-hotspot--ownership" type="button">
-          <span class="principle-hotspot__dot" aria-hidden="true"></span><span class="principle-hotspot__label">Ownership</span>
+          <span class="principle-hotspot__mark" aria-hidden="true"></span><span class="principle-hotspot__label">Ownership</span>
           <span class="principle-hotspot__quote">“I take end-to-end ownership of critical work and follow it through to completion.”</span>
         </button>
         <button class="principle-hotspot principle-hotspot--influence" type="button">
-          <span class="principle-hotspot__dot" aria-hidden="true"></span><span class="principle-hotspot__label">Influence</span>
+          <span class="principle-hotspot__mark" aria-hidden="true"></span><span class="principle-hotspot__label">Influence</span>
           <span class="principle-hotspot__quote">“I align cross-functional stakeholders and keep complex work moving through ambiguity.”</span>
         </button>
         <button class="principle-hotspot principle-hotspot--reliability" type="button">
-          <span class="principle-hotspot__dot" aria-hidden="true"></span><span class="principle-hotspot__label">Reliability</span>
+          <span class="principle-hotspot__mark" aria-hidden="true"></span><span class="principle-hotspot__label">Reliability</span>
           <span class="principle-hotspot__quote">“I deliver high-quality work consistently, even in fast-moving, high-stakes environments.”</span>
         </button>
       </section>
@@ -68,43 +68,62 @@
         const field = document.querySelector('.principles-field');
         if (!field) return;
         const hotspots = [...field.querySelectorAll('.principle-hotspot')];
-        const surface = field.closest('main') || document.body;
+        const surface = field.closest('.shell') || document.body;
+        const protectedSelectors = ['.masthead', '.intro', '.future-nav'];
         const close = () => {
           hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed', 'is-near'));
           field.classList.remove('is-pinned');
         };
+        const intersects = (a, b, padding = 18) =>
+          a.left < b.right + padding && a.right > b.left - padding &&
+          a.top < b.bottom + padding && a.bottom > b.top - padding;
+        const protectedRects = () => protectedSelectors
+          .flatMap((selector) => [...surface.querySelectorAll(selector)])
+          .map((el) => el.getBoundingClientRect());
         const randomize = () => {
-          const margin = 8;
-          const usableW = Math.max(0, 100 - margin * 2);
-          const usableH = Math.max(0, 100 - margin * 2);
-          const positions = hotspots.map(() => ({
-            x: margin + Math.random() * usableW,
-            y: margin + Math.random() * usableH
-          }));
-          hotspots.forEach((hotspot, index) => {
-            hotspot.style.left = positions[index].x + '%';
-            hotspot.style.top = positions[index].y + '%';
-            hotspot.style.right = 'auto';
-            hotspot.style.bottom = 'auto';
+          const rect = field.getBoundingClientRect();
+          const protectedAreas = protectedRects();
+          const placed = [];
+          hotspots.forEach((hotspot) => {
+            hotspot.classList.remove('is-revealed', 'is-near');
+            let accepted = false;
+            for (let attempt = 0; attempt < 80 && !accepted; attempt += 1) {
+              const left = 5 + Math.random() * 78;
+              const top = 5 + Math.random() * 82;
+              hotspot.style.left = left + '%';
+              hotspot.style.top = top + '%';
+              hotspot.style.right = 'auto';
+              hotspot.style.bottom = 'auto';
+              const candidate = hotspot.getBoundingClientRect();
+              accepted =
+                candidate.right <= rect.right - 12 &&
+                candidate.bottom <= rect.bottom - 12 &&
+                !protectedAreas.some((area) => intersects(candidate, area, 24)) &&
+                !placed.some((area) => intersects(candidate, area, 34));
+            }
+            if (!accepted) {
+              hotspot.style.left = '50%';
+              hotspot.style.top = '50%';
+            }
+            placed.push(hotspot.getBoundingClientRect());
           });
         };
         const point = (clientX, clientY) => {
           const rect = field.getBoundingClientRect();
           field.style.setProperty('--field-x', Math.max(0, Math.min(100, (clientX - rect.left) / rect.width * 100)) + '%');
           field.style.setProperty('--field-y', Math.max(0, Math.min(100, (clientY - rect.top) / rect.height * 100)) + '%');
-          const candidates = hotspots.map((hotspot) => {
+          const nearest = hotspots.map((hotspot) => {
             const r = hotspot.getBoundingClientRect();
-            return { hotspot, x: r.left + r.width / 2, y: r.top + Math.min(46, r.height / 2) };
-          });
-          const nearest = candidates.map((item) => ({ ...item, distance: Math.hypot(item.x - clientX, item.y - clientY) }))
-            .sort((x, y) => x.distance - y.distance)[0];
-          hotspots.forEach((hotspot) => hotspot.classList.toggle('is-near', hotspot === nearest.hotspot && nearest.distance < 170));
+            return { hotspot, distance: Math.hypot((r.left + r.width / 2) - clientX, (r.top + 34) - clientY) };
+          }).sort((a, b) => a.distance - b.distance)[0];
+          hotspots.forEach((hotspot) => hotspot.classList.toggle('is-near', hotspot === nearest.hotspot && nearest.distance < 155));
           field.classList.add('is-exploring');
         };
         randomize();
         surface.addEventListener('pointermove', (event) => point(event.clientX, event.clientY), { passive: true });
         surface.addEventListener('pointerenter', (event) => point(event.clientX, event.clientY), { passive: true });
-        surface.addEventListener('pointerleave', () => {
+        window.addEventListener('resize', randomize, { passive: true });
+        field.addEventListener('pointerleave', () => {
           field.classList.remove('is-exploring');
           hotspots.forEach((hotspot) => { if (!hotspot.classList.contains('is-revealed')) hotspot.classList.remove('is-near'); });
         });
@@ -112,11 +131,15 @@
           event.stopPropagation();
           const wasRevealed = hotspot.classList.contains('is-revealed');
           hotspots.forEach((item) => item.classList.remove('is-revealed', 'is-near'));
-          if (!wasRevealed) { hotspot.classList.add('is-revealed'); field.classList.add('is-pinned'); }
-          else field.classList.remove('is-pinned');
+          if (!wasRevealed) {
+            hotspot.classList.add('is-revealed');
+            field.classList.add('is-pinned');
+          } else {
+            field.classList.remove('is-pinned');
+          }
         }));
-        document.addEventListener('click', (event) => { if (!field.contains(event.target)) close(); });
+        document.addEventListener('click', (event) => { if (!field.contains(event.target) && !event.target.closest('.principle-hotspot')) close(); });
         document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
       })();
-    </script>/body>
+    </script> </body>
 </html>
