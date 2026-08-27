@@ -18,7 +18,7 @@
 .journal-index a:hover,.journal-index a:focus-visible { color: var(--journal-acid); }
 .journal-footer { grid-template-columns: 1fr auto; }
 .ecosystem-brief,.system-brief { border-top: 1px solid var(--journal-rule); padding: clamp(64px, 9vw, 128px) 0; }
-.education-thread { border-top: 1px solid var(--journal-rule); padding: clamp(56px, 8vw, 112px) 0; }
+.education-thread { border-top: 1px solid var(--journal-rule); padding: clamp(44px, 6vw, 78px) 0; }
 .education-thread__body { max-width: 780px; margin-left: min(24vw, 320px); }
 .education-thread h2 { max-width: 12ch; margin: 18px 0 28px; color: var(--journal-paper); font-size: clamp(42px, 6vw, 88px); font-weight: 500; line-height: .94; letter-spacing: -.05em; }
 .education-thread p:not(.journal-kicker) { max-width: 38ch; margin: 0; color: var(--journal-muted); font-size: clamp(18px, 2vw, 28px); line-height: 1.4; }
@@ -47,8 +47,8 @@
 .brief-grid span,.readiness span,.readiness small,.professional-signal,.system-map>article>span,.system-map small { font-size: 9px; line-height: 1.4; letter-spacing: .14em; text-transform: uppercase; }
 .brief-grid span { color: var(--journal-acid); }
 .brief-grid p { margin: 70px 0 0; font-size: 15px; line-height: 1.55; }
-.readiness { position: relative; margin-top: 64px; }
-.readiness__track { position: absolute; top: 22px; left: 10%; right: 10%; height: 1px; background: var(--journal-rule); }
+.readiness { position: relative; width: 100%; box-sizing: border-box; margin-top: 64px; padding: 0 14px; }
+.readiness__track { position: absolute; top: 22px; left: 12%; right: 12%; height: 1px; background: var(--journal-rule); }
 .readiness__track span { display: block; width: 50%; height: 100%; background: linear-gradient(90deg, var(--journal-acid), var(--journal-magenta)); }
 .readiness__steps { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none !important; }
 .readiness__item { position: relative; display: flex; flex-direction: column; min-height: 158px; padding: 48px 14px 16px; color: var(--journal-muted); border: 1px solid var(--journal-rule); background: rgba(17,17,15,.72); }
@@ -81,7 +81,7 @@
 
 @media (max-width: 680px) {
   .journal-index { position: static; justify-content: flex-start; flex-wrap: wrap; }
-  .readiness { padding-left: 0; }
+  .readiness { padding: 0 0 0 32px; }
   .readiness__track { top: 0; bottom: 0; left: 8px; right: auto; width: 1px; height: auto; }
   .readiness__track span { width: 100%; height: 52%; }
   .readiness__steps { grid-template-columns: 1fr; gap: 8px; padding-left: 30px; }
