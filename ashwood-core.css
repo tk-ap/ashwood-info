@@ -24,6 +24,8 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
+html:not(.ashwood-light) { --ashwood-paper: #10110f; --ashwood-ink: #f1eee6; --ashwood-muted: rgba(241,238,230,.62); --ashwood-rule: rgba(241,238,230,.24); }
+html.ashwood-light { --ashwood-paper: #f5f3ef; --ashwood-ink: #171717; --ashwood-muted: rgba(23,23,23,.58); --ashwood-rule: rgba(23,23,23,.24); }
 * { box-sizing: border-box; }
 html { min-height: 100%; scroll-behavior: smooth; }
 body { margin: 0; min-height: 100vh; background: var(--ashwood-paper); color: var(--ashwood-ink); }
@@ -32,6 +34,9 @@ button { font: inherit; }
 .ashwood-frame,.shell { width: min(100%, var(--ashwood-max)); min-height: 100vh; margin-inline: auto; padding: 28px var(--ashwood-gutter) 44px; }
 .shell { display: flex; flex-direction: column; }
 .ashwood-masthead,.masthead { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; border: 0; padding: 0; background: none; color: inherit; cursor: pointer; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.theme-toggle span:first-child { font-size: 17px; line-height: 1; }
+.theme-toggle:hover,.theme-toggle:focus-visible { color: var(--ashwood-ochre); }
 .ashwood-wordmark,.wordmark { font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; }
 .ashwood-meta,.section-label,.eyebrow { font-size: var(--ashwood-meta); letter-spacing: var(--ashwood-tracking); text-transform: uppercase; }
 .section-label { opacity: .58; }
