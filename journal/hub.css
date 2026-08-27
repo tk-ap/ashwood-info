@@ -18,6 +18,11 @@
 .journal-index a:hover,.journal-index a:focus-visible { color: var(--journal-acid); }
 .journal-footer { grid-template-columns: 1fr auto; }
 .ecosystem-brief,.system-brief { border-top: 1px solid var(--journal-rule); padding: clamp(64px, 9vw, 128px) 0; }
+.education-thread { border-top: 1px solid var(--journal-rule); padding: clamp(56px, 8vw, 112px) 0; }
+.education-thread__body { max-width: 780px; margin-left: min(24vw, 320px); }
+.education-thread h2 { max-width: 12ch; margin: 18px 0 28px; color: var(--journal-paper); font-size: clamp(42px, 6vw, 88px); font-weight: 500; line-height: .94; letter-spacing: -.05em; }
+.education-thread p:not(.journal-kicker) { max-width: 38ch; margin: 0; color: var(--journal-muted); font-size: clamp(18px, 2vw, 28px); line-height: 1.4; }
+.education-thread .journal-kicker { color: var(--journal-acid); }
 .ecosystem-brief__heading,.system-brief__heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .42fr); gap: 40px 80px; align-items: end; }
 .ecosystem-brief__heading h2,.system-brief__heading h2 { max-width: 12ch; margin: 0; font-size: clamp(48px, 7vw, 108px); font-weight: 500; line-height: .9; letter-spacing: -.055em; }
 .ecosystem-brief__heading p,.system-brief__heading p { margin: 0; color: var(--journal-muted); font-size: clamp(16px, 1.5vw, 22px); line-height: 1.5; }
@@ -57,6 +62,7 @@
   .readiness__item { min-height: 118px; }
   .system-map article { grid-template-columns: 1fr; }
   .system-map p,.system-map small { grid-column: auto; }
+  .education-thread__body { margin-left: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
