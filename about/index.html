@@ -59,28 +59,48 @@
     <script>
       (() => {
         const intro = document.querySelector('.page-intro');
-        const trigger = document.querySelector('.memory-trigger');
         const archive = document.querySelector('.family-archive');
-        if (!intro || !trigger || !archive) return;
+        const trigger = document.querySelector('.memory-trigger');
+        const memories = archive ? [...archive.querySelectorAll('.about-memory')] : [];
+        if (!intro || !archive || !memories.length) return;
         let pinned = false;
-        let closeTimer;
-        const open = () => { clearTimeout(closeTimer); intro.classList.add('family-archive--open'); trigger.setAttribute('aria-expanded', 'true'); };
-        const close = () => { if (pinned) return; intro.classList.remove('family-archive--open'); trigger.setAttribute('aria-expanded', 'false'); };
-        const scheduleClose = () => { clearTimeout(closeTimer); closeTimer = setTimeout(close, 140); };
-        [trigger, archive].forEach((element) => {
-          element.addEventListener('pointerenter', open);
-          element.addEventListener('pointerleave', scheduleClose);
-        });
-        trigger.addEventListener('focus', open);
-        trigger.addEventListener('blur', scheduleClose);
-        trigger.addEventListener('click', () => {
+        const clear = () => {
+          if (pinned) return;
+          memories.forEach((memory) => memory.classList.remove('is-near'));
+          intro.classList.remove('family-archive--open');
+          trigger?.setAttribute('aria-expanded', 'false');
+        };
+        const explore = (x, y) => {
+          const nearest = memories.map((memory) => {
+            const r = memory.getBoundingClientRect();
+            return { memory, distance: Math.hypot(r.left + r.width / 2 - x, r.top + r.height / 2 - y) };
+          }).sort((a,b) => a.distance - b.distance)[0];
+          memories.forEach((memory) => memory.classList.toggle('is-near', memory === nearest.memory && nearest.distance < 210));
+          if (nearest.distance < 210) intro.classList.add('family-archive--open');
+        };
+        document.addEventListener('pointermove', (event) => explore(event.clientX, event.clientY), { passive: true });
+        archive.addEventListener('pointerleave', clear, { passive: true });
+        memories.forEach((memory) => memory.addEventListener('click', (event) => {
+          event.stopPropagation();
           pinned = !pinned;
-          if (pinned) open(); else close();
+          if (pinned) {
+            memories.forEach((item) => item.classList.remove('is-near'));
+            memory.classList.add('is-near');
+            intro.classList.add('family-archive--open');
+          } else clear();
+        }));
+        trigger?.addEventListener('click', (event) => {
+          event.stopPropagation();
+          pinned = !pinned;
+          intro.classList.toggle('family-archive--open', pinned);
+          trigger.setAttribute('aria-expanded', String(pinned));
+        });
+        document.addEventListener('click', (event) => {
+          if (!event.target.closest('.family-archive') && !event.target.closest('.memory-trigger')) { pinned = false; clear(); }
         });
         document.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') { pinned = false; close(); trigger.focus(); }
+          if (event.key === 'Escape') { pinned = false; clear(); }
         });
       })();
-    </script>
-  </body>
+    </script> </body>
 </html>
