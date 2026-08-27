@@ -4,6 +4,14 @@
   --audio-rule: rgba(23, 23, 23, .28);
 }
 
+body.ashwood-has-audio {
+  padding-bottom: 104px;
+}
+
+body.ashwood-has-audio-room {
+  padding-bottom: 260px;
+}
+
 .ashwood-audio {
   position: fixed;
   z-index: 1000;
@@ -71,6 +79,8 @@
 .ashwood-audio :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 
 @media (max-width: 560px) {
+  body.ashwood-has-audio { padding-bottom: 118px; }
+  body.ashwood-has-audio-room { padding-bottom: 320px; }
   .ashwood-audio { right: 10px; bottom: 10px; width: calc(100vw - 20px); }
   .ashwood-audio--room { width: calc(100vw - 20px); }
   .ashwood-audio__bar { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
