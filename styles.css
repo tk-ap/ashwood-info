@@ -146,3 +146,33 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
 .exploratory-surface { position: relative; min-height: 100vh; }
 .exploratory-surface > * { position: relative; z-index: 1; }
 .exploratory-surface .principles-field { z-index: 0; }
+
+/* About: Jamaican lineage + curiosity-led family archive */
+.jamaica-black,.jamaica-green,.jamaica-gold { display: inline; font: inherit; }
+.jamaica-black { color: #111; }
+.jamaica-green { color: #009b3a; }
+.jamaica-gold { color: #f7d116; }
+html:not(.ashwood-light) .jamaica-black { color: #f1eee6; }
+.about-page .page-intro { position: relative; max-width: none; padding-right: min(39vw, 560px); }
+.about-page .family-archive { position: fixed; z-index: 0; top: 10vh; right: clamp(22px, 5vw, 72px); width: min(31vw, 470px); height: 80vh; pointer-events: none; }
+.about-page .about-memory { position: absolute; width: min(15vw, 220px); margin: 0; opacity: .2; transform: translate3d(0,0,0) rotate(-2deg) scale(.96); filter: saturate(.72); transition: opacity .45s ease, transform .6s cubic-bezier(.2,.8,.2,1), filter .45s ease; pointer-events: auto; cursor: default; }
+.about-page .about-memory img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
+.about-page .about-memory figcaption { margin-top: 7px; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--ashwood-muted); }
+.about-page .about-memory:nth-child(1) { top: 0; right: 8%; }
+.about-page .about-memory:nth-child(2) { top: 31%; right: 36%; transform: translate3d(0,0,0) rotate(2deg) scale(.96); }
+.about-page .about-memory:nth-child(3) { bottom: 0; right: 0; transform: translate3d(0,0,0) rotate(-1deg) scale(.96); }
+.about-page .family-archive--open .about-memory { opacity: .48; }
+.about-page .about-memory:hover,.about-page .about-memory:focus-within { opacity: 1; transform: translate3d(-12px,-6px,0) rotate(-1deg) scale(1.035); filter: saturate(1); z-index: 4; }
+.about-page .about-memory--second:hover { transform: translate3d(-12px,-6px,0) rotate(2deg) scale(1.035); }
+.about-page .about-memory--third:hover { transform: translate3d(-12px,-6px,0) rotate(-1deg) scale(1.035); }
+.about-page .memory-trigger { border: 0; border-bottom: 1px solid currentColor; padding: 0 0 2px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.about-page .memory-trigger:hover,.about-page .memory-trigger:focus-visible { color: var(--ashwood-ochre); }
+@media (max-width: 900px) {
+  .about-page .page-intro { padding-right: 0; }
+  .about-page .family-archive { position: relative; top: auto; right: auto; width: 100%; height: 46vh; margin: 48px 0 0; pointer-events: auto; }
+  .about-page .about-memory { width: 28vw; max-width: 180px; }
+}
+@media (max-width: 640px) {
+  .about-page .family-archive { height: 42vh; }
+  .about-page .about-memory { width: 30vw; }
+}
