@@ -89,15 +89,18 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
 .draft-status,.source-link,.listen-track__identity small,.listen-track__index,.signal-note { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
 .draft-status { display: inline-block; padding-bottom: 6px; border-bottom: 1px solid currentColor; }
 .source-link { display: inline-block; margin-top: 34px; text-decoration: none; }
+.source-link--private { position: relative; margin-top: 42px; padding: 14px 18px 13px; border: 1px solid rgba(180, 135, 50, .52); color: var(--ashwood-ochre); font-size: 11px; letter-spacing: .14em; background: linear-gradient(90deg, rgba(180, 135, 50, .08), transparent); }
+.source-link--private::after { content: 'PRIVATE LISTENING ROOM'; display: block; margin-top: 7px; color: var(--ashwood-muted); font-size: 8px; letter-spacing: .16em; }
+.source-link--private:hover,.source-link--private:focus-visible { color: var(--ashwood-oxblood); border-color: var(--ashwood-oxblood); background: rgba(123, 38, 53, .06); font-style: normal; transform: translateX(5px); }
 .source-link:hover,.source-link:focus-visible { font-style: italic; }
 .listen-queue { margin-top: clamp(56px, 8vw, 110px); border-top: 1px solid var(--ashwood-rule); }
-.listen-track { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--ashwood-rule); }
+.listen-track { display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, auto); gap: 24px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--ashwood-rule); }
 .listen-track__identity { display: flex; align-items: baseline; gap: 22px; min-width: 0; }
 .listen-track__identity>div { display: grid; gap: 5px; min-width: 0; }
-.listen-track__identity strong { font-size: clamp(22px, 3vw, 42px); font-weight: 500; letter-spacing: -.035em; }
+.listen-track__identity strong { font-size: clamp(22px, 3vw, 42px); font-weight: 500; letter-spacing: -.035em; overflow-wrap: anywhere; }
 .listen-track__identity small { opacity: .55; }
 .listen-track__index { opacity: .45; }
-.listen-track__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.listen-track__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; max-width: 220px; }
 .listen-track__actions button { min-height: 36px; padding: 8px 11px; border: 1px solid var(--ashwood-rule); background: transparent; color: inherit; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .listen-track__actions button:disabled { opacity: .42; cursor: not-allowed; }
 .listen-track--released { margin-top: 48px; border-top: 1px solid var(--ashwood-rule); }
