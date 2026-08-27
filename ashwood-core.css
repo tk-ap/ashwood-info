@@ -83,7 +83,8 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
 .music-section-heading,.draft-body__header,.signal-loop__layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .52fr); gap: clamp(36px, 7vw, 110px); align-items: end; }
 .music-section-heading .note { margin-top: 0; }
 .draft-body__header { align-items: start; }
-.draft-body__header h2 { margin: 0; font-size: clamp(70px, 13vw, 190px); line-height: .78; letter-spacing: -.07em; font-weight: 500; }
+.draft-body__header > div { min-width: 0; }
+.draft-body__header h2 { margin: 0; max-width: 100%; font-size: clamp(56px, 9vw, 142px); line-height: .78; letter-spacing: -.07em; font-weight: 500; overflow-wrap: anywhere; }
 .draft-body__context { max-width: 560px; }
 .draft-body__context p { margin: 26px 0 0; font-size: clamp(16px, 1.6vw, 22px); line-height: 1.45; }
 .draft-status,.source-link,.listen-track__identity small,.listen-track__index,.signal-note { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
