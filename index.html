@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ASHWOOD — One point of view. Many forms." />
+    <meta name="description" content="ASHWOOD — Out of One, Many Becomings." />
     <meta name="theme-color" content="#f5f3ef" />
     <title>ASHWOOD — Tahlia Ashwood Peart</title>
     <link rel="stylesheet" href="/ashwood-core.css?v=20260827-core" />
@@ -22,6 +22,7 @@
       <section class="intro">
         <p class="eyebrow">Tahlia Ashwood Peart</p>
         <h1 id="site-title">I follow ideas<br /><a class="iridescent-word" href="/portfolio/" aria-label="Feeling curious? Explore a random ASHWOOD section">wherever</a> they go.</h1>
+        <p class="home-identity">Out of One, Many <span class="iridescent-word">Becomings</span>.</p>
         <p class="note ashwood-thesis">Sometimes I find myself in front of the camera. Sometimes behind a microphone. Sometimes they become a product, a system, or a question I keep building until I understand it better.</p>
       </section>
 
@@ -63,5 +64,25 @@
         <a href="https://beacons.ai/tkashwood" rel="noopener">Links ↗</a>
       </nav>
     </main>
+    <script>
+      (() => {
+        const field = document.querySelector('.principles-field');
+        if (!field) return;
+        const hotspots = [...field.querySelectorAll('.principle-hotspot')];
+        const close = () => hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed'));
+        hotspots.forEach((hotspot) => hotspot.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const wasRevealed = hotspot.classList.contains('is-revealed');
+          close();
+          if (!wasRevealed) hotspot.classList.add('is-revealed');
+        }));
+        document.addEventListener('click', (event) => {
+          if (!field.contains(event.target)) close();
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') close();
+        });
+      })();
+    </script>
   </body>
 </html>
