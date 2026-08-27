@@ -40,6 +40,10 @@ button { font: inherit; }
 .eyebrow { margin: 0 0 20px; }
 h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height: .9; font-weight: 500; letter-spacing: -.055em; }
 .note { max-width: 520px; margin: 30px 0 0; font-size: 15px; line-height: 1.55; }
+.easter-egg { max-width: 520px; margin-top: 48px; border-top: 1px solid var(--ashwood-rule); padding-top: 14px; color: var(--ashwood-muted); font-size: 13px; line-height: 1.55; }
+.easter-egg summary { cursor: pointer; color: var(--ashwood-ochre); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.easter-egg p { margin: 16px 0 8px; }
+.easter-egg a { color: var(--ashwood-oxblood); font-size: 11px; }
 .lede { font-size: clamp(16px, 2vw, 21px); line-height: 1.5; }
 .ashwood-rule { border-top: 1px solid var(--ashwood-rule); }
 .ashwood-section { padding-block: var(--ashwood-space-lg); }
