@@ -63,5 +63,25 @@
         <a href="https://beacons.ai/tkashwood" rel="noopener">Links ↗</a>
       </nav>
     </main>
+    <script>
+      (() => {
+        const field = document.querySelector('.principles-field');
+        if (!field) return;
+        const hotspots = [...field.querySelectorAll('.principle-hotspot')];
+        const close = () => hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed'));
+        hotspots.forEach((hotspot) => hotspot.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const wasRevealed = hotspot.classList.contains('is-revealed');
+          close();
+          if (!wasRevealed) hotspot.classList.add('is-revealed');
+        }));
+        document.addEventListener('click', (event) => {
+          if (!field.contains(event.target)) close();
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') close();
+        });
+      })();
+    </script>
   </body>
 </html>
