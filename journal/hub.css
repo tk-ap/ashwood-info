@@ -16,6 +16,7 @@
 
 .journal-index a { color: var(--journal-muted); text-decoration: none; }
 .journal-index a:hover,.journal-index a:focus-visible { color: var(--journal-acid); }
+.journal-footer { grid-template-columns: 1fr auto; }
 .ecosystem-brief,.system-brief { border-top: 1px solid var(--journal-rule); padding: clamp(64px, 9vw, 128px) 0; }
 .ecosystem-brief__heading,.system-brief__heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .42fr); gap: 40px 80px; align-items: end; }
 .ecosystem-brief__heading h2,.system-brief__heading h2 { max-width: 12ch; margin: 0; font-size: clamp(48px, 7vw, 108px); font-weight: 500; line-height: .9; letter-spacing: -.055em; }
