@@ -49,7 +49,7 @@ img { max-width: 100%; display: block; }
 .statement p { width: min(100%, 12ch); margin: 0; font-size: clamp(54px, 8vw, 138px); line-height: .94; letter-spacing: -.055em; font-weight: 650; }
 .statement span { color: var(--magenta); }
 .feature-section,.work-section,.runway-section,.about-section,.details-section,.experience-section,.music-section,.contact-section { padding-top: var(--section-gap); padding-bottom: var(--section-gap); border-top: 1px solid var(--line); }
-.about-section,.details-section { padding-top: clamp(64px, 8vw, 124px); }
+.about-section,.details-section { padding-top: clamp(28px, 4vw, 64px); }
 .section-kicker { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 30px; color: var(--muted); margin-bottom: clamp(38px, 6vw, 84px); }
 .section-kicker span:first-child { color: var(--heritage-green); }
 .feature-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 360px); align-items: end; gap: 32px; }
