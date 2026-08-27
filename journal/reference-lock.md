@@ -16,6 +16,7 @@ BUILDS is a live journal first: a running record of decisions, experiments, reve
 - Ecosystem readiness is shown as a compact visual flow from ideation to paid validation.
 - Product snapshot includes concise summaries, progress signals, and verified deployment links.
 - Inline previews connect the journal to the live product surfaces.
+- Palette direction references the Jamaican doctor bird (the national bird), distinct from the Jamaican coat of arms.
 
 ## Naming and product truth
 
