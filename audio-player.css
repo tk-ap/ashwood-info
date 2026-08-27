@@ -43,7 +43,7 @@ body.ashwood-has-audio-room {
 .ashwood-audio button,
 .ashwood-audio a { color: inherit; }
 
-.ashwood-audio__toggle {
+.ashwood-audio .ashwood-audio__toggle {
   min-width: 88px;
   padding: 9px 10px;
   border: 1px solid var(--audio-oxblood);
