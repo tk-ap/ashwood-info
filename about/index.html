@@ -19,9 +19,6 @@
       </header>
 
       <section class="intro page-intro" aria-labelledby="page-title">
-        <button class="about-memory" type="button" aria-label="Reveal family archive"><img src="/assets/digitals2026/grandmother-alvira.jpg" alt="Family archive: Tahlia with their grandmother Myrtle Alvira Ashwood" loading="lazy" /><span>family archive</span></button>
-        <button class="about-memory about-memory--second" type="button" tabindex="-1" aria-hidden="true"><img src="/assets/digitals2026/grandmother-alvira-2.jpg" alt="" loading="lazy" /></button>
-        <button class="about-memory about-memory--third" type="button" tabindex="-1" aria-hidden="true"><img src="/assets/digitals2026/grandmother-alvira-3.jpg" alt="" loading="lazy" /></button>
         <p class="eyebrow">Tahlia Ashwood Peart · TK Ashwood</p>
         <h1 id="page-title">Out of One,<br />Many <span class="iridescent-word">Becomings</span>.</h1>
         <p class="note lede">I follow ideas wherever they go. Sometimes that means being in front of the camera. Sometimes it becomes music. Sometimes it becomes a product, a system, or a question I keep building until I understand it better.</p>
@@ -35,7 +32,12 @@
         <p class="note">A principle carried through MeOS also shapes how I work more broadly: clarity before volume. I try to move from identity to evidence, from evidence to a hypothesis, from hypothesis to a small experiment, and from a real signal to a decision. The goal is not to manufacture certainty; it is to make complexity understandable enough to act on responsibly.</p>
         <p class="note">That means preferring source-verified evidence where possible, practical reality over presentation, and small dignified tests over waiting for a perfect revelation. Whether the work is creative or technical, I am interested in systems that make the next decision clearer and the next version more reliable.</p>
         <p class="note">ASHWOOD is the connective tissue—not a claim that every form is the same kind of work, but a place for the point of view behind them to live together.</p>
-        <p class="memory-line"><button class="memory-trigger" type="button" aria-label="Reveal family archive">ALVIRA</button> is a name I carry forward.</p>
+        <p class="memory-line"><button class="memory-trigger" type="button" aria-expanded="false" aria-controls="family-archive">ALVIRA</button> is a name I carry forward.</p>
+        <div class="family-archive" id="family-archive" aria-label="Family archive">
+          <figure class="about-memory"><img src="/assets/digitals2026/grandmother-alvira.jpg" alt="Tahlia with their grandmother Myrtle Alvira Ashwood" loading="lazy" /><figcaption>Family archive</figcaption></figure>
+          <figure class="about-memory about-memory--second"><img src="/assets/digitals2026/grandmother-alvira-2.jpg" alt="Tahlia with their grandmother" loading="lazy" /></figure>
+          <figure class="about-memory about-memory--third"><img src="/assets/digitals2026/grandmother-alvira-3.jpg" alt="Tahlia as a child with their grandmother in Jamaica" loading="lazy" /></figure>
+        </div>
         <details class="easter-egg">
           <summary>A few things I carry forward</summary>
           <p>ALVIRA, the first build in the ecosystem, takes its name from my grandmother’s middle name. ailhat is my first name spelled backwards. I’m also exploring <i>khlear</i> as a possible future name for LEDGATo—a reference to my middle name, Khrystal, and to the idea of crystal-clear understanding of what an agent can and cannot do.</p>
@@ -54,5 +56,31 @@
         <a href="https://beacons.ai/tkashwood" rel="noopener">Links ↗</a>
       </nav>
     </main>
+    <script>
+      (() => {
+        const intro = document.querySelector('.page-intro');
+        const trigger = document.querySelector('.memory-trigger');
+        const archive = document.querySelector('.family-archive');
+        if (!intro || !trigger || !archive) return;
+        let pinned = false;
+        let closeTimer;
+        const open = () => { clearTimeout(closeTimer); intro.classList.add('family-archive--open'); trigger.setAttribute('aria-expanded', 'true'); };
+        const close = () => { if (pinned) return; intro.classList.remove('family-archive--open'); trigger.setAttribute('aria-expanded', 'false'); };
+        const scheduleClose = () => { clearTimeout(closeTimer); closeTimer = setTimeout(close, 140); };
+        [trigger, archive].forEach((element) => {
+          element.addEventListener('pointerenter', open);
+          element.addEventListener('pointerleave', scheduleClose);
+        });
+        trigger.addEventListener('focus', open);
+        trigger.addEventListener('blur', scheduleClose);
+        trigger.addEventListener('click', () => {
+          pinned = !pinned;
+          if (pinned) open(); else close();
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') { pinned = false; close(); trigger.focus(); }
+        });
+      })();
+    </script>
   </body>
 </html>
