@@ -21,4 +21,10 @@
   };
   document.querySelectorAll(".masthead,.site-header,.journal-masthead").forEach((header) => header.append(makeButton()));
   document.querySelectorAll("footer").forEach((footer) => footer.append(makeButton()));
+  document.querySelectorAll(".name-change-cta").forEach((button) => button.addEventListener("click", () => {
+    try { localStorage.setItem("ashwood.name-choice", button.dataset.nameChoice || "khlear"); } catch (_) {}
+    const response = document.querySelector(".name-change-response");
+    if (response) response.textContent = "Noted — khlear is on the table.";
+    button.disabled = true;
+  }));
 })();
