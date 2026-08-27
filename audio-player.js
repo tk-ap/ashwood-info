@@ -36,6 +36,8 @@
   if (TRACK.source) audio.src = TRACK.source;
 
   const isMusicPage = location.pathname.replace(/\/+$/, "") === "/music";
+  document.body.classList.add("ashwood-has-audio");
+  if (isMusicPage) document.body.classList.add("ashwood-has-audio-room");
   const player = document.createElement("aside");
   player.className = `ashwood-audio${isMusicPage ? " ashwood-audio--room" : ""}`;
   player.setAttribute("aria-label", "ASHWOOD audio player");
