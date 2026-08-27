@@ -102,9 +102,40 @@ img { max-width: 100%; display: block; }
 @media (max-width: 640px) { .site-header { align-items: flex-start; } .site-nav { gap: 10px 16px; } .hero { padding-top: 46px; gap: 30px; } .hero h1 { font-size: clamp(72px, 25vw, 112px); } .hero-deck { margin-top: 28px; } .hero-media { min-height: 58vh; } .statement p { font-size: clamp(48px, 16vw, 78px); } .outline-title { font-size: clamp(66px, 23vw, 108px); -webkit-text-stroke-width: 1px; } .campaign-grid,.archive-grid,.runway-strip,.digitals-grid { grid-template-columns: 1fr; } .campaign-grid > *,.archive-grid > *,.runway-strip > * { grid-column: auto !important; margin: 0 !important; width: 100% !important; } .detail-list div,.experience-list div { grid-template-columns: 1fr; } .experience-list small { grid-column: auto; } .portfolio-footer { grid-template-columns: 1fr; } .footer-mark { grid-column: auto; } }
 
 .portfolio-lightbox{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:5vw;background:rgba(0,0,0,.9);opacity:0;pointer-events:none;transition:opacity .25s ease}.portfolio-lightbox.is-open{opacity:1;pointer-events:auto}.portfolio-lightbox img{max-width:90vw;max-height:88vh;width:auto;height:auto;object-fit:contain}.portfolio-lightbox button{position:absolute;top:20px;right:28px;border:0;background:none;color:#fff;font-size:36px;line-height:1;cursor:pointer}.lightbox-open{overflow:hidden}
-/* Editorial campaign flow: dense columns remove accidental empty grid cells. */
-.campaign-grid{display:block;columns:3;column-gap:clamp(12px,1.4vw,22px)}
-.campaign-grid>.asset-frame{display:block;width:100%!important;margin:0 0 clamp(12px,1.4vw,22px)!important;break-inside:avoid;aspect-ratio:auto;min-height:0;padding:0;grid-column:auto!important}
-.campaign-grid>.asset-frame img{display:block;width:100%;height:auto;max-height:none;object-fit:contain}
-@media(max-width:980px){.campaign-grid{columns:2}}
-@media(max-width:640px){.campaign-grid{columns:1}}
+/* BARELYSAIN gallery: one dependable editorial system, scoped away from the core UI. */
+#barelysain .campaign-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 26px);
+  margin-top: clamp(54px, 8vw, 110px);
+  align-items: start;
+}
+#barelysain .campaign-grid > .asset-frame {
+  display: block;
+  grid-column: auto;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  aspect-ratio: auto;
+  align-self: start;
+  background: none;
+}
+#barelysain .campaign-grid > .asset-frame:first-child {
+  grid-column: 1 / -1;
+}
+#barelysain .campaign-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
+@media (max-width: 700px) {
+  #barelysain .campaign-grid {
+    grid-template-columns: 1fr;
+  }
+  #barelysain .campaign-grid > .asset-frame:first-child {
+    grid-column: auto;
+  }
+}
