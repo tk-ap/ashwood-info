@@ -5,6 +5,8 @@
   --audio-oxblood: #7b2635;
   --audio-ochre: #87621f;
 }
+html:not(.ashwood-light) { --audio-paper: #10110f; --audio-ink: #f1eee6; --audio-rule: rgba(241, 238, 230, .28); }
+html.ashwood-light { --audio-paper: #f5f3ef; --audio-ink: #171717; --audio-rule: rgba(23, 23, 23, .28); }
 
 body.ashwood-has-audio {
   padding-bottom: 104px;
@@ -21,7 +23,6 @@ body.ashwood-has-audio-room {
   bottom: clamp(14px, 2vw, 28px);
   width: min(520px, calc(100vw - 28px));
   color: var(--audio-ink);
-  background: rgba(245, 243, 239, .96);
   background: color-mix(in srgb, var(--audio-paper) 94%, transparent);
   border: 1px solid var(--audio-rule);
   box-shadow: 0 12px 42px rgba(0, 0, 0, .12);
