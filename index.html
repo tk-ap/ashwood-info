@@ -68,20 +68,39 @@
         const field = document.querySelector('.principles-field');
         if (!field) return;
         const hotspots = [...field.querySelectorAll('.principle-hotspot')];
-        const close = () => hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed'));
+        const close = () => {
+          hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed', 'is-near'));
+          field.classList.remove('is-pinned');
+        };
+        const centers = () => hotspots.map((hotspot) => {
+          const rect = hotspot.getBoundingClientRect();
+          return { hotspot, x: rect.left + rect.width / 2, y: rect.top + Math.min(46, rect.height / 2) };
+        });
+        const explore = (clientX, clientY) => {
+          const fieldRect = field.getBoundingClientRect();
+          const x = clientX - fieldRect.left;
+          const y = clientY - fieldRect.top;
+          field.style.setProperty('--field-x', Math.max(0, Math.min(100, x / fieldRect.width * 100)) + '%');
+          field.style.setProperty('--field-y', Math.max(0, Math.min(100, y / fieldRect.height * 100)) + '%');
+          const nearest = centers().map((item) => ({ ...item, distance: Math.hypot(item.x - clientX, item.y - clientY) })).sort((x, y) => x.distance - y.distance)[0];
+          hotspots.forEach((hotspot) => hotspot.classList.toggle('is-near', hotspot === nearest.hotspot && nearest.distance < 150));
+          field.classList.add('is-exploring');
+        };
+        field.addEventListener('pointermove', (event) => explore(event.clientX, event.clientY), { passive: true });
+        field.addEventListener('pointerenter', (event) => explore(event.clientX, event.clientY), { passive: true });
+        field.addEventListener('pointerleave', () => {
+          field.classList.remove('is-exploring');
+          hotspots.forEach((hotspot) => { if (!hotspot.classList.contains('is-revealed')) hotspot.classList.remove('is-near'); });
+        });
         hotspots.forEach((hotspot) => hotspot.addEventListener('click', (event) => {
           event.stopPropagation();
           const wasRevealed = hotspot.classList.contains('is-revealed');
-          close();
-          if (!wasRevealed) hotspot.classList.add('is-revealed');
+          hotspots.forEach((item) => item.classList.remove('is-revealed', 'is-near'));
+          if (!wasRevealed) { hotspot.classList.add('is-revealed'); field.classList.add('is-pinned'); }
+          else field.classList.remove('is-pinned');
         }));
-        document.addEventListener('click', (event) => {
-          if (!field.contains(event.target)) close();
-        });
-        document.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') close();
-        });
+        document.addEventListener('click', (event) => { if (!field.contains(event.target)) close(); });
+        document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
       })();
-    </script>
-  </body>
+    </script> </body>
 </html>
