@@ -51,6 +51,9 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
 .easter-egg summary { cursor: pointer; color: var(--ashwood-ochre); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
 .easter-egg p { margin: 16px 0 8px; }
 .easter-egg a { color: var(--ashwood-oxblood); font-size: 11px; }
+.name-change-cta { display: inline-block; margin: 8px 0 14px; border: 0; border-bottom: 1px solid currentColor; padding: 0 0 3px; background: none; color: var(--ashwood-ochre); cursor: pointer; font: inherit; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.name-change-cta:hover,.name-change-cta:focus-visible { color: var(--ashwood-oxblood); }
+.name-change-response { display: block; color: var(--ashwood-muted); font-size: 11px; }
 .lede { font-size: clamp(16px, 2vw, 21px); line-height: 1.5; }
 .ashwood-rule { border-top: 1px solid var(--ashwood-rule); }
 .ashwood-section { padding-block: var(--ashwood-space-lg); }
