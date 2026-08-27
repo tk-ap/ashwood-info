@@ -48,14 +48,16 @@ h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height:
 .iridescent-word:hover,.iridescent-word:focus-visible { color: transparent; background: linear-gradient(110deg, #1f4f4a, var(--ashwood-gold) 22%, #d6c24a 42%, #3f7f84 62%, #243f76 80%, var(--ashwood-oxblood)); background-size: 320% 100%; -webkit-background-clip: text; background-clip: text; animation: ashwood-iridescence 2.4s ease-in-out infinite; }
 .note { max-width: 520px; margin: 30px 0 0; font-size: 15px; line-height: 1.55; }
 .principles-field { position: relative; min-height: 190px; margin: 0 0 70px; border-top: 1px solid var(--ashwood-rule); border-bottom: 1px solid var(--ashwood-rule); overflow: visible; }
-.principles-field__hint { margin: 14px 0 0; color: var(--ashwood-muted); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
-.principle-hotspot { position: absolute; border: 0; padding: 0; background: none; color: inherit; cursor: crosshair; text-align: left; }
+.principles-field__hint { margin: 14px 0 0; color: var(--ashwood-muted); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; transition: color .2s ease; }
+.principles-field:hover .principles-field__hint,.principles-field:focus-within .principles-field__hint { color: var(--ashwood-ochre); }
+.principle-hotspot { position: absolute; z-index: 2; width: 28%; min-height: 92px; border: 0; padding: 12px 18px 16px; background: transparent; color: inherit; cursor: crosshair; text-align: left; }
 .principle-hotspot--brief { left: 22%; top: 72px; }.principle-hotspot--signal { left: 55%; top: 40px; }.principle-hotspot--system { right: 14%; top: 112px; }.principle-hotspot--ownership { left: 8%; top: 132px; }.principle-hotspot--influence { left: 39%; top: 126px; }.principle-hotspot--reliability { right: 2%; top: 48px; }
 .principle-hotspot__dot { display: block; width: 12px; height: 12px; border: 1px solid var(--ashwood-ochre); border-radius: 50%; transition: transform .25s ease, background .25s ease; }
 .principle-hotspot__label { display: block; margin-top: 8px; color: var(--ashwood-muted); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; }
-.principle-hotspot__quote { position: absolute; left: 0; top: 30px; width: min(300px, 42vw); padding: 14px 16px; border: 1px solid var(--ashwood-rule); background: var(--ashwood-paper); color: var(--ashwood-ink); font-size: 13px; line-height: 1.45; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease; z-index: 3; }
+.principle-hotspot__quote { position: absolute; left: 0; top: 58px; width: min(300px, 42vw); padding: 14px 16px; border: 1px solid var(--ashwood-rule); background: var(--ashwood-paper); color: var(--ashwood-ink); font-size: 13px; line-height: 1.45; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease; z-index: 3; }
 .principle-hotspot:hover .principle-hotspot__dot,.principle-hotspot:focus-visible .principle-hotspot__dot { background: var(--ashwood-ochre); transform: scale(1.35); }
 .principle-hotspot:hover .principle-hotspot__quote,.principle-hotspot:focus-visible .principle-hotspot__quote { opacity: 1; transform: translateY(0); }
+.principle-hotspot:hover,.principle-hotspot:focus-visible { z-index: 5; }
 .easter-egg { max-width: 520px; margin-top: 48px; border-top: 1px solid var(--ashwood-rule); padding-top: 14px; color: var(--ashwood-muted); font-size: 13px; line-height: 1.55; }
 .easter-egg summary { cursor: pointer; color: var(--ashwood-ochre); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
 .easter-egg p { margin: 16px 0 8px; }
