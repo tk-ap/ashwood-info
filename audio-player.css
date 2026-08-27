@@ -83,9 +83,9 @@ body.ashwood-has-audio-room {
 .ashwood-audio :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 
 @media (max-width: 560px) {
-  body.ashwood-has-audio { padding-bottom: 176px; }
-  body.ashwood-has-audio-room { padding-bottom: 360px; }
-  .ashwood-audio { right: 10px; bottom: calc(68px + env(safe-area-inset-bottom)); width: calc(100vw - 20px); }
+  body.ashwood-has-audio { padding-bottom: 118px; }
+  body.ashwood-has-audio-room { padding-bottom: 320px; }
+  .ashwood-audio { right: 10px; bottom: 10px; width: calc(100vw - 20px); }
   .ashwood-audio--room { width: calc(100vw - 20px); }
   .ashwood-audio__bar { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
   .ashwood-audio__time { grid-column: 2; }
