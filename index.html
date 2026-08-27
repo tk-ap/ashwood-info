@@ -66,28 +66,34 @@
           const rect = field.getBoundingClientRect();
           const protectedAreas = protectedRects();
           const placed = [];
+          const gap = 34;
+          const candidates = [];
+          for (let i = 0; i < 160; i += 1) {
+            candidates.push({ x: 4 + Math.random() * 88, y: 4 + Math.random() * 88, score: Math.random() });
+          }
           hotspots.forEach((hotspot) => {
-            hotspot.classList.remove('is-revealed', 'is-near');
-            let accepted = false;
-            for (let attempt = 0; attempt < 80 && !accepted; attempt += 1) {
-              const left = 5 + Math.random() * 78;
-              const top = 5 + Math.random() * 82;
-              hotspot.style.left = left + '%';
-              hotspot.style.top = top + '%';
+            let best = null;
+            candidates.sort((a, b) => a.score - b.score);
+            for (const pos of candidates) {
+              hotspot.style.left = pos.x + '%';
+              hotspot.style.top = pos.y + '%';
               hotspot.style.right = 'auto';
               hotspot.style.bottom = 'auto';
               const candidate = hotspot.getBoundingClientRect();
-              accepted =
-                candidate.right <= rect.right - 12 &&
-                candidate.bottom <= rect.bottom - 12 &&
-                !protectedAreas.some((area) => intersects(candidate, area, 24)) &&
-                !placed.some((area) => intersects(candidate, area, 34));
+              const valid = candidate.left >= rect.left + 10 &&
+                candidate.top >= rect.top + 10 &&
+                candidate.right <= rect.right - 10 &&
+                candidate.bottom <= rect.bottom - 10 &&
+                !protectedAreas.some((area) => intersects(candidate, area, 28)) &&
+                !placed.some((area) => intersects(candidate, area, gap));
+              if (valid) { best = candidate; break; }
             }
-            if (!accepted) {
-              hotspot.style.left = '50%';
-              hotspot.style.top = '50%';
+            if (!best) {
+              hotspot.style.left = (8 + Math.random() * 80) + '%';
+              hotspot.style.top = (8 + Math.random() * 80) + '%';
+              best = hotspot.getBoundingClientRect();
             }
-            placed.push(hotspot.getBoundingClientRect());
+            placed.push(best);
           });
         };
         const point = (clientX, clientY) => {
