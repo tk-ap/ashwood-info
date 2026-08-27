@@ -5,7 +5,7 @@
   --line: rgba(240, 238, 231, .28);
   --green: #c49a45;
   --magenta: #9b3f50;
-  --heritage-green: #6f9a7d;
+  --heritage-green: #c49a45;
   --max: 1640px;
   --gutter: clamp(18px, 3vw, 52px);
   --section-gap: clamp(96px, 13vw, 210px);
