@@ -68,27 +68,43 @@
         const field = document.querySelector('.principles-field');
         if (!field) return;
         const hotspots = [...field.querySelectorAll('.principle-hotspot')];
+        const surface = field.closest('main') || document.body;
         const close = () => {
           hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed', 'is-near'));
           field.classList.remove('is-pinned');
         };
-        const centers = () => hotspots.map((hotspot) => {
-          const rect = hotspot.getBoundingClientRect();
-          return { hotspot, x: rect.left + rect.width / 2, y: rect.top + Math.min(46, rect.height / 2) };
-        });
-        const explore = (clientX, clientY) => {
-          const fieldRect = field.getBoundingClientRect();
-          const x = clientX - fieldRect.left;
-          const y = clientY - fieldRect.top;
-          field.style.setProperty('--field-x', Math.max(0, Math.min(100, x / fieldRect.width * 100)) + '%');
-          field.style.setProperty('--field-y', Math.max(0, Math.min(100, y / fieldRect.height * 100)) + '%');
-          const nearest = centers().map((item) => ({ ...item, distance: Math.hypot(item.x - clientX, item.y - clientY) })).sort((x, y) => x.distance - y.distance)[0];
-          hotspots.forEach((hotspot) => hotspot.classList.toggle('is-near', hotspot === nearest.hotspot && nearest.distance < 150));
+        const randomize = () => {
+          const margin = 8;
+          const usableW = Math.max(0, 100 - margin * 2);
+          const usableH = Math.max(0, 100 - margin * 2);
+          const positions = hotspots.map(() => ({
+            x: margin + Math.random() * usableW,
+            y: margin + Math.random() * usableH
+          }));
+          hotspots.forEach((hotspot, index) => {
+            hotspot.style.left = positions[index].x + '%';
+            hotspot.style.top = positions[index].y + '%';
+            hotspot.style.right = 'auto';
+            hotspot.style.bottom = 'auto';
+          });
+        };
+        const point = (clientX, clientY) => {
+          const rect = field.getBoundingClientRect();
+          field.style.setProperty('--field-x', Math.max(0, Math.min(100, (clientX - rect.left) / rect.width * 100)) + '%');
+          field.style.setProperty('--field-y', Math.max(0, Math.min(100, (clientY - rect.top) / rect.height * 100)) + '%');
+          const candidates = hotspots.map((hotspot) => {
+            const r = hotspot.getBoundingClientRect();
+            return { hotspot, x: r.left + r.width / 2, y: r.top + Math.min(46, r.height / 2) };
+          });
+          const nearest = candidates.map((item) => ({ ...item, distance: Math.hypot(item.x - clientX, item.y - clientY) }))
+            .sort((x, y) => x.distance - y.distance)[0];
+          hotspots.forEach((hotspot) => hotspot.classList.toggle('is-near', hotspot === nearest.hotspot && nearest.distance < 170));
           field.classList.add('is-exploring');
         };
-        field.addEventListener('pointermove', (event) => explore(event.clientX, event.clientY), { passive: true });
-        field.addEventListener('pointerenter', (event) => explore(event.clientX, event.clientY), { passive: true });
-        field.addEventListener('pointerleave', () => {
+        randomize();
+        surface.addEventListener('pointermove', (event) => point(event.clientX, event.clientY), { passive: true });
+        surface.addEventListener('pointerenter', (event) => point(event.clientX, event.clientY), { passive: true });
+        surface.addEventListener('pointerleave', () => {
           field.classList.remove('is-exploring');
           hotspots.forEach((hotspot) => { if (!hotspot.classList.contains('is-revealed')) hotspot.classList.remove('is-near'); });
         });
@@ -102,5 +118,5 @@
         document.addEventListener('click', (event) => { if (!field.contains(event.target)) close(); });
         document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
       })();
-    </script> </body>
+    </script>/body>
 </html>
