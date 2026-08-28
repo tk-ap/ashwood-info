@@ -108,6 +108,7 @@
     .principles-field__hint{transition:opacity .32s ease,color .32s ease,letter-spacing .32s ease}
     .principles-field__hint.is-assisting{color:var(--ashwood-gold);letter-spacing:.13em;opacity:.78}
     .principle-hotspot.is-assist-pulse{animation:ashwood-assist-pulse 2.2s ease-in-out infinite!important}
+    .ashwood-assist-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     @keyframes ashwood-assist-pulse{0%,100%{filter:none;box-shadow:0 0 0 0 rgba(214,194,74,0)}50%{filter:drop-shadow(0 0 5px rgba(214,194,74,.46));box-shadow:0 0 0 7px rgba(214,194,74,.035)}}
 
     body.has-found-all-hotspots .ashwood-capability-map{opacity:1;visibility:visible;pointer-events:auto;filter:blur(0);transform:translateY(0) scale(1);transition-delay:1.18s}
@@ -126,13 +127,15 @@
       .ashwood-curiosity-progress{right:13px}
       .ashwood-capability-map{position:relative;right:auto;top:auto;z-index:72;width:100%;max-height:none;margin:30px 0 18px;padding:16px 0 0;transform:translateY(8px)}
       .ashwood-capability-map__header{grid-template-columns:1fr;gap:7px}
-      .ashwood-capability-map__reset{grid-column:1;grid-row:auto;margin-top:4px;justify-self:start}
+      .ashwood-capability-map__reset{grid-column:1;grid-row:auto;margin-top:4px;justify-self:start;min-height:44px;display:inline-flex;align-items:center;padding:8px 0}
       .ashwood-capability-map__item{grid-template-columns:82px 1fr;padding:9px 0 10px}
       .ashwood-capability-map__authorship,.ashwood-capability-map__practice,.ashwood-capability-map__description{grid-column:2}
+      .ashwood-capability-map__practice{min-height:40px;padding:6px 0}
+      .ashwood-capability-map__link{min-height:44px;display:inline-flex;align-items:center;padding:8px 0}
       body.has-found-all-hotspots .principles-field{min-height:0!important;height:auto!important}
       .ashwood-thread-flash span{left:50%;top:46%;font-size:clamp(20px,7vw,30px)}
     }
-    @media(prefers-reduced-motion:reduce){.ashwood-capability-map,.principle-hotspot{transition:none!important}.ashwood-thread-flash{display:none!important}.principle-hotspot.is-assist-pulse{animation:none!important;outline:1px solid color-mix(in srgb,var(--ashwood-gold) 32%,transparent)}}
+    @media(prefers-reduced-motion:reduce){.ashwood-capability-map,.principle-hotspot{transition:none!important}.ashwood-thread-flash{display:none!important}.principle-hotspot.is-assist-pulse{animation:none!important;outline:1px solid color-mix(in srgb,var(--ashwood-gold) 32%,transparent);outline-offset:3px}}
   `;
   document.head.append(style);
 
@@ -187,28 +190,67 @@
   const field = document.querySelector(".principles-field");
   const fieldHint = field?.querySelector(".principles-field__hint");
   const defaultHint = fieldHint?.textContent || "There is more here.";
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  const assistStatus = document.createElement("p");
+  assistStatus.className = "ashwood-assist-status";
+  assistStatus.setAttribute("role", "status");
+  assistStatus.setAttribute("aria-live", "polite");
+  assistStatus.setAttribute("aria-atomic", "true");
+  field?.append(assistStatus);
+
   let lastDiscoveryAt = performance.now();
   let lastPointerAt = 0;
   let lastPointer = null;
   let pointerTravel = 0;
   let latestPointer = null;
   let assistTarget = null;
+  let touchSearchEvents = 0;
+  let lastTouchSearchAt = 0;
+  let lastAssistMessage = "";
+
+  const announce = (message) => {
+    if (!message || message === lastAssistMessage) return;
+    lastAssistMessage = message;
+    assistStatus.textContent = message;
+  };
 
   const clearAssist = (resetHint = true) => {
     assistTarget?.classList.remove("is-assist-pulse");
     assistTarget = null;
+    lastAssistMessage = "";
+    assistStatus.textContent = "";
     if (fieldHint && resetHint) {
       fieldHint.textContent = defaultHint;
       fieldHint.classList.remove("is-assisting");
     }
   };
 
+  const setAssistMessage = (message) => {
+    if (fieldHint) {
+      fieldHint.textContent = message;
+      fieldHint.classList.add("is-assisting");
+    }
+    announce(message);
+  };
+
   field?.addEventListener("pointermove", (event) => {
     const point = { x: event.clientX, y: event.clientY };
-    if (lastPointer) pointerTravel += Math.hypot(point.x - lastPointer.x, point.y - lastPointer.y);
+    if ((event.pointerType === "mouse" || event.pointerType === "pen") && lastPointer) {
+      pointerTravel += Math.hypot(point.x - lastPointer.x, point.y - lastPointer.y);
+    }
     lastPointer = point;
     latestPointer = point;
     lastPointerAt = performance.now();
+  }, { passive: true });
+
+  field?.addEventListener("pointerdown", (event) => {
+    const now = performance.now();
+    latestPointer = { x: event.clientX, y: event.clientY };
+    lastPointerAt = now;
+    if ((event.pointerType === "touch" || coarsePointer) && !event.target.closest(".principle-hotspot")) {
+      touchSearchEvents += 1;
+      lastTouchSearchAt = now;
+    }
   }, { passive: true });
 
   field?.addEventListener("pointerleave", () => {
@@ -222,13 +264,14 @@
     }
 
     const now = performance.now();
-    const activelySearching = pointerTravel > 900 && (now - lastPointerAt) < 2600;
+    const pointerSearching = pointerTravel > 900 && (now - lastPointerAt) < 2600;
+    const touchSearching = touchSearchEvents >= 3 && (now - lastTouchSearchAt) < 12000;
+    const activelySearching = pointerSearching || touchSearching;
     if (!activelySearching) return;
 
     const stalledFor = now - lastDiscoveryAt;
-    if (stalledFor >= 16000 && fieldHint) {
-      fieldHint.textContent = discovered.size ? "You’re close." : "Keep following the field.";
-      fieldHint.classList.add("is-assisting");
+    if (stalledFor >= 16000) {
+      setAssistMessage(discovered.size ? "You’re close." : "Keep following the field.");
     }
 
     if (stalledFor < 28000 || !latestPointer) return;
@@ -248,7 +291,7 @@
       assistTarget?.classList.remove("is-assist-pulse");
       assistTarget = nearestRemaining;
       assistTarget.classList.add("is-assist-pulse");
-      if (fieldHint) fieldHint.textContent = "One signal is warmer than the rest.";
+      setAssistMessage("One signal is warmer than the rest.");
     }
   };
 
@@ -298,6 +341,7 @@
       flash.classList.remove("is-active");
       void flash.offsetWidth;
       flash.classList.add("is-active");
+      announce("All six signals found. Capability map revealed.");
     }
     try { localStorage.setItem(REWARD_KEY, "1"); } catch (_) {}
   };
@@ -319,9 +363,11 @@
     hotspot.classList.add("is-discovered");
     lastDiscoveryAt = performance.now();
     pointerTravel = 0;
+    touchSearchEvents = 0;
     clearAssist();
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...discovered])); } catch (_) {}
     updateProgress();
+    announce(`${discovered.size} of ${hotspots.length} signals found.`);
     if (discovered.size === hotspots.length) unlockReward(false);
   };
 
