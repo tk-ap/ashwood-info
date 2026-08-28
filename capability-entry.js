@@ -22,11 +22,6 @@
       opacity:0;transform:translateY(4px);transition:opacity .45s ease,transform .45s ease;pointer-events:none
     }
     .ashwood-capability-nudge.is-visible{opacity:.7;transform:translateY(0)}
-    .about-capability-entry{
-      display:inline-flex;align-items:center;min-height:40px;margin:2px 0 18px;color:var(--ashwood-ink);
-      font-size:9px;letter-spacing:.13em;text-transform:uppercase;text-decoration:none
-    }
-    .about-capability-entry:hover,.about-capability-entry:focus-visible{color:var(--ashwood-gold);font-style:italic}
     @media(max-width:760px){
       .ashwood-capability-evidence{width:100%;margin:8px 0 16px}
       .ashwood-capability-evidence a{min-height:44px;display:inline-flex;align-items:center}
@@ -111,7 +106,7 @@
     document.body.append(nudge);
 
     const update = () => {
-      if (completedDiscovery()) {
+      if (completedDiscovery() || document.body.classList.contains("has-viewed-capability-map")) {
         nudge.classList.remove("is-visible");
         return;
       }
@@ -125,6 +120,7 @@
     };
 
     new MutationObserver(update).observe(progress, { subtree: true, attributes: true, attributeFilter: ["class"] });
+    new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ["class"] });
     update();
   };
 
