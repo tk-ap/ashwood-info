@@ -84,6 +84,96 @@
     button.disabled = true;
   }));
 
+  // Borrow AgentMail's responsive-system principle, not its visual language:
+  // the background should acknowledge exploration and reveal relationships without
+  // competing with the content or becoming motion for motion's sake.
+  const installAmbientField = () => {
+    if (normalizedPath !== "/" && normalizedPath !== "/about") return;
+
+    const style = document.createElement("style");
+    style.id = "ashwood-responsive-field";
+    style.textContent = `
+      body.ashwood-home-native .principles-field{isolation:isolate}
+      body.ashwood-home-native .principles-field::before,
+      body.ashwood-home-native .principles-field::after{
+        content:"";position:absolute;inset:-18%;z-index:-1;pointer-events:none;
+        transform:translateZ(0);transition:opacity .7s ease,filter .7s ease;
+      }
+      body.ashwood-home-native .principles-field::before{
+        background:
+          radial-gradient(circle at var(--field-x,68%) var(--field-y,42%),rgba(0,155,58,.085) 0 2%,rgba(0,155,58,.035) 12%,transparent 34%),
+          radial-gradient(circle at var(--field-x,68%) var(--field-y,42%),transparent 0 14%,rgba(214,194,74,.04) 14.4%,transparent 15.2% 100%);
+        opacity:.34;filter:blur(.2px);animation:ashwood-field-breathe 8s ease-in-out infinite;
+      }
+      body.ashwood-home-native .principles-field::after{
+        background:radial-gradient(circle at var(--field-x,68%) var(--field-y,42%),transparent 0 8%,rgba(0,155,58,.035) 8.4%,transparent 9.2% 100%);
+        opacity:.18;transform:scale(.82);transition:opacity .45s ease,transform 1s cubic-bezier(.16,.8,.24,1);
+      }
+      body.ashwood-home-native .principles-field.is-exploring::before{opacity:.68;filter:blur(0)}
+      body.ashwood-home-native .principles-field.is-exploring::after{opacity:.44;transform:scale(1)}
+      body.has-found-all-hotspots .principles-field::before,
+      body.has-found-all-hotspots .principles-field::after{opacity:.12}
+      @keyframes ashwood-field-breathe{0%,100%{transform:scale(.97)}50%{transform:scale(1.025)}}
+
+      .about-page .page-intro{isolation:isolate;--about-x:72%;--about-y:30%}
+      .about-page .page-intro::before{
+        content:"";position:absolute;inset:-8vh -8vw;z-index:0;pointer-events:none;
+        background:
+          radial-gradient(circle at var(--about-x) var(--about-y),rgba(214,194,74,.07) 0 3%,rgba(214,194,74,.026) 18%,transparent 39%),
+          radial-gradient(circle at 78% 38%,rgba(0,155,58,.04),transparent 28%),
+          linear-gradient(90deg,transparent 0 70%,color-mix(in srgb,var(--ashwood-rule) 22%,transparent) 70.08%,transparent 70.16% 100%);
+        opacity:.34;transition:opacity .8s ease,filter .8s ease;
+      }
+      .about-page .page-intro.is-reading-field::before{opacity:.58;filter:saturate(1.08)}
+      .about-page .page-intro.is-archive-near::before{opacity:.7}
+      .about-page .page-intro > :not(.family-archive){position:relative;z-index:1}
+
+      @media (hover:none),(pointer:coarse){
+        body.ashwood-home-native .principles-field::before{animation:none;opacity:.26}
+        body.ashwood-home-native .principles-field::after{display:none}
+        .about-page .page-intro::before{opacity:.28}
+      }
+      @media (prefers-reduced-motion:reduce){
+        body.ashwood-home-native .principles-field::before,
+        body.ashwood-home-native .principles-field::after,
+        .about-page .page-intro::before{animation:none!important;transition:none!important}
+      }
+    `;
+    document.head.append(style);
+
+    if (normalizedPath !== "/about") return;
+    const intro = document.querySelector(".about-page .page-intro");
+    const archive = document.querySelector(".about-page .family-archive");
+    if (!intro) return;
+
+    const finePointer = window.matchMedia("(hover:hover) and (pointer:fine)").matches;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!finePointer || reduceMotion) return;
+
+    let leaveTimer;
+    document.addEventListener("pointermove", (event) => {
+      const rect = intro.getBoundingClientRect();
+      const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / Math.max(rect.width, 1)) * 100));
+      const y = Math.max(0, Math.min(100, ((event.clientY - rect.top) / Math.max(rect.height, 1)) * 100));
+      intro.style.setProperty("--about-x", `${x}%`);
+      intro.style.setProperty("--about-y", `${y}%`);
+      intro.classList.add("is-reading-field");
+
+      if (archive) {
+        const a = archive.getBoundingClientRect();
+        const nearestX = Math.max(a.left, Math.min(event.clientX, a.right));
+        const nearestY = Math.max(a.top, Math.min(event.clientY, a.bottom));
+        const distance = Math.hypot(event.clientX - nearestX, event.clientY - nearestY);
+        intro.classList.toggle("is-archive-near", distance < 150);
+      }
+
+      clearTimeout(leaveTimer);
+      leaveTimer = setTimeout(() => intro.classList.remove("is-reading-field"), 900);
+    }, { passive: true });
+  };
+
+  installAmbientField();
+
   // Home must never make one of the six discovery points impossible to find.
   // The inline randomizer gets first choice; this only rescues hotspots it had to suppress.
   const rescueHomepageHotspots = () => {
