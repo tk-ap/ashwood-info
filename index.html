@@ -97,15 +97,15 @@
           const placed = [];
           const compact = window.matchMedia('(max-width: 760px)').matches;
           const gap = compact ? 12 : 30;
-          const protection = compact ? 16 : 28;
+          const protection = compact ? 18 : 32;
           const edge = compact ? 6 : 10;
           const candidates = [];
-          for (let i = 0; i < 420; i += 1) {
+          for (let i = 0; i < 520; i += 1) {
             candidates.push({ x: (compact ? 2 : 4) + Math.random() * (compact ? 92 : 88), y: (compact ? 3 : 4) + Math.random() * (compact ? 90 : 88), score: Math.random() });
           }
           hotspots.forEach((hotspot) => {
             let best = null;
-            let lowestPenalty = Number.POSITIVE_INFINITY;
+            let lowestHotspotPenalty = Number.POSITIVE_INFINITY;
             const ordered = [...candidates].sort((a, b) => a.score - b.score);
             for (const pos of ordered) {
               hotspot.style.left = pos.x + '%';
@@ -115,17 +115,26 @@
               const candidate = hotspot.getBoundingClientRect();
               const inside = candidate.left >= rect.left + edge && candidate.top >= rect.top + edge && candidate.right <= rect.right - edge && candidate.bottom <= rect.bottom - edge;
               if (!inside) continue;
-              const protectedPenalty = protectedAreas.reduce((sum, area) => sum + overlapArea(candidate, area, protection), 0);
+
+              // Static interface is a hard boundary. Temporary discovery assets may never
+              // render over the masthead, hero links, primary entryways, NOW, utility nav,
+              // or the native audio control—even when the viewport is crowded.
+              const touchesStaticInterface = protectedAreas.some((area) => overlapArea(candidate, area, protection) > 0);
+              if (touchesStaticInterface) continue;
+
               const hotspotPenalty = placed.reduce((sum, area) => sum + overlapArea(candidate, area, gap), 0);
-              const penalty = protectedPenalty * 8 + hotspotPenalty;
-              if (penalty === 0) { best = candidate; break; }
-              if (penalty < lowestPenalty) { lowestPenalty = penalty; best = candidate; }
+              if (hotspotPenalty === 0) { best = candidate; break; }
+              if (hotspotPenalty < lowestHotspotPenalty) {
+                lowestHotspotPenalty = hotspotPenalty;
+                best = candidate;
+              }
             }
             if (best) {
               hotspot.style.left = ((best.left - rect.left) / rect.width * 100) + '%';
               hotspot.style.top = ((best.top - rect.top) / rect.height * 100) + '%';
               placed.push(hotspot.getBoundingClientRect());
             } else {
+              // Suppress a temporary asset rather than compromise a permanent navigation target.
               hotspot.style.left = '-9999px';
               hotspot.style.top = '-9999px';
             }
