@@ -72,6 +72,43 @@ body.ashwood-home-native .ashwood-home-audio {
   color: #009b3a;
 }
 
+/* Keep the original full name as the primary identity; the newer practice label is secondary. */
+body.ashwood-home-native .intro .eyebrow {
+  font-size: 0 !important;
+  line-height: 1.2;
+}
+body.ashwood-home-native .intro .eyebrow::before {
+  content: "TAHLIA ASHWOOD PEART";
+  display: block;
+  color: var(--ashwood-ink);
+  font-size: 12px;
+  letter-spacing: .08em;
+}
+body.ashwood-home-native .intro .eyebrow::after {
+  content: "TK ASHWOOD / CREATIVE PRACTICE";
+  display: block;
+  margin-top: 7px;
+  color: var(--ashwood-muted);
+  font-size: 9px;
+  letter-spacing: .12em;
+}
+
+/* Updated Music entryway carries the same play language as the ambient player. */
+body.ashwood-home-native .home-entryway:nth-child(2) .home-entryway__title::after {
+  content: "  ▶";
+  display: inline-block;
+  margin-left: .35em;
+  color: var(--ashwood-muted);
+  font-size: .5em;
+  vertical-align: .25em;
+  transition: color .2s ease, transform .2s ease;
+}
+body.ashwood-home-native .home-entryway:nth-child(2):hover .home-entryway__title::after,
+body.ashwood-home-native .home-entryway:nth-child(2):focus-visible .home-entryway__title::after {
+  color: #009b3a;
+  transform: translateX(2px);
+}
+
 /* IN ME inner ignition — Jamaican green, with the field remaining black and hotspot language gold. */
 .ashwood-home-ignition {
   position: fixed;
