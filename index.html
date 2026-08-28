@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ASHWOOD — Out of One, Many Becomings." />
+    <meta name="description" content="ASHWOOD — a living creative practice across modeling, music, and builds. Out of One, Many Becomings." />
     <meta name="theme-color" content="#f5f3ef" />
-    <title>ASHWOOD — Tahlia Ashwood Peart</title>
+    <title>ASHWOOD — TK Ashwood</title>
     <link rel="stylesheet" href="/ashwood-core.css?v=20260827-core" />
     <link rel="stylesheet" href="/styles.css?v=20260827-principles" />
     <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
-    <link rel="stylesheet" href="/home-native.css?v=20260828-inner2" />
+    <link rel="stylesheet" href="/home-native.css?v=20260828-hierarchy1" />
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/home-native.js?v=20260828-inner2" defer></script>
     <script src="/curiosity.js?v=20260827-1" defer></script>
@@ -22,14 +22,15 @@
       </header>
 
       <section class="intro">
-        <p class="eyebrow">Tahlia Ashwood Peart</p>
+        <p class="eyebrow">TK ASHWOOD / CREATIVE PRACTICE</p>
         <h1 id="site-title">I follow ideas<br /><a class="iridescent-word" href="/portfolio/" aria-label="Feeling curious? Explore a random ASHWOOD section">wherever</a> they go.</h1>
         <p class="home-identity">Out of One, Many <span class="iridescent-word">Becomings</span>.</p>
+        <p class="home-grounding">Modeling, music, technology, and the systems emerging between them.</p>
       </section>
 
       <section class="principles-field" aria-label="ASHWOOD working principles">
         <p class="principles-field__hint">Explore the field to find the points of intrigue.</p>
-        <button class="principle-hotspot principle-hotspot--friction" type="button" aria-label="SIGNAL: I prioritize what matters most, anticipate risks, and help leaders move faster with better information."><span class="principle-hotspot__label">SIGNAL</span><span class="principle-hotspot__quote">I prioritize what matters most, anticipate risks, and help leaders move faster with better information.</span></button>
+        <button class="principle-hotspot principle-hotspot--signal" type="button" aria-label="SIGNAL: I prioritize what matters most, anticipate risks, and help leaders move faster with better information."><span class="principle-hotspot__label">SIGNAL</span><span class="principle-hotspot__quote">I prioritize what matters most, anticipate risks, and help leaders move faster with better information.</span></button>
         <button class="principle-hotspot principle-hotspot--friction" type="button" aria-label="FRICTION: I notice the small things that make a process harder than it needs to be — then I usually can't leave them alone."><span class="principle-hotspot__label">FRICTION</span><span class="principle-hotspot__quote">I notice the small things that make a process harder than it needs to be — then I usually can't leave them alone.</span></button>
         <button class="principle-hotspot principle-hotspot--translation" type="button" aria-label="TRANSLATION: I turn complexity into something people can actually understand, decide from, and act on."><span class="principle-hotspot__label">TRANSLATION</span><span class="principle-hotspot__quote">I turn complexity into something people can actually understand, decide from, and act on.</span></button>
         <button class="principle-hotspot principle-hotspot--systems" type="button" aria-label="SYSTEMS: I look for the structure underneath the problem. Fixing the symptom is rarely interesting enough."><span class="principle-hotspot__label">SYSTEMS</span><span class="principle-hotspot__quote">I look for the structure underneath the problem. Fixing the symptom is rarely interesting enough.</span></button>
@@ -37,10 +38,29 @@
         <button class="principle-hotspot principle-hotspot--range" type="button" aria-label="RANGE: I don't fit neatly into one lane. That's less a branding problem than a useful advantage."><span class="principle-hotspot__label">RANGE</span><span class="principle-hotspot__quote">I don't fit neatly into one lane. That's less a branding problem than a useful advantage.</span></button>
       </section>
 
-      <nav class="future-nav" aria-label="ASHWOOD sections">
-        <a href="/portfolio">Modeling</a>
-        <a href="/music">Music</a>
-        <a href="/journal">Builds</a>
+      <section class="home-entryways" aria-label="Explore ASHWOOD">
+        <a class="home-entryway" href="/portfolio">
+          <span class="home-entryway__title">Modeling</span>
+          <span class="home-entryway__signal">BarelySain · Malibu + DTLA</span>
+        </a>
+        <a class="home-entryway" href="/music">
+          <span class="home-entryway__title">Music</span>
+          <span class="home-entryway__signal">t.kap · Listen</span>
+        </a>
+        <a class="home-entryway" href="/journal">
+          <span class="home-entryway__title">Builds</span>
+          <span class="home-entryway__signal">Context → intelligence → governed execution</span>
+        </a>
+      </section>
+
+      <aside class="home-now" aria-label="Current ASHWOOD signals">
+        <span class="home-now__label">NOW / AUG 2026</span>
+        <span>Modeling — BarelySain</span>
+        <span>Building — ALVIRA · ailhat · LEDGATo</span>
+        <span>Listening — t.kap</span>
+      </aside>
+
+      <nav class="future-nav" aria-label="ASHWOOD secondary sections">
         <a href="/about">About</a>
         <a href="/connect">Connect</a>
         <a href="/portfolio#contact">Contact</a>
@@ -53,7 +73,7 @@
         if (!field) return;
         const hotspots = [...field.querySelectorAll('.principle-hotspot')];
         const surface = field.closest('.shell') || document.body;
-        const protectedSelectors = ['.masthead', '.intro', '.future-nav'];
+        const protectedSelectors = ['.masthead', '.intro', '.home-entryways', '.home-now', '.future-nav', '.ashwood-home-audio'];
         const close = () => {
           hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed', 'is-near'));
           field.classList.remove('is-pinned');
@@ -131,5 +151,6 @@
         document.addEventListener('click', (event) => { if (!field.contains(event.target) && !event.target.closest('.principle-hotspot')) close(); });
         document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
       })();
-    </script> </body>
+    </script>
+  </body>
 </html>
