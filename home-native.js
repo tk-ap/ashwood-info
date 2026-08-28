@@ -16,7 +16,7 @@
   if (!nav || !shell || !player || !sourceToggle || !sourceVolume) return;
 
   const control = document.createElement("div");
-  control.className = "ashwood-home-audio";
+  control.className = "ashwood-home-audio future-nav";
   control.hidden = true;
   control.setAttribute("aria-label", "IN ME playback controls");
   control.innerHTML = `
