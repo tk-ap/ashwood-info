@@ -19,7 +19,7 @@
     });
     return button;
   };
-  document.querySelectorAll(".masthead,.site-header,.journal-masthead").forEach((header) => header.append(makeButton()));
+  document.querySelectorAll(".masthead,.site-header,.ashwood-site-header,.journal-masthead").forEach((header) => header.append(makeButton()));
   document.querySelectorAll("footer").forEach((footer) => footer.append(makeButton()));
   document.querySelectorAll(".name-change-cta").forEach((button) => button.addEventListener("click", () => {
     try { localStorage.setItem("ashwood.name-choice", button.dataset.nameChoice || "khlear"); } catch (_) {}
