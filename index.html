@@ -13,6 +13,57 @@
     <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio6" />
     <link rel="stylesheet" href="/hotspot-immersive.css?v=20260828-latent2" />
     <link rel="stylesheet" href="/home-balance.css?v=20260828-balance2" />
+    <style>
+      /* PR #3 composition pass: create a left/right conversation without turning Home into a grid. */
+      @media (min-width:761px) {
+        body.ashwood-home-native .shell { position:relative; padding-bottom:clamp(118px,15vh,180px); }
+        body.ashwood-home-native .intro { max-width:min(760px,58vw); }
+        .home-entryways {
+          width:min(62%,820px);
+          grid-template-columns:repeat(3,max-content);
+          justify-content:start;
+          gap:clamp(22px,3.2vw,58px);
+          margin-right:auto;
+          border-bottom:0;
+        }
+        .home-entryway { padding:18px 0 14px; overflow:visible; }
+        .home-entryway + .home-entryway { border-left:0; padding-left:0; }
+        .home-entryway__signal { max-width:20ch; }
+        .home-now {
+          width:min(72%,980px);
+          margin:clamp(18px,3vh,34px) auto 0;
+          justify-content:center;
+          text-align:center;
+          border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 72%,transparent);
+          padding-top:14px;
+        }
+        body.ashwood-home-native .home-utility {
+          position:absolute;
+          right:0;
+          bottom:clamp(30px,5vh,64px);
+          width:min(28vw,310px);
+          display:flex;
+          flex-direction:column;
+          align-items:flex-start;
+          gap:13px;
+          margin:0;
+          padding:0;
+          opacity:.82;
+          font-size:10px;
+          line-height:1.25;
+        }
+        body.ashwood-home-native .home-utility a { width:max-content; }
+        body.ashwood-home-native .home-utility a:nth-child(2) { transform:translateX(clamp(10px,1.6vw,28px))!important; }
+        body.ashwood-home-native .home-utility a:nth-child(3) { transform:translateX(clamp(30px,4.2vw,74px))!important; }
+        body.ashwood-home-native .home-utility a:hover,
+        body.ashwood-home-native .home-utility a:focus-visible { letter-spacing:.16em!important; }
+      }
+      @media (min-width:761px) and (max-height:760px) {
+        body.ashwood-home-native .shell { padding-bottom:104px; }
+        body.ashwood-home-native .home-utility { bottom:24px; }
+        .home-now { margin-top:14px; }
+      }
+    </style>
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/home-native.js?v=20260828-becomings2" defer></script>
     <script src="/curiosity.js?v=20260827-1" defer></script>
@@ -25,7 +76,7 @@
       </header>
 
       <section class="intro">
-        <p class="eyebrow">TK ASHWOOD / CREATIVE PRACTICE</p>
+        <p class="eyebrow">TAHLIA ASHWOOD PEART / CREATIVE PRACTICE</p>
         <h1 id="site-title">I follow ideas<br /><a class="iridescent-word" href="/portfolio/" aria-label="Feeling curious? Explore a random ASHWOOD section">wherever</a> they go.</h1>
         <p class="home-identity" id="becomings">Out of One, Many <span class="iridescent-word">Becomings</span>.</p>
         <p class="home-grounding">Modeling, music, technology, and the systems emerging between them.</p>
@@ -100,8 +151,16 @@
           const protection = compact ? 18 : 32;
           const edge = compact ? 6 : 10;
           const candidates = [];
-          for (let i = 0; i < 520; i += 1) {
-            candidates.push({ x: (compact ? 2 : 4) + Math.random() * (compact ? 92 : 88), y: (compact ? 3 : 4) + Math.random() * (compact ? 90 : 88), score: Math.random() });
+          for (let i = 0; i < 560; i += 1) {
+            const xSeed = Math.random();
+            const x = compact
+              ? 2 + xSeed * 92
+              : 10 + Math.pow(xSeed, .68) * 82;
+            const y = (compact ? 3 : 4) + Math.random() * (compact ? 90 : 88);
+            // On desktop, favor the right half enough to counterbalance the left-anchored hero,
+            // while retaining randomness so discovery never feels mechanically placed.
+            const rightBias = compact ? 0 : (x / 100) * .24;
+            candidates.push({ x, y, score: Math.random() - rightBias });
           }
           hotspots.forEach((hotspot) => {
             let best = null;
