@@ -6,11 +6,27 @@
   text-transform: uppercase;
 }
 
+/* Resting field stays ambient. While a discovery is active, lift the field above
+   the primary homepage infrastructure so temporary reveal copy is never buried. */
+body.ashwood-home-native .principles-field {
+  z-index: 20;
+}
+body.ashwood-home-native .principles-field:has(.principle-hotspot.is-near),
+body.ashwood-home-native .principles-field:has(.principle-hotspot.is-revealed),
+body.ashwood-home-native .principles-field:has(.principle-hotspot:focus-visible) {
+  z-index: 180;
+}
+
 body.ashwood-home-native .principle-hotspot {
   width: clamp(170px, 23vw, 310px);
   min-height: 86px;
   padding: 12px 16px 14px;
   isolation: isolate;
+}
+
+body.ashwood-home-native .principle-hotspot.is-near,
+body.ashwood-home-native .principle-hotspot:focus-visible {
+  z-index: 190;
 }
 
 body.ashwood-home-native .principle-hotspot::before {
@@ -89,7 +105,7 @@ body.ashwood-home-native .principle-hotspot:focus-visible .principle-hotspot__qu
 
 /* Pinned discovery: capability blooms fully and then tells the visitor why it matters. */
 body.ashwood-home-native .principle-hotspot.is-revealed {
-  z-index: 90;
+  z-index: 200;
 }
 
 body.ashwood-home-native .principle-hotspot.is-revealed::before {
