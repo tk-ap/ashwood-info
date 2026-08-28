@@ -1,0 +1,304 @@
+/* Homepage composition pass: identity -> discovery field -> grounded practice layer. */
+
+body.ashwood-home-native .shell {
+  min-height: 100dvh;
+  padding-bottom: clamp(20px, 2.6vh, 34px);
+}
+
+/* Keep identity confident and slightly higher so the field owns the center. */
+body.ashwood-home-native .intro {
+  margin: 0;
+  padding-top: clamp(54px, 7vh, 82px);
+  padding-bottom: clamp(26px, 3.6vh, 44px);
+}
+
+/* Editorial hero refinement: preserve the system font, but let identity and Becomings breathe. */
+body.ashwood-home-native #site-title {
+  font-size: clamp(50px, 9vw, 118px);
+  line-height: .86;
+  letter-spacing: -.052em;
+  max-width: 12.2ch;
+}
+
+body.ashwood-home-native .home-grounding {
+  margin-top: clamp(12px, 1.6vh, 18px);
+}
+
+/* Preserve a large uninterrupted discovery field before the grounded practice layer. */
+body.ashwood-home-native .home-entryways {
+  margin-top: clamp(88px, 13vh, 170px);
+}
+
+/* Treat entryways, NOW and utilities as one lower band rather than stacked endings. */
+body.ashwood-home-native .home-entryway {
+  padding-top: clamp(14px, 1.8vh, 18px);
+  padding-bottom: clamp(13px, 1.7vh, 17px);
+}
+
+body.ashwood-home-native .home-now {
+  padding-top: 9px;
+  padding-bottom: 0;
+  gap: 5px 20px;
+  line-height: 1.35;
+}
+
+body.ashwood-home-native .home-utility {
+  margin-top: 5px;
+  padding-top: 0;
+  gap: 14px;
+}
+
+/* Short desktop viewports: compact the top and bottom bands, never the discovery field into oblivion. */
+@media (min-width: 761px) and (max-height: 900px) {
+  body.ashwood-home-native .shell {
+    padding-top: 20px;
+    padding-bottom: 18px;
+  }
+
+  body.ashwood-home-native .intro {
+    padding-top: clamp(32px, 4.5vh, 44px);
+    padding-bottom: clamp(18px, 2.5vh, 26px);
+  }
+
+  body.ashwood-home-native #site-title {
+    font-size: clamp(48px, 8.5vw, 108px);
+    line-height: .855;
+  }
+
+  body.ashwood-home-native .home-grounding {
+    margin-top: 11px;
+  }
+
+  body.ashwood-home-native .home-entryways {
+    margin-top: clamp(48px, 7vh, 70px);
+  }
+
+  body.ashwood-home-native .home-entryway {
+    padding-top: 12px;
+    padding-bottom: 11px;
+  }
+
+  body.ashwood-home-native .home-now {
+    padding-top: 7px;
+    gap: 4px 16px;
+  }
+
+  body.ashwood-home-native .home-utility {
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 760px) {
+  body.ashwood-home-native .shell {
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  body.ashwood-home-native .intro {
+    padding-top: 64px;
+    padding-bottom: 30px;
+  }
+
+  body.ashwood-home-native #site-title {
+    font-size: clamp(48px, 15vw, 72px);
+    line-height: .88;
+    max-width: 10.8ch;
+  }
+
+  body.ashwood-home-native .home-entryways {
+    margin-top: clamp(82px, 13vh, 120px);
+  }
+
+  body.ashwood-home-native .home-now {
+    padding-top: 9px;
+    gap: 4px 12px;
+  }
+
+  body.ashwood-home-native .home-utility {
+    margin-top: 8px;
+  }
+}
+
+/* PR #3 final desktop balance pass.
+   The page resolves diagonally: identity upper-left, discovery center/right,
+   practices lower-left, current state lower-right. */
+@media (min-width: 761px) {
+  body.ashwood-home-native .shell {
+    padding-bottom: clamp(138px, 17vh, 188px) !important;
+  }
+
+  body.ashwood-home-native .intro {
+    max-width: min(690px, 51vw) !important;
+  }
+
+  body.ashwood-home-native #site-title {
+    font-size: clamp(50px, 7.65vw, 108px);
+    line-height: .875;
+    max-width: 11.7ch;
+  }
+
+  body.ashwood-home-native .home-grounding {
+    max-width: 470px;
+  }
+
+  body.ashwood-home-native .home-entryways {
+    width: min(57%, 760px) !important;
+    margin-top: clamp(76px, 10.5vh, 136px) !important;
+    gap: clamp(20px, 2.7vw, 46px) !important;
+  }
+
+  body.ashwood-home-native .home-entryway__title {
+    font-size: clamp(19px, 1.9vw, 28px);
+  }
+
+  body.ashwood-home-native .home-entryway__signal {
+    max-width: 18ch !important;
+  }
+
+  body.ashwood-home-native .home-now {
+    position: absolute;
+    right: 0;
+    bottom: clamp(44px, 5.5vh, 68px);
+    width: min(29vw, 330px) !important;
+    margin: 0 !important;
+    display: grid !important;
+    justify-content: start !important;
+    justify-items: start;
+    text-align: left !important;
+    gap: 6px !important;
+    padding-top: 13px !important;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-rule) 72%, transparent);
+    line-height: 1.45;
+  }
+
+  body.ashwood-home-native .home-now__label {
+    margin-bottom: 3px;
+  }
+
+  /* Utility actions belong with the global control layer, directly under theme. */
+  body.ashwood-home-native .home-utility {
+    position: absolute !important;
+    top: clamp(58px, 7.2vh, 76px) !important;
+    right: 0 !important;
+    bottom: auto !important;
+    width: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: right;
+    opacity: .62 !important;
+    font-size: 8px !important;
+    line-height: 1.2;
+  }
+
+  body.ashwood-home-native .home-utility a,
+  body.ashwood-home-native .home-utility a:nth-child(2),
+  body.ashwood-home-native .home-utility a:nth-child(3) {
+    width: max-content;
+    transform: none !important;
+  }
+
+  body.ashwood-home-native .home-utility a:hover,
+  body.ashwood-home-native .home-utility a:focus-visible {
+    opacity: 1;
+  }
+
+  /* Six-of-six reward: the discovery field organizes itself into a compact 2×3 index. */
+  body.ashwood-home-native .ashwood-capability-map {
+    position: fixed !important;
+    top: clamp(176px, 23vh, 226px) !important;
+    right: clamp(72px, 7.2vw, 118px) !important;
+    width: min(42vw, 620px) !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__header {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 5px 18px !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__title {
+    font-size: clamp(19px, 1.8vw, 27px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__authorship-key {
+    max-width: 54ch;
+    font-size: 7px !important;
+    line-height: 1.3 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: clamp(20px, 2.4vw, 34px) !important;
+    row-gap: 0 !important;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-rule) 52%, transparent);
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item {
+    grid-template-columns: 64px minmax(0, 1fr) !important;
+    gap: 3px 10px !important;
+    min-height: 0 !important;
+    padding: 9px 0 10px !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--ashwood-rule) 52%, transparent) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(odd) {
+    padding-right: clamp(8px, 1.1vw, 16px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill {
+    font-size: 7px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__authorship {
+    font-size: 6px !important;
+    letter-spacing: .12em !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__practice {
+    font-size: 8px !important;
+    line-height: 1.25;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__description {
+    font-size: 7px !important;
+    line-height: 1.32 !important;
+    opacity: .64 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__footer {
+    margin-top: 8px !important;
+  }
+}
+
+@media (min-width: 761px) and (max-height: 760px) {
+  body.ashwood-home-native .shell {
+    padding-bottom: 126px !important;
+  }
+
+  body.ashwood-home-native #site-title {
+    font-size: clamp(48px, 7.1vw, 96px);
+  }
+
+  body.ashwood-home-native .home-entryways {
+    margin-top: clamp(42px, 6vh, 58px) !important;
+  }
+
+  body.ashwood-home-native .home-now {
+    bottom: 24px;
+  }
+
+  body.ashwood-home-native .home-utility {
+    top: 54px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map {
+    top: 136px !important;
+    width: min(45vw, 600px) !important;
+  }
+}

@@ -4,6 +4,54 @@
   let light = false;
   try { light = localStorage.getItem(key) === "light"; } catch (_) {}
   root.classList.toggle("ashwood-light", light);
+
+  const primaryRoutes = [
+    { path: "/portfolio", label: "Modeling" },
+    { path: "/music", label: "Music" },
+    { path: "/journal", label: "Builds" },
+    { path: "/about", label: "About" },
+    { path: "/connect", label: "Connect" }
+  ];
+
+  const normalizedPath = window.location.pathname.replace(/\/$/, "") || "/";
+  const currentRoute = primaryRoutes.find(({ path }) => normalizedPath === path);
+
+  const ensureSharedHeaderStyles = () => {
+    if (!currentRoute || document.querySelector('link[href^="/creative-shell.css"]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "/creative-shell.css?v=20260828-interior1";
+    document.head.append(link);
+  };
+
+  const buildSharedHeader = () => {
+    if (!currentRoute) return null;
+    const existingShared = document.querySelector(".ashwood-site-header");
+    if (existingShared) return existingShared;
+
+    const header = document.createElement("header");
+    header.className = "ashwood-site-header";
+    header.setAttribute("aria-label", "ASHWOOD navigation");
+    header.innerHTML = `
+      <div class="ashwood-site-header__brand-lockup">
+        <a class="ashwood-site-header__brand" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
+        <span class="ashwood-site-header__section">/ ${currentRoute.label.toUpperCase()}</span>
+      </div>
+      <nav class="ashwood-site-header__nav" aria-label="Primary">
+        ${primaryRoutes.map(({ path, label }) => `<a${path === currentRoute.path ? ' aria-current="page"' : ''} href="${path}">${label}</a>`).join("")}
+      </nav>`;
+
+    const legacyHeader = document.querySelector(".journal-masthead,.masthead,.site-header");
+    const main = document.querySelector("main");
+    if (legacyHeader) legacyHeader.remove();
+    if (main) document.body.insertBefore(header, main);
+    else document.body.prepend(header);
+    return header;
+  };
+
+  ensureSharedHeaderStyles();
+  buildSharedHeader();
+
   const makeButton = () => {
     const button = document.createElement("button");
     button.type = "button";
@@ -13,18 +61,102 @@
     button.addEventListener("click", () => {
       light = !light;
       root.classList.toggle("ashwood-light", light);
-      button.setAttribute("aria-label", light ? "Use dark mode" : "Use light mode");
-      button.querySelector(".theme-toggle__label").textContent = light ? "Dark mode" : "Light mode";
+      document.querySelectorAll(".theme-toggle").forEach((toggle) => {
+        toggle.setAttribute("aria-label", light ? "Use dark mode" : "Use light mode");
+        const label = toggle.querySelector(".theme-toggle__label");
+        if (label) label.textContent = light ? "Dark mode" : "Light mode";
+      });
       try { localStorage.setItem(key, light ? "light" : "dark"); } catch (_) {}
     });
     return button;
   };
-  document.querySelectorAll(".masthead,.site-header,.journal-masthead").forEach((header) => header.append(makeButton()));
-  document.querySelectorAll("footer").forEach((footer) => footer.append(makeButton()));
+
+  document.querySelectorAll(".masthead,.site-header,.ashwood-site-header,.journal-masthead").forEach((header) => {
+    if (!header.querySelector(".theme-toggle")) header.append(makeButton());
+  });
+  document.querySelectorAll("footer").forEach((footer) => {
+    if (!footer.querySelector(".theme-toggle")) footer.append(makeButton());
+  });
   document.querySelectorAll(".name-change-cta").forEach((button) => button.addEventListener("click", () => {
     try { localStorage.setItem("ashwood.name-choice", button.dataset.nameChoice || "khlear"); } catch (_) {}
     const response = document.querySelector(".name-change-response");
     if (response) response.textContent = "Noted — khlear is on the table.";
     button.disabled = true;
   }));
+
+  // Home must never make one of the six discovery points impossible to find.
+  // The inline randomizer gets first choice; this only rescues hotspots it had to suppress.
+  const rescueHomepageHotspots = () => {
+    if (normalizedPath !== "/") return;
+    const field = document.querySelector(".principles-field");
+    const hotspots = [...document.querySelectorAll(".principle-hotspot")];
+    if (!field || !hotspots.length || document.body.classList.contains("has-found-all-hotspots")) return;
+
+    const compact = window.matchMedia("(max-width: 760px)").matches;
+    const fieldRect = field.getBoundingClientRect();
+    const protectedSelectors = [".masthead", ".intro", ".home-entryways", ".home-now", ".home-utility", ".ashwood-home-audio"];
+    const protectedRects = protectedSelectors
+      .flatMap((selector) => [...document.querySelectorAll(selector)])
+      .map((element) => element.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0);
+    const visibleRects = hotspots
+      .filter((hotspot) => parseFloat(hotspot.style.left || "0") > -100)
+      .map((hotspot) => hotspot.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0 && rect.right > fieldRect.left && rect.left < fieldRect.right);
+
+    const overlaps = (a, b, padding = 0) => (
+      a.left < b.right + padding && a.right > b.left - padding && a.top < b.bottom + padding && a.bottom > b.top - padding
+    );
+
+    const desktopSlots = [
+      [56, 24], [73, 27], [84, 38], [50, 43], [67, 48], [81, 56],
+      [54, 61], [70, 67], [85, 70], [44, 54], [61, 36], [76, 42]
+    ];
+    const mobileSlots = [[8, 34], [52, 34], [10, 48], [54, 48], [8, 63], [52, 63], [20, 76], [58, 76]];
+    const slots = compact ? mobileSlots : desktopSlots;
+
+    hotspots.forEach((hotspot, index) => {
+      const left = parseFloat(hotspot.style.left || "0");
+      const rect = hotspot.getBoundingClientRect();
+      const suppressed = left < -100 || rect.right < fieldRect.left || rect.left > fieldRect.right;
+      if (!suppressed) return;
+
+      let placed = false;
+      for (const [x, y] of slots) {
+        hotspot.style.left = `${x}%`;
+        hotspot.style.top = `${y}%`;
+        hotspot.style.right = "auto";
+        hotspot.style.bottom = "auto";
+        const candidate = hotspot.getBoundingClientRect();
+        const inside = candidate.left >= fieldRect.left + 4 && candidate.right <= fieldRect.right - 4 && candidate.top >= fieldRect.top + 4 && candidate.bottom <= fieldRect.bottom - 4;
+        const blocked = protectedRects.some((area) => overlaps(candidate, area, compact ? 8 : 16));
+        const collides = visibleRects.some((area) => overlaps(candidate, area, compact ? 6 : 14));
+        if (inside && !blocked && !collides) {
+          visibleRects.push(candidate);
+          placed = true;
+          break;
+        }
+      }
+
+      if (!placed) {
+        // Last-resort visible position: preserving discoverability outranks perfect spacing.
+        const x = compact ? 8 + (index % 2) * 48 : 48 + (index % 3) * 16;
+        const y = compact ? 36 + Math.floor(index / 2) * 13 : 30 + Math.floor(index / 3) * 25;
+        hotspot.style.left = `${x}%`;
+        hotspot.style.top = `${y}%`;
+        hotspot.style.right = "auto";
+        hotspot.style.bottom = "auto";
+      }
+    });
+  };
+
+  if (normalizedPath === "/") {
+    requestAnimationFrame(() => requestAnimationFrame(rescueHomepageHotspots));
+    window.addEventListener("load", rescueHomepageHotspots, { once: true });
+    let rescueTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(rescueTimer);
+      rescueTimer = setTimeout(rescueHomepageHotspots, 80);
+    }, { passive: true });
+  }
 })();
