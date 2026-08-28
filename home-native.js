@@ -20,21 +20,23 @@
   control.hidden = true;
   control.setAttribute("aria-label", "IN ME playback controls");
   control.innerHTML = `
-    <span class="ashwood-home-audio__title">${sourceTitle?.textContent?.split(" — ")[0] || "IN ME"}</span>
+    <span class="ashwood-home-audio__title"><span class="ashwood-home-audio__in">IN</span> <span class="ashwood-home-audio__me">ME</span></span>
     <button class="ashwood-home-audio__toggle" type="button" aria-label="Play IN ME">▶</button>
     <input class="ashwood-home-audio__volume" type="range" min="0" max="1" step="0.01" value="${sourceVolume.value}" aria-label="IN ME volume" />
   `;
   nav.insertAdjacentElement("beforebegin", control);
 
-  const ripple = document.createElement("span");
-  ripple.className = "ashwood-home-play-ripple";
-  ripple.setAttribute("aria-hidden", "true");
-  document.body.appendChild(ripple);
+  const cinematic = document.createElement("div");
+  cinematic.className = "ashwood-home-ignition";
+  cinematic.setAttribute("aria-hidden", "true");
+  cinematic.innerHTML = `<span class="ashwood-home-ignition__core"></span><span class="ashwood-home-ignition__bloom"></span><span class="ashwood-home-ignition__wave"></span>`;
+  document.body.appendChild(cinematic);
 
   const homeToggle = control.querySelector(".ashwood-home-audio__toggle");
   const homeVolume = control.querySelector(".ashwood-home-audio__volume");
   const STORAGE_KEY = "ashwood.audio.v1";
   let wasVisible = false;
+  let cinematicTimer = 0;
 
   const readState = () => {
     try {
@@ -52,10 +54,12 @@
     return sourceIsPlaying() || state.wasPlaying === true || position > 0.5;
   };
 
-  const triggerRipple = () => {
-    ripple.classList.remove("is-active");
-    void ripple.offsetWidth;
-    ripple.classList.add("is-active");
+  const triggerIgnition = () => {
+    clearTimeout(cinematicTimer);
+    document.body.classList.remove("is-inner-igniting");
+    void cinematic.offsetWidth;
+    document.body.classList.add("is-inner-igniting");
+    cinematicTimer = window.setTimeout(() => document.body.classList.remove("is-inner-igniting"), 6100);
   };
 
   const render = () => {
@@ -77,7 +81,7 @@
     event.stopPropagation();
     const wasPlaying = sourceIsPlaying();
     sourceToggle.click();
-    if (!wasPlaying) triggerRipple();
+    if (!wasPlaying) triggerIgnition();
     requestAnimationFrame(render);
     setTimeout(render, 80);
   });
