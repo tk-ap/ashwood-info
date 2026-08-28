@@ -97,7 +97,6 @@ body.ashwood-has-audio-room {
   .ashwood-audio * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
 
-/* Portfolio fixed-player spacing */
 @media (min-width: 761px) {
   body.ashwood-has-audio .ashwood-audio {
     right: max(14px, var(--gutter));
@@ -112,7 +111,6 @@ body.ashwood-has-audio-room {
   }
 }
 
-/* V0 MOBILE AUDIO PLAYER — COLLAPSIBLE / NON-OBSTRUCTIVE */
 .ashwood-audio__collapse {
   display: none;
 }
@@ -216,14 +214,12 @@ body.ashwood-has-audio-room {
   }
 }
 
-/* V0: desktop compact audio player */
 @media (min-width: 641px) {
   .ashwood-audio {
     max-width: 280px;
   }
 }
 
-/* V0: desktop player/header separation */
 @media (min-width: 641px) {
   .ashwood-audio {
     position: fixed;
@@ -237,7 +233,6 @@ body.ashwood-has-audio-room {
   }
 }
 
-/* V0: home desktop player/menu separation */
 @media (min-width: 761px) {
   body.ashwood-has-audio .ashwood-audio {
     left: 18px;
@@ -246,8 +241,6 @@ body.ashwood-has-audio-room {
   }
 }
 
-/* Persistent mini player: compact, viewport-safe, and non-invasive on every non-Music page.
-   Home uses the TAHLIA ASHWOOD PEART name interaction instead, so its default player remains hidden by home-native.css. */
 body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) {
   padding-bottom: 0 !important;
 }
@@ -323,5 +316,122 @@ body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .a
 
   body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__identity {
     max-width: 102px;
+  }
+}
+
+/* Music is the listening room: promote the native player from a corner utility
+   into a persistent full-width listening dock. Other ASHWOOD pages keep the mini-player. */
+@media (min-width: 761px) {
+  body.music-page.ashwood-has-audio-room {
+    padding-bottom: 148px;
+  }
+
+  body.music-page.ashwood-has-audio-room .ashwood-audio {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 130;
+    width: 100vw !important;
+    max-width: none !important;
+    display: grid;
+    grid-template-columns: minmax(360px,.92fr) minmax(0,1.35fr);
+    align-items: stretch;
+    border: 0 !important;
+    border-top: 1px solid color-mix(in srgb,var(--audio-rule) 78%,transparent) !important;
+    background: color-mix(in srgb,var(--audio-paper) 96%,transparent) !important;
+    box-shadow: 0 -18px 48px rgba(0,0,0,.16);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  body.music-page .ashwood-audio__bar {
+    min-height: 116px;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    gap: 18px;
+    padding: 22px clamp(24px,3vw,52px);
+    border-right: 1px solid var(--audio-rule);
+  }
+
+  body.music-page .ashwood-audio .ashwood-audio__toggle {
+    min-width: 112px;
+    padding: 13px 16px;
+    font-size: 11px;
+    letter-spacing: .14em;
+  }
+
+  body.music-page .ashwood-audio__eyebrow {
+    margin-bottom: 7px;
+    font-size: 9px;
+    letter-spacing: .16em;
+  }
+
+  body.music-page .ashwood-audio__title {
+    font-size: 14px;
+    letter-spacing: .04em;
+    text-transform: none;
+  }
+
+  body.music-page .ashwood-audio__time {
+    font-size: 11px;
+  }
+
+  body.music-page .ashwood-audio__room {
+    display: grid !important;
+    grid-template-columns: minmax(180px,.8fr) minmax(180px,.65fr) minmax(220px,1fr);
+    align-items: center;
+    gap: 18px clamp(20px,2.4vw,42px);
+    padding: 18px clamp(24px,3vw,52px);
+    border-top: 0;
+  }
+
+  body.music-page .ashwood-audio__control {
+    grid-template-columns: 64px minmax(0,1fr);
+    gap: 10px;
+    margin: 0;
+  }
+
+  body.music-page .ashwood-audio__footer {
+    display: grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-column: 3;
+    align-items:center;
+    gap: 18px;
+    padding: 0;
+  }
+
+  body.music-page .ashwood-audio__source-note {
+    max-width: 280px;
+    font-size: 9px;
+    line-height: 1.45;
+  }
+
+  body.music-page .ashwood-audio__dsp {
+    font-size: 9px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 760px) {
+  body.music-page.ashwood-has-audio-room {
+    padding-bottom: 92px;
+  }
+
+  body.music-page.ashwood-has-audio-room .ashwood-audio {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: max(8px,env(safe-area-inset-bottom)) !important;
+    width: calc(100vw - 16px) !important;
+    max-width: none !important;
+  }
+
+  body.music-page .ashwood-audio:not(.is-collapsed) .ashwood-audio__bar {
+    min-height: 74px;
+    padding: 12px 48px 12px 12px !important;
+  }
+
+  body.music-page .ashwood-audio__room {
+    max-height: 46vh;
+    overflow: auto;
   }
 }
