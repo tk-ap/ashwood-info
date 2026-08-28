@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="/ashwood-core.css?v=20260827-core" />
     <link rel="stylesheet" href="/styles.css?v=20260827-principles" />
     <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
-    <link rel="stylesheet" href="/home-native.css?v=20260828-hotspots2" />
+    <link rel="stylesheet" href="/home-native.css?v=20260828-audio-forward1" />
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
-    <script src="/home-native.js?v=20260828-inner2" defer></script>
+    <script src="/home-native.js?v=20260828-audio-forward1" defer></script>
     <script src="/curiosity.js?v=20260827-1" defer></script>
     <script src="/theme.js?v=20260827-1" defer></script>
   </head>
@@ -146,7 +146,6 @@
               hotspot.style.top = ((best.top - rect.top) / rect.height * 100) + '%';
               placed.push(hotspot.getBoundingClientRect());
             } else {
-              /* Never use the old blind random fallback: suppress only when no safe rendering space exists. */
               hotspot.style.left = '-9999px';
               hotspot.style.top = '-9999px';
             }
