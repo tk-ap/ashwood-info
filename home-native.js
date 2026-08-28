@@ -11,6 +11,11 @@
   becomingsStyles.href = "/becomings-interaction.css?v=20260828-becomings2";
   document.head.appendChild(becomingsStyles);
 
+  const balanceStyles = document.createElement("link");
+  balanceStyles.rel = "stylesheet";
+  balanceStyles.href = "/home-balance.css?v=20260828-balance1";
+  document.head.appendChild(balanceStyles);
+
   const shell = document.querySelector(".shell");
   const player = document.querySelector(".ashwood-audio");
   const sourceToggle = player?.querySelector(".ashwood-audio__toggle");
