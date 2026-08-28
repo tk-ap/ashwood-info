@@ -10,6 +10,71 @@
     <link rel="stylesheet" href="/audio-player.css?v=20260827-approved" />
     <script src="/audio-player.js?v=20260827-2" defer></script>
     <script src="/theme.js?v=20260827-1" defer></script>
+    <style>
+      /* About direction: let the family archive occupy the visual right column as a
+         persistent cinematic vertical sequence rather than a small hover easter egg. */
+      .about-page .page-intro {
+        max-width: 1380px;
+        padding-right: min(46%, 650px);
+      }
+      .about-page .family-archive {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: min(43vw, 610px);
+        height: 100%;
+        display: grid;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        gap: clamp(18px, 2vw, 34px);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: none;
+        transition: none;
+      }
+      .about-page .about-memory,
+      .about-page .about-memory--second,
+      .about-page .about-memory--third {
+        width: 100%;
+        height: 100%;
+        min-height: 260px;
+        margin: 0;
+        transform: none;
+        overflow: hidden;
+        box-shadow: 0 24px 70px rgba(0,0,0,.24);
+      }
+      .about-page .about-memory:nth-child(1) { margin-left: 0; }
+      .about-page .about-memory:nth-child(2) { margin-left: 8%; width: 92%; }
+      .about-page .about-memory:nth-child(3) { margin-left: -3%; width: 103%; }
+      .about-page .about-memory img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .about-page .about-memory:nth-child(1) img { object-position: 50% 45%; }
+      .about-page .about-memory:nth-child(2) img { object-position: 50% 50%; }
+      .about-page .about-memory:nth-child(3) img { object-position: 50% 42%; }
+      .about-page .about-memory figcaption { position: absolute; margin: 0; padding: 10px 12px; color: #f1eee6; background: rgba(0,0,0,.38); }
+      .about-page .memory-line { position: relative; z-index: 4; }
+      .about-page .family-archive .about-memory:hover { filter: brightness(1.06); transform: translateY(-3px); z-index: 2; }
+      @media (max-width: 900px) {
+        .about-page .page-intro { max-width: 100%; padding-right: 0; }
+        .about-page .family-archive {
+          position: relative;
+          top: auto;
+          right: auto;
+          width: min(100%, 620px);
+          height: auto;
+          margin: 48px 0 0 auto;
+          grid-template-rows: none;
+          grid-template-columns: 1fr;
+        }
+        .about-page .about-memory,
+        .about-page .about-memory--second,
+        .about-page .about-memory--third { min-height: 340px; width: 100%; margin-left: 0; }
+      }
+    </style>
   </head>
   <body class="about-page">
     <main class="shell">
@@ -67,7 +132,6 @@
         const clear = () => {
           if (pinned) return;
           memories.forEach((memory) => memory.classList.remove('is-near'));
-          intro.classList.remove('family-archive--open');
           trigger?.setAttribute('aria-expanded', 'false');
         };
         const explore = (x, y) => {
@@ -76,31 +140,23 @@
             return { memory, distance: Math.hypot(r.left + r.width / 2 - x, r.top + r.height / 2 - y) };
           }).sort((a,b) => a.distance - b.distance)[0];
           memories.forEach((memory) => memory.classList.toggle('is-near', memory === nearest.memory && nearest.distance < 210));
-          if (nearest.distance < 210) intro.classList.add('family-archive--open');
         };
         document.addEventListener('pointermove', (event) => explore(event.clientX, event.clientY), { passive: true });
-        archive.addEventListener('pointerleave', clear, { passive: true });
         memories.forEach((memory) => memory.addEventListener('click', (event) => {
           event.stopPropagation();
           pinned = !pinned;
-          if (pinned) {
-            memories.forEach((item) => item.classList.remove('is-near'));
-            memory.classList.add('is-near');
-            intro.classList.add('family-archive--open');
-          } else clear();
+          if (pinned) memory.classList.add('is-near');
+          else memory.classList.remove('is-near');
         }));
         trigger?.addEventListener('click', (event) => {
           event.stopPropagation();
           pinned = !pinned;
-          intro.classList.toggle('family-archive--open', pinned);
           trigger.setAttribute('aria-expanded', String(pinned));
-        });
-        document.addEventListener('click', (event) => {
-          if (!event.target.closest('.family-archive') && !event.target.closest('.memory-trigger')) { pinned = false; clear(); }
         });
         document.addEventListener('keydown', (event) => {
           if (event.key === 'Escape') { pinned = false; clear(); }
         });
       })();
-    </script> </body>
+    </script>
+  </body>
 </html>
