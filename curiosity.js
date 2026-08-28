@@ -26,7 +26,7 @@
     signal: {
       skill: "SIGNAL",
       description: "I prioritize what matters most, anticipate risks, and help leaders move faster with better information.",
-      practice: "Ailhat · Portfolio Intelligence",
+      practice: "ailhat · Portfolio Intelligence",
       href: "https://ailhat.vercel.app/",
       external: true
     },
@@ -87,7 +87,7 @@
     .ashwood-capability-map__list{display:grid;gap:0;margin:0;padding:0;list-style:none}
     .ashwood-capability-map__item{position:relative;display:grid;grid-template-columns:minmax(72px,.25fr) minmax(0,1fr);gap:5px 15px;padding:8px 0 9px;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 60%,transparent)}
     .ashwood-capability-map__skill{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--ashwood-gold)}
-    .ashwood-capability-map__practice{display:inline-flex;align-items:center;gap:6px;width:max-content;max-width:100%;font-size:9px;font-weight:500;letter-spacing:.055em;text-transform:uppercase;color:var(--ashwood-ink);text-decoration:none}
+    .ashwood-capability-map__practice{display:inline-flex;align-items:center;gap:6px;width:max-content;max-width:100%;font-size:9px;font-weight:500;letter-spacing:.055em;color:var(--ashwood-ink);text-decoration:none}
     .ashwood-capability-map__practice::after{content:"↗";font-size:8px;color:var(--ashwood-muted);transition:transform .2s ease,color .2s ease}
     .ashwood-capability-map__practice[data-internal="true"]::after{content:"→"}
     .ashwood-capability-map__practice:hover,.ashwood-capability-map__practice:focus-visible{color:var(--ashwood-gold);font-style:italic}
