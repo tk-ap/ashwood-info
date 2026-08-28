@@ -7,7 +7,7 @@
     <title>Connect — ASHWOOD</title>
     <link rel="stylesheet" href="/ashwood-core.css?v=20260827-core" />
     <link rel="stylesheet" href="/creative-shell.css?v=20260828-interiornav2" />
-    <link rel="stylesheet" href="/connect/connect.css?v=20260828-dispatch1" />
+    <link rel="stylesheet" href="/connect/connect.css?v=20260828-dispatch2" />
     <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/theme.js?v=20260828-interiornav2" defer></script>
@@ -62,8 +62,25 @@
           <p class="eyebrow">Biweekly / interest list</p>
           <h2 id="dispatch-title">A short note<br />from the work.</h2>
           <p>Every other week, the Dispatch will synthesize what moved across Builds, current creative work, and whatever I am following next — decisions from the Build Journal, modeling work, music in progress or newly released, and a few direct paths back into ASHWOOD.</p>
-          <a class="connect-cta" href="mailto:hire.tkashwood@gmail.com?subject=ASHWOOD%20Dispatch%20interest&body=Please%20add%20me%20to%20the%20ASHWOOD%20Dispatch%20interest%20list.">I’m interested in the Dispatch <span aria-hidden="true">↗</span></a>
-          <p class="dispatch-note">This is an interest list, not a live newsletter subscription yet. The eventual cadence is biweekly; the Build Journal remains the durable archive and the Dispatch will be the shorter synthesis.</p>
+          <form class="dispatch-form" action="mailto:hire.tkashwood@gmail.com" method="post" enctype="text/plain">
+            <input type="hidden" name="subject" value="ASHWOOD Dispatch interest" />
+            <div class="dispatch-form__grid">
+              <label>
+                <span>Name</span>
+                <input type="text" name="name" autocomplete="name" required />
+              </label>
+              <label>
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required />
+              </label>
+            </div>
+            <label>
+              <span>What are you following? <em>Optional</em></span>
+              <textarea name="interest" rows="3" placeholder="Builds, modeling, music, or the thread between them."></textarea>
+            </label>
+            <button class="connect-cta dispatch-form__submit" type="submit">Add my interest <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="dispatch-note">This captures your name, email, and optional interest note. For now, submitting hands those details to your email client; once the dedicated AgentMail inbox is live, this form can be pointed there without changing the experience.</p>
         </div>
       </section>
 
