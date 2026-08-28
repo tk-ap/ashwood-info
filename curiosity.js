@@ -23,36 +23,12 @@
   let discovered = new Set();
 
   const practiceMap = {
-    signal: {
-      skill: "SIGNAL",
-      practice: "Ailhat · Portfolio Intelligence",
-      note: "Finding the opportunity, risk, drift, or work that actually deserves attention."
-    },
-    friction: {
-      skill: "FRICTION",
-      practice: "ALVIRA · Context Experience",
-      note: "Removing the unnecessary work between a person, their context, and useful intelligence."
-    },
-    translation: {
-      skill: "TRANSLATION",
-      practice: "Build Journal · Product Storytelling",
-      note: "Turning complicated systems and evolving decisions into something another person can understand and act on."
-    },
-    systems: {
-      skill: "SYSTEMS",
-      practice: "Agent OS / Workforce · Ecosystem Infrastructure",
-      note: "Designing the shared structure underneath products, agents, skills, handoffs, and governed execution."
-    },
-    resilience: {
-      skill: "RESILIENCE",
-      practice: "LEDGATo · Operational Reality",
-      note: "Testing whether the interface survives contact with runtime constraints, enforcement, and real deployment."
-    },
-    range: {
-      skill: "RANGE",
-      practice: "ASHWOOD · Modeling + Music + Builds",
-      note: "Using one point of view across different forms instead of forcing the practice into one lane."
-    }
+    signal: { skill: "SIGNAL", practice: "Ailhat · Portfolio Intelligence", note: "Finding the opportunity, risk, drift, or work that actually deserves attention." },
+    friction: { skill: "FRICTION", practice: "ALVIRA · Context Experience", note: "Removing the unnecessary work between a person, their context, and useful intelligence." },
+    translation: { skill: "TRANSLATION", practice: "Build Journal · Product Storytelling", note: "Turning complicated systems and evolving decisions into something another person can understand and act on." },
+    systems: { skill: "SYSTEMS", practice: "Agent OS / Workforce · Ecosystem Infrastructure", note: "Designing the shared structure underneath products, agents, skills, handoffs, and governed execution." },
+    resilience: { skill: "RESILIENCE", practice: "LEDGATo · Operational Reality", note: "Testing whether the interface survives contact with runtime constraints, enforcement, and real deployment." },
+    range: { skill: "RANGE", practice: "ASHWOOD · Modeling + Music + Builds", note: "Using one point of view across different forms instead of forcing the practice into one lane." }
   };
 
   try {
@@ -87,9 +63,10 @@
     body.has-found-all-hotspots .principle-hotspot{opacity:0!important;pointer-events:none!important;transition:opacity .5s ease!important}
     body.has-found-all-hotspots .principles-field__hint{opacity:0!important}
 
-    .ashwood-thread-flash{position:fixed;inset:0;z-index:75;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at 68% 42%,rgba(214,194,74,.13) 0%,rgba(180,135,50,.045) 24%,transparent 55%)}
-    .ashwood-thread-flash.is-active{visibility:visible;animation:ashwood-thread-resolve 1.7s ease both}
-    @keyframes ashwood-thread-resolve{0%{opacity:0}35%{opacity:.9}100%{opacity:0}}
+    .ashwood-thread-flash{position:fixed;inset:0;z-index:77;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at 68% 42%,rgba(214,194,74,.13) 0%,rgba(180,135,50,.045) 24%,transparent 55%)}
+    .ashwood-thread-flash span{position:absolute;left:68%;top:42%;transform:translate(-50%,-50%);font-family:Georgia,serif;font-size:clamp(22px,2.6vw,38px);white-space:nowrap;color:var(--ashwood-ink)}
+    .ashwood-thread-flash.is-active{visibility:visible;animation:ashwood-thread-resolve 1.9s ease both}
+    @keyframes ashwood-thread-resolve{0%{opacity:0}24%{opacity:1}72%{opacity:.86}100%{opacity:0;visibility:hidden}}
 
     @media(max-width:760px){
       .ashwood-curiosity-progress{right:13px}
@@ -98,6 +75,7 @@
       .ashwood-capability-map__item{grid-template-columns:1fr;padding-left:25px}
       .ashwood-capability-map__note{grid-column:1;margin:0}
       body.has-found-all-hotspots .principles-field{min-height:0!important;height:auto!important}
+      .ashwood-thread-flash span{left:50%;top:46%;font-size:clamp(20px,7vw,30px)}
     }
     @media(prefers-reduced-motion:reduce){.ashwood-capability-map,.principle-hotspot{transition:none!important}.ashwood-thread-flash{display:none!important}}
   `;
@@ -112,6 +90,7 @@
   const flash = document.createElement("div");
   flash.className = "ashwood-thread-flash";
   flash.setAttribute("aria-hidden", "true");
+  flash.innerHTML = "<span>You found the thread.</span>";
   document.body.append(flash);
 
   const capabilityMap = document.createElement("aside");
@@ -119,9 +98,9 @@
   capabilityMap.setAttribute("aria-live", "polite");
   capabilityMap.setAttribute("aria-label", "ASHWOOD capability map");
   capabilityMap.innerHTML = `
-    <p class="ashwood-capability-map__eyebrow">SIX / SIX · THE THREAD</p>
-    <h2 class="ashwood-capability-map__title">You found the thread.</h2>
-    <p class="ashwood-capability-map__intro">The six signals are not abstractions. They recur across the creative practice and the products being built.</p>
+    <p class="ashwood-capability-map__eyebrow">SIX / SIX · CAPABILITY MAP</p>
+    <h2 class="ashwood-capability-map__title">Six signals, in practice.</h2>
+    <p class="ashwood-capability-map__intro">Each discovered capability has a visible expression in the work—across products, systems, and creative practice.</p>
     <ol class="ashwood-capability-map__list">
       ${ids.map((id) => {
         const item = practiceMap[id] || { skill: id.toUpperCase(), practice: "ASHWOOD", note: "A recurring capability across the practice." };
@@ -168,6 +147,7 @@
     hotspots.forEach((hotspot) => hotspot.classList.remove("is-discovered", "is-revealed", "is-near"));
     updateProgress();
     document.body.classList.remove("has-found-all-hotspots");
+    flash.classList.remove("is-active");
     const field = document.querySelector(".principles-field");
     if (field) field.classList.remove("is-pinned", "is-exploring");
   };
