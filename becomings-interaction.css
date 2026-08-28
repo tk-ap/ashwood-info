@@ -14,145 +14,126 @@
   vertical-align: baseline;
 }
 .becomings-trigger:hover,
-.becomings-trigger:focus-visible {
+.becomings-trigger:focus-visible,
+.becomings-trigger.is-becoming-origin {
   color: transparent;
   background: linear-gradient(110deg, #1f4f4a, #009b3a 24%, #d6c24a 44%, #3f7f84 64%, #243f76 80%, #7b2635);
   background-size: 320% 100%;
   -webkit-background-clip: text;
   background-clip: text;
-  animation: ashwood-iridescence 2.4s ease-in-out infinite;
+  animation: ashwood-iridescence 2.4s ease-in-out infinite, becomings-origin .72s cubic-bezier(.2,.8,.2,1) both;
 }
 .becomings-trigger:focus-visible { outline: 1px solid #009b3a; outline-offset: 5px; }
 
-.becomings-field {
+.becomings-bloom {
   position: fixed;
   inset: 0;
-  z-index: 64;
+  z-index: 1;
   overflow: hidden;
   pointer-events: none;
 }
-.becomings-field::before,
-.becomings-field::after {
+.becomings-bloom::before,
+.becomings-bloom::after {
   content: "";
   position: fixed;
   left: var(--becomings-x, 50%);
   top: var(--becomings-y, 50%);
   border-radius: 50%;
   opacity: 0;
-  pointer-events: none;
   transform: translate(-50%, -50%) scale(.08);
 }
-.becomings-field::before {
+.becomings-bloom::before {
   width: 18px;
   height: 18px;
   border: 1px solid rgba(0,155,58,.36);
 }
-.becomings-field::after {
+.becomings-bloom::after {
   width: 34vmax;
   height: 28vmax;
   border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%;
   background: radial-gradient(ellipse at center, rgba(0,155,58,.16) 0%, rgba(0,126,47,.08) 28%, rgba(0,78,30,.025) 54%, transparent 74%);
   filter: blur(12px);
 }
-.becomings-field.is-open { pointer-events: auto; }
-.becomings-field.is-open::before { animation: becomings-ripple 2.8s cubic-bezier(.12,.6,.18,1) both; }
-.becomings-field.is-open::after { animation: becomings-bloom 3.8s cubic-bezier(.12,.56,.18,1) both; }
+.becomings-bloom.is-active::before { animation: becomings-ripple 2.7s cubic-bezier(.12,.6,.18,1) both; }
+.becomings-bloom.is-active::after { animation: becomings-bloom 3.5s cubic-bezier(.12,.56,.18,1) both; }
 
-.becomings-node {
-  position: fixed;
-  left: var(--becomings-x, 50%);
-  top: var(--becomings-y, 50%);
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #009b3a;
-  font-size: clamp(10px, 1vw, 13px);
-  font-weight: 700;
-  letter-spacing: .14em;
-  line-height: 1;
-  text-transform: uppercase;
-  text-decoration: none;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(.7);
-  text-shadow: 0 0 10px rgba(0,155,58,.24);
+/* Existing homepage worlds become the constellation offshoots. */
+.home-entryway {
+  transition: background-color .35s ease, box-shadow .45s ease, transform .45s cubic-bezier(.2,.8,.2,1);
 }
-.becomings-node::before {
+.home-entryway .home-entryway__title,
+.home-entryway .home-entryway__signal {
+  transition: color .3s ease, text-shadow .4s ease, opacity .3s ease, transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.home-entryway.is-becoming-highlight {
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, rgba(0,155,58,.055), rgba(0,155,58,0));
+  box-shadow: inset 0 1px 0 rgba(0,155,58,.28), inset 0 -1px 0 rgba(0,155,58,.16), 0 0 28px rgba(0,155,58,.055);
+  animation: becomings-offshoot 1.25s cubic-bezier(.2,.8,.2,1) both;
+}
+.home-entryway.is-becoming-highlight .home-entryway__title {
+  color: #009b3a;
+  text-shadow: 0 0 10px rgba(0,155,58,.24), 0 0 24px rgba(0,155,58,.1);
+  transform: translateX(4px);
+}
+.home-entryway.is-becoming-highlight .home-entryway__signal {
+  color: var(--ashwood-ink);
+  opacity: .88;
+  transform: translateX(4px);
+}
+.home-entryway.is-becoming-highlight::after {
   content: "";
-  width: 4px;
-  height: 4px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #009b3a;
-  box-shadow: 0 0 10px rgba(0,155,58,.76), 0 0 22px rgba(0,155,58,.28);
+  box-shadow: 0 0 10px rgba(0,155,58,.75), 0 0 24px rgba(0,155,58,.28);
+  transform: translate(-50%, -50%);
+  animation: becomings-node-pulse 1.1s ease-out both;
 }
-.becomings-field.is-open .becomings-node {
-  pointer-events: auto;
-  animation: becomings-emerge .72s cubic-bezier(.18,.86,.24,1) forwards;
-}
-.becomings-field.is-open .becomings-node--modeling {
-  --node-x: clamp(-250px, -17vw, -120px);
-  --node-y: clamp(-130px, -9vh, -70px);
-  animation-delay: .42s;
-}
-.becomings-field.is-open .becomings-node--music {
-  --node-x: clamp(110px, 15vw, 230px);
-  --node-y: clamp(-30px, -2vh, 18px);
-  animation-delay: .72s;
-}
-.becomings-field.is-open .becomings-node--builds {
-  --node-x: clamp(-80px, -5vw, -30px);
-  --node-y: clamp(100px, 12vh, 170px);
-  animation-delay: 1.02s;
-}
-.becomings-node:hover,
-.becomings-node:focus-visible {
-  color: var(--ashwood-ink);
-  text-shadow: 0 0 14px rgba(0,155,58,.42);
-}
-.becomings-node:focus-visible { outline: 1px solid #009b3a; outline-offset: 6px; }
-
-body.is-becoming .becomings-trigger { animation: becomings-origin .65s cubic-bezier(.2,.8,.2,1) both; }
 
 @keyframes becomings-origin {
   0% { transform: scale(1); text-shadow: none; }
-  38% { transform: scale(.965); text-shadow: 0 0 12px rgba(0,155,58,.48); }
-  100% { transform: scale(1); text-shadow: 0 0 5px rgba(0,155,58,.18); }
+  35% { transform: scale(.96); text-shadow: 0 0 13px rgba(0,155,58,.5); }
+  100% { transform: scale(1); text-shadow: 0 0 6px rgba(0,155,58,.2); }
 }
 @keyframes becomings-ripple {
   0% { opacity: 0; transform: translate(-50%, -50%) scale(.15); }
-  18% { opacity: .42; }
+  18% { opacity: .38; }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(95); }
 }
 @keyframes becomings-bloom {
   0% { opacity: 0; transform: translate(-50%, -50%) scale(.08) rotate(-2deg); }
-  28% { opacity: .82; }
+  26% { opacity: .8; }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(3.5) rotate(3deg); }
 }
-@keyframes becomings-emerge {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(.7); filter: blur(4px); }
-  35% { opacity: .28; }
-  100% { opacity: 1; transform: translate(calc(-50% + var(--node-x)), calc(-50% + var(--node-y))) scale(1); filter: blur(0); }
+@keyframes becomings-offshoot {
+  0% { opacity: .58; filter: brightness(.9); }
+  24% { opacity: 1; filter: brightness(1.16); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+@keyframes becomings-node-pulse {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.35); }
+  38% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: .4; transform: translate(-50%, -50%) scale(.7); }
 }
 
 @media (max-width: 760px) {
-  .becomings-field.is-open .becomings-node--modeling { --node-x: -78px; --node-y: -105px; }
-  .becomings-field.is-open .becomings-node--music { --node-x: 74px; --node-y: -22px; }
-  .becomings-field.is-open .becomings-node--builds { --node-x: -18px; --node-y: 104px; }
-  .becomings-node { font-size: 9px; letter-spacing: .11em; }
+  .home-entryway.is-becoming-highlight { transform: none; }
+  .home-entryway.is-becoming-highlight .home-entryway__title,
+  .home-entryway.is-becoming-highlight .home-entryway__signal { transform: translateX(3px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .becomings-trigger:hover,
   .becomings-trigger:focus-visible,
-  body.is-becoming .becomings-trigger,
-  .becomings-field::before,
-  .becomings-field::after,
-  .becomings-field.is-open .becomings-node { animation: none !important; }
-  .becomings-field::before,
-  .becomings-field::after { display: none; }
-  .becomings-field.is-open .becomings-node { opacity: 1; filter: none; }
-  .becomings-field.is-open .becomings-node--modeling { transform: translate(calc(-50% - 170px), calc(-50% - 82px)); }
-  .becomings-field.is-open .becomings-node--music { transform: translate(calc(-50% + 150px), calc(-50% - 10px)); }
-  .becomings-field.is-open .becomings-node--builds { transform: translate(calc(-50% - 40px), calc(-50% + 120px)); }
+  .becomings-trigger.is-becoming-origin,
+  .becomings-bloom::before,
+  .becomings-bloom::after,
+  .home-entryway.is-becoming-highlight,
+  .home-entryway.is-becoming-highlight::after { animation: none !important; }
+  .becomings-bloom { display: none; }
 }
