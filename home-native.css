@@ -17,12 +17,13 @@ body.ashwood-home-native .intro .eyebrow { color:var(--ashwood-muted); }
 .home-now{position:relative;z-index:60;display:flex;flex-wrap:wrap;gap:8px 24px;padding:13px 0 2px;color:var(--ashwood-muted);font-size:9px;letter-spacing:.1em;line-height:1.45;text-transform:uppercase}
 .home-now__label{color:var(--ashwood-gold);font-weight:700}
 
+/* Latest ambient IN ME control: play/pause at rest, title only on hover/focus. */
 .ashwood-home-audio { position:fixed; left:50%; top:clamp(92px,14vh,150px); bottom:auto; z-index:66; display:inline-flex; align-items:center; min-width:0; color:var(--ashwood-muted); font-size:10px; letter-spacing:.11em; line-height:1; text-transform:uppercase; transform:translateX(-50%); pointer-events:auto; }
 .ashwood-home-audio[hidden]{display:none!important}
 .ashwood-home-audio__toggle{display:inline-flex;align-items:center;gap:9px;margin:0;border:0;padding:0;background:transparent;color:var(--ashwood-ink);cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;line-height:1}
 .ashwood-home-audio__icon{display:inline-grid;place-items:center;width:22px;height:22px;font-size:11px;line-height:1}
 .ashwood-home-audio__title{max-width:0;opacity:0;overflow:hidden;white-space:nowrap;transform:translateX(-4px);transition:max-width .38s cubic-bezier(.2,.8,.2,1),opacity .24s ease,transform .34s ease;color:var(--ashwood-muted)}
-.ashwood-home-audio:hover .ashwood-home-audio__title,.ashwood-home-audio:focus-within .ashwood-home-audio__title,.ashwood-home-audio.is-label-visible .ashwood-home-audio__title{max-width:70px;opacity:1;transform:translateX(0)}
+.ashwood-home-audio:hover .ashwood-home-audio__title,.ashwood-home-audio:focus-within .ashwood-home-audio__title{max-width:70px;opacity:1;transform:translateX(0)}
 .ashwood-home-audio__toggle:hover,.ashwood-home-audio__toggle:focus-visible{color:var(--ashwood-gold)}
 
 /* Existing eureka language remains intact; principles read as coordinates until discovered. */
