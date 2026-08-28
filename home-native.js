@@ -8,7 +8,7 @@
 
   const becomingsStyles = document.createElement("link");
   becomingsStyles.rel = "stylesheet";
-  becomingsStyles.href = "/becomings-interaction.css?v=20260828-becomings1";
+  becomingsStyles.href = "/becomings-interaction.css?v=20260828-becomings2";
   document.head.appendChild(becomingsStyles);
 
   const shell = document.querySelector(".shell");
@@ -78,28 +78,26 @@
   observer.observe(sourceToggle, { childList: true, characterData: true, subtree: true });
   document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
 
-  /* BECO(MINGS): reveal current forms from the phrase itself. */
+  /* BECO(MINGS): one source revealing the three existing worlds. */
   const identity = document.querySelector(".home-identity");
   const becomingsWord = identity?.querySelector(".iridescent-word");
+  const entryways = [...document.querySelectorAll(".home-entryway")];
 
-  if (identity && becomingsWord) {
+  if (identity && becomingsWord && entryways.length >= 3) {
     const becomingsTrigger = document.createElement("button");
     becomingsTrigger.type = "button";
     becomingsTrigger.className = "iridescent-word becomings-trigger";
     becomingsTrigger.textContent = "Becomings";
-    becomingsTrigger.setAttribute("aria-label", "Reveal current becomings: Modeling, Music, and Builds");
-    becomingsTrigger.setAttribute("aria-expanded", "false");
+    becomingsTrigger.setAttribute("aria-label", "Reveal Modeling, Music, and Builds");
     becomingsWord.replaceWith(becomingsTrigger);
 
-    const field = document.createElement("div");
-    field.className = "becomings-field";
-    field.setAttribute("aria-hidden", "true");
-    field.innerHTML = `
-      <a class="becomings-node becomings-node--modeling" href="/portfolio">Modeling</a>
-      <a class="becomings-node becomings-node--music" href="/music">Music</a>
-      <a class="becomings-node becomings-node--builds" href="/journal">Builds</a>
-    `;
-    document.body.appendChild(field);
+    const bloom = document.createElement("div");
+    bloom.className = "becomings-bloom";
+    bloom.setAttribute("aria-hidden", "true");
+    document.body.appendChild(bloom);
+
+    let sequenceTimer = 0;
+    const sequenceDelays = [260, 560, 860];
 
     const setBecomingsOrigin = () => {
       const rect = becomingsTrigger.getBoundingClientRect();
@@ -107,49 +105,41 @@
       document.documentElement.style.setProperty("--becomings-y", `${rect.top + rect.height / 2}px`);
     };
 
-    const closeBecomings = ({ returnFocus = false } = {}) => {
-      if (!field.classList.contains("is-open")) return;
-      field.classList.remove("is-open");
-      field.setAttribute("aria-hidden", "true");
-      becomingsTrigger.setAttribute("aria-expanded", "false");
-      document.body.classList.remove("is-becoming");
-      if (returnFocus) becomingsTrigger.focus();
+    const clearSequence = () => {
+      window.clearTimeout(sequenceTimer);
+      entryways.forEach((entry) => entry.classList.remove("is-becoming-highlight"));
+      becomingsTrigger.classList.remove("is-becoming-origin");
+      bloom.classList.remove("is-active");
+      document.body.classList.remove("is-becomings-sequence");
     };
 
-    const openBecomings = () => {
+    const runSequence = () => {
+      clearSequence();
       setBecomingsOrigin();
-      field.classList.remove("is-open");
-      document.body.classList.remove("is-becoming");
-      void field.offsetWidth;
-      field.classList.add("is-open");
-      field.setAttribute("aria-hidden", "false");
-      becomingsTrigger.setAttribute("aria-expanded", "true");
-      document.body.classList.add("is-becoming");
-      window.setTimeout(() => document.body.classList.remove("is-becoming"), 900);
+      becomingsTrigger.classList.add("is-becoming-origin");
+      bloom.classList.add("is-active");
+      document.body.classList.add("is-becomings-sequence");
+      entryways.forEach((entry, index) => {
+        window.setTimeout(() => entry.classList.add("is-becoming-highlight"), sequenceDelays[index]);
+      });
+      sequenceTimer = window.setTimeout(() => {
+        if (!becomingsTrigger.matches(":hover") && document.activeElement !== becomingsTrigger) clearSequence();
+      }, 2100);
     };
 
+    const leaveSequence = () => {
+      window.setTimeout(() => {
+        if (!becomingsTrigger.matches(":hover") && document.activeElement !== becomingsTrigger) clearSequence();
+      }, 120);
+    };
+
+    becomingsTrigger.addEventListener("pointerenter", runSequence);
+    becomingsTrigger.addEventListener("pointerleave", leaveSequence);
+    becomingsTrigger.addEventListener("focus", runSequence);
+    becomingsTrigger.addEventListener("blur", leaveSequence);
     becomingsTrigger.addEventListener("click", (event) => {
       event.preventDefault();
-      event.stopPropagation();
-      if (field.classList.contains("is-open")) closeBecomings();
-      else openBecomings();
-    });
-
-    field.addEventListener("click", (event) => {
-      if (event.target === field) closeBecomings();
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!field.classList.contains("is-open")) return;
-      if (becomingsTrigger.contains(event.target) || event.target.closest(".becomings-node")) return;
-      closeBecomings();
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && field.classList.contains("is-open")) {
-        event.stopPropagation();
-        closeBecomings({ returnFocus: true });
-      }
+      runSequence();
     });
 
     window.addEventListener("resize", setBecomingsOrigin, { passive: true });
