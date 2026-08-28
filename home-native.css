@@ -22,8 +22,9 @@ body.ashwood-home-native .future-nav {
 /* Ambient playback lives in the field, not inside the navigation. */
 .ashwood-home-audio {
   position: fixed;
-  left: var(--ashwood-gutter);
-  bottom: clamp(62px, 7vh, 82px);
+  left: 50%;
+  top: clamp(92px, 14vh, 150px);
+  bottom: auto;
   z-index: 66;
   display: inline-flex;
   align-items: center;
@@ -35,6 +36,7 @@ body.ashwood-home-native .future-nav {
   letter-spacing: .11em;
   line-height: 1;
   text-transform: uppercase;
+  transform: translateX(-50%);
   pointer-events: auto;
 }
 
@@ -207,9 +209,11 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__quot
   }
 
   .ashwood-home-audio {
-    left: 18px;
-    bottom: 104px;
+    left: 50%;
+    top: clamp(82px, 12vh, 118px);
+    bottom: auto;
     max-width: calc(100vw - 36px);
+    transform: translateX(-50%);
   }
 
   .ashwood-home-audio__title {
