@@ -133,6 +133,8 @@
 
   installProgressiveRecognition();
 
+  // The map never appears merely because a visitor arrived. A direct view requires an
+  // explicit capability-entry link, represented by the capabilities=1 URL contract.
   if (requestedDirectView) {
     let attempts = 0;
     const revealWhenReady = () => {
