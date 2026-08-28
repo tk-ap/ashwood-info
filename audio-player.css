@@ -97,7 +97,6 @@ body.ashwood-has-audio-room {
   .ashwood-audio * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
 
-
 /* Portfolio fixed-player spacing */
 @media (min-width: 761px) {
   body.ashwood-has-audio .ashwood-audio {
@@ -113,9 +112,7 @@ body.ashwood-has-audio-room {
   }
 }
 
-
 /* V0 MOBILE AUDIO PLAYER — COLLAPSIBLE / NON-OBSTRUCTIVE */
-
 .ashwood-audio__collapse {
   display: none;
 }
@@ -246,5 +243,85 @@ body.ashwood-has-audio-room {
     left: 18px;
     right: auto;
     bottom: 18px;
+  }
+}
+
+/* Persistent mini player: compact, viewport-safe, and non-invasive on every non-Music page.
+   Home uses the TAHLIA ASHWOOD PEART name interaction instead, so its default player remains hidden by home-native.css. */
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) {
+  padding-bottom: 0 !important;
+}
+
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio {
+  position: fixed !important;
+  left: auto !important;
+  right: max(12px, env(safe-area-inset-right)) !important;
+  top: auto !important;
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  z-index: 120;
+  width: auto !important;
+  max-width: min(210px, calc(100vw - 24px)) !important;
+  border: 0 !important;
+  background: color-mix(in srgb, var(--audio-paper) 82%, transparent) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: .78;
+  transition: opacity .2s ease;
+}
+
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio:hover,
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio:focus-within {
+  opacity: 1;
+}
+
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__bar {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  padding: 6px 8px !important;
+}
+
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio .ashwood-audio__toggle {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  color: var(--audio-ink);
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__identity {
+  min-width: 0;
+  max-width: 128px;
+}
+
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__eyebrow,
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__time,
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__room,
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__collapse {
+  display: none !important;
+}
+
+body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__title {
+  margin: 0;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio {
+    right: max(8px, env(safe-area-inset-right)) !important;
+    bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    max-width: min(176px, calc(100vw - 16px)) !important;
+  }
+
+  body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .ashwood-audio__identity {
+    max-width: 102px;
   }
 }
