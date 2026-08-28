@@ -83,4 +83,80 @@
     if (response) response.textContent = "Noted — khlear is on the table.";
     button.disabled = true;
   }));
+
+  // Home must never make one of the six discovery points impossible to find.
+  // The inline randomizer gets first choice; this only rescues hotspots it had to suppress.
+  const rescueHomepageHotspots = () => {
+    if (normalizedPath !== "/") return;
+    const field = document.querySelector(".principles-field");
+    const hotspots = [...document.querySelectorAll(".principle-hotspot")];
+    if (!field || !hotspots.length || document.body.classList.contains("has-found-all-hotspots")) return;
+
+    const compact = window.matchMedia("(max-width: 760px)").matches;
+    const fieldRect = field.getBoundingClientRect();
+    const protectedSelectors = [".masthead", ".intro", ".home-entryways", ".home-now", ".home-utility", ".ashwood-home-audio"];
+    const protectedRects = protectedSelectors
+      .flatMap((selector) => [...document.querySelectorAll(selector)])
+      .map((element) => element.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0);
+    const visibleRects = hotspots
+      .filter((hotspot) => parseFloat(hotspot.style.left || "0") > -100)
+      .map((hotspot) => hotspot.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0 && rect.right > fieldRect.left && rect.left < fieldRect.right);
+
+    const overlaps = (a, b, padding = 0) => (
+      a.left < b.right + padding && a.right > b.left - padding && a.top < b.bottom + padding && a.bottom > b.top - padding
+    );
+
+    const desktopSlots = [
+      [56, 24], [73, 27], [84, 38], [50, 43], [67, 48], [81, 56],
+      [54, 61], [70, 67], [85, 70], [44, 54], [61, 36], [76, 42]
+    ];
+    const mobileSlots = [[8, 34], [52, 34], [10, 48], [54, 48], [8, 63], [52, 63], [20, 76], [58, 76]];
+    const slots = compact ? mobileSlots : desktopSlots;
+
+    hotspots.forEach((hotspot, index) => {
+      const left = parseFloat(hotspot.style.left || "0");
+      const rect = hotspot.getBoundingClientRect();
+      const suppressed = left < -100 || rect.right < fieldRect.left || rect.left > fieldRect.right;
+      if (!suppressed) return;
+
+      let placed = false;
+      for (const [x, y] of slots) {
+        hotspot.style.left = `${x}%`;
+        hotspot.style.top = `${y}%`;
+        hotspot.style.right = "auto";
+        hotspot.style.bottom = "auto";
+        const candidate = hotspot.getBoundingClientRect();
+        const inside = candidate.left >= fieldRect.left + 4 && candidate.right <= fieldRect.right - 4 && candidate.top >= fieldRect.top + 4 && candidate.bottom <= fieldRect.bottom - 4;
+        const blocked = protectedRects.some((area) => overlaps(candidate, area, compact ? 8 : 16));
+        const collides = visibleRects.some((area) => overlaps(candidate, area, compact ? 6 : 14));
+        if (inside && !blocked && !collides) {
+          visibleRects.push(candidate);
+          placed = true;
+          break;
+        }
+      }
+
+      if (!placed) {
+        // Last-resort visible position: preserving discoverability outranks perfect spacing.
+        const x = compact ? 8 + (index % 2) * 48 : 48 + (index % 3) * 16;
+        const y = compact ? 36 + Math.floor(index / 2) * 13 : 30 + Math.floor(index / 3) * 25;
+        hotspot.style.left = `${x}%`;
+        hotspot.style.top = `${y}%`;
+        hotspot.style.right = "auto";
+        hotspot.style.bottom = "auto";
+      }
+    });
+  };
+
+  if (normalizedPath === "/") {
+    requestAnimationFrame(() => requestAnimationFrame(rescueHomepageHotspots));
+    window.addEventListener("load", rescueHomepageHotspots, { once: true });
+    let rescueTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(rescueTimer);
+      rescueTimer = setTimeout(rescueHomepageHotspots, 80);
+    }, { passive: true });
+  }
 })();
