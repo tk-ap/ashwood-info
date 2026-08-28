@@ -65,7 +65,7 @@
     },
     range: {
       skill: "RANGE",
-      description: "Moves across analytics, risk, operations, communication, technology, and creative work without losing rigor.",
+      description: "Moves across functions, industries, and levels of an organization — building trust, translating context, and keeping complex work moving.",
       authorship: "WHERE IT SHOWS UP NOW →",
       practice: "ASHWOOD · Modeling + Music + Builds",
       href: "/about/",
@@ -88,7 +88,7 @@
     .ashwood-capability-map__header{position:relative;display:grid;grid-template-columns:1fr auto;align-items:start;gap:8px 22px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 72%,transparent)}
     .ashwood-capability-map__eyebrow{grid-column:1;margin:0;color:var(--ashwood-gold);font-size:8px;letter-spacing:.18em;text-transform:uppercase}
     .ashwood-capability-map__title{grid-column:1;margin:0;font-family:Georgia,serif;font-size:clamp(20px,2vw,30px);font-weight:400;line-height:1.02;letter-spacing:-.025em}
-    .ashwood-capability-map__authorship-key{grid-column:1;margin:1px 0 0;max-width:48ch;color:var(--ashwood-muted);font-size:8px;line-height:1.45;letter-spacing:.035em}
+    .ashwood-capability-map__authorship-key{grid-column:1;margin:1px 0 0;max-width:50ch;color:var(--ashwood-muted);font-size:8px;line-height:1.45;letter-spacing:.035em}
     .ashwood-capability-map__reset{grid-column:2;grid-row:1 / span 3;align-self:start;border:0;padding:0;background:none;cursor:pointer;font-family:inherit;font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ashwood-muted)}
     .ashwood-capability-map__reset:hover,.ashwood-capability-map__reset:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .ashwood-capability-map__list{display:grid;gap:0;margin:0;padding:0;list-style:none}
@@ -162,7 +162,7 @@
     <div class="ashwood-capability-map__header">
       <p class="ashwood-capability-map__eyebrow">SIX / SIX · OBSERVED STRENGTHS</p>
       <h2 class="ashwood-capability-map__title">The capabilities people keep relying on.</h2>
-      <p class="ashwood-capability-map__authorship-key">Recurring patterns drawn from feedback by managers, peers, and mentors across years of work — mapped to where those strengths show up now.</p>
+      <p class="ashwood-capability-map__authorship-key">Recurring patterns drawn from feedback by managers, peers, and mentors across years of work. I tend to start by uncovering “why?” — and stay with the problem until the structure underneath it becomes clear.</p>
       <button class="ashwood-capability-map__reset" type="button" aria-label="Reset the observed strengths map and rediscover the six signals">↺ Reset field</button>
     </div>
     <ol class="ashwood-capability-map__list">
