@@ -234,3 +234,49 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__quot
     transition: none !important;
   }
 }
+
+/* Play ripple: one quiet wave propagates through the same dark field. */
+.ashwood-home-play-ripple {
+  position: fixed;
+  left: 50%;
+  top: clamp(103px, 14vh, 161px);
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  border: 1px solid color-mix(in srgb, var(--ashwood-gold) 72%, transparent);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.2);
+  pointer-events: none;
+  box-shadow: 0 0 22px rgba(180, 135, 50, .08);
+}
+
+.ashwood-home-play-ripple.is-active {
+  animation: ashwood-play-ripple 1.55s cubic-bezier(.18,.76,.24,1) both;
+}
+
+@keyframes ashwood-play-ripple {
+  0% {
+    opacity: .34;
+    transform: translate(-50%, -50%) scale(.2);
+  }
+  52% { opacity: .16; }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(88);
+  }
+}
+
+@media (max-width: 640px) {
+  .ashwood-home-play-ripple {
+    top: clamp(93px, 12vh, 129px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ashwood-home-play-ripple,
+  .ashwood-home-play-ripple.is-active {
+    display: none !important;
+    animation: none !important;
+  }
+}
