@@ -28,14 +28,30 @@
     .ashwood-capability-map__useful strong{
       display:inline;margin-right:5px;color:var(--ashwood-gold);font-size:7px;font-weight:600;letter-spacing:.13em;text-transform:uppercase
     }
+    .principle-hotspot__useful-for{
+      display:block;max-width:290px;margin-top:8px;color:var(--ashwood-muted);font-size:8px;line-height:1.35;
+      letter-spacing:.065em;opacity:0;transform:translateY(7px);filter:blur(2px);pointer-events:none;
+      transition:opacity .34s ease .18s,transform .38s cubic-bezier(.2,.8,.2,1) .18s,filter .3s ease .18s
+    }
+    .principle-hotspot__useful-for strong{
+      margin-right:5px;color:#009b3a;font-size:7px;font-weight:700;letter-spacing:.14em;text-transform:uppercase
+    }
+    body.ashwood-home-native .principle-hotspot.is-near:not(.is-revealed) .principle-hotspot__useful-for,
+    body.ashwood-home-native .principle-hotspot:focus-visible:not(.is-revealed) .principle-hotspot__useful-for{
+      opacity:.82;transform:translateY(0);filter:blur(0)
+    }
+    body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__useful-for{display:none}
     @media(max-width:760px){
       .ashwood-capability-evidence{width:100%;margin:8px 0 16px}
       .ashwood-capability-evidence a{min-height:44px;display:inline-flex;align-items:center}
       .ashwood-capability-nudge{position:absolute;right:18px;top:auto;margin-top:12px;max-width:130px}
       .ashwood-capability-map__useful{grid-column:2}
+      .principle-hotspot__useful-for{max-width:220px;font-size:8px}
       body.has-viewed-capability-map:not(.has-found-all-hotspots) .ashwood-capability-map{margin-top:26px}
     }
-    @media(prefers-reduced-motion:reduce){.ashwood-capability-nudge{transition:none}}
+    @media(prefers-reduced-motion:reduce){
+      .ashwood-capability-nudge,.principle-hotspot__useful-for{transition:none}
+    }
   `;
   document.head.append(style);
 
@@ -48,27 +64,33 @@
   const capabilitySynthesis = {
     signal: {
       summary: "Strategic judgment that clarifies priorities, anticipates risk, and sharpens the next decision.",
-      useful: "High-stakes prioritization, early risk detection, and decisions under noise."
+      useful: "High-stakes prioritization, early risk detection, and decisions under noise.",
+      cue: "prioritization · risk · ambiguity"
     },
     friction: {
       summary: "Process-improvement instinct that spots avoidable drag and challenges assumptions before they calcify.",
-      useful: "Stalled processes, recurring workarounds, or preventable operational friction."
+      useful: "Stalled processes, recurring workarounds, or preventable operational friction.",
+      cue: "process drag · workarounds · recurring friction"
     },
     translation: {
       summary: "Communication that turns complexity into shared understanding across technical, operational, and executive audiences.",
-      useful: "Complex work needs to become clear enough for different audiences to act."
+      useful: "Complex work needs to become clear enough for different audiences to act.",
+      cue: "complexity · alignment · decision clarity"
     },
     systems: {
       summary: "Systems thinking that converts recurring problems into durable structures, controls, and repeatable ways of working.",
-      useful: "A recurring problem needs durable structure instead of another patch."
+      useful: "A recurring problem needs durable structure instead of another patch.",
+      cue: "recurrence · controls · durable structure"
     },
     resilience: {
       summary: "Reliable adaptation: learning quickly, maintaining rigor, and executing well as conditions change.",
-      useful: "Conditions are changing, stakes remain high, and execution still has to hold."
+      useful: "Conditions are changing, stakes remain high, and execution still has to hold.",
+      cue: "change · handoffs · high-stakes execution"
     },
     range: {
       summary: "Cross-functional influence that connects disciplines, levels, and perspectives without losing trust or momentum.",
-      useful: "The work crosses functions, disciplines, or levels and needs someone to connect them."
+      useful: "The work crosses functions, disciplines, or levels and needs someone to connect them.",
+      cue: "cross-functional work · ambiguity · coordination"
     }
   };
 
@@ -92,7 +114,26 @@
     });
   };
 
+  // Essential value should be discoverable before click. Proximity/focus gets a concise
+  // application cue; click/tap still earns the richer first-person "Useful when" sentence.
+  const installHotspotApplicationCues = () => {
+    document.querySelectorAll(".principle-hotspot").forEach((hotspot) => {
+      if (hotspot.querySelector(".principle-hotspot__useful-for")) return;
+      const idClass = [...hotspot.classList].find((name) => name.startsWith("principle-hotspot--"));
+      const id = idClass?.replace("principle-hotspot--", "");
+      const synthesis = capabilitySynthesis[id];
+      const quote = hotspot.querySelector(".principle-hotspot__quote");
+      if (!synthesis?.cue || !quote) return;
+      const cue = document.createElement("span");
+      cue.className = "principle-hotspot__useful-for";
+      cue.setAttribute("aria-hidden", "true");
+      cue.innerHTML = `<strong>Useful for →</strong>${synthesis.cue}`;
+      quote.after(cue);
+    });
+  };
+
   applyCapabilitySynthesis();
+  installHotspotApplicationCues();
 
   const openDirectMap = ({ updateUrl = true } = {}) => {
     const capabilityMap = map();
@@ -141,8 +182,6 @@
     history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
   };
 
-  // Direct viewing is intentionally separate from hotspot completion. Intercept the
-  // existing reset control so a context/evidence visitor cannot erase discovery progress.
   document.addEventListener("click", (event) => {
     const reset = event.target.closest(".ashwood-capability-map__reset");
     if (!reset || completedDiscovery() || !document.body.classList.contains("has-viewed-capability-map")) return;
@@ -193,8 +232,6 @@
 
   installProgressiveRecognition();
 
-  // The map never appears merely because a visitor arrived. A direct view requires an
-  // explicit capability-entry link, represented by the capabilities=1 URL contract.
   if (requestedDirectView) {
     let attempts = 0;
     const revealWhenReady = () => {
