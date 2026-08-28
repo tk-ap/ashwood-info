@@ -22,10 +22,17 @@
       opacity:0;transform:translateY(4px);transition:opacity .45s ease,transform .45s ease;pointer-events:none
     }
     .ashwood-capability-nudge.is-visible{opacity:.7;transform:translateY(0)}
+    .ashwood-capability-map__useful{
+      grid-column:2;margin:2px 0 3px;color:var(--ashwood-muted);font-size:8px;line-height:1.38;letter-spacing:.025em
+    }
+    .ashwood-capability-map__useful strong{
+      display:inline;margin-right:5px;color:var(--ashwood-gold);font-size:7px;font-weight:600;letter-spacing:.13em;text-transform:uppercase
+    }
     @media(max-width:760px){
       .ashwood-capability-evidence{width:100%;margin:8px 0 16px}
       .ashwood-capability-evidence a{min-height:44px;display:inline-flex;align-items:center}
       .ashwood-capability-nudge{position:absolute;right:18px;top:auto;margin-top:12px;max-width:130px}
+      .ashwood-capability-map__useful{grid-column:2}
       body.has-viewed-capability-map:not(.has-found-all-hotspots) .ashwood-capability-map{margin-top:26px}
     }
     @media(prefers-reduced-motion:reduce){.ashwood-capability-nudge{transition:none}}
@@ -35,9 +42,27 @@
   const map = () => document.querySelector(".ashwood-capability-map");
   const completedDiscovery = () => document.body.classList.contains("has-found-all-hotspots");
 
+  const inheritUsefulWhen = () => {
+    const capabilityMap = map();
+    if (!capabilityMap) return;
+    capabilityMap.querySelectorAll("[data-capability]").forEach((row) => {
+      if (row.querySelector(".ashwood-capability-map__useful")) return;
+      const id = row.dataset.capability;
+      const source = document.querySelector(`.principle-hotspot--${id} .principle-hotspot__useful`);
+      const authorship = row.querySelector(".ashwood-capability-map__authorship");
+      if (!source || !authorship) return;
+      const inherited = source.cloneNode(true);
+      inherited.className = "ashwood-capability-map__useful";
+      authorship.before(inherited);
+    });
+  };
+
+  inheritUsefulWhen();
+
   const openDirectMap = ({ updateUrl = true } = {}) => {
     const capabilityMap = map();
     if (!capabilityMap) return false;
+    inheritUsefulWhen();
     document.body.classList.add("has-viewed-capability-map");
     capabilityMap.dataset.entryMode = "direct";
 
