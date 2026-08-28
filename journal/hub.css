@@ -1,21 +1,32 @@
 .journal-index {
   position: sticky;
-  top: 0;
-  z-index: 40;
+  top: var(--journal-sticky-masthead, 64px);
+  z-index: 70;
   display: flex;
   justify-content: flex-end;
-  gap: 12px 28px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--journal-rule);
-  background: rgba(17, 17, 15, .92);
-  backdrop-filter: blur(12px);
-  font-size: 9px;
-  letter-spacing: .14em;
+  gap: 10px 24px;
+  width: min(calc(100% - (2 * var(--ashwood-gutter, clamp(18px, 3vw, 52px)))), var(--journal-max));
+  margin-inline: auto;
+  padding: 9px 0 10px;
+  border-bottom: 1px solid rgba(241,238,230,.12);
+  background: rgba(12,12,11,.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 8px;
+  letter-spacing: .13em;
   text-transform: uppercase;
 }
 
-.journal-index a { color: var(--journal-muted); text-decoration: none; }
-.journal-index a:hover,.journal-index a:focus-visible { color: var(--journal-acid); }
+.journal-index::before {
+  content: "BUILD JOURNAL";
+  margin-right: auto;
+  color: var(--journal-muted);
+  opacity: .58;
+  letter-spacing: .16em;
+}
+
+.journal-index a { color: var(--journal-muted); text-decoration: none; opacity: .78; }
+.journal-index a:hover,.journal-index a:focus-visible { color: var(--journal-acid); opacity: 1; }
 .journal-footer { grid-template-columns: 1fr auto; }
 .ecosystem-brief,.system-brief { border-top: 1px solid var(--journal-rule); padding: clamp(64px, 9vw, 128px) 0; }
 .education-thread { border-top: 1px solid var(--journal-rule); padding: clamp(44px, 6vw, 78px) 0; }
@@ -87,7 +98,8 @@
 }
 
 @media (max-width: 680px) {
-  .journal-index { position: static; justify-content: flex-start; flex-wrap: wrap; }
+  .journal-index { position: static; justify-content: flex-start; flex-wrap: wrap; width: 100%; padding: 10px 0; }
+  .journal-index::before { width: 100%; margin: 0 0 2px; }
   .readiness { padding: 0 0 0 32px; }
   .readiness__track { top: 0; bottom: 0; left: 8px; right: auto; width: 1px; height: auto; }
   .readiness__track span { width: 100%; height: 52%; }
