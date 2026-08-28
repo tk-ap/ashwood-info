@@ -42,29 +42,62 @@
   const map = () => document.querySelector(".ashwood-capability-map");
   const completedDiscovery = () => document.body.classList.contains("has-found-all-hotspots");
 
-  // Preserve the situational meaning of each discovery. The map is not just a list of
-  // strengths; it should retain the visitor-facing answer to when that capability matters.
-  const inheritUsefulWhen = () => {
+  // Hotspots are the first-person, situational discovery layer. The capability map is
+  // the synthesis layer: same underlying evidence, elevated into concise professional
+  // language rather than repeating the discovery copy verbatim.
+  const capabilitySynthesis = {
+    signal: {
+      summary: "Strategic judgment that clarifies priorities, anticipates risk, and sharpens the next decision.",
+      useful: "High-stakes prioritization, early risk detection, and decisions under noise."
+    },
+    friction: {
+      summary: "Process-improvement instinct that spots avoidable drag and challenges assumptions before they calcify.",
+      useful: "Stalled processes, recurring workarounds, or preventable operational friction."
+    },
+    translation: {
+      summary: "Communication that turns complexity into shared understanding across technical, operational, and executive audiences.",
+      useful: "Complex work needs to become clear enough for different audiences to act."
+    },
+    systems: {
+      summary: "Systems thinking that converts recurring problems into durable structures, controls, and repeatable ways of working.",
+      useful: "A recurring problem needs durable structure instead of another patch."
+    },
+    resilience: {
+      summary: "Reliable adaptation: learning quickly, maintaining rigor, and executing well as conditions change.",
+      useful: "Conditions are changing, stakes remain high, and execution still has to hold."
+    },
+    range: {
+      summary: "Cross-functional influence that connects disciplines, levels, and perspectives without losing trust or momentum.",
+      useful: "The work crosses functions, disciplines, or levels and needs someone to connect them."
+    }
+  };
+
+  const applyCapabilitySynthesis = () => {
     const capabilityMap = map();
     if (!capabilityMap) return;
     capabilityMap.querySelectorAll("[data-capability]").forEach((row) => {
-      if (row.querySelector(".ashwood-capability-map__useful")) return;
-      const id = row.dataset.capability;
-      const source = document.querySelector(`.principle-hotspot--${id} .principle-hotspot__useful`);
-      const authorship = row.querySelector(".ashwood-capability-map__authorship");
-      if (!source || !authorship) return;
-      const inherited = source.cloneNode(true);
-      inherited.className = "ashwood-capability-map__useful";
-      authorship.before(inherited);
+      const synthesis = capabilitySynthesis[row.dataset.capability];
+      if (!synthesis) return;
+
+      const description = row.querySelector(".ashwood-capability-map__description");
+      if (description) description.textContent = synthesis.summary;
+
+      let useful = row.querySelector(".ashwood-capability-map__useful");
+      if (!useful) {
+        useful = document.createElement("p");
+        useful.className = "ashwood-capability-map__useful";
+        row.querySelector(".ashwood-capability-map__authorship")?.before(useful);
+      }
+      useful.innerHTML = `<strong>Useful when →</strong>${synthesis.useful}`;
     });
   };
 
-  inheritUsefulWhen();
+  applyCapabilitySynthesis();
 
   const openDirectMap = ({ updateUrl = true } = {}) => {
     const capabilityMap = map();
     if (!capabilityMap) return false;
-    inheritUsefulWhen();
+    applyCapabilitySynthesis();
     document.body.classList.add("has-viewed-capability-map");
     capabilityMap.dataset.entryMode = "direct";
 
