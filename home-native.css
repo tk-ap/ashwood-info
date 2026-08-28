@@ -7,32 +7,35 @@ body.ashwood-home-native .ashwood-audio {
   display: none !important;
 }
 
+/* Navigation remains spatially anchored, but has no visual surface of its own. */
 body.ashwood-home-native .future-nav {
   z-index: 70;
   align-items: center;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    color-mix(in srgb, var(--ashwood-paper) 72%, transparent) 30%,
-    var(--ashwood-paper) 100%
-  );
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: 0;
-  box-shadow: none;
-  padding-block: 18px 14px;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding-block: 10px 0;
 }
 
+/* Ambient playback lives in the field, not inside the navigation. */
 .ashwood-home-audio {
+  position: fixed;
+  left: var(--ashwood-gutter);
+  bottom: clamp(62px, 7vh, 82px);
+  z-index: 66;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
   min-width: 0;
+  max-width: min(360px, calc(100vw - (var(--ashwood-gutter) * 2)));
   color: var(--ashwood-muted);
   font-size: 10px;
   letter-spacing: .11em;
   line-height: 1;
   text-transform: uppercase;
+  pointer-events: auto;
 }
 
 .ashwood-home-audio[hidden] {
@@ -40,7 +43,7 @@ body.ashwood-home-native .future-nav {
 }
 
 .ashwood-home-audio__title {
-  max-width: 14ch;
+  max-width: 18ch;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -49,21 +52,69 @@ body.ashwood-home-native .future-nav {
 .ashwood-home-audio__toggle {
   display: inline-grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   margin: 0;
   border: 0;
   padding: 0;
   background: transparent;
   color: var(--ashwood-ink);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
 }
 
 .ashwood-home-audio__toggle:hover,
 .ashwood-home-audio__toggle:focus-visible {
   color: var(--ashwood-gold);
+}
+
+.ashwood-home-audio__volume {
+  width: 48px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ashwood-home-audio__volume::-webkit-slider-runnable-track {
+  height: 1px;
+  background: currentColor;
+  opacity: .42;
+}
+
+.ashwood-home-audio__volume::-webkit-slider-thumb {
+  width: 6px;
+  height: 6px;
+  margin-top: -2.5px;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: currentColor;
+}
+
+.ashwood-home-audio__volume::-moz-range-track {
+  height: 1px;
+  border: 0;
+  background: currentColor;
+  opacity: .42;
+}
+
+.ashwood-home-audio__volume::-moz-range-thumb {
+  width: 6px;
+  height: 6px;
+  border: 0;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ashwood-home-audio__volume:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
 }
 
 /* Eureka reveal: a latent point blooms into the discovered principle. */
@@ -152,12 +203,21 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__quot
 @media (max-width: 640px) {
   body.ashwood-home-native .future-nav {
     gap: 14px 20px;
-    padding-top: 16px;
+    padding-top: 8px;
   }
 
   .ashwood-home-audio {
-    flex: 0 1 auto;
-    max-width: 120px;
+    left: 18px;
+    bottom: 104px;
+    max-width: calc(100vw - 36px);
+  }
+
+  .ashwood-home-audio__title {
+    max-width: 14ch;
+  }
+
+  .ashwood-home-audio__volume {
+    width: 40px;
   }
 }
 
