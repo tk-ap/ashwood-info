@@ -1,0 +1,100 @@
+/* Homepage composition pass: identity -> discovery field -> grounded practice layer. */
+
+body.ashwood-home-native .shell {
+  min-height: 100dvh;
+  padding-bottom: clamp(20px, 2.6vh, 34px);
+}
+
+/* Keep identity confident and slightly higher so the field owns the center. */
+body.ashwood-home-native .intro {
+  margin: 0;
+  padding-top: clamp(54px, 7vh, 82px);
+  padding-bottom: clamp(26px, 3.6vh, 44px);
+}
+
+body.ashwood-home-native .home-grounding {
+  margin-top: clamp(12px, 1.6vh, 18px);
+}
+
+/* Preserve a large uninterrupted discovery field before the grounded practice layer. */
+body.ashwood-home-native .home-entryways {
+  margin-top: clamp(88px, 13vh, 170px);
+}
+
+/* Treat entryways, NOW and utilities as one lower band rather than stacked endings. */
+body.ashwood-home-native .home-entryway {
+  padding-top: clamp(14px, 1.8vh, 18px);
+  padding-bottom: clamp(13px, 1.7vh, 17px);
+}
+
+body.ashwood-home-native .home-now {
+  padding-top: 9px;
+  padding-bottom: 0;
+  gap: 5px 20px;
+  line-height: 1.35;
+}
+
+body.ashwood-home-native .home-utility {
+  margin-top: 5px;
+  padding-top: 0;
+  gap: 14px;
+}
+
+/* Short desktop viewports: compact the top and bottom bands, never the discovery field into oblivion. */
+@media (min-width: 761px) and (max-height: 900px) {
+  body.ashwood-home-native .shell {
+    padding-top: 20px;
+    padding-bottom: 18px;
+  }
+
+  body.ashwood-home-native .intro {
+    padding-top: clamp(32px, 4.5vh, 44px);
+    padding-bottom: clamp(18px, 2.5vh, 26px);
+  }
+
+  body.ashwood-home-native .home-grounding {
+    margin-top: 11px;
+  }
+
+  body.ashwood-home-native .home-entryways {
+    margin-top: clamp(48px, 7vh, 70px);
+  }
+
+  body.ashwood-home-native .home-entryway {
+    padding-top: 12px;
+    padding-bottom: 11px;
+  }
+
+  body.ashwood-home-native .home-now {
+    padding-top: 7px;
+    gap: 4px 16px;
+  }
+
+  body.ashwood-home-native .home-utility {
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 760px) {
+  body.ashwood-home-native .shell {
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  body.ashwood-home-native .intro {
+    padding-top: 64px;
+    padding-bottom: 30px;
+  }
+
+  body.ashwood-home-native .home-entryways {
+    margin-top: clamp(82px, 13vh, 120px);
+  }
+
+  body.ashwood-home-native .home-now {
+    padding-top: 9px;
+    gap: 4px 12px;
+  }
+
+  body.ashwood-home-native .home-utility {
+    margin-top: 8px;
+  }
+}
