@@ -9,7 +9,7 @@
       opacity:1;visibility:visible;pointer-events:auto;filter:blur(0);transform:translateY(0) scale(1);transition-delay:.08s
     }
     .ashwood-capability-evidence{
-      display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;width:min(62%,820px);margin:4px 0 10px;
+      position:relative;z-index:181;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;width:min(62%,820px);margin:4px 0 10px;
       color:var(--ashwood-muted);font-size:8px;line-height:1.45;letter-spacing:.055em
     }
     .ashwood-capability-evidence a{
