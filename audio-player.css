@@ -239,3 +239,12 @@ body.ashwood-has-audio-room {
     z-index: 40;
   }
 }
+
+/* V0: home desktop player/menu separation */
+@media (min-width: 761px) {
+  body.ashwood-has-audio .ashwood-audio {
+    left: 18px;
+    right: auto;
+    bottom: 18px;
+  }
+}
