@@ -162,3 +162,61 @@
 
   render();
 })();
+
+
+/* V0 mobile collapse control */
+(() => {
+  function initAudioCollapse() {
+    const players = document.querySelectorAll(".ashwood-audio");
+    if (!players.length) return;
+
+    const mobile = window.matchMedia("(max-width: 760px)");
+
+    players.forEach((player) => {
+      if (player.querySelector(".ashwood-audio__collapse")) return;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "ashwood-audio__collapse";
+      button.setAttribute("aria-expanded", "true");
+      button.setAttribute("aria-label", "Collapse audio player");
+      button.textContent = "−";
+
+      player.appendChild(button);
+
+      function setCollapsed(collapsed) {
+        player.classList.toggle("is-collapsed", collapsed);
+        button.setAttribute("aria-expanded", String(!collapsed));
+        button.setAttribute(
+          "aria-label",
+          collapsed ? "Expand audio player" : "Collapse audio player"
+        );
+        button.textContent = collapsed ? "♪" : "−";
+      }
+
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setCollapsed(!player.classList.contains("is-collapsed"));
+      });
+
+      setCollapsed(mobile.matches);
+
+      const handleViewportChange = (event) => {
+        setCollapsed(event.matches);
+      };
+
+      if (mobile.addEventListener) {
+        mobile.addEventListener("change", handleViewportChange);
+      } else {
+        mobile.addListener(handleViewportChange);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAudioCollapse, { once: true });
+  } else {
+    initAudioCollapse();
+  }
+})();

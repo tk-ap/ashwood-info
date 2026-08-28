@@ -7,17 +7,14 @@
     <meta name="theme-color" content="#090909" />
     <title>TK Ashwood — Modeling</title>
     <link rel="stylesheet" href="/portfolio/portfolio.css?v=20260827-galleryfix2" />
-    <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
-    <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
+    <link rel="stylesheet" href="/audio-player.css?v=20260827-approved" />
+    <script src="/audio-player.js?v=20260827-2" defer></script>
   </head>
   <body class="portfolio-page">
     <a class="skip-link" href="#main">Skip to work</a>
 
     <header class="site-header" aria-label="ASHWOOD navigation">
-      <div class="brand-lockup">
-        <a class="brand" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
-        <span class="brand-section">/ MODELING</span>
-      </div>
+      <a class="brand" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
       <nav class="site-nav" aria-label="Primary">
         <a aria-current="page" href="/portfolio">Modeling</a>
         <a href="/music">Music</a>
@@ -25,10 +22,8 @@
         <a href="/about">About</a>
         <a href="/connect">Connect</a>
       </nav>
+      <a class="header-cta" href="#contact">Book TK ↗</a>
     </header>
-    <div class="floating-book">
-      <a class="floating-book-link" href="#contact">Book TK ↗</a>
-    </div>
 
     <main id="main">
       <section id="top" class="hero section-shell" aria-labelledby="hero-title">
@@ -188,6 +183,5 @@
       <small>© 2026 TK Ashwood</small>
     </footer>
     <script src="/portfolio-lightbox.js?v=20260827-1" defer></script>
-    <script src="/portfolio/portfolio-scroll.js?v=20260827-1" defer></script>
   </body>
 </html>

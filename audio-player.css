@@ -96,3 +96,125 @@ body.ashwood-has-audio-room {
   .ashwood-audio,
   .ashwood-audio * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+
+
+/* Portfolio fixed-player spacing */
+@media (min-width: 761px) {
+  body.ashwood-has-audio .ashwood-audio {
+    right: max(14px, var(--gutter));
+    bottom: 14px;
+  }
+}
+
+@media (max-width: 760px) {
+  body.ashwood-has-audio .ashwood-audio {
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+
+/* V0 MOBILE AUDIO PLAYER — COLLAPSIBLE / NON-OBSTRUCTIVE */
+
+.ashwood-audio__collapse {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  body.ashwood-has-audio {
+    padding-bottom: 82px;
+  }
+
+  body.ashwood-has-audio-room {
+    padding-bottom: 270px;
+  }
+
+  .ashwood-audio {
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    width: min(420px, calc(100vw - 20px));
+    max-width: calc(100vw - 20px);
+    z-index: 90;
+  }
+
+  .ashwood-audio__collapse {
+    display: inline-flex;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid currentColor;
+    background: color-mix(in srgb, var(--audio-paper) 94%, transparent);
+    color: inherit;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .ashwood-audio__collapse:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .ashwood-audio.is-collapsed {
+    width: auto;
+    max-width: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .ashwood-audio.is-collapsed .ashwood-audio__bar,
+  .ashwood-audio.is-collapsed .ashwood-audio__room {
+    display: none;
+  }
+
+  .ashwood-audio.is-collapsed .ashwood-audio__collapse {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--audio-paper) 94%, transparent);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px rgba(0,0,0,.24);
+  }
+
+  .ashwood-audio:not(.is-collapsed) {
+    margin-bottom: 4px;
+  }
+
+  .ashwood-audio:not(.is-collapsed) .ashwood-audio__bar {
+    padding-right: 48px;
+  }
+}
+
+@media (max-width: 420px) {
+  body.ashwood-has-audio {
+    padding-bottom: 76px;
+  }
+
+  .ashwood-audio {
+    right: 8px;
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+  }
+
+  .ashwood-audio.is-collapsed {
+    right: 12px;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ashwood-audio {
+    transition: none !important;
+  }
+}
