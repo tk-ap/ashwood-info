@@ -12,6 +12,14 @@ body.ashwood-home-native .intro {
   padding-bottom: clamp(26px, 3.6vh, 44px);
 }
 
+/* Editorial hero refinement: preserve the system font, but let identity and Becomings breathe. */
+body.ashwood-home-native #site-title {
+  font-size: clamp(50px, 9vw, 118px);
+  line-height: .86;
+  letter-spacing: -.052em;
+  max-width: 12.2ch;
+}
+
 body.ashwood-home-native .home-grounding {
   margin-top: clamp(12px, 1.6vh, 18px);
 }
@@ -52,6 +60,11 @@ body.ashwood-home-native .home-utility {
     padding-bottom: clamp(18px, 2.5vh, 26px);
   }
 
+  body.ashwood-home-native #site-title {
+    font-size: clamp(48px, 8.5vw, 108px);
+    line-height: .855;
+  }
+
   body.ashwood-home-native .home-grounding {
     margin-top: 11px;
   }
@@ -83,6 +96,12 @@ body.ashwood-home-native .home-utility {
   body.ashwood-home-native .intro {
     padding-top: 64px;
     padding-bottom: 30px;
+  }
+
+  body.ashwood-home-native #site-title {
+    font-size: clamp(48px, 15vw, 72px);
+    line-height: .88;
+    max-width: 10.8ch;
   }
 
   body.ashwood-home-native .home-entryways {
