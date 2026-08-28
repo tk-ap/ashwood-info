@@ -12,12 +12,21 @@
     <script src="/theme.js?v=20260827-1" defer></script>
   </head>
   <body class="music-page">
-    <main class="shell music-shell" aria-labelledby="music-title">
-      <header class="masthead">
-        <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
-        <span class="section-label">Music</span>
-      </header>
+    <header class="ashwood-site-header" aria-label="ASHWOOD navigation">
+      <div class="ashwood-site-header__brand-lockup">
+        <a class="ashwood-site-header__brand" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
+        <span class="ashwood-site-header__section">/ MUSIC</span>
+      </div>
+      <nav class="ashwood-site-header__nav" aria-label="Primary">
+        <a href="/portfolio">Modeling</a>
+        <a aria-current="page" href="/music">Music</a>
+        <a href="/journal">Builds</a>
+        <a href="/about">About</a>
+        <a href="/connect">Connect</a>
+      </nav>
+    </header>
 
+    <main class="shell music-shell" aria-labelledby="music-title">
       <section class="intro page-intro music-intro">
         <p class="eyebrow">t.kap · Recording artist</p>
         <h1 id="music-title">Listen before<br />the release.</h1>
