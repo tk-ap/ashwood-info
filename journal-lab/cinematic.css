@@ -8,6 +8,8 @@
   --journal-sticky-masthead: 64px;
 }
 
+/* Keep the Journal opening deterministic. Scroll snapping could cause a clean
+   /journal/ navigation to settle slightly below the true page top. */
 html { scroll-snap-type: none; }
 .journal-lab-page { background: var(--cinema-bg); }
 .journal-lab-page::before {
@@ -24,18 +26,22 @@ html { scroll-snap-type: none; }
 .journal-lab-page .journal-masthead {
   position: sticky;
   top: 0;
-  z-index: 80;
+  z-index: 90;
   min-height: var(--journal-sticky-masthead);
-  background: rgba(12, 12, 11, .9);
+  background: rgba(12, 12, 11, .94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
-.journal-lab-page .journal-index { top: var(--journal-sticky-masthead); }
+.journal-lab-page .journal-index {
+  top: var(--journal-sticky-masthead);
+  z-index: 80;
+}
 .journal-lab-page #now,
 .journal-lab-page #system,
 .journal-lab-page #record,
 .journal-lab-page #method,
-.journal-lab-page #product-snapshot {
+.journal-lab-page #product-snapshot,
+.journal-lab-page #open-builds {
   scroll-margin-top: calc(var(--journal-sticky-masthead) + 54px);
 }
 .cinematic-opening {
