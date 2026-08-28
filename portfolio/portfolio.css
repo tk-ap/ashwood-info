@@ -304,10 +304,11 @@ img { max-width: 100%; display: block; }
   #barelysain .outline-title {
     width: 100%;
     max-width: 100%;
-    font-size: clamp(52px, 18vw, 88px);
+    font-size: clamp(44px, 15.5vw, 76px);
     line-height: .88;
-    letter-spacing: -.065em;
-    overflow-wrap: anywhere;
+    letter-spacing: -.075em;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   #barelysain .campaign-grid {
@@ -349,4 +350,13 @@ img { max-width: 100%; display: block; }
     visibility: visible;
     opacity: 1;
   }
+}
+
+/* V0: remove visible box outline from hero/header image */
+.hero img,
+.hero .asset-frame,
+.hero .hero-image {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
 }
