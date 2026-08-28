@@ -161,7 +161,7 @@
   capabilityMap.innerHTML = `
     <div class="ashwood-capability-map__header">
       <p class="ashwood-capability-map__eyebrow">SIX / SIX · OBSERVED STRENGTHS</p>
-      <h2 class="ashwood-capability-map__title">The capabilities people kept relying on.</h2>
+      <h2 class="ashwood-capability-map__title">The capabilities people keep relying on.</h2>
       <p class="ashwood-capability-map__authorship-key">Recurring patterns drawn from feedback by managers, peers, and mentors across years of work — mapped to where those strengths show up now.</p>
       <button class="ashwood-capability-map__reset" type="button" aria-label="Reset the observed strengths map and rediscover the six signals">↺ Reset field</button>
     </div>
