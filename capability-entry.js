@@ -28,6 +28,12 @@
     .ashwood-capability-map__useful strong{
       display:inline;margin-right:5px;color:var(--ashwood-gold);font-size:7px;font-weight:600;letter-spacing:.13em;text-transform:uppercase
     }
+    .ashwood-capability-map__practice[data-internal="true"]{color:#009b3a}
+    .ashwood-capability-map__practice[data-internal="true"]::after{color:#009b3a}
+    .ashwood-capability-map__practice[data-internal="true"]:hover,
+    .ashwood-capability-map__practice[data-internal="true"]:focus-visible{color:var(--ashwood-gold)}
+    .ashwood-capability-map__practice[data-internal="true"]:hover::after,
+    .ashwood-capability-map__practice[data-internal="true"]:focus-visible::after{color:var(--ashwood-gold)}
     .principle-hotspot__useful-for{
       display:block;max-width:290px;margin-top:8px;color:var(--ashwood-muted);font-size:8px;line-height:1.35;
       letter-spacing:.065em;opacity:0;transform:translateY(7px);filter:blur(2px);pointer-events:none;
