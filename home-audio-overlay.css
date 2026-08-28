@@ -20,7 +20,8 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
 }
 .ashwood-name-audio__trigger {
   position: relative;
-  display: inline-block;
+  display: inline-grid;
+  grid-template-areas: "word";
   margin: 0;
   border: 0;
   padding: 0 1px 2px;
@@ -31,6 +32,7 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
   line-height: inherit;
   text-transform: inherit;
   cursor: pointer;
+  min-width: 7.2ch;
 }
 .ashwood-name-audio__trigger::after {
   content: "";
@@ -47,34 +49,34 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
   animation: ashwood-name-invite 3.8s ease-in-out infinite;
   pointer-events: none;
 }
+.ashwood-name-audio__ashwood,
+.ashwood-name-audio__inme {
+  grid-area: word;
+  justify-self: center;
+  transition: opacity .22s ease, color .24s ease, text-shadow .32s ease, transform .24s ease;
+}
 .ashwood-name-audio__ashwood {
-  display: inline;
-  transition: color .24s ease, text-shadow .32s ease;
+  opacity: 1;
+  transform: translateY(0);
 }
 .ashwood-name-audio__inme {
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 5px);
-  transform: translate(-50%, -2px);
+  position: static;
   color: #009b3a;
-  font-size: 8px;
-  letter-spacing: .14em;
-  line-height: 1;
   opacity: 0;
+  transform: translateY(2px);
   white-space: nowrap;
   pointer-events: none;
-  transition: opacity .2s ease, transform .24s ease;
-  text-shadow: 0 0 10px rgba(0,155,58,.22);
+  text-shadow: 0 0 12px rgba(0,155,58,.28);
 }
 .ashwood-name-audio__trigger:hover .ashwood-name-audio__ashwood,
 .ashwood-name-audio__trigger:focus-visible .ashwood-name-audio__ashwood {
-  color: #009b3a;
-  text-shadow: 0 0 10px rgba(0,155,58,.2);
+  opacity: 0;
+  transform: translateY(-2px);
 }
 .ashwood-name-audio__trigger:hover .ashwood-name-audio__inme,
 .ashwood-name-audio__trigger:focus-visible .ashwood-name-audio__inme {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
 }
 .ashwood-name-audio__trigger:hover::after,
 .ashwood-name-audio__trigger:focus-visible::after {
