@@ -23,12 +23,12 @@
   let discovered = new Set();
 
   const practiceMap = {
-    signal: { skill: "SIGNAL", practice: "Ailhat · Portfolio Intelligence", note: "Finding the opportunity, risk, drift, or work that actually deserves attention." },
-    friction: { skill: "FRICTION", practice: "ALVIRA · Context Experience", note: "Removing the unnecessary work between a person, their context, and useful intelligence." },
-    translation: { skill: "TRANSLATION", practice: "Build Journal · Product Storytelling", note: "Turning complicated systems and evolving decisions into something another person can understand and act on." },
-    systems: { skill: "SYSTEMS", practice: "Agent OS / Workforce · Ecosystem Infrastructure", note: "Designing the shared structure underneath products, agents, skills, handoffs, and governed execution." },
-    resilience: { skill: "RESILIENCE", practice: "LEDGATo · Operational Reality", note: "Testing whether the interface survives contact with runtime constraints, enforcement, and real deployment." },
-    range: { skill: "RANGE", practice: "ASHWOOD · Modeling + Music + Builds", note: "Using one point of view across different forms instead of forcing the practice into one lane." }
+    signal: { skill: "SIGNAL", practice: "Ailhat · Portfolio Intelligence", note: "Finding the opportunity, risk, drift, or work that deserves attention." },
+    friction: { skill: "FRICTION", practice: "ALVIRA · Context Experience", note: "Removing unnecessary work between a person, their context, and useful intelligence." },
+    translation: { skill: "TRANSLATION", practice: "Build Journal · Product Storytelling", note: "Making evolving systems and decisions legible enough to act on." },
+    systems: { skill: "SYSTEMS", practice: "Agent OS / Workforce · Infrastructure", note: "Designing the structure beneath products, agents, skills, handoffs, and execution." },
+    resilience: { skill: "RESILIENCE", practice: "LEDGATo · Operational Reality", note: "Testing whether an interface survives runtime constraints and real deployment." },
+    range: { skill: "RANGE", practice: "ASHWOOD · Modeling + Music + Builds", note: "Using one point of view across multiple forms without forcing one lane." }
   };
 
   try {
@@ -39,49 +39,46 @@
   const style = document.createElement("style");
   style.textContent = `
     .ashwood-curiosity-progress{position:fixed;right:clamp(22px,3vw,48px);top:50%;z-index:73;display:flex;flex-direction:column;gap:7px;transform:translateY(-50%);pointer-events:none;opacity:.38;transition:opacity .28s ease}
-    .ashwood-curiosity-progress span{display:block;width:3px;height:3px;border-radius:50%;background:var(--ashwood-muted);box-shadow:0 0 0 rgba(180,135,50,0);transition:background .28s ease,box-shadow .32s ease,transform .28s ease}
+    .ashwood-curiosity-progress span{display:block;width:3px;height:3px;border-radius:50%;background:var(--ashwood-muted);transition:background .28s ease,box-shadow .32s ease,transform .28s ease}
     .ashwood-curiosity-progress span.is-found{background:var(--ashwood-gold);box-shadow:0 0 9px rgba(214,194,74,.48);transform:scale(1.45)}
 
-    .ashwood-capability-map{position:fixed;right:clamp(34px,5vw,84px);top:var(--ashwood-capability-top,clamp(138px,19vh,210px));z-index:76;width:min(42vw,620px);max-height:var(--ashwood-capability-max-height,68vh);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1),visibility 0s linear .65s;color:var(--ashwood-ink)}
-    .ashwood-capability-map::before{content:"";position:absolute;left:9px;top:82px;bottom:64px;width:1px;background:linear-gradient(to bottom,transparent,var(--ashwood-rule) 10%,var(--ashwood-gold) 50%,var(--ashwood-rule) 90%,transparent);opacity:.72}
-    .ashwood-capability-map__header{position:relative;padding-right:118px}
-    .ashwood-capability-map__eyebrow{margin:0 0 8px;color:var(--ashwood-gold);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
-    .ashwood-capability-map__title{margin:0;font-family:Georgia,serif;font-size:clamp(27px,3.1vw,46px);font-weight:400;line-height:1.02;letter-spacing:-.03em}
-    .ashwood-capability-map__intro{max-width:46ch;margin:10px 0 22px;color:var(--ashwood-muted);font-size:11px;line-height:1.55}
-    .ashwood-capability-map__reset{position:absolute;right:0;top:0;border:0;padding:0;background:none;cursor:pointer;font-family:inherit;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ashwood-muted)}
+    .ashwood-capability-map{position:fixed;right:clamp(34px,5vw,84px);top:var(--ashwood-capability-top,clamp(146px,20vh,220px));z-index:76;width:min(37vw,520px);max-height:var(--ashwood-capability-max-height,60vh);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1),visibility 0s linear .55s;color:var(--ashwood-ink)}
+    .ashwood-capability-map__header{position:relative;display:grid;grid-template-columns:1fr auto;align-items:start;gap:12px 22px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 72%,transparent)}
+    .ashwood-capability-map__eyebrow{grid-column:1;margin:0;color:var(--ashwood-gold);font-size:8px;letter-spacing:.18em;text-transform:uppercase}
+    .ashwood-capability-map__title{grid-column:1;margin:0;font-family:Georgia,serif;font-size:clamp(20px,2vw,30px);font-weight:400;line-height:1.02;letter-spacing:-.025em}
+    .ashwood-capability-map__reset{grid-column:2;grid-row:1 / span 2;align-self:start;border:0;padding:0;background:none;cursor:pointer;font-family:inherit;font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ashwood-muted)}
     .ashwood-capability-map__reset:hover,.ashwood-capability-map__reset:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .ashwood-capability-map__list{display:grid;gap:0;margin:0;padding:0;list-style:none}
-    .ashwood-capability-map__item{position:relative;display:grid;grid-template-columns:minmax(92px,.32fr) minmax(0,1fr);gap:14px 22px;padding:12px 0 13px 27px;border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 78%,transparent)}
-    .ashwood-capability-map__item::before{content:"";position:absolute;left:6px;top:17px;width:7px;height:7px;border-radius:50%;background:var(--ashwood-gold);box-shadow:0 0 12px rgba(214,194,74,.45)}
-    .ashwood-capability-map__skill{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ashwood-gold)}
-    .ashwood-capability-map__practice{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ashwood-ink)}
-    .ashwood-capability-map__note{grid-column:2;margin:-6px 0 0;color:var(--ashwood-muted);font-size:10px;line-height:1.45}
-    .ashwood-capability-map__footer{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:17px;padding-top:13px;border-top:1px solid var(--ashwood-rule)}
-    .ashwood-capability-map__link{font-size:9px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--ashwood-muted)}
+    .ashwood-capability-map__item{position:relative;display:grid;grid-template-columns:minmax(72px,.28fr) minmax(0,1fr);gap:5px 16px;padding:8px 0;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 60%,transparent)}
+    .ashwood-capability-map__skill{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--ashwood-gold)}
+    .ashwood-capability-map__practice{font-size:9px;font-weight:500;letter-spacing:.055em;text-transform:uppercase;color:var(--ashwood-ink)}
+    .ashwood-capability-map__note{grid-column:2;max-height:0;margin:0;overflow:hidden;opacity:0;color:var(--ashwood-muted);font-size:9px;line-height:1.4;transform:translateY(-2px);transition:max-height .28s ease,opacity .22s ease,transform .28s ease}
+    .ashwood-capability-map__item:hover .ashwood-capability-map__note,.ashwood-capability-map__item:focus-within .ashwood-capability-map__note{max-height:42px;opacity:.82;transform:translateY(0)}
+    .ashwood-capability-map__footer{display:flex;justify-content:flex-end;margin-top:10px}
+    .ashwood-capability-map__link{font-size:8px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--ashwood-muted)}
     .ashwood-capability-map__link:hover,.ashwood-capability-map__link:focus-visible{color:var(--ashwood-gold);font-style:italic}
 
-    body.has-found-all-hotspots .ashwood-capability-map{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:.42s}
+    body.has-found-all-hotspots .ashwood-capability-map{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:.3s}
     body.has-found-all-hotspots .ashwood-curiosity-progress{opacity:0}
     body.has-found-all-hotspots .principle-hotspot{opacity:0!important;pointer-events:none!important;transition:opacity .5s ease!important}
     body.has-found-all-hotspots .principles-field__hint{opacity:0!important}
 
-    .ashwood-thread-flash{position:fixed;inset:0;z-index:77;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at 68% 42%,rgba(214,194,74,.13) 0%,rgba(180,135,50,.045) 24%,transparent 55%)}
+    .ashwood-thread-flash{position:fixed;inset:0;z-index:77;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at 68% 42%,rgba(214,194,74,.11) 0%,rgba(180,135,50,.035) 24%,transparent 55%)}
     .ashwood-thread-flash span{position:absolute;left:68%;top:42%;transform:translate(-50%,-50%);font-family:Georgia,serif;font-size:clamp(22px,2.6vw,38px);white-space:nowrap;color:var(--ashwood-ink)}
     .ashwood-thread-flash.is-active{visibility:visible;animation:ashwood-thread-resolve 1.9s ease both}
     @keyframes ashwood-thread-resolve{0%{opacity:0}24%{opacity:1}72%{opacity:.86}100%{opacity:0;visibility:hidden}}
 
     @media(max-width:760px){
       .ashwood-curiosity-progress{right:13px}
-      .ashwood-capability-map{position:relative;right:auto;top:auto;z-index:72;width:100%;max-height:none;margin:34px 0 18px;padding:20px 0 0;transform:translateY(8px)}
-      .ashwood-capability-map::before{left:7px;top:112px;bottom:54px}
-      .ashwood-capability-map__header{padding-right:0}
-      .ashwood-capability-map__reset{position:relative;right:auto;top:auto;margin:13px 0 4px}
-      .ashwood-capability-map__item{grid-template-columns:1fr;padding-left:25px}
-      .ashwood-capability-map__note{grid-column:1;margin:0}
+      .ashwood-capability-map{position:relative;right:auto;top:auto;z-index:72;width:100%;max-height:none;margin:30px 0 18px;padding:16px 0 0;transform:translateY(8px)}
+      .ashwood-capability-map__header{grid-template-columns:1fr;gap:8px}
+      .ashwood-capability-map__reset{grid-column:1;grid-row:auto;margin-top:4px;justify-self:start}
+      .ashwood-capability-map__item{grid-template-columns:86px 1fr;padding:9px 0}
+      .ashwood-capability-map__note{grid-column:2;max-height:none;opacity:.72;transform:none}
       body.has-found-all-hotspots .principles-field{min-height:0!important;height:auto!important}
       .ashwood-thread-flash span{left:50%;top:46%;font-size:clamp(20px,7vw,30px)}
     }
-    @media(prefers-reduced-motion:reduce){.ashwood-capability-map,.principle-hotspot{transition:none!important}.ashwood-thread-flash{display:none!important}}
+    @media(prefers-reduced-motion:reduce){.ashwood-capability-map,.principle-hotspot,.ashwood-capability-map__note{transition:none!important}.ashwood-thread-flash{display:none!important}}
   `;
   document.head.append(style);
 
@@ -105,7 +102,6 @@
     <div class="ashwood-capability-map__header">
       <p class="ashwood-capability-map__eyebrow">SIX / SIX · CAPABILITY MAP</p>
       <h2 class="ashwood-capability-map__title">Six signals, in practice.</h2>
-      <p class="ashwood-capability-map__intro">Each discovered capability has a visible expression in the work—across products, systems, and creative practice.</p>
       <button class="ashwood-capability-map__reset" type="button" aria-label="Reset the capability map and rediscover the six signals">↺ Reset field</button>
     </div>
     <ol class="ashwood-capability-map__list">
@@ -134,9 +130,9 @@
     const now = document.querySelector(".home-now");
     if (!now) return;
     const nowRect = now.getBoundingClientRect();
-    const preferredTop = Math.max(118, Math.min(210, window.innerHeight * .19));
-    const safetyGap = 28;
-    const minimumUsableHeight = 260;
+    const preferredTop = Math.max(124, Math.min(220, window.innerHeight * .2));
+    const safetyGap = 34;
+    const minimumUsableHeight = 210;
     let top = preferredTop;
     let available = nowRect.top - safetyGap - top;
 
@@ -146,7 +142,7 @@
     }
 
     capabilityMap.style.setProperty("--ashwood-capability-top", `${Math.round(top)}px`);
-    capabilityMap.style.setProperty("--ashwood-capability-max-height", `${Math.max(180, Math.floor(available))}px`);
+    capabilityMap.style.setProperty("--ashwood-capability-max-height", `${Math.max(170, Math.floor(available))}px`);
   };
 
   const updateProgress = () => {
@@ -175,7 +171,6 @@
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(REWARD_KEY);
     } catch (_) {}
-
     window.location.reload();
   };
 
