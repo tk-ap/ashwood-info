@@ -26,6 +26,7 @@
     signal: {
       skill: "SIGNAL",
       description: "I prioritize what matters most, anticipate risks, and help leaders move faster with better information.",
+      authorship: "FROM IDEA → BUILD",
       practice: "ailhat · Portfolio Intelligence",
       href: "https://ailhat.vercel.app/",
       external: true
@@ -33,6 +34,7 @@
     friction: {
       skill: "FRICTION",
       description: "I notice the small things that make a process harder than it needs to be — then I usually can't leave them alone.",
+      authorship: "FROM IDEA → BUILD",
       practice: "ALVIRA · Context Experience",
       href: "https://alviratech.vercel.app/",
       external: true
@@ -40,6 +42,7 @@
     translation: {
       skill: "TRANSLATION",
       description: "I turn complexity into something people can actually understand, decide from, and act on.",
+      authorship: "FROM IDEA → BUILD",
       practice: "Build Journal · Product Storytelling",
       href: "/journal/",
       external: false
@@ -47,6 +50,7 @@
     systems: {
       skill: "SYSTEMS",
       description: "I look for the structure underneath the problem. Fixing the symptom is rarely interesting enough.",
+      authorship: "FROM IDEA → INFRASTRUCTURE",
       practice: "Agent OS / Workforce · Infrastructure",
       href: "/journal/",
       external: false
@@ -54,6 +58,7 @@
     resilience: {
       skill: "RESILIENCE",
       description: "I think about what happens when the plan meets reality — because that's where the interesting problems usually begin.",
+      authorship: "FROM IDEA → BUILD",
       practice: "LEDGATo · Operational Reality",
       href: "https://ledgato.vercel.app/",
       external: true
@@ -61,6 +66,7 @@
     range: {
       skill: "RANGE",
       description: "I don't fit neatly into one lane. That's less a branding problem than a useful advantage.",
+      authorship: "CREATIVE PRACTICE →",
       practice: "ASHWOOD · Modeling + Music + Builds",
       href: "/about/",
       external: false
@@ -79,15 +85,17 @@
     .ashwood-curiosity-progress span.is-found{background:var(--ashwood-gold);box-shadow:0 0 9px rgba(214,194,74,.48);transform:scale(1.45)}
 
     .ashwood-capability-map{position:fixed;right:clamp(34px,5vw,84px);top:var(--ashwood-capability-top,clamp(146px,20vh,220px));z-index:76;width:min(39vw,550px);max-height:var(--ashwood-capability-max-height,60vh);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1),visibility 0s linear .55s;color:var(--ashwood-ink)}
-    .ashwood-capability-map__header{position:relative;display:grid;grid-template-columns:1fr auto;align-items:start;gap:12px 22px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 72%,transparent)}
+    .ashwood-capability-map__header{position:relative;display:grid;grid-template-columns:1fr auto;align-items:start;gap:8px 22px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 72%,transparent)}
     .ashwood-capability-map__eyebrow{grid-column:1;margin:0;color:var(--ashwood-gold);font-size:8px;letter-spacing:.18em;text-transform:uppercase}
     .ashwood-capability-map__title{grid-column:1;margin:0;font-family:Georgia,serif;font-size:clamp(20px,2vw,30px);font-weight:400;line-height:1.02;letter-spacing:-.025em}
-    .ashwood-capability-map__reset{grid-column:2;grid-row:1 / span 2;align-self:start;border:0;padding:0;background:none;cursor:pointer;font-family:inherit;font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ashwood-muted)}
+    .ashwood-capability-map__authorship-key{grid-column:1;margin:1px 0 0;color:var(--ashwood-muted);font-size:8px;line-height:1.35;letter-spacing:.055em}
+    .ashwood-capability-map__reset{grid-column:2;grid-row:1 / span 3;align-self:start;border:0;padding:0;background:none;cursor:pointer;font-family:inherit;font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ashwood-muted)}
     .ashwood-capability-map__reset:hover,.ashwood-capability-map__reset:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .ashwood-capability-map__list{display:grid;gap:0;margin:0;padding:0;list-style:none}
-    .ashwood-capability-map__item{position:relative;display:grid;grid-template-columns:minmax(72px,.25fr) minmax(0,1fr);gap:5px 15px;padding:8px 0 9px;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 60%,transparent)}
+    .ashwood-capability-map__item{position:relative;display:grid;grid-template-columns:minmax(72px,.25fr) minmax(0,1fr);gap:4px 15px;padding:8px 0 9px;border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 60%,transparent)}
     .ashwood-capability-map__skill{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--ashwood-gold)}
-    .ashwood-capability-map__practice{display:inline-flex;align-items:center;gap:6px;width:max-content;max-width:100%;font-size:9px;font-weight:500;letter-spacing:.055em;color:var(--ashwood-ink);text-decoration:none}
+    .ashwood-capability-map__authorship{grid-column:2;display:block;margin:0;color:var(--ashwood-gold);font-size:7px;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;opacity:.78}
+    .ashwood-capability-map__practice{grid-column:2;display:inline-flex;align-items:center;gap:6px;width:max-content;max-width:100%;font-size:9px;font-weight:500;letter-spacing:.055em;color:var(--ashwood-ink);text-decoration:none}
     .ashwood-capability-map__practice::after{content:"↗";font-size:8px;color:var(--ashwood-muted);transition:transform .2s ease,color .2s ease}
     .ashwood-capability-map__practice[data-internal="true"]::after{content:"→"}
     .ashwood-capability-map__practice:hover,.ashwood-capability-map__practice:focus-visible{color:var(--ashwood-gold);font-style:italic}
@@ -110,10 +118,10 @@
     @media(max-width:760px){
       .ashwood-curiosity-progress{right:13px}
       .ashwood-capability-map{position:relative;right:auto;top:auto;z-index:72;width:100%;max-height:none;margin:30px 0 18px;padding:16px 0 0;transform:translateY(8px)}
-      .ashwood-capability-map__header{grid-template-columns:1fr;gap:8px}
+      .ashwood-capability-map__header{grid-template-columns:1fr;gap:7px}
       .ashwood-capability-map__reset{grid-column:1;grid-row:auto;margin-top:4px;justify-self:start}
       .ashwood-capability-map__item{grid-template-columns:82px 1fr;padding:9px 0 10px}
-      .ashwood-capability-map__description{grid-column:2}
+      .ashwood-capability-map__authorship,.ashwood-capability-map__practice,.ashwood-capability-map__description{grid-column:2}
       body.has-found-all-hotspots .principles-field{min-height:0!important;height:auto!important}
       .ashwood-thread-flash span{left:50%;top:46%;font-size:clamp(20px,7vw,30px)}
     }
@@ -141,6 +149,7 @@
     <div class="ashwood-capability-map__header">
       <p class="ashwood-capability-map__eyebrow">SIX / SIX · CAPABILITY MAP</p>
       <h2 class="ashwood-capability-map__title">Six signals, in practice.</h2>
+      <p class="ashwood-capability-map__authorship-key">The product expressions below began as ideas I originated and then started building; creative-practice rows are labeled separately.</p>
       <button class="ashwood-capability-map__reset" type="button" aria-label="Reset the capability map and rediscover the six signals">↺ Reset field</button>
     </div>
     <ol class="ashwood-capability-map__list">
@@ -148,6 +157,7 @@
         const item = practiceMap[id] || {
           skill: id.toUpperCase(),
           description: "A recurring capability across the practice.",
+          authorship: "CREATIVE PRACTICE →",
           practice: "ASHWOOD",
           href: "/about/",
           external: false
@@ -155,6 +165,7 @@
         const targetAttrs = item.external ? ' target="_blank" rel="noreferrer"' : '';
         return `<li class="ashwood-capability-map__item" data-capability="${id}">
           <span class="ashwood-capability-map__skill">${item.skill}</span>
+          <span class="ashwood-capability-map__authorship">${item.authorship}</span>
           <a class="ashwood-capability-map__practice" href="${item.href}" data-internal="${item.external ? "false" : "true"}"${targetAttrs}>${item.practice}</a>
           <p class="ashwood-capability-map__description">${item.description}</p>
         </li>`;
