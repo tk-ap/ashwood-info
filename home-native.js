@@ -26,6 +26,11 @@
   `;
   nav.insertAdjacentElement("beforebegin", control);
 
+  const ripple = document.createElement("span");
+  ripple.className = "ashwood-home-play-ripple";
+  ripple.setAttribute("aria-hidden", "true");
+  document.body.appendChild(ripple);
+
   const homeToggle = control.querySelector(".ashwood-home-audio__toggle");
   const homeVolume = control.querySelector(".ashwood-home-audio__volume");
   const STORAGE_KEY = "ashwood.audio.v1";
@@ -47,6 +52,12 @@
     return sourceIsPlaying() || state.wasPlaying === true || position > 0.5;
   };
 
+  const triggerRipple = () => {
+    ripple.classList.remove("is-active");
+    void ripple.offsetWidth;
+    ripple.classList.add("is-active");
+  };
+
   const render = () => {
     const playing = sourceIsPlaying();
     const visible = hasActiveSession();
@@ -64,7 +75,9 @@
   homeToggle.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
+    const wasPlaying = sourceIsPlaying();
     sourceToggle.click();
+    if (!wasPlaying) triggerRipple();
     requestAnimationFrame(render);
     setTimeout(render, 80);
   });
