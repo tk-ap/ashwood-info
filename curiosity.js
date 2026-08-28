@@ -38,7 +38,7 @@
     .ashwood-curiosity-reward__constellation span{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:var(--ashwood-gold);box-shadow:0 0 14px rgba(214,194,74,.68);opacity:0;transform:translate(-50%,-50%) scale(.15)}
     .ashwood-curiosity-reward__constellation span:nth-child(1){--x:-74px;--y:-35px}.ashwood-curiosity-reward__constellation span:nth-child(2){--x:-22px;--y:-78px}.ashwood-curiosity-reward__constellation span:nth-child(3){--x:62px;--y:-48px}.ashwood-curiosity-reward__constellation span:nth-child(4){--x:76px;--y:31px}.ashwood-curiosity-reward__constellation span:nth-child(5){--x:12px;--y:76px}.ashwood-curiosity-reward__constellation span:nth-child(6){--x:-68px;--y:48px}
     .ashwood-curiosity-reward__offering{position:absolute;left:62%;top:43%;width:min(360px,72vw);padding-top:118px;transform:translate(-50%,-50%);text-align:center;pointer-events:auto;opacity:0}
-    .ashwood-curiosity-reward__eyebrow{margin:0 0 10px;color:var(--ashwood-gold);font-size:9px;letter-spacing:.18em;text-transform:uppercase}.ashwood-curiosity-reward__title{margin:0;font-family:Georgia,serif;font-size:clamp(23px,2.7vw,38px);font-weight:400;line-height:1.05}.ashwood-curiosity-reward__copy{max-width:310px;margin:12px auto 0;color:var(--ashwood-muted);font-size:11px;line-height:1.55}.ashwood-curiosity-reward__link{display:inline-block;margin-top:16px;color:inherit;font-size:10px;letter-spacing:.15em;text-decoration:none;text-transform:uppercase}.ashwood-curiosity-reward__link:hover,.ashwood-curiosity-reward__link:focus-visible{color:var(--ashwood-gold);font-style:italic}
+    .ashwood-curiosity-reward__eyebrow{margin:0 0 10px;color:var(--ashwood-gold);font-size:9px;letter-spacing:.18em;text-transform:uppercase}.ashwood-curiosity-reward__title{margin:0;font-family:Georgia,serif;font-size:clamp(23px,2.7vw,38px);font-weight:400;line-height:1.05}.ashwood-curiosity-reward__copy{max-width:310px;margin:12px auto 0;color:var(--ashwood-muted);font-size:11px;line-height:1.55}.ashwood-curiosity-reward__actions{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px}.ashwood-curiosity-reward__link,.ashwood-curiosity-reward__reset{display:inline-block;color:inherit;font:inherit;font-size:10px;letter-spacing:.15em;text-decoration:none;text-transform:uppercase}.ashwood-curiosity-reward__reset{border:0;padding:0;background:none;color:var(--ashwood-muted);cursor:pointer}.ashwood-curiosity-reward__link:hover,.ashwood-curiosity-reward__link:focus-visible,.ashwood-curiosity-reward__reset:hover,.ashwood-curiosity-reward__reset:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .ashwood-curiosity-reward.is-earned{opacity:1;visibility:visible;transition-delay:0s}.ashwood-curiosity-reward.is-earned::before{animation:ashwood-curiosity-aura 4.8s cubic-bezier(.16,.8,.24,1) both}.ashwood-curiosity-reward.is-earned .ashwood-curiosity-reward__constellation span{animation:ashwood-curiosity-star 1.15s cubic-bezier(.16,.8,.24,1) both}.ashwood-curiosity-reward.is-earned .ashwood-curiosity-reward__constellation span:nth-child(2){animation-delay:.08s}.ashwood-curiosity-reward.is-earned .ashwood-curiosity-reward__constellation span:nth-child(3){animation-delay:.16s}.ashwood-curiosity-reward.is-earned .ashwood-curiosity-reward__constellation span:nth-child(4){animation-delay:.24s}.ashwood-curiosity-reward.is-earned .ashwood-curiosity-reward__constellation span:nth-child(5){animation-delay:.32s}.ashwood-curiosity-reward.is-earned .ashwood-curiosity-reward__constellation span:nth-child(6){animation-delay:.4s}.ashwood-curiosity-reward.is-earned .ashwood-curiosity-reward__offering{animation:ashwood-curiosity-offering .8s ease 1.1s both}
     .ashwood-curiosity-reward.is-remembered{opacity:1;visibility:visible}.ashwood-curiosity-reward.is-remembered::before{opacity:.34;transform:translate(-50%,-50%) scale(1)}.ashwood-curiosity-reward.is-remembered .ashwood-curiosity-reward__constellation span{opacity:.68;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(.8)}.ashwood-curiosity-reward.is-remembered .ashwood-curiosity-reward__offering{opacity:.72}
     @keyframes ashwood-curiosity-star{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}55%{opacity:1}100%{opacity:.82;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1)}}
@@ -64,7 +64,10 @@
       <p class="ashwood-curiosity-reward__eyebrow">SIX / SIX · CURIOSITY REWARDED</p>
       <p class="ashwood-curiosity-reward__title">You found the thread.</p>
       <p class="ashwood-curiosity-reward__copy">There is always another layer. This one is for the people who stayed long enough to notice.</p>
-      <a class="ashwood-curiosity-reward__link" href="/dive-deeper?found=all-six">Dive deeper →</a>
+      <div class="ashwood-curiosity-reward__actions">
+        <a class="ashwood-curiosity-reward__link" href="/dive-deeper?found=all-six">Dive deeper →</a>
+        <button class="ashwood-curiosity-reward__reset" type="button">Reset discovery</button>
+      </div>
     </div>`;
   document.body.append(reward);
 
@@ -81,6 +84,23 @@
     reward.classList.add(remembered ? "is-remembered" : "is-earned");
     document.body.classList.add("has-found-all-hotspots");
     try { localStorage.setItem(REWARD_KEY, "1"); } catch (_) {}
+  };
+
+  const resetDiscovery = () => {
+    discovered = new Set();
+    rewardedThisVisit = false;
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(REWARD_KEY);
+    } catch (_) {}
+    hotspots.forEach((hotspot) => hotspot.classList.remove("is-discovered", "is-revealed", "is-near"));
+    updateProgress();
+    reward.classList.remove("is-earned", "is-remembered");
+    document.body.classList.remove("has-found-all-hotspots");
+    const field = document.querySelector(".principles-field");
+    if (field) field.classList.remove("is-pinned", "is-exploring");
+    const firstHotspot = hotspots[0];
+    if (firstHotspot) firstHotspot.focus({ preventScroll: true });
   };
 
   const markDiscovered = (hotspot) => {
@@ -103,6 +123,8 @@
     hotspot.addEventListener("focus", () => markDiscovered(hotspot));
     hotspot.addEventListener("click", () => markDiscovered(hotspot));
   });
+
+  reward.querySelector(".ashwood-curiosity-reward__reset")?.addEventListener("click", resetDiscovery);
 
   updateProgress();
   hotspots.forEach((hotspot, index) => hotspot.classList.toggle("is-discovered", discovered.has(ids[index])));
