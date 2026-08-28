@@ -67,7 +67,14 @@
     if (completedDiscovery()) return;
     document.body.classList.remove("has-viewed-capability-map");
     const capabilityMap = map();
-    if (capabilityMap) delete capabilityMap.dataset.entryMode;
+    if (capabilityMap) {
+      delete capabilityMap.dataset.entryMode;
+      const reset = capabilityMap.querySelector(".ashwood-capability-map__reset");
+      if (reset) {
+        reset.textContent = "↺ Reset field";
+        reset.setAttribute("aria-label", "Reset the observed strengths map and rediscover the six signals");
+      }
+    }
     const url = new URL(window.location.href);
     url.searchParams.delete("capabilities");
     url.searchParams.delete("from");
