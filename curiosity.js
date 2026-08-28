@@ -42,7 +42,7 @@
     .ashwood-curiosity-progress span{display:block;width:3px;height:3px;border-radius:50%;background:var(--ashwood-muted);box-shadow:0 0 0 rgba(180,135,50,0);transition:background .28s ease,box-shadow .32s ease,transform .28s ease}
     .ashwood-curiosity-progress span.is-found{background:var(--ashwood-gold);box-shadow:0 0 9px rgba(214,194,74,.48);transform:scale(1.45)}
 
-    .ashwood-capability-map{position:fixed;right:clamp(34px,5vw,84px);top:clamp(138px,19vh,210px);z-index:76;width:min(42vw,620px);max-height:68vh;overflow:auto;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1),visibility 0s linear .65s;color:var(--ashwood-ink)}
+    .ashwood-capability-map{position:fixed;right:clamp(34px,5vw,84px);top:var(--ashwood-capability-top,clamp(138px,19vh,210px));z-index:76;width:min(42vw,620px);max-height:var(--ashwood-capability-max-height,68vh);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1),visibility 0s linear .65s;color:var(--ashwood-ink)}
     .ashwood-capability-map::before{content:"";position:absolute;left:9px;top:82px;bottom:64px;width:1px;background:linear-gradient(to bottom,transparent,var(--ashwood-rule) 10%,var(--ashwood-gold) 50%,var(--ashwood-rule) 90%,transparent);opacity:.72}
     .ashwood-capability-map__header{position:relative;padding-right:118px}
     .ashwood-capability-map__eyebrow{margin:0 0 8px;color:var(--ashwood-gold);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
@@ -124,6 +124,31 @@
   const shell = document.querySelector(".shell") || document.body;
   shell.append(capabilityMap);
 
+  const fitCapabilityMap = () => {
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      capabilityMap.style.removeProperty("--ashwood-capability-top");
+      capabilityMap.style.removeProperty("--ashwood-capability-max-height");
+      return;
+    }
+
+    const now = document.querySelector(".home-now");
+    if (!now) return;
+    const nowRect = now.getBoundingClientRect();
+    const preferredTop = Math.max(118, Math.min(210, window.innerHeight * .19));
+    const safetyGap = 28;
+    const minimumUsableHeight = 260;
+    let top = preferredTop;
+    let available = nowRect.top - safetyGap - top;
+
+    if (available < minimumUsableHeight) {
+      top = Math.max(92, nowRect.top - safetyGap - minimumUsableHeight);
+      available = nowRect.top - safetyGap - top;
+    }
+
+    capabilityMap.style.setProperty("--ashwood-capability-top", `${Math.round(top)}px`);
+    capabilityMap.style.setProperty("--ashwood-capability-max-height", `${Math.max(180, Math.floor(available))}px`);
+  };
+
   const updateProgress = () => {
     progress.querySelectorAll("[data-hotspot-progress]").forEach((dot) => {
       dot.classList.toggle("is-found", discovered.has(dot.dataset.hotspotProgress));
@@ -134,7 +159,9 @@
   const unlockReward = (remembered = false) => {
     if (rewardedThisVisit) return;
     rewardedThisVisit = true;
+    fitCapabilityMap();
     document.body.classList.add("has-found-all-hotspots");
+    requestAnimationFrame(fitCapabilityMap);
     if (!remembered) {
       flash.classList.remove("is-active");
       void flash.offsetWidth;
@@ -149,10 +176,6 @@
       localStorage.removeItem(REWARD_KEY);
     } catch (_) {}
 
-    // Use the page's native initialization path for reset. Reloading after clearing
-    // completion state guarantees the original randomized placement, hover/proximity
-    // reveal, click-to-pin, Escape dismissal, and mobile behavior all return exactly
-    // as they do on a first visit, rather than approximating that engine here.
     window.location.reload();
   };
 
@@ -178,6 +201,7 @@
   });
 
   capabilityMap.querySelector(".ashwood-capability-map__reset")?.addEventListener("click", resetDiscovery);
+  window.addEventListener("resize", fitCapabilityMap, { passive: true });
 
   updateProgress();
   hotspots.forEach((hotspot, index) => hotspot.classList.toggle("is-discovered", discovered.has(ids[index])));
