@@ -17,6 +17,12 @@ body.ashwood-home-native .intro .eyebrow { color:var(--ashwood-muted); }
 .home-now{position:relative;z-index:60;display:flex;flex-wrap:wrap;gap:8px 24px;padding:13px 0 2px;color:var(--ashwood-muted);font-size:9px;letter-spacing:.1em;line-height:1.45;text-transform:uppercase}
 .home-now__label{color:var(--ashwood-gold);font-weight:700}
 
+/* Utility, not navigation: keep these present without creating another structural layer. */
+body.ashwood-home-native .home-utility{align-self:flex-start;gap:18px;margin-top:10px;padding:0;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ashwood-muted);opacity:.72}
+body.ashwood-home-native .home-utility a{transform:none!important;letter-spacing:inherit!important;color:inherit;transition:color .2s ease,opacity .2s ease}
+body.ashwood-home-native .home-utility a::after{display:none!important;content:none!important}
+body.ashwood-home-native .home-utility a:hover,body.ashwood-home-native .home-utility a:focus-visible{color:var(--ashwood-gold);opacity:1;font-style:normal}
+
 /* Latest ambient IN ME control: play/pause at rest, title only on hover/focus. */
 .ashwood-home-audio { position:fixed; left:50%; top:clamp(92px,14vh,150px); bottom:auto; z-index:66; display:inline-flex; align-items:center; min-width:0; color:var(--ashwood-muted); font-size:10px; letter-spacing:.11em; line-height:1; text-transform:uppercase; transform:translateX(-50%); pointer-events:auto; }
 .ashwood-home-audio[hidden]{display:none!important}
@@ -43,8 +49,8 @@ body.is-inner-igniting .principle-hotspot:not(.is-revealed):not(.is-near)::befor
   .home-entryways { margin-top:clamp(34px,5vh,54px); }
   .home-entryway { padding-top:14px; padding-bottom:13px; }
   .home-now { padding-top:10px; gap:6px 20px; }
-  body.ashwood-home-native .future-nav { padding-top:10px; }
+  body.ashwood-home-native .home-utility { margin-top:7px; padding-top:0; }
 }
 
-@media(max-width:760px){body.ashwood-home-native .intro{padding:84px 0 42px}.home-entryways{grid-template-columns:1fr;margin-top:clamp(108px,16vh,160px)}.home-entryway{padding:14px 0}.home-entryway+.home-entryway{border-left:0;border-top:1px solid var(--ashwood-rule);padding-left:0}.home-now{gap:5px 14px;padding-top:12px}.home-now span:not(.home-now__label){width:100%}body.ashwood-home-native .future-nav{gap:14px 20px;padding-top:14px}.ashwood-home-audio{left:50%;top:clamp(82px,12vh,118px);bottom:auto;transform:translateX(-50%)}.ashwood-home-ignition__core,.ashwood-home-ignition__bloom,.ashwood-home-ignition__wave{top:clamp(93px,12vh,129px)}body.ashwood-home-native .principle-hotspot{width:clamp(128px,42vw,210px);min-height:64px;padding:8px 10px}body.ashwood-home-native .principle-hotspot__quote{max-width:220px;font-size:12px;line-height:1.35}}
+@media(max-width:760px){body.ashwood-home-native .intro{padding:84px 0 42px}.home-entryways{grid-template-columns:1fr;margin-top:clamp(108px,16vh,160px)}.home-entryway{padding:14px 0}.home-entryway+.home-entryway{border-left:0;border-top:1px solid var(--ashwood-rule);padding-left:0}.home-now{gap:5px 14px;padding-top:12px}.home-now span:not(.home-now__label){width:100%}body.ashwood-home-native .home-utility{gap:14px;margin-top:12px;padding:0;font-size:9px}.ashwood-home-audio{left:50%;top:clamp(82px,12vh,118px);bottom:auto;transform:translateX(-50%)}.ashwood-home-ignition__core,.ashwood-home-ignition__bloom,.ashwood-home-ignition__wave{top:clamp(93px,12vh,129px)}body.ashwood-home-native .principle-hotspot{width:clamp(128px,42vw,210px);min-height:64px;padding:8px 10px}body.ashwood-home-native .principle-hotspot__quote{max-width:220px;font-size:12px;line-height:1.35}}
 @media(prefers-reduced-motion:reduce){body.ashwood-home-native .principle-hotspot::before,body.ashwood-home-native .principle-hotspot::after,body.ashwood-home-native .principle-hotspot__label,body.ashwood-home-native .principle-hotspot__quote,.ashwood-home-ignition,.ashwood-home-ignition *{animation:none!important;transition:none!important}.ashwood-home-ignition{display:none!important}body.is-inner-igniting .shell{animation:none!important}.ashwood-home-audio__title{transition:none!important}}
