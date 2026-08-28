@@ -218,3 +218,10 @@ body.ashwood-has-audio-room {
     transition: none !important;
   }
 }
+
+/* V0: desktop compact audio player */
+@media (min-width: 641px) {
+  .ashwood-audio {
+    max-width: 280px;
+  }
+}
