@@ -6,6 +6,32 @@
 
   document.body.classList.add("ashwood-home-native");
 
+  const jamaicaIgnitionStyle = document.createElement("style");
+  jamaicaIgnitionStyle.textContent = `
+    .ashwood-home-ignition__core {
+      background: rgba(0, 155, 58, .96) !important;
+      box-shadow: 0 0 18px rgba(0, 155, 58, .72), 0 0 48px rgba(0, 106, 40, .34) !important;
+    }
+    .ashwood-home-ignition__bloom {
+      background: radial-gradient(ellipse at 48% 44%, rgba(0,155,58,.16) 0%, rgba(0,126,47,.09) 22%, rgba(0,78,30,.035) 48%, transparent 72%) !important;
+    }
+    .ashwood-home-ignition__wave {
+      border-color: rgba(0, 155, 58, .22) !important;
+    }
+    @keyframes ashwood-word-in {
+      0% { color: inherit; text-shadow: none; }
+      34% { color: #009b3a; text-shadow: 0 0 12px rgba(0,155,58,.36); }
+      72%, 100% { color: inherit; text-shadow: none; }
+    }
+    @keyframes ashwood-word-me {
+      0% { color: inherit; text-shadow: none; }
+      30% { color: #009b3a; text-shadow: 0 0 16px rgba(0,155,58,.5); }
+      72% { color: #009b3a; text-shadow: 0 0 9px rgba(0,155,58,.24); }
+      100% { color: inherit; text-shadow: none; }
+    }
+  `;
+  document.head.appendChild(jamaicaIgnitionStyle);
+
   const nav = document.querySelector(".future-nav");
   const shell = document.querySelector(".shell");
   const player = document.querySelector(".ashwood-audio");
