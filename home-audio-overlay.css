@@ -41,11 +41,11 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
   transition: opacity .22s ease, color .24s ease, text-shadow .32s ease, transform .24s ease;
 }
 .ashwood-name-audio__ashwood {
-  color: inherit;
+  color: var(--ashwood-ink);
   opacity: 1;
   transform: translateY(0);
-  text-shadow: 0 0 3px rgba(0,155,58,.12);
-  animation: ashwood-name-heartbeat 4.8s cubic-bezier(.4,0,.2,1) infinite;
+  text-shadow: 0 0 5px rgba(0,155,58,.18);
+  animation: ashwood-lub-dub 5.2s ease-in-out infinite;
 }
 .ashwood-name-audio__inme {
   position: static;
@@ -60,7 +60,7 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
 .ashwood-name-audio__trigger:focus-visible .ashwood-name-audio__ashwood {
   opacity: 0;
   transform: translateY(-2px);
-  animation-play-state: paused;
+  animation: none;
 }
 .ashwood-name-audio__trigger:hover .ashwood-name-audio__inme,
 .ashwood-name-audio__trigger:focus-visible .ashwood-name-audio__inme {
@@ -69,25 +69,20 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
 }
 .ashwood-name-audio__trigger:focus-visible { outline: 1px solid #009b3a; outline-offset: 3px; }
 .ashwood-name-audio__trigger.is-playing .ashwood-name-audio__ashwood {
-  text-shadow: 0 0 7px rgba(0,155,58,.26);
+  color: var(--ashwood-ink);
+  text-shadow: 0 0 7px rgba(0,155,58,.34), 0 0 16px rgba(0,155,58,.18);
 }
 
-/* Two restrained beats close together, then a long still interval. */
-@keyframes ashwood-name-heartbeat {
-  0%, 7%, 15%, 100% {
-    text-shadow: 0 0 3px rgba(0,155,58,.10), 0 0 0 rgba(0,155,58,0);
+/* Two close beats, then a long quiet interval. Text itself stays white. */
+@keyframes ashwood-lub-dub {
+  0%, 8%, 20%, 100% {
+    text-shadow: 0 0 5px rgba(0,155,58,.18);
   }
-  9% {
-    text-shadow: 0 0 6px rgba(0,155,58,.30), 0 0 14px rgba(0,155,58,.16);
+  3.5% {
+    text-shadow: 0 0 7px rgba(0,155,58,.62), 0 0 17px rgba(0,155,58,.34), 0 0 28px rgba(0,106,40,.18);
   }
-  12% {
-    text-shadow: 0 0 4px rgba(0,155,58,.15), 0 0 5px rgba(0,155,58,.06);
-  }
-  16.5% {
-    text-shadow: 0 0 7px rgba(0,155,58,.36), 0 0 17px rgba(0,155,58,.18);
-  }
-  21% {
-    text-shadow: 0 0 3px rgba(0,155,58,.10), 0 0 0 rgba(0,155,58,0);
+  12.5% {
+    text-shadow: 0 0 6px rgba(0,155,58,.50), 0 0 14px rgba(0,155,58,.26), 0 0 23px rgba(0,106,40,.14);
   }
 }
 
@@ -129,6 +124,6 @@ body.is-inner-igniting .ashwood-home-ignition__wave { animation: ashwood-inner-w
   .ashwood-name-audio__ashwood,
   .ashwood-home-ignition,
   .ashwood-home-ignition * { animation: none !important; }
-  .ashwood-name-audio__ashwood { text-shadow: 0 0 5px rgba(0,155,58,.18); }
+  .ashwood-name-audio__ashwood { text-shadow: 0 0 7px rgba(0,155,58,.38), 0 0 14px rgba(0,155,58,.16); }
   .ashwood-home-ignition { display: none !important; }
 }
