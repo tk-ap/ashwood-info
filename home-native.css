@@ -1,0 +1,172 @@
+/* ASHWOOD home-only integration: preserve the continuous field while keeping audio native. */
+body.ashwood-home-native {
+  padding-bottom: 0 !important;
+}
+
+body.ashwood-home-native .ashwood-audio {
+  display: none !important;
+}
+
+body.ashwood-home-native .future-nav {
+  z-index: 70;
+  align-items: center;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--ashwood-paper) 72%, transparent) 30%,
+    var(--ashwood-paper) 100%
+  );
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0;
+  box-shadow: none;
+  padding-block: 18px 14px;
+}
+
+.ashwood-home-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: var(--ashwood-muted);
+  font-size: 10px;
+  letter-spacing: .11em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ashwood-home-audio[hidden] {
+  display: none !important;
+}
+
+.ashwood-home-audio__title {
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ashwood-home-audio__toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ashwood-ink);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.ashwood-home-audio__toggle:hover,
+.ashwood-home-audio__toggle:focus-visible {
+  color: var(--ashwood-gold);
+}
+
+/* Eureka reveal: a latent point blooms into the discovered principle. */
+body.ashwood-home-native .principle-hotspot {
+  overflow: visible;
+}
+
+body.ashwood-home-native .principle-hotspot::before,
+body.ashwood-home-native .principle-hotspot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 5px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+body.ashwood-home-native .principle-hotspot::before {
+  width: 4px;
+  height: 4px;
+  background: var(--ashwood-gold);
+  opacity: .05;
+  transform: translate(-50%, -50%) scale(.65);
+  box-shadow: 0 0 0 rgba(180, 135, 50, 0);
+  transition: opacity .2s ease, transform .28s ease, box-shadow .32s ease;
+}
+
+body.ashwood-home-native .principle-hotspot::after {
+  width: 84px;
+  height: 84px;
+  background: radial-gradient(
+    circle,
+    rgba(214, 194, 74, .23) 0%,
+    rgba(180, 135, 50, .10) 26%,
+    rgba(180, 135, 50, 0) 70%
+  );
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.08);
+}
+
+body.ashwood-home-native .principle-hotspot__label,
+body.ashwood-home-native .principle-hotspot__quote {
+  transform-origin: left top;
+  filter: blur(3px);
+  transition: opacity .34s ease, transform .46s cubic-bezier(.2,.8,.2,1), filter .34s ease;
+}
+
+body.ashwood-home-native .principle-hotspot__label {
+  transform: translateY(7px) scale(.96);
+}
+
+body.ashwood-home-native .principle-hotspot__quote {
+  transform: translateY(9px) scale(.97);
+}
+
+body.ashwood-home-native .principle-hotspot.is-near::before,
+body.ashwood-home-native .principle-hotspot:focus-visible::before,
+body.ashwood-home-native .principle-hotspot.is-revealed::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  box-shadow: 0 0 16px rgba(214, 194, 74, .68), 0 0 36px rgba(180, 135, 50, .24);
+}
+
+body.ashwood-home-native .principle-hotspot.is-near::after,
+body.ashwood-home-native .principle-hotspot:focus-visible::after,
+body.ashwood-home-native .principle-hotspot.is-revealed::after {
+  animation: ashwood-eureka-bloom .72s cubic-bezier(.16,.84,.28,1) both;
+}
+
+body.ashwood-home-native .principle-hotspot.is-near .principle-hotspot__label,
+body.ashwood-home-native .principle-hotspot:focus-visible .principle-hotspot__label,
+body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__label,
+body.ashwood-home-native .principle-hotspot.is-near .principle-hotspot__quote,
+body.ashwood-home-native .principle-hotspot:focus-visible .principle-hotspot__quote,
+body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__quote {
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+@keyframes ashwood-eureka-bloom {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.08); }
+  28% { opacity: .78; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.18); }
+}
+
+@media (max-width: 640px) {
+  body.ashwood-home-native .future-nav {
+    gap: 14px 20px;
+    padding-top: 16px;
+  }
+
+  .ashwood-home-audio {
+    flex: 0 1 auto;
+    max-width: 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.ashwood-home-native .principle-hotspot::before,
+  body.ashwood-home-native .principle-hotspot::after,
+  body.ashwood-home-native .principle-hotspot__label,
+  body.ashwood-home-native .principle-hotspot__quote {
+    animation: none !important;
+    transition: none !important;
+  }
+}
