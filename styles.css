@@ -40,21 +40,25 @@ button { font: inherit; }
 .ashwood-wordmark,.wordmark { font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; }
 .ashwood-meta,.section-label,.eyebrow { font-size: var(--ashwood-meta); letter-spacing: var(--ashwood-tracking); text-transform: uppercase; }
 .section-label { opacity: .58; }
-.intro { max-width: 760px; margin: auto 0; padding: 12vh 0 14vh; }
+.intro { position: relative; z-index: 2; isolation: isolate; max-width: 760px; margin: auto 0; padding: 12vh 0 14vh; }
+/* The principles field may visually sit behind the hero on expansive layouts.
+   Keep the primary statement on a dedicated, opaque reading layer. */
+.intro::before { content: ""; position: absolute; z-index: -1; inset: -28px -32px; background: linear-gradient(90deg, var(--ashwood-paper) 76%, color-mix(in srgb, var(--ashwood-paper) 90%, transparent)); pointer-events: none; }
 .page-intro { max-width: 980px; }
 .eyebrow { margin: 0 0 20px; }
 h1,.ashwood-display { margin: 0; font-size: var(--ashwood-display); line-height: .9; font-weight: 500; letter-spacing: -.055em; }
 .iridescent-word { display: inline-block; color: var(--ashwood-ink); text-decoration: none; transition: color .2s ease; }
 .iridescent-word:hover,.iridescent-word:focus-visible { color: transparent; background: linear-gradient(110deg, #1f4f4a, var(--ashwood-gold) 22%, #d6c24a 42%, #3f7f84 62%, #243f76 80%, var(--ashwood-oxblood)); background-size: 320% 100%; -webkit-background-clip: text; background-clip: text; animation: ashwood-iridescence 2.4s ease-in-out infinite; }
+.iridescent-word--jamaica:hover,.iridescent-word--jamaica:focus-visible { background-image: linear-gradient(110deg, #009b3a, #fed100 38%, #000 56%, #fed100 73%, #009b3a); }
 .note { max-width: 520px; margin: 30px 0 0; font-size: 15px; line-height: 1.55; }
-.principles-field { position: relative; min-height: 190px; margin: 0 0 70px; overflow: visible; }
+.principles-field { position: relative; z-index: 1; isolation: isolate; min-height: 190px; margin: 0 0 70px; overflow: visible; }
 .home-identity { margin: 28px 0 0; color: var(--ashwood-ink); font-size: clamp(18px, 2.25vw, 29px); font-weight: 500; letter-spacing: -.035em; line-height: 1.04; }
 .principles-field__hint { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .principle-hotspot { position: absolute; z-index: 2; width: 28%; min-height: 92px; border: 0; padding: 12px 18px 16px; background: transparent; color: transparent; cursor: crosshair; text-align: left; }
 .principle-hotspot--brief { left: 22%; top: 72px; }.principle-hotspot--signal { left: 55%; top: 40px; }.principle-hotspot--system { right: 14%; top: 112px; }.principle-hotspot--ownership { left: 8%; top: 132px; }.principle-hotspot--influence { left: 39%; top: 126px; }.principle-hotspot--reliability { right: 2%; top: 48px; }
 .principle-hotspot__dot { display: block; width: 12px; height: 12px; border: 1px solid var(--ashwood-ochre); border-radius: 50%; opacity: 0; transform: scale(.7); transition: opacity .2s ease, transform .25s ease, background .25s ease; }
 .principle-hotspot__label { display: block; margin-top: 8px; color: var(--ashwood-muted); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: opacity .2s ease; }
-.principle-hotspot__quote { position: absolute; left: 0; top: 58px; width: min(300px, 42vw); padding: 14px 16px; border: 1px solid var(--ashwood-rule); background: var(--ashwood-paper); color: var(--ashwood-ink); font-size: 13px; line-height: 1.45; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease; z-index: 3; }
+.principle-hotspot__quote { position: absolute; left: 0; top: 58px; width: min(300px, 42vw); padding: 14px 16px; border: 1px solid var(--ashwood-rule); background: var(--ashwood-paper); box-shadow: 0 10px 26px color-mix(in srgb, var(--ashwood-ink) 12%, transparent); color: var(--ashwood-ink); font-size: 13px; line-height: 1.45; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease; z-index: 3; }
 .principle-hotspot:hover .principle-hotspot__dot,.principle-hotspot:focus-visible .principle-hotspot__dot,.principle-hotspot.is-revealed .principle-hotspot__dot { opacity: 1; background: var(--ashwood-ochre); transform: scale(1.35); }
 .principle-hotspot:hover .principle-hotspot__label,.principle-hotspot:focus-visible .principle-hotspot__label,.principle-hotspot.is-revealed .principle-hotspot__label { opacity: 1; }
 .principle-hotspot:hover .principle-hotspot__quote,.principle-hotspot:focus-visible .principle-hotspot__quote,.principle-hotspot.is-revealed .principle-hotspot__quote { opacity: 1; transform: translateY(0); }

@@ -9,11 +9,23 @@ html:not(.ashwood-light) { --audio-paper: #10110f; --audio-ink: #f1eee6; --audio
 html.ashwood-light { --audio-paper: #f5f3ef; --audio-ink: #171717; --audio-rule: rgba(23, 23, 23, .28); }
 
 body.ashwood-has-audio {
-  padding-bottom: 104px;
+  --ashwood-audio-clearance: calc(104px + env(safe-area-inset-bottom));
+  padding-bottom: var(--ashwood-audio-clearance);
 }
 
 body.ashwood-has-audio-room {
-  padding-bottom: 260px;
+  --ashwood-audio-clearance: calc(260px + env(safe-area-inset-bottom));
+  padding-bottom: var(--ashwood-audio-clearance);
+}
+
+/* Keep every footer-style navigation group above the fixed player. The body
+   clearance protects the page end; this extra space protects the links when a
+   short page or a focused navigation group is in view. */
+body.ashwood-has-audio .future-nav,
+body.ashwood-has-audio .ashwood-nav,
+body.ashwood-has-audio .journal-nav {
+  margin-bottom: 28px;
+  scroll-margin-bottom: var(--ashwood-audio-clearance);
 }
 
 .ashwood-audio {
@@ -83,13 +95,19 @@ body.ashwood-has-audio-room {
 .ashwood-audio :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 
 @media (max-width: 560px) {
-  body.ashwood-has-audio { padding-bottom: 118px; }
-  body.ashwood-has-audio-room { padding-bottom: 320px; }
-  .ashwood-audio { right: 10px; bottom: 10px; width: calc(100vw - 20px); }
+  /* The player sits across the bottom of the viewport on phones. Reserve
+     vertical room for it (and the device safe area) rather than shifting the
+     footer navigation sideways. */
+  body.ashwood-has-audio { --ashwood-audio-clearance: calc(142px + env(safe-area-inset-bottom)); }
+  body.ashwood-has-audio-room { --ashwood-audio-clearance: calc(320px + env(safe-area-inset-bottom)); }
+  .ashwood-audio { right: 10px; bottom: max(10px, env(safe-area-inset-bottom)); width: calc(100vw - 20px); }
   .ashwood-audio--room { width: calc(100vw - 20px); }
   .ashwood-audio__bar { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
   .ashwood-audio__time { grid-column: 2; }
   .ashwood-audio__footer { flex-direction: column; }
+  .ashwood-has-audio .future-nav,
+  .ashwood-has-audio .ashwood-nav,
+  .ashwood-has-audio .journal-nav { margin-bottom: calc(20px + env(safe-area-inset-bottom)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
