@@ -43,10 +43,14 @@
     .ashwood-curiosity-progress span.is-found{background:var(--ashwood-gold);box-shadow:0 0 9px rgba(214,194,74,.48);transform:scale(1.45)}
 
     .ashwood-capability-map{position:fixed;right:clamp(34px,5vw,84px);top:clamp(138px,19vh,210px);z-index:76;width:min(42vw,620px);max-height:68vh;overflow:auto;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1),visibility 0s linear .65s;color:var(--ashwood-ink)}
-    .ashwood-capability-map::before{content:"";position:absolute;left:9px;top:82px;bottom:64px;width:1px;background:linear-gradient(to bottom,transparent,var(--ashwood-rule) 10%,var(--ashwood-gold) 50%,var(--ashwood-rule) 90%,transparent);opacity:.72}
+    .ashwood-capability-map::before{content:"";position:absolute;left:9px;top:94px;bottom:64px;width:1px;background:linear-gradient(to bottom,transparent,var(--ashwood-rule) 10%,var(--ashwood-gold) 50%,var(--ashwood-rule) 90%,transparent);opacity:.72}
+    .ashwood-capability-map__header{position:relative;padding-right:112px}
     .ashwood-capability-map__eyebrow{margin:0 0 8px;color:var(--ashwood-gold);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
     .ashwood-capability-map__title{margin:0;font-family:Georgia,serif;font-size:clamp(27px,3.1vw,46px);font-weight:400;line-height:1.02;letter-spacing:-.03em}
     .ashwood-capability-map__intro{max-width:46ch;margin:10px 0 22px;color:var(--ashwood-muted);font-size:11px;line-height:1.55}
+    .ashwood-capability-map__reset{position:absolute;right:0;top:1px;display:inline-flex;align-items:center;gap:7px;border:0;padding:0;background:none;color:var(--ashwood-muted);cursor:pointer;font-family:inherit;font-size:9px;letter-spacing:.14em;text-transform:uppercase;transition:color .2s ease,opacity .2s ease}
+    .ashwood-capability-map__reset::before{content:"↺";font-size:12px;line-height:1;transform:translateY(-1px)}
+    .ashwood-capability-map__reset:hover,.ashwood-capability-map__reset:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .ashwood-capability-map__list{display:grid;gap:0;margin:0;padding:0;list-style:none}
     .ashwood-capability-map__item{position:relative;display:grid;grid-template-columns:minmax(92px,.32fr) minmax(0,1fr);gap:14px 22px;padding:12px 0 13px 27px;border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 78%,transparent)}
     .ashwood-capability-map__item::before{content:"";position:absolute;left:6px;top:17px;width:7px;height:7px;border-radius:50%;background:var(--ashwood-gold);box-shadow:0 0 12px rgba(214,194,74,.45)}
@@ -54,9 +58,8 @@
     .ashwood-capability-map__practice{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ashwood-ink)}
     .ashwood-capability-map__note{grid-column:2;margin:-6px 0 0;color:var(--ashwood-muted);font-size:10px;line-height:1.45}
     .ashwood-capability-map__footer{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:17px;padding-top:13px;border-top:1px solid var(--ashwood-rule)}
-    .ashwood-capability-map__link,.ashwood-capability-map__reset{font-size:9px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--ashwood-muted)}
-    .ashwood-capability-map__reset{border:0;padding:0;background:none;cursor:pointer;font-family:inherit}
-    .ashwood-capability-map__link:hover,.ashwood-capability-map__link:focus-visible,.ashwood-capability-map__reset:hover,.ashwood-capability-map__reset:focus-visible{color:var(--ashwood-gold);font-style:italic}
+    .ashwood-capability-map__link{font-size:9px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--ashwood-muted)}
+    .ashwood-capability-map__link:hover,.ashwood-capability-map__link:focus-visible{color:var(--ashwood-gold);font-style:italic}
 
     body.has-found-all-hotspots .ashwood-capability-map{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:.42s}
     body.has-found-all-hotspots .ashwood-curiosity-progress{opacity:0}
@@ -71,7 +74,9 @@
     @media(max-width:760px){
       .ashwood-curiosity-progress{right:13px}
       .ashwood-capability-map{position:relative;right:auto;top:auto;z-index:72;width:100%;max-height:none;margin:34px 0 18px;padding:20px 0 0;transform:translateY(8px)}
-      .ashwood-capability-map::before{left:7px;top:92px;bottom:54px}
+      .ashwood-capability-map::before{left:7px;top:104px;bottom:54px}
+      .ashwood-capability-map__header{padding-right:0}
+      .ashwood-capability-map__reset{position:static;margin:12px 0 4px}
       .ashwood-capability-map__item{grid-template-columns:1fr;padding-left:25px}
       .ashwood-capability-map__note{grid-column:1;margin:0}
       body.has-found-all-hotspots .principles-field{min-height:0!important;height:auto!important}
@@ -98,9 +103,12 @@
   capabilityMap.setAttribute("aria-live", "polite");
   capabilityMap.setAttribute("aria-label", "ASHWOOD capability map");
   capabilityMap.innerHTML = `
-    <p class="ashwood-capability-map__eyebrow">SIX / SIX · CAPABILITY MAP</p>
-    <h2 class="ashwood-capability-map__title">Six signals, in practice.</h2>
-    <p class="ashwood-capability-map__intro">Each discovered capability has a visible expression in the work—across products, systems, and creative practice.</p>
+    <div class="ashwood-capability-map__header">
+      <p class="ashwood-capability-map__eyebrow">SIX / SIX · CAPABILITY MAP</p>
+      <h2 class="ashwood-capability-map__title">Six signals, in practice.</h2>
+      <p class="ashwood-capability-map__intro">Each discovered capability has a visible expression in the work—across products, systems, and creative practice.</p>
+      <button class="ashwood-capability-map__reset" type="button" aria-label="Reset hotspot discovery and return to the interactive field">Reset field</button>
+    </div>
     <ol class="ashwood-capability-map__list">
       ${ids.map((id) => {
         const item = practiceMap[id] || { skill: id.toUpperCase(), practice: "ASHWOOD", note: "A recurring capability across the practice." };
@@ -113,7 +121,6 @@
     </ol>
     <div class="ashwood-capability-map__footer">
       <a class="ashwood-capability-map__link" href="/dive-deeper?found=all-six">Dive deeper →</a>
-      <button class="ashwood-capability-map__reset" type="button">Reset discovery</button>
     </div>`;
   const shell = document.querySelector(".shell") || document.body;
   shell.append(capabilityMap);
