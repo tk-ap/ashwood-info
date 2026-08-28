@@ -1,21 +1,27 @@
 /* Isolated homepage audio presentation copied forward from the known-good Vercel preview.
    This file intentionally owns only the IN ME control/cinematic so homepage rewrites can evolve independently. */
 
-.ashwood-home-audio {
-  position: fixed;
-  left: 50%;
-  top: clamp(92px, 14vh, 150px);
-  bottom: auto;
+body.ashwood-home-native .ashwood-home-audio {
+  position: fixed !important;
+  left: 50% !important;
+  top: clamp(92px, 14vh, 150px) !important;
+  right: auto !important;
+  bottom: auto !important;
   z-index: 66;
   display: inline-flex;
+  width: auto !important;
   align-items: center;
   min-width: 0;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
   color: var(--ashwood-muted);
   font-size: 10px;
   letter-spacing: .11em;
   line-height: 1;
   text-transform: uppercase;
-  transform: translateX(-50%);
+  transform: translateX(-50%) !important;
   pointer-events: auto;
 }
 
@@ -63,7 +69,7 @@
 
 .ashwood-home-audio__toggle:hover,
 .ashwood-home-audio__toggle:focus-visible {
-  color: var(--ashwood-gold);
+  color: #009b3a;
 }
 
 /* IN ME inner ignition — Jamaican green, with the field remaining black and hotspot language gold. */
@@ -128,8 +134,8 @@ body.is-inner-igniting .ashwood-home-audio__me { animation: ashwood-word-me 2.55
 }
 
 @media (max-width: 760px) {
-  .ashwood-home-audio {
-    top: clamp(82px, 12vh, 118px);
+  body.ashwood-home-native .ashwood-home-audio {
+    top: clamp(82px, 12vh, 118px) !important;
   }
   .ashwood-home-ignition__core,
   .ashwood-home-ignition__bloom,
