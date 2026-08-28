@@ -176,3 +176,13 @@ html:not(.ashwood-light) .jamaica-black { color: #f1eee6; }
   .about-page .family-archive { height: 42vh; }
   .about-page .about-memory { width: 30vw; }
 }
+
+/* Keep homepage section navigation visible */
+.future-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 55;
+  background: color-mix(in srgb, var(--ashwood-paper) 94%, transparent);
+  backdrop-filter: blur(12px);
+  padding-block: 14px;
+}
