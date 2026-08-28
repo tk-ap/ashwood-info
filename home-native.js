@@ -34,7 +34,6 @@
   const homeToggle = control.querySelector(".ashwood-home-audio__toggle");
   const homeIcon = control.querySelector(".ashwood-home-audio__icon");
   let cinematicTimer = 0;
-  let labelTimer = 0;
 
   const sourceIsPlaying = () => sourceToggle.textContent.trim().toLowerCase() === "pause";
 
@@ -44,12 +43,6 @@
     void cinematic.offsetWidth;
     document.body.classList.add("is-inner-igniting");
     cinematicTimer = window.setTimeout(() => document.body.classList.remove("is-inner-igniting"), 6100);
-  };
-
-  const revealLabel = () => {
-    clearTimeout(labelTimer);
-    control.classList.add("is-label-visible");
-    labelTimer = window.setTimeout(() => control.classList.remove("is-label-visible"), 1800);
   };
 
   const render = () => {
@@ -63,7 +56,6 @@
     event.stopPropagation();
     const wasPlaying = sourceIsPlaying();
     sourceToggle.click();
-    revealLabel();
     if (!wasPlaying) triggerIgnition();
     requestAnimationFrame(render);
     setTimeout(render, 80);
