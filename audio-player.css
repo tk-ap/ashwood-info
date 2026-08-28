@@ -225,3 +225,17 @@ body.ashwood-has-audio-room {
     max-width: 280px;
   }
 }
+
+/* V0: desktop player/header separation */
+@media (min-width: 641px) {
+  .ashwood-audio {
+    position: fixed;
+    left: 18px;
+    right: auto;
+    top: auto;
+    bottom: 18px;
+    width: min(280px, calc(100vw - 36px));
+    max-width: 280px;
+    z-index: 40;
+  }
+}
