@@ -34,21 +34,6 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
   cursor: pointer;
   min-width: 7.2ch;
 }
-.ashwood-name-audio__trigger::after {
-  content: "";
-  position: absolute;
-  left: 2px;
-  right: 2px;
-  bottom: -2px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0,155,58,.72), transparent);
-  opacity: .5;
-  transform: scaleX(.68);
-  transform-origin: center;
-  box-shadow: 0 0 8px rgba(0,155,58,.18);
-  animation: ashwood-name-invite 3.8s ease-in-out infinite;
-  pointer-events: none;
-}
 .ashwood-name-audio__ashwood,
 .ashwood-name-audio__inme {
   grid-area: word;
@@ -56,8 +41,11 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
   transition: opacity .22s ease, color .24s ease, text-shadow .32s ease, transform .24s ease;
 }
 .ashwood-name-audio__ashwood {
+  color: inherit;
   opacity: 1;
   transform: translateY(0);
+  text-shadow: 0 0 3px rgba(0,155,58,.12);
+  animation: ashwood-name-heartbeat 4.8s cubic-bezier(.4,0,.2,1) infinite;
 }
 .ashwood-name-audio__inme {
   position: static;
@@ -72,26 +60,35 @@ body.ashwood-home-native .intro .eyebrow.ashwood-name-audio {
 .ashwood-name-audio__trigger:focus-visible .ashwood-name-audio__ashwood {
   opacity: 0;
   transform: translateY(-2px);
+  animation-play-state: paused;
 }
 .ashwood-name-audio__trigger:hover .ashwood-name-audio__inme,
 .ashwood-name-audio__trigger:focus-visible .ashwood-name-audio__inme {
   opacity: 1;
   transform: translateY(0);
 }
-.ashwood-name-audio__trigger:hover::after,
-.ashwood-name-audio__trigger:focus-visible::after {
-  opacity: 1;
-  transform: scaleX(1);
-  box-shadow: 0 0 12px rgba(0,155,58,.4);
-  animation: none;
-}
 .ashwood-name-audio__trigger:focus-visible { outline: 1px solid #009b3a; outline-offset: 3px; }
-.ashwood-name-audio__trigger.is-playing .ashwood-name-audio__ashwood { color: #009b3a; }
+.ashwood-name-audio__trigger.is-playing .ashwood-name-audio__ashwood {
+  text-shadow: 0 0 7px rgba(0,155,58,.26);
+}
 
-@keyframes ashwood-name-invite {
-  0%, 100% { opacity: .24; transform: scaleX(.46); }
-  48% { opacity: .7; transform: scaleX(.9); }
-  62% { opacity: .5; transform: scaleX(.7); }
+/* Two restrained beats close together, then a long still interval. */
+@keyframes ashwood-name-heartbeat {
+  0%, 7%, 15%, 100% {
+    text-shadow: 0 0 3px rgba(0,155,58,.10), 0 0 0 rgba(0,155,58,0);
+  }
+  9% {
+    text-shadow: 0 0 6px rgba(0,155,58,.30), 0 0 14px rgba(0,155,58,.16);
+  }
+  12% {
+    text-shadow: 0 0 4px rgba(0,155,58,.15), 0 0 5px rgba(0,155,58,.06);
+  }
+  16.5% {
+    text-shadow: 0 0 7px rgba(0,155,58,.36), 0 0 17px rgba(0,155,58,.18);
+  }
+  21% {
+    text-shadow: 0 0 3px rgba(0,155,58,.10), 0 0 0 rgba(0,155,58,0);
+  }
 }
 
 /* IN ME inner ignition — Jamaican green. */
@@ -129,9 +126,9 @@ body.is-inner-igniting .ashwood-home-ignition__wave { animation: ashwood-inner-w
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ashwood-name-audio__trigger::after,
+  .ashwood-name-audio__ashwood,
   .ashwood-home-ignition,
   .ashwood-home-ignition * { animation: none !important; }
-  .ashwood-name-audio__trigger::after { opacity: .5; transform: scaleX(.68); }
+  .ashwood-name-audio__ashwood { text-shadow: 0 0 5px rgba(0,155,58,.18); }
   .ashwood-home-ignition { display: none !important; }
 }
