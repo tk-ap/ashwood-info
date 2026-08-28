@@ -42,6 +42,8 @@
   const map = () => document.querySelector(".ashwood-capability-map");
   const completedDiscovery = () => document.body.classList.contains("has-found-all-hotspots");
 
+  // Preserve the situational meaning of each discovery. The map is not just a list of
+  // strengths; it should retain the visitor-facing answer to when that capability matters.
   const inheritUsefulWhen = () => {
     const capabilityMap = map();
     if (!capabilityMap) return;
