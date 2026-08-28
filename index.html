@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/styles.css?v=20260827-principles" />
     <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
     <link rel="stylesheet" href="/home-native.css?v=20260828-audio-forward1" />
-    <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio1" />
+    <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio2" />
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/home-native.js?v=20260828-name-audio1" defer></script>
     <script src="/curiosity.js?v=20260827-1" defer></script>
@@ -79,9 +79,6 @@
           hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed', 'is-near'));
           field.classList.remove('is-pinned');
         };
-        const intersects = (a, b, padding = 18) =>
-          a.left < b.right + padding && a.right > b.left - padding &&
-          a.top < b.bottom + padding && a.bottom > b.top - padding;
         const overlapArea = (a, b, padding = 0) => {
           const left = Math.max(a.left, b.left - padding);
           const right = Math.min(a.right, b.right + padding);
@@ -102,46 +99,27 @@
           const protection = compact ? 16 : 28;
           const edge = compact ? 6 : 10;
           const candidates = [];
-
           for (let i = 0; i < 420; i += 1) {
-            candidates.push({
-              x: (compact ? 2 : 4) + Math.random() * (compact ? 92 : 88),
-              y: (compact ? 3 : 4) + Math.random() * (compact ? 90 : 88),
-              score: Math.random()
-            });
+            candidates.push({ x: (compact ? 2 : 4) + Math.random() * (compact ? 92 : 88), y: (compact ? 3 : 4) + Math.random() * (compact ? 90 : 88), score: Math.random() });
           }
-
           hotspots.forEach((hotspot) => {
             let best = null;
             let lowestPenalty = Number.POSITIVE_INFINITY;
             const ordered = [...candidates].sort((a, b) => a.score - b.score);
-
             for (const pos of ordered) {
               hotspot.style.left = pos.x + '%';
               hotspot.style.top = pos.y + '%';
               hotspot.style.right = 'auto';
               hotspot.style.bottom = 'auto';
               const candidate = hotspot.getBoundingClientRect();
-              const inside = candidate.left >= rect.left + edge &&
-                candidate.top >= rect.top + edge &&
-                candidate.right <= rect.right - edge &&
-                candidate.bottom <= rect.bottom - edge;
+              const inside = candidate.left >= rect.left + edge && candidate.top >= rect.top + edge && candidate.right <= rect.right - edge && candidate.bottom <= rect.bottom - edge;
               if (!inside) continue;
-
               const protectedPenalty = protectedAreas.reduce((sum, area) => sum + overlapArea(candidate, area, protection), 0);
               const hotspotPenalty = placed.reduce((sum, area) => sum + overlapArea(candidate, area, gap), 0);
               const penalty = protectedPenalty * 8 + hotspotPenalty;
-
-              if (penalty === 0) {
-                best = candidate;
-                break;
-              }
-              if (penalty < lowestPenalty) {
-                lowestPenalty = penalty;
-                best = candidate;
-              }
+              if (penalty === 0) { best = candidate; break; }
+              if (penalty < lowestPenalty) { lowestPenalty = penalty; best = candidate; }
             }
-
             if (best) {
               hotspot.style.left = ((best.left - rect.left) / rect.width * 100) + '%';
               hotspot.style.top = ((best.top - rect.top) / rect.height * 100) + '%';
@@ -175,12 +153,8 @@
           event.stopPropagation();
           const wasRevealed = hotspot.classList.contains('is-revealed');
           hotspots.forEach((item) => item.classList.remove('is-revealed', 'is-near'));
-          if (!wasRevealed) {
-            hotspot.classList.add('is-revealed');
-            field.classList.add('is-pinned');
-          } else {
-            field.classList.remove('is-pinned');
-          }
+          if (!wasRevealed) { hotspot.classList.add('is-revealed'); field.classList.add('is-pinned'); }
+          else { field.classList.remove('is-pinned'); }
         }));
         document.addEventListener('click', (event) => { if (!field.contains(event.target) && !event.target.closest('.principle-hotspot')) close(); });
         document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
