@@ -9,4 +9,4 @@ html:not(.ashwood-light) .music-page .listen-track__actions button{border-color:
 html:not(.ashwood-light) .music-page .future-nav{border-top-color:rgba(243,239,232,.16)}
 
 @media(max-width:900px){.music-release-feature{grid-template-columns:1fr}.music-release-feature__embed,.music-release-feature__embed iframe{min-height:420px}.music-release-feature__copy{padding-top:0}}
-@media(max-width:640px){.music-release-feature{margin-top:30px}.music-release-feature__embed,.music-release-feature__embed iframe{min-height:410px}}
+@media(max-width:640px){.music-release-feature{margin-top:30px}.music-release-feature__embed,.music-release-feature__embed iframe{min-height:410px}.music-release-feature__links a{display:inline-flex;align-items:center;min-height:44px;padding-block:10px}}

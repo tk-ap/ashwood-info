@@ -28,4 +28,4 @@
 .dispatch-form textarea { min-height: 88px; resize: vertical; }
 .dispatch-form input:focus,.dispatch-form textarea:focus { outline: none; border-bottom-color: var(--ashwood-ochre); }
 .dispatch-form__submit { margin-top: 28px; }
-@media (max-width: 680px) { .connect-hero { padding-top: 100px; } .connect-section-label { align-items: baseline; } .dispatch-track__body,.sponsor-track__body { margin-left: 0; } .connect-list a span { font-size: 30px; } .dispatch-track::after { display: none; } .dispatch-form__grid { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .connect-hero { padding-top: 100px; } .connect-section-label { align-items: baseline; } .dispatch-track__body,.sponsor-track__body { margin-left: 0; } .connect-list a span { font-size: 30px; } .connect-cta,.sponsor-note a { display:inline-flex; align-items:center; min-height:44px; } .dispatch-track::after { display: none; } .dispatch-form__grid { grid-template-columns: 1fr; } }
