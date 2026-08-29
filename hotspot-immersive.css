@@ -6,6 +6,13 @@
   text-transform: uppercase;
 }
 
+/* Capability-map headline belongs to the same ASHWOOD interface family as the
+   surrounding map; reserve serif for the smaller editorial closing note. */
+body.ashwood-home-native .ashwood-capability-map__title {
+  font-family: inherit !important;
+  font-weight: 500;
+}
+
 /* Resting field stays ambient. While a discovery is active, lift the field above
    the primary homepage infrastructure so temporary reveal copy is never buried. */
 body.ashwood-home-native .principles-field {
