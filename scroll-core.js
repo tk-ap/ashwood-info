@@ -29,6 +29,14 @@
 
     body.ashwood-home-native .intro[data-scroll-stage].is-scroll-past{opacity:.94}
     body.ashwood-home-native .principles-field[data-scroll-stage].is-scroll-active::before{opacity:.58}
+    body.ashwood-home-native .home-entryways[data-scroll-stage],
+    body.ashwood-home-native .home-utility{
+      opacity:1!important;
+      transform:none!important;
+      filter:none!important;
+      visibility:visible!important
+    }
+    body.ashwood-home-native .home-entryways[data-scroll-stage].is-scroll-active .home-entryway__title{letter-spacing:.045em}
     body.ashwood-home-native .ashwood-capability-evidence[data-scroll-reveal].is-in-view a{letter-spacing:.145em}
 
     .about-page .family-archive[data-scroll-stage]{transition:opacity .7s ease,filter .7s ease}
@@ -78,7 +86,6 @@
     const entryways = document.querySelector(".home-entryways");
     const evidence = document.querySelector(".ashwood-capability-evidence");
     const now = document.querySelector(".home-now");
-    const utility = document.querySelector(".home-utility");
 
     markStage(intro, "identity");
     markStage(field, "discovery");
@@ -86,11 +93,10 @@
     markStage(evidence, "throughline");
     markStage(now, "now");
 
-    markReveal(entryways);
+    // Home is a compact orientation surface. Essential navigation must remain visible
+    // at rest; scroll may change emphasis, but it must never gate entry into ASHWOOD.
     markReveal(evidence);
     markReveal(now);
-    markReveal(utility);
-    markSequence(document.querySelectorAll(".home-entryway"), "content", 90, 180);
   };
 
   const configureAbout = () => {
