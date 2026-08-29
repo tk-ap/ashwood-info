@@ -1,0 +1,65 @@
+name: Add ALVIRA Founding Beta Journal invitation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/add-alvira-founding-beta.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-journal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Add Founding Beta invitation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('journal/index.html')
+          text = p.read_text()
+          if 'id="founding-beta"' in text:
+              raise SystemExit('Founding Beta section already present')
+
+          text = text.replace('<a href="#method">Method</a><a href="#facilitation">Facilitation</a>', '<a href="#method">Method</a><a href="#facilitation">Facilitation</a><a href="#founding-beta">Test ALVIRA</a>', 1)
+
+          section = '''
+    <section id="founding-beta" class="facilitation" aria-labelledby="founding-beta-title">
+      <div class="section-marker"><span>08A</span><span>PARTICIPATION / ALVIRA FOUNDING BETA</span></div>
+      <div class="facilitation__heading">
+        <h2 id="founding-beta-title">Help prove whether ALVIRA is actually useful.</h2>
+        <p>I am opening a small number of Founding Beta accounts for people who genuinely want to use ALVIRA—not just watch the build. The question is simple: does maintained context make AI meaningfully more useful to you over time?</p>
+      </div>
+      <div class="open-builds">
+        <article>
+          <div><span>WHAT YOU GET</span><h3>Complimentary access that stays with your approved account.</h3><p>Selected Founding Beta testers receive unlimited access to ALVIRA's customer-facing product capabilities for the life of the ALVIRA service under the account that receives the entitlement.</p></div>
+          <dl>
+            <div><dt>WHAT I AM ASKING</dt><dd>Use the product during the beta and send candid feedback when the workflow is useful, confusing, ineffective, or broken.</dd></div>
+            <div><dt>WHY IT IS LIMITED</dt><dd>The goal is a small cohort I can learn from closely—not the largest possible waitlist.</dd></div>
+            <div><dt>WHO THIS IS FOR</dt><dd>People with a real reason they want AI to understand more about them, their work, or an active project.</dd></div>
+            <div><dt>WHAT IT IS NOT</dt><dd>Not a giveaway, not an automatic signup, and not “free Pro forever.” Founding Beta is its own founding entitlement.</dd></div>
+          </dl>
+          <p><a href="https://alviratech.vercel.app/founding-beta?source=ashwood">Apply for a Founding Beta slot →</a></p>
+          <p class="journal-note"><a href="https://alviratech.vercel.app/">Prefer to look around first? Explore ALVIRA →</a></p>
+        </article>
+      </div>
+    </section>
+
+'''
+          marker = '    <section class="journal-closing" aria-labelledby="closing-title">'
+          if marker not in text:
+              raise SystemExit('Journal closing marker not found')
+          text = text.replace(marker, section + marker, 1)
+          p.write_text(text)
+          PY
+      - name: Commit Journal invitation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add journal/index.html
+          git commit -m "add ALVIRA Founding Beta invitation to Build Journal"
+          git push origin HEAD:main
