@@ -16,6 +16,18 @@
   const normalizedPath = window.location.pathname.replace(/\/$/, "") || "/";
   const currentRoute = primaryRoutes.find(({ path }) => normalizedPath === path);
 
+  const ensureScrollCore = () => {
+    if (!["/", "/about", "/portfolio"].includes(normalizedPath)) return;
+    if (document.querySelector('script[data-ashwood-scroll-core]')) return;
+    const script = document.createElement("script");
+    script.src = "/scroll-core.js?v=20260829-scroll1";
+    script.async = false;
+    script.dataset.ashwoodScrollCore = "true";
+    document.head.append(script);
+  };
+
+  ensureScrollCore();
+
   const ensureSharedHeaderStyles = () => {
     if (!currentRoute || document.querySelector('link[href^="/creative-shell.css"]')) return;
     const link = document.createElement("link");
