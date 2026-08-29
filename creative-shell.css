@@ -12,3 +12,5 @@ html:not(.ashwood-light) .portfolio-page .ashwood-site-header{background:rgba(9,
 
 @media(max-width:900px){.ashwood-site-header{align-items:flex-start}.ashwood-site-header__nav{max-width:60%}}
 @media(max-width:640px){.ashwood-site-header{padding:15px var(--ashwood-gutter,var(--gutter,18px));gap:14px}.ashwood-site-header__brand-lockup{flex:0 0 auto}.ashwood-site-header__nav{display:none}.ashwood-site-header .theme-toggle{margin-left:auto}}
+
+@media(max-width:640px){.future-nav a{display:inline-flex;align-items:center;min-height:44px;padding-block:12px}}

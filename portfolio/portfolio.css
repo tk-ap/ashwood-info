@@ -360,3 +360,5 @@ img { max-width: 100%; display: block; }
   outline: 0 !important;
   box-shadow: none !important;
 }
+
+@media(max-width:640px){.site-nav a,.text-link,.contact-grid a,.portfolio-footer nav a{display:inline-flex;align-items:center;min-height:44px;padding-block:12px}.floating-book-link,.contact-button{min-height:44px;display:inline-flex;align-items:center;justify-content:center}}

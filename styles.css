@@ -187,3 +187,9 @@ html:not(.ashwood-light) .jamaica-black { color: #f1eee6; }
   backdrop-filter: blur(12px);
   padding-block: 14px;
 }
+
+@media (max-width: 640px) {
+  .ashwood-nav,.future-nav { gap: 10px 18px; }
+  .ashwood-nav a,.future-nav a,.journal-nav a { display:inline-flex; align-items:center; min-height:44px; padding-block:12px; }
+  .link-list a { min-height:44px; padding-block:12px; }
+}
