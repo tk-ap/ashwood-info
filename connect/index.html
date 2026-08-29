@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Connect with ASHWOOD — public links, bookings, collaborations, and sponsorship." />
+    <meta name="description" content="Connect with ASHWOOD — modeling, music, builds, public links, collaborations, and sponsorship." />
     <title>Connect — ASHWOOD</title>
     <link rel="stylesheet" href="/ashwood-core.css?v=20260827-core" />
-    <link rel="stylesheet" href="/connect/connect.css?v=20260827-1" />
-    <link rel="stylesheet" href="/audio-player.css?v=20260828-nav-clearance" />
-    <script src="/audio-player.js?v=20260827-2" defer></script>
-    <script src="/theme.js?v=20260827-1" defer></script>
+    <link rel="stylesheet" href="/creative-shell.css?v=20260828-interiornav2" />
+    <link rel="stylesheet" href="/connect/connect.css?v=20260828-dispatch2" />
+    <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
+    <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
+    <script src="/theme.js?v=20260828-interiornav2" defer></script>
   </head>
   <body class="connect-page">
     <main class="shell connect-shell">
@@ -21,32 +22,76 @@
       <section class="connect-hero" aria-labelledby="connect-title">
         <p class="eyebrow">Public links · bookings · support</p>
         <h1 id="connect-title">Stay close<br />to the work.</h1>
-        <p class="lede">One place for the public-facing paths around ASHWOOD — and for people who want to help the next version take shape.</p>
+        <p class="lede">The native directory for the public-facing paths around ASHWOOD — modeling, music, builds, collaboration, and support without sending you through another link hub first.</p>
       </section>
 
       <section class="connect-paths" aria-labelledby="paths-title">
         <div class="connect-section-label"><span>01</span><span id="paths-title">Open paths</span></div>
         <div class="connect-list">
-          <a href="https://beacons.ai/tkashwood" rel="noopener">
-            <span><small>Public links</small>Beacons</span><b aria-hidden="true">↗</b>
-          </a>
-          <a href="https://www.tiktok.com/@tiktokoftk" target="_blank" rel="noopener">
-            <span><small>Public links</small>TikTok · @tiktokoftk</span><b aria-hidden="true">↗</b>
+          <a href="/portfolio">
+            <span><small>Modeling</small>Portfolio · current work</span><b aria-hidden="true">→</b>
           </a>
           <a href="/portfolio#contact">
             <span><small>Modeling</small>Booking inquiries</span><b aria-hidden="true">→</b>
           </a>
+          <a href="https://www.instagram.com/picturesoftk" target="_blank" rel="noopener">
+            <span><small>Public / social</small>Instagram · @picturesoftk</span><b aria-hidden="true">↗</b>
+          </a>
+          <a href="/music">
+            <span><small>Music</small>t.kap · listening room</span><b aria-hidden="true">→</b>
+          </a>
+          <a href="https://music.apple.com/us/album/in-me-feat-cashden-single/6798975601" target="_blank" rel="noopener">
+            <span><small>Music · official release</small>IN ME on Apple Music</span><b aria-hidden="true">↗</b>
+          </a>
+          <a href="https://distrokid.com/hyperfollow/tkap/in-me-feat-cashden?ref=release" target="_blank" rel="noopener">
+            <span><small>Music · release links</small>IN ME · all streaming platforms</span><b aria-hidden="true">↗</b>
+          </a>
+          <a href="https://www.tiktok.com/@tiktokoftk" target="_blank" rel="noopener">
+            <span><small>Public / social</small>TikTok · @tiktokoftk</span><b aria-hidden="true">↗</b>
+          </a>
+          <a href="/journal">
+            <span><small>Builds</small>Founder Build Journal</span><b aria-hidden="true">→</b>
+          </a>
+        </div>
+        <p class="sponsor-note">A few older or secondary destinations may still live on the legacy Beacons page while they are verified and migrated. <a href="https://beacons.ai/tkashwood" target="_blank" rel="noopener">Legacy links ↗</a></p>
+      </section>
+
+      <section class="dispatch-track" aria-labelledby="dispatch-title">
+        <div class="connect-section-label"><span>02</span><span>ASHWOOD Dispatch</span></div>
+        <div class="dispatch-track__body">
+          <p class="eyebrow">Biweekly / interest list</p>
+          <h2 id="dispatch-title">A short note<br />from the work.</h2>
+          <p>Every other week, the Dispatch will synthesize what moved across Builds, current creative work, and whatever I am following next — decisions from the Build Journal, modeling work, music in progress or newly released, and a few direct paths back into ASHWOOD.</p>
+          <form class="dispatch-form" action="mailto:ashwood.info@agentmail.to" method="post" enctype="text/plain">
+            <input type="hidden" name="subject" value="ASHWOOD Dispatch interest" />
+            <div class="dispatch-form__grid">
+              <label>
+                <span>Name</span>
+                <input type="text" name="name" autocomplete="name" required />
+              </label>
+              <label>
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required />
+              </label>
+            </div>
+            <label>
+              <span>What are you following? <em>Optional</em></span>
+              <textarea name="interest" rows="3" placeholder="Builds, modeling, music, or the thread between them."></textarea>
+            </label>
+            <button class="connect-cta dispatch-form__submit" type="submit">Add my interest <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="dispatch-note">Dispatch interest is routed to the dedicated ASHWOOD inbox with your name, email, and optional interest note included.</p>
         </div>
       </section>
 
       <section class="sponsor-track" aria-labelledby="sponsor-title">
-        <div class="connect-section-label"><span>02</span><span>Sponsorship track</span></div>
+        <div class="connect-section-label"><span>03</span><span>Sponsorship track</span></div>
         <div class="sponsor-track__body">
           <p class="eyebrow">Support the ecosystem</p>
           <h2 id="sponsor-title">Put a little more<br />behind the idea.</h2>
-          <p>Sponsorship and aligned partnerships help move the work from a live record into durable releases, campaigns, and working products. Share what you want to support, what you can bring, or what you want to build together.</p>
-          <a class="connect-cta" href="mailto:booking@whomanagement.com?subject=ASHWOOD%20sponsorship%20inquiry">Start a sponsorship conversation <span aria-hidden="true">↗</span></a>
-          <p class="sponsor-note">For modeling bookings, use the booking inquiry path above so requests reach WHO Management Agency.</p>
+          <p>Sponsorship and aligned partnerships help move the work from a live record into durable releases, campaigns, and working products. Sponsorship is scoped around a specific build or bounded piece of work — not unrestricted funding for an autonomous agent. Share what you want to support, why it matters to you, and any useful constraints so the next step can be concrete.</p>
+          <a class="connect-cta" href="mailto:ashwood.info@agentmail.to?subject=ASHWOOD%20sponsorship%20inquiry&amp;body=Hi%20TK%2C%0A%0AI%27m%20interested%20in%20sponsoring%20part%20of%20the%20ASHWOOD%20build%20process.%0A%0ABUILD%20OR%20AREA%20I%27M%20INTERESTED%20IN%3A%0A%5BExample%3A%20ALVIRA%20Context%20portability%20%2F%20ailhat%20first-value%20loop%20%2F%20LEDGATo%20operational%20engine%20path%20%2F%20another%20specific%20idea%5D%0A%0AWHY%20I%27M%20INTERESTED%3A%0A%5BWhat%20about%20this%20build%20or%20problem%20you%20want%20to%20help%20move%20forward%5D%0A%0AWHAT%20I%27D%20LIKE%20TO%20SUPPORT%3A%0A%5BA%20specific%20feature%2C%20experiment%2C%20research%20step%2C%20launch%20task%2C%20or%20let%20ASHWOOD%20help%20define%20a%20bounded%20scope%5D%0A%0AAPPROXIMATE%20BUDGET%20OR%20SUPPORT%20LEVEL%3A%0A%5BOptional%20%E2%80%94%20a%20range%20is%20fine%5D%0A%0AINVOLVEMENT%20PREFERENCE%3A%0A%5BExample%3A%20fund%20and%20follow%20the%20result%20%2F%20occasional%20input%20%2F%20collaborative%20partner%5D%0A%0ATIMING%20OR%20CONSTRAINTS%3A%0A%5BOptional%5D%0A%0AANYTHING%20ELSE%20THAT%20WOULD%20BE%20USEFUL%20TO%20KNOW%3A%0A%0AASHWOOD%20will%20reply%20with%20a%20bounded%20scope%2C%20working%20cost%2C%20expected%20human%20oversight%2C%20and%20what%20evidence%20or%20shipped%20result%20would%20close%20the%20loop.%0A">Start a sponsorship conversation <span aria-hidden="true">↗</span></a>
+          <p class="sponsor-note">Useful starting details: the build or problem you care about, why, what you hope your sponsorship unlocks, approximate support level, desired involvement, and any timing constraints. Scope and cost are confirmed before anything is accepted. For modeling bookings, use the booking inquiry path above so requests reach WHO Management Agency.</p>
         </div>
       </section>
 

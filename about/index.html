@@ -7,9 +7,86 @@
     <meta name="theme-color" content="#f5f3ef" />
     <title>About — ASHWOOD</title>
     <link rel="stylesheet" href="/ashwood-core.css?v=20260827-core" />
-    <link rel="stylesheet" href="/audio-player.css?v=20260828-nav-clearance" />
-    <script src="/audio-player.js?v=20260827-2" defer></script>
+    <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
+    <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/theme.js?v=20260827-1" defer></script>
+    <style>
+      /* About direction: let the family archive occupy the visual right column as a
+         persistent cinematic vertical sequence rather than a small hover easter egg. */
+      .about-page .page-intro {
+        max-width: 1380px;
+        padding-right: min(46%, 650px);
+      }
+      .about-page .family-archive {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: min(43vw, 610px);
+        height: 100%;
+        display: grid;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        gap: clamp(18px, 2vw, 34px);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: none;
+        transition: none;
+      }
+      .about-page .about-memory,
+      .about-page .about-memory--second,
+      .about-page .about-memory--third {
+        width: 100%;
+        height: 100%;
+        min-height: 260px;
+        margin: 0;
+        transform: none;
+        overflow: hidden;
+        box-shadow: 0 24px 70px rgba(0,0,0,.24);
+      }
+      .about-page .about-memory:nth-child(1) { margin-left: 0; }
+      .about-page .about-memory:nth-child(2) { margin-left: 8%; width: 92%; }
+      .about-page .about-memory:nth-child(3) { margin-left: -3%; width: 103%; }
+      .about-page .about-memory img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .about-page .about-memory:nth-child(1) img { object-position: 50% 45%; }
+      .about-page .about-memory:nth-child(2) img { object-position: 50% 50%; }
+      .about-page .about-memory:nth-child(3) img { object-position: 50% 42%; }
+      .about-page .about-memory figcaption { position: absolute; margin: 0; padding: 10px 12px; color: #f1eee6; background: rgba(0,0,0,.38); }
+      .about-page .memory-line { position: relative; z-index: 4; }
+      .about-page .family-archive .about-memory:hover { filter: brightness(1.06); transform: translateY(-3px); z-index: 2; }
+      .about-capability-entry {
+        display:inline-flex;
+        align-items:center;
+        min-height:40px;
+        margin:0 0 18px;
+        color:var(--ashwood-ink);
+        font-size:9px;
+        letter-spacing:.13em;
+        text-transform:uppercase;
+        text-decoration:none;
+      }
+      .about-capability-entry:hover,.about-capability-entry:focus-visible { color:var(--ashwood-gold); font-style:italic; }
+      @media (max-width: 900px) {
+        .about-page .page-intro { max-width: 100%; padding-right: 0; }
+        .about-page .family-archive {
+          position: relative;
+          top: auto;
+          right: auto;
+          width: min(100%, 620px);
+          height: auto;
+          margin: 48px 0 0 auto;
+          grid-template-rows: none;
+          grid-template-columns: 1fr;
+        }
+        .about-page .about-memory,
+        .about-page .about-memory--second,
+        .about-page .about-memory--third { min-height: 340px; width: 100%; margin-left: 0; }
+      }
+    </style>
   </head>
   <body class="about-page">
     <main class="shell">
@@ -20,8 +97,10 @@
 
       <section class="intro page-intro" aria-labelledby="page-title">
         <p class="eyebrow">Tahlia Ashwood Peart · TK Ashwood</p>
-        <h1 id="page-title">Out of One,<br />Many <span class="iridescent-word">Becomings</span>.</h1>
+        <h1 id="page-title">Out of <span class="jamaica-black">One</span>,<br /><span class="jamaica-green">Many</span> <span class="jamaica-gold">Becomings</span>.</h1>
         <p class="note lede">I follow ideas wherever they go. Sometimes that means being in front of the camera. Sometimes it becomes music. Sometimes it becomes a product, a system, or a question I keep building until I understand it better.</p>
+        <p class="note"><strong>I tend to be driven by uncovering “why?” — and I stay with the problem until the structure underneath it becomes clear.</strong></p>
+        <a class="about-capability-entry" href="/?capabilities=1&amp;from=about">What people keep relying on →</a>
         <p class="note">ASHWOOD is the first half of my hyphenated family name, and its meaning here is personal. I am a first-generation American, born to two Jamaican parents, and Jamaica was not an abstract inheritance in my childhood. I spent most summers there—inside the school system, away at summer camp in the mountains, and learning work and responsibility through my family’s business, GBI Logistics.</p>
         <p class="note">My maternal grandmother, Myrtle Alvira Ashwood, was my greatest inspiration, teacher, and cheerleader. She passed away in 2023. ASHWOOD is one way I continue what she modeled for me: pairing education with excellence, taking ideas seriously enough to learn them well, and making that learning visible in the quality of the work.</p>
         <p class="note">“Out of One, Many Becomings.” carries that lineage too. Jamaica’s official national motto is “Out of Many, One People.” This is not a translation or rewrite of the motto. It is a personal echo: different forms, disciplines, experiences, and inheritances can remain distinct while still belonging to one identity and point of view.</p>
@@ -31,6 +110,7 @@
         <p class="note">Across the different frameworks I use to understand my work, the same pattern keeps returning: see the pattern → make it understandable → build the structure → own part of the value. The point is not to make every framework agree. It is to notice where independent ways of looking keep pointing toward the same practical choice.</p>
         <p class="note">A principle carried through MeOS also shapes how I work more broadly: clarity before volume. I try to move from identity to evidence, from evidence to a hypothesis, from hypothesis to a small experiment, and from a real signal to a decision. The goal is not to manufacture certainty; it is to make complexity understandable enough to act on responsibly.</p>
         <p class="note">That means preferring source-verified evidence where possible, practical reality over presentation, and small dignified tests over waiting for a perfect revelation. Whether the work is creative or technical, I am interested in systems that make the next decision clearer and the next version more reliable.</p>
+        <p class="note">Across very different problems, I keep returning to another version of the same question: what has to happen between a possibility existing and becoming genuinely reachable? Sometimes the missing layer is context. Sometimes it is clarity, continuity, permission, or execution. The aim is not technology for its own sake, but systems that reduce unnecessary coordination burden while preserving choice, consent, dignity, and meaningful human control.</p>
         <p class="note">ASHWOOD is the connective tissue—not a claim that every form is the same kind of work, but a place for the point of view behind them to live together.</p>
         <p class="memory-line"><button class="memory-trigger" type="button" aria-expanded="false" aria-controls="family-archive">ALVIRA</button> is a name I carry forward.</p>
         <div class="family-archive" id="family-archive" aria-label="Family archive">
@@ -59,26 +139,37 @@
     <script>
       (() => {
         const intro = document.querySelector('.page-intro');
-        const trigger = document.querySelector('.memory-trigger');
         const archive = document.querySelector('.family-archive');
-        if (!intro || !trigger || !archive) return;
+        const trigger = document.querySelector('.memory-trigger');
+        const memories = archive ? [...archive.querySelectorAll('.about-memory')] : [];
+        if (!intro || !archive || !memories.length) return;
         let pinned = false;
-        let closeTimer;
-        const open = () => { clearTimeout(closeTimer); intro.classList.add('family-archive--open'); trigger.setAttribute('aria-expanded', 'true'); };
-        const close = () => { if (pinned) return; intro.classList.remove('family-archive--open'); trigger.setAttribute('aria-expanded', 'false'); };
-        const scheduleClose = () => { clearTimeout(closeTimer); closeTimer = setTimeout(close, 140); };
-        [trigger, archive].forEach((element) => {
-          element.addEventListener('pointerenter', open);
-          element.addEventListener('pointerleave', scheduleClose);
-        });
-        trigger.addEventListener('focus', open);
-        trigger.addEventListener('blur', scheduleClose);
-        trigger.addEventListener('click', () => {
+        const clear = () => {
+          if (pinned) return;
+          memories.forEach((memory) => memory.classList.remove('is-near'));
+          trigger?.setAttribute('aria-expanded', 'false');
+        };
+        const explore = (x, y) => {
+          const nearest = memories.map((memory) => {
+            const r = memory.getBoundingClientRect();
+            return { memory, distance: Math.hypot(r.left + r.width / 2 - x, r.top + r.height / 2 - y) };
+          }).sort((a,b) => a.distance - b.distance)[0];
+          memories.forEach((memory) => memory.classList.toggle('is-near', memory === nearest.memory && nearest.distance < 210));
+        };
+        document.addEventListener('pointermove', (event) => explore(event.clientX, event.clientY), { passive: true });
+        memories.forEach((memory) => memory.addEventListener('click', (event) => {
+          event.stopPropagation();
           pinned = !pinned;
-          if (pinned) open(); else close();
+          if (pinned) memory.classList.add('is-near');
+          else memory.classList.remove('is-near');
+        }));
+        trigger?.addEventListener('click', (event) => {
+          event.stopPropagation();
+          pinned = !pinned;
+          trigger.setAttribute('aria-expanded', String(pinned));
         });
         document.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') { pinned = false; close(); trigger.focus(); }
+          if (event.key === 'Escape') { pinned = false; clear(); }
         });
       })();
     </script>

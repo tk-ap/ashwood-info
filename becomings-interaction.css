@@ -1,0 +1,139 @@
+/* BECO(MINGS): one point of view becoming many forms. */
+.becomings-trigger {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+.becomings-trigger:hover,
+.becomings-trigger:focus-visible,
+.becomings-trigger.is-becoming-origin {
+  color: transparent;
+  background: linear-gradient(110deg, #1f4f4a, #009b3a 24%, #d6c24a 44%, #3f7f84 64%, #243f76 80%, #7b2635);
+  background-size: 320% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: ashwood-iridescence 2.4s ease-in-out infinite, becomings-origin .72s cubic-bezier(.2,.8,.2,1) both;
+}
+.becomings-trigger:focus-visible { outline: 1px solid #009b3a; outline-offset: 5px; }
+
+.becomings-bloom {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.becomings-bloom::before,
+.becomings-bloom::after {
+  content: "";
+  position: fixed;
+  left: var(--becomings-x, 50%);
+  top: var(--becomings-y, 50%);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.08);
+}
+.becomings-bloom::before {
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(0,155,58,.36);
+}
+.becomings-bloom::after {
+  width: 34vmax;
+  height: 28vmax;
+  border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%;
+  background: radial-gradient(ellipse at center, rgba(0,155,58,.16) 0%, rgba(0,126,47,.08) 28%, rgba(0,78,30,.025) 54%, transparent 74%);
+  filter: blur(12px);
+}
+.becomings-bloom.is-active::before { animation: becomings-ripple 2.7s cubic-bezier(.12,.6,.18,1) both; }
+.becomings-bloom.is-active::after { animation: becomings-bloom 3.5s cubic-bezier(.12,.56,.18,1) both; }
+
+/* Existing homepage worlds become the constellation offshoots. */
+.home-entryway {
+  transition: background-color .35s ease, box-shadow .45s ease, transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.home-entryway .home-entryway__title,
+.home-entryway .home-entryway__signal {
+  transition: color .3s ease, text-shadow .4s ease, opacity .3s ease, transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.home-entryway.is-becoming-highlight {
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, rgba(0,155,58,.055), rgba(0,155,58,0));
+  box-shadow: inset 0 1px 0 rgba(0,155,58,.28), inset 0 -1px 0 rgba(0,155,58,.16), 0 0 28px rgba(0,155,58,.055);
+  animation: becomings-offshoot 1.25s cubic-bezier(.2,.8,.2,1) both;
+}
+.home-entryway.is-becoming-highlight .home-entryway__title {
+  color: #009b3a;
+  text-shadow: 0 0 10px rgba(0,155,58,.24), 0 0 24px rgba(0,155,58,.1);
+  transform: translateX(4px);
+}
+.home-entryway.is-becoming-highlight .home-entryway__signal {
+  color: var(--ashwood-ink);
+  opacity: .88;
+  transform: translateX(4px);
+}
+.home-entryway.is-becoming-highlight::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #009b3a;
+  box-shadow: 0 0 10px rgba(0,155,58,.75), 0 0 24px rgba(0,155,58,.28);
+  transform: translate(-50%, -50%);
+  animation: becomings-node-pulse 1.1s ease-out both;
+}
+
+@keyframes becomings-origin {
+  0% { transform: scale(1); text-shadow: none; }
+  35% { transform: scale(.96); text-shadow: 0 0 13px rgba(0,155,58,.5); }
+  100% { transform: scale(1); text-shadow: 0 0 6px rgba(0,155,58,.2); }
+}
+@keyframes becomings-ripple {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.15); }
+  18% { opacity: .38; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(95); }
+}
+@keyframes becomings-bloom {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.08) rotate(-2deg); }
+  26% { opacity: .8; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(3.5) rotate(3deg); }
+}
+@keyframes becomings-offshoot {
+  0% { opacity: .58; filter: brightness(.9); }
+  24% { opacity: 1; filter: brightness(1.16); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+@keyframes becomings-node-pulse {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.35); }
+  38% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: .4; transform: translate(-50%, -50%) scale(.7); }
+}
+
+@media (max-width: 760px) {
+  .home-entryway.is-becoming-highlight { transform: none; }
+  .home-entryway.is-becoming-highlight .home-entryway__title,
+  .home-entryway.is-becoming-highlight .home-entryway__signal { transform: translateX(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .becomings-trigger:hover,
+  .becomings-trigger:focus-visible,
+  .becomings-trigger.is-becoming-origin,
+  .becomings-bloom::before,
+  .becomings-bloom::after,
+  .home-entryway.is-becoming-highlight,
+  .home-entryway.is-becoming-highlight::after { animation: none !important; }
+  .becomings-bloom { display: none; }
+}
