@@ -24,20 +24,14 @@
       transform:translateY(0) scale(1);
       filter:blur(0)
     }
-    [data-scroll-stage]{position:relative}
     [data-scroll-stage].is-scroll-active{--ashwood-stage-presence:1}
 
     body.ashwood-home-native .intro[data-scroll-stage].is-scroll-past{opacity:.94}
     body.ashwood-home-native .principles-field[data-scroll-stage].is-scroll-active::before{opacity:.58}
-    body.ashwood-home-native .home-entryways[data-scroll-stage],
-    body.ashwood-home-native .home-utility{
-      opacity:1!important;
-      transform:none!important;
-      filter:none!important;
-      visibility:visible!important
-    }
-    body.ashwood-home-native .home-entryways[data-scroll-stage].is-scroll-active .home-entryway__title{letter-spacing:.045em}
-    body.ashwood-home-native .ashwood-capability-evidence[data-scroll-reveal].is-in-view a{letter-spacing:.145em}
+    body.ashwood-home-native .ashwood-capability-evidence{transition:opacity .45s ease,transform .45s ease}
+    body.ashwood-home-native .ashwood-capability-evidence.is-scroll-active{opacity:1;transform:translateY(0)}
+    body.ashwood-home-native .home-now{transition:opacity .45s ease}
+    body.ashwood-home-native .home-now.is-scroll-active{opacity:1}
 
     .about-page .family-archive[data-scroll-stage]{transition:opacity .7s ease,filter .7s ease}
     .about-page .family-archive[data-scroll-stage]:not(.is-scroll-active){opacity:.82;filter:saturate(.9)}
@@ -93,10 +87,9 @@
     markStage(evidence, "throughline");
     markStage(now, "now");
 
-    // Home is a compact orientation surface. Essential navigation must remain visible
-    // at rest; scroll may change emphasis, but it must never gate entry into ASHWOOD.
-    markReveal(evidence);
-    markReveal(now);
+    // Home is a compact orientation surface. Essential navigation and the six-signal
+    // discovery field must remain available at rest. Scroll may change emphasis/state,
+    // but must never gate entry into ASHWOOD or alter the field's positioning model.
   };
 
   const configureAbout = () => {
