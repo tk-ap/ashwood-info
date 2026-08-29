@@ -85,7 +85,7 @@
 
   /* BECO(MINGS): one source revealing the three existing worlds. */
   const identity = document.querySelector(".home-identity");
-  const becomingsWord = identity?.querySelector(".iridescent-word");
+  const becomingsWord = identity?.querySelector(".iridescent-word:not(.iridescent-word--jamaica)");
   const entryways = [...document.querySelectorAll(".home-entryway")];
 
   if (identity && becomingsWord && entryways.length >= 3) {
