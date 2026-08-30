@@ -84,6 +84,95 @@
     field.appendChild(independence);
   }
 
+  let bird = null;
+  let flightToken = 0;
+  const ensureBird = () => {
+    if (bird) return bird;
+    bird = document.createElement("div");
+    bird.className = "ashwood-jm-bird";
+    bird.setAttribute("aria-hidden", "true");
+    bird.innerHTML = '<span class="ashwood-jm-bird__wing ashwood-jm-bird__wing--left"></span><span class="ashwood-jm-bird__wing ashwood-jm-bird__wing--right"></span><span class="ashwood-jm-bird__body"></span>';
+    document.body.appendChild(bird);
+    return bird;
+  };
+
+  const center = (el) => {
+    const rect = el.getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  };
+
+  const pause = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+  const flyBird = async (trigger) => {
+    const destinations = [...document.querySelectorAll(".home-entryway")].filter((el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+    if (!trigger || !destinations.length) return;
+
+    const token = ++flightToken;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    destinations.forEach((el) => el.classList.remove("is-doctorbird-visited"));
+
+    if (prefersReducedMotion) {
+      for (const destination of destinations) {
+        if (token !== flightToken) return;
+        destination.classList.add("is-doctorbird-visited");
+        await pause(520);
+        destination.classList.remove("is-doctorbird-visited");
+      }
+      return;
+    }
+
+    const guide = ensureBird();
+    const start = center(trigger);
+    guide.style.left = `${start.x}px`;
+    guide.style.top = `${start.y}px`;
+    guide.classList.add("is-flying");
+    await pause(180);
+
+    let from = start;
+    for (let index = 0; index < destinations.length; index += 1) {
+      if (token !== flightToken) return;
+      const destination = destinations[index];
+      const to = center(destination);
+      const direction = to.x >= from.x ? 1 : -1;
+      const lift = Math.max(36, Math.min(110, Math.abs(to.x - from.x) * .2 + Math.abs(to.y - from.y) * .14));
+      const controlX = from.x + (to.x - from.x) * .52;
+      const controlY = Math.min(from.y, to.y) - lift;
+
+      const animation = guide.animate([
+        { left: `${from.x}px`, top: `${from.y}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -5 : 5}deg) scaleX(${direction})`, offset: 0 },
+        { left: `${controlX}px`, top: `${controlY}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -14 : 14}deg) scaleX(${direction})`, offset: .52 },
+        { left: `${to.x}px`, top: `${to.y - 10}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? 3 : -3}deg) scaleX(${direction})`, offset: .9 },
+        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) rotate(0deg) scaleX(${direction})`, offset: 1 }
+      ], {
+        duration: window.innerWidth <= 760 ? 780 : 980,
+        easing: "cubic-bezier(.2,.72,.18,1)",
+        fill: "forwards"
+      });
+      await animation.finished.catch(() => {});
+      if (token !== flightToken) return;
+
+      guide.style.left = `${to.x}px`;
+      guide.style.top = `${to.y}px`;
+      destination.classList.add("is-doctorbird-visited");
+      await pause(index === destinations.length - 1 ? 720 : 560);
+      destination.classList.remove("is-doctorbird-visited");
+      from = to;
+    }
+
+    if (token !== flightToken) return;
+    const exitX = Math.min(window.innerWidth + 60, from.x + Math.max(120, window.innerWidth * .14));
+    const exitY = Math.max(36, from.y - 90);
+    const exit = guide.animate([
+      { left: `${from.x}px`, top: `${from.y}px`, opacity: .92 },
+      { left: `${exitX}px`, top: `${exitY}px`, opacity: 0 }
+    ], { duration: 760, easing: "cubic-bezier(.25,.7,.2,1)", fill: "forwards" });
+    await exit.finished.catch(() => {});
+    if (token === flightToken) guide.classList.remove("is-flying");
+  };
+
   const doctorBird = () => {
     const bloom = document.querySelector(".becomings-bloom");
     if (!bloom) return false;
@@ -94,11 +183,12 @@
       let activations = 0;
       trigger.addEventListener("click", () => {
         activations += 1;
+        window.setTimeout(() => flyBird(trigger), 420);
         if (activations === 3) show({
           anchor: trigger,
           kicker: "NATURE / JAMAICA",
           title: "Doctor Bird.",
-          note: "The opening wing-pair is a quiet nod to Jamaica’s national bird, the swallow-tail hummingbird."
+          note: "Becomings awakens an abstract Doctor Bird — a nod to Jamaica’s national bird — and lets it guide you toward the paths that follow."
         });
       });
     }
