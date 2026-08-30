@@ -61,6 +61,16 @@
   jamaicaInteractions.defer = true;
   document.head.appendChild(jamaicaInteractions);
 
+  const mobileParityStyles = document.createElement("link");
+  mobileParityStyles.rel = "stylesheet";
+  mobileParityStyles.href = "/mobile-interaction-parity.css?v=20260830-parity1";
+  document.head.appendChild(mobileParityStyles);
+
+  const mobileParityInteractions = document.createElement("script");
+  mobileParityInteractions.src = "/mobile-interaction-parity.js?v=20260830-parity1";
+  mobileParityInteractions.defer = true;
+  document.head.appendChild(mobileParityInteractions);
+
   /* The six-of-six reveal should feel discovered, not like a canned system toast.
      Pick a message per browser session and apply it once curiosity.js creates the flash. */
   const threadMessages = [
