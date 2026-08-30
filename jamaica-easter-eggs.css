@@ -12,7 +12,8 @@
 .ashwood-jm-reveal__title{display:block;font-family:Georgia,serif;font-size:15px;line-height:1.2}
 .ashwood-jm-reveal__note{display:block;margin-top:6px;color:var(--ashwood-muted);font-size:9px;line-height:1.45}
 
-/* The wordmark hides the older island-name resonance. */
+/* XAYMACA belongs to the identity layer, not the dialog system. */
+.masthead{position:relative}
 .wordmark.ashwood-jm-xaymaca{position:relative}
 .wordmark.ashwood-jm-xaymaca::after{
   content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;opacity:0;
@@ -20,6 +21,20 @@
   transition:opacity .28s ease
 }
 .wordmark.ashwood-jm-xaymaca:hover::after,.wordmark.ashwood-jm-xaymaca:focus-visible::after{opacity:.72}
+.ashwood-jm-xaymaca-inline{
+  position:absolute;left:0;top:calc(100% + 10px);z-index:4;display:flex;align-items:baseline;gap:10px;
+  max-width:min(72vw,520px);margin:0;color:var(--ashwood-muted);opacity:0;transform:translateY(-3px);
+  pointer-events:none;transition:opacity .28s ease,transform .34s cubic-bezier(.16,.8,.24,1)
+}
+.ashwood-jm-xaymaca-inline.is-visible{opacity:.9;transform:translateY(0)}
+.ashwood-jm-xaymaca-inline__name{
+  flex:none;color:#009b3a;font:700 8px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.18em;text-transform:uppercase
+}
+.ashwood-jm-xaymaca-inline__meaning{
+  font-family:Georgia,serif;font-size:12px;line-height:1.25;letter-spacing:.01em;color:var(--ashwood-ink)
+}
+.ashwood-jm-xaymaca-inline__meaning::before{content:"/ ";color:#f7c600}
 
 /* Motto provenance remains a secondary layer, not homepage copy. */
 .iridescent-word--jamaica{cursor:help;outline-offset:4px}
@@ -49,5 +64,7 @@ html[data-ashwood-discovery-count="6"] .ashwood-jm-1962{opacity:.38;pointer-even
 @media(max-width:760px){
   .ashwood-jm-reveal{left:18px!important;right:18px!important;top:auto!important;bottom:calc(18px + env(safe-area-inset-bottom))!important;max-width:none}
   .ashwood-jm-1962{position:fixed;right:16px;bottom:78px;z-index:235}
+  .ashwood-jm-xaymaca-inline{top:calc(100% + 8px);gap:7px;max-width:80vw;flex-wrap:wrap}
+  .ashwood-jm-xaymaca-inline__meaning{font-size:11px}
 }
-@media(prefers-reduced-motion:reduce){.ashwood-jm-reveal,.ashwood-jm-1962{transition:none}.becomings-bloom.ashwood-jm-doctorbird::before,.becomings-bloom.ashwood-jm-doctorbird::after{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.ashwood-jm-reveal,.ashwood-jm-1962,.ashwood-jm-xaymaca-inline{transition:none}.becomings-bloom.ashwood-jm-doctorbird::before,.becomings-bloom.ashwood-jm-doctorbird::after{animation:none!important}}
