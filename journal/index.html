@@ -14,7 +14,7 @@
   <title>BUILD JOURNAL — ASHWOOD</title>
   <link rel="stylesheet" href="/ashwood-core.css?v=20260829-qa2" />
   <link rel="stylesheet" href="/journal/journal.css?v=20260829-qa2" />
-  <link rel="stylesheet" href="/journal/hub.css?v=20260827-approved" />
+  <link rel="stylesheet" href="/journal/hub.css?v=20260829-bets1" />
   <link rel="stylesheet" href="/journal-lab/cinematic.css?v=20260827-1" />
   <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
   <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
@@ -31,7 +31,7 @@
 
   <main id="journal-content">
     <nav class="journal-index" aria-label="Build Journal quick reference">
-      <a href="#now">Now</a><a href="#system">System</a><a href="#record">Record</a><a href="#method">Method</a>
+      <a href="#now">Now</a><a href="#bets">Bets</a><a href="#system">Builds</a><a href="#record">Record</a><a href="#method">Method</a><a href="#facilitation">Facilitation</a>
     </nav>
     <section class="journal-hero journal-hero--archive cinematic-opening" aria-labelledby="journal-title">
       <div class="cinematic-opening__field" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -73,38 +73,40 @@
       <p class="professional-signal">PROFESSIONAL ANNEX · PRODUCT STRATEGY · SYSTEMS ARCHITECTURE · AGENT WORKFLOWS · CATEGORY DESIGN · PROTOTYPING · DEPLOYMENT REALITY</p>
     </section>
 
-    <section class="education-thread" aria-labelledby="education-title">
-      <div class="section-marker"><span>00A</span><span>THE ADOPTION GAP</span></div>
-      <div class="education-thread__body">
-        <p class="journal-kicker">WHY EDUCATION IS A PRODUCT LAYER</p>
-        <h2 id="education-title">The biggest problem is not feature count.</h2>
-        <p>Because this space is still early relative to agentic-workforce adoption, most people do not yet know how to use agents well. Education is therefore a first-class, end-to-end through-line in every product—not a help center added after the build.</p>
+    <section id="bets" class="current-bets" aria-labelledby="bets-title">
+      <div class="section-marker"><span>00A</span><span>CURRENT BETS</span></div>
+      <div class="current-bets__heading"><h2 id="bets-title">What would have to be true?</h2><p>Status tells you what exists. Bets make the judgment visible: what I currently believe, what evidence I need, and what would cause me to change direction.</p></div>
+      <div class="bet-list">
+        <article><div><span>BET 01 · ALVIRA</span><h3>Persistent context matters more than the intake experience.</h3></div><div><strong>EVIDENCE NEEDED</strong><p>People return to, correct, and deepen their context over time—and that continuity measurably improves what AI can do with them.</p></div><div><strong>WHAT WOULD CHANGE MY MIND</strong><p>If the interview output is useful only as a static profile and ongoing reflection adds little practical value, the product should narrow accordingly.</p></div></article>
+        <article><div><span>BET 02 · ailhat</span><h3>Portfolio intelligence is a category worth teaching.</h3></div><div><strong>EVIDENCE NEEDED</strong><p>Cross-product signals help a builder identify opportunity, risk, drift, and work more effectively than host-specific monitoring alone.</p></div><div><strong>WHAT WOULD CHANGE MY MIND</strong><p>If users consistently want only platform-native monitoring and do not value a host-agnostic portfolio view, the category thesis is too broad.</p></div></article>
+        <article><div><span>BET 03 · LEDGATo</span><h3>The gap between intended orchestration and operational reality is painful enough to govern.</h3></div><div><strong>EVIDENCE NEEDED</strong><p>Execution-time checks surface meaningful mismatches, failures, or accountability gaps that existing logs and policy layers do not resolve cleanly.</p></div><div><strong>WHAT WOULD CHANGE MY MIND</strong><p>If existing platform controls already make execution sufficiently observable and enforceable, LEDGATo should not become another layer for its own sake.</p></div></article>
       </div>
     </section>
 
-    <section id="product-snapshot" class="product-snapshot" aria-labelledby="snapshot-title">
-      <div class="section-marker"><span>00B</span><span>INVESTOR SNAPSHOT</span></div>
-      <div class="product-snapshot__heading"><h2 id="snapshot-title">What exists. What’s next.</h2><p>A high-level view of each product’s job, current proof, and distance from a launchable deployment.</p></div>
-      <p class="palette-note">LONG-TERM DIRECTION · Align the three deployed surfaces to the Jamaican doctor-bird palette while preserving each product’s role.</p>
+    <section id="system" class="system-brief" aria-labelledby="system-title">
+      <div class="section-marker"><span>01</span><span>LIVE BUILDS / ECOSYSTEM MAP</span></div>
+      <div class="system-brief__heading"><h2 id="system-title">One map. Distinct responsibilities.</h2><p>The public products stay distinct while sharing a common through-line from context to intelligence, governed action, and operational reality.</p></div>
       <div class="deployment-previews" aria-label="Live deployment previews">
         <article><div class="deployment-preview"><iframe src="https://alviratech.vercel.app/" title="ALVIRA live landing page preview" loading="lazy"></iframe></div><a href="https://alviratech.vercel.app/">ALVIRA ↗</a></article>
         <article><div class="deployment-preview"><iframe src="https://ailhat.vercel.app/" title="ailhat live landing page preview" loading="lazy"></iframe></div><a href="https://ailhat.vercel.app/">ailhat ↗</a></article>
         <article><div class="deployment-preview"><iframe src="https://ledgato.vercel.app/" title="LEDGATo live landing page preview" loading="lazy"></iframe></div><a href="https://ledgato.vercel.app/">LEDGATo ↗</a></article>
       </div>
-      <div class="snapshot-list">
-        <article><div><span>CONTEXT INTELLIGENCE</span><h3><a href="https://alviratech.vercel.app/">ALVIRA</a></h3></div><p>Persistent personal context built through interview, reflection, and continuous updating.</p><div class="snapshot-status"><strong>ACTIVE BUILD</strong><small>Launch path: working surface → account flow → live context loop</small><a href="https://alviratech.vercel.app/">Open live deployment ↗</a></div></article>
-        <article><div><span>PORTFOLIO INTELLIGENCE + GOVERNED EXECUTION</span><h3><a href="https://ailhat.vercel.app/">ailhat</a></h3></div><p>Portfolio intelligence with Direct authorization and an emerging workforce layer scoped into the same environment.</p><div class="snapshot-status"><strong>LIVE PRODUCT · CATEGORY FORMING</strong><small>Launch path: prove portfolio signal → connect governed action → expand workforce capability</small><a href="https://ailhat.vercel.app/">Open live deployment ↗</a></div></article>
-        <article><div><span>OPERATIONAL REALITY</span><h3><a href="https://ledgato.vercel.app/">LEDGATo</a></h3></div><p>Tests whether orchestration is genuinely live, enforceable, and accountable beyond the interface.</p><div class="snapshot-status"><strong>PROTOTYPE SIGNAL</strong><small>Launch path: operational integration → reliability evidence → first paid deployment</small><a href="https://ledgato.vercel.app/">Open live deployment ↗</a></div></article>
+      <div class="system-map">
+        <article><span>CONTEXT INTELLIGENCE</span><h3>ALVIRA</h3><p>Builds persistent context through interview, reflection, and continuous updating. Bridge becomes an unlocked capability inside that context system.</p><small>ACTIVE BUILD · WORKING SURFACE → LIVE CONTEXT LOOP</small></article>
+        <article><span>PORTFOLIO INTELLIGENCE</span><h3>ailhat</h3><p>Reads opportunity, risk, drift, and work across a portfolio. Direct places authorization beside the intelligence instead of turning authorization into a separate public product.</p><small>LIVE PRODUCT · CATEGORY FORMING</small></article>
+        <article><span>OPERATIONAL REALITY</span><h3>LEDGATo</h3><p>Tests whether orchestration is genuinely live, enforceable, and accountable—not merely convincing at the interface layer.</p><small>PROTOTYPE SIGNAL · EXECUTION GAP DOCUMENTED</small></article>
+      </div>
+      <div class="foundation-layer" aria-label="Foundational infrastructure layer">
+        <span>FOUNDATIONAL LAYER</span><h3>Governed Agent Workforce</h3><p>Not a fourth public offering. This is the execution substrate running beneath and across the builds: reusable agent identities, skills, handoffs, harness leverage, authorization boundaries, and ecosystem awareness.</p><small>INFRASTRUCTURE · SHARED THROUGH-LINE · NOT A STANDALONE PRODUCT</small>
       </div>
     </section>
 
-    <section id="system" class="system-brief" aria-labelledby="system-title">
-      <div class="section-marker"><span>01</span><span>HOW THE PIECES FIT</span></div>
-      <div class="system-brief__heading"><h2 id="system-title">One ecosystem. Distinct responsibilities.</h2><p>The products stay legible on their own while contributing to a larger path from context to governed execution.</p></div>
-      <div class="system-map">
-        <article><span>CONTEXT</span><h3>ALVIRA</h3><p>Builds persistent context through interview, reflection, and continuous updating. Bridge becomes an unlocked capability inside that context system.</p><small>ACTIVE BUILD · PRODUCT ROLE DEFINED</small></article>
-        <article><span>PORTFOLIO INTELLIGENCE + EXECUTION</span><h3>ailhat</h3><p>Reads opportunity, risk, drift, and work across a portfolio, with Direct authorization and workforce capability scoped into the same environment.</p><small>LIVE DEPLOYMENT · CATEGORY EMERGING</small></article>
-        <article><span>OPERATIONAL REALITY</span><h3>Ledgato</h3><p>Tests whether orchestration is genuinely live, enforceable, and accountable—not merely convincing at the interface layer.</p><small>PROTOTYPE SIGNAL · EXECUTION GAP DOCUMENTED</small></article>
+    <section class="education-thread" aria-labelledby="education-title">
+      <div class="section-marker"><span>01A</span><span>THE ADOPTION GAP</span></div>
+      <div class="education-thread__body">
+        <p class="journal-kicker">WHY EDUCATION IS A PRODUCT LAYER</p>
+        <h2 id="education-title">The biggest problem is not feature count.</h2>
+        <p>Because this space is still early relative to agentic-workforce adoption, most people do not yet know how to use agents well. Education is therefore a first-class, end-to-end through-line in every product—not a help center added after the build.</p>
       </div>
     </section>
 
@@ -144,7 +146,7 @@
           <div class="entry-reasoning">
             <div><span>EXPERIENCE</span><p>Support systems can contain meaningful care and useful resources while still asking the person seeking help to carry too much of the coordination burden.</p></div>
             <div><span>PATTERN</span><p>I keep encountering versions of the same gap in the products I am building: capability exists, but context, continuity, permission, clarity, or execution determines whether it becomes genuinely reachable.</p></div>
-            <div><span>ACROSS THE BUILDS</span><p>ALVIRA asks what context makes intelligence useful. Ailhat asks what turns portfolio activity into actionable understanding. Direct asks when capability is actually authorized. Workforce asks how the next action gets carried forward. Ledgato asks what is genuinely enforceable at execution time.</p></div>
+            <div><span>ACROSS THE BUILDS</span><p>ALVIRA asks what context makes intelligence useful. ailhat asks what turns portfolio activity into actionable understanding and governed action. The shared Workforce layer asks how the next action gets carried forward. LEDGATo asks what is genuinely enforceable at execution time.</p></div>
             <div><span>PRINCIPLE</span><p>Reduce unnecessary coordination burden on the human while preserving choice, consent, privacy, dignity, and meaningful human control.</p></div>
           </div>
           <p class="journal-note">This is a thesis-level connection, not a claim that every ASHWOOD product should become a housing-support product. FIELD NOTES are where the journal can record what the work is teaching beyond any single build.</p>
@@ -157,21 +159,20 @@
       <div class="journal-feed__heading"><h2 id="log-title">The interesting part is the movement.</h2><p>What I thought → what I built → what happened → what changed my mind → what I believe now.</p></div>
       <div class="founder-entry-list">
         <article class="founder-entry"><div class="founder-entry__meta"><span>AUG 26</span><span>ALVIRA · PRODUCT</span></div><div class="founder-entry__body"><h3>Context intelligence became the product, not the interview.</h3><p>The continuous reflection and update loop moved toward the center of ALVIRA’s experience. The interview is a starting mechanism; persistent context is the thing being built.</p></div></article>
-        <article class="founder-entry"><div class="founder-entry__meta"><span>AUG 25</span><span>AILHAT · CATEGORY</span></div><div class="founder-entry__body"><h3>Naming portfolio intelligence.</h3><p>Ailhat stopped looking like another monitoring product when the portfolio itself became the unit of intelligence: opportunity, risk, drift, and work across products rather than inside one host.</p></div></article>
-        <article class="founder-entry"><div class="founder-entry__meta"><span>AUG 25</span><span>LEDGATO · REALITY CHECK</span></div><div class="founder-entry__body"><h3>A compelling interface is not an operational product.</h3><p>The live UI looked convincing before the underlying execution was genuinely available. That gap became product-design feedback, not something to hide behind presentation.</p></div></article>
-        <article class="founder-entry"><div class="founder-entry__meta"><span>AUG 25</span><span>WORKFORCE · ARCHITECTURE</span></div><div class="founder-entry__body"><h3>Product agents started becoming a workforce.</h3><p>What began as individual agents attached to products evolved toward a reusable, governed operating layer with shared identities, skills, handoffs, and ecosystem awareness.</p></div></article>
+        <article class="founder-entry"><div class="founder-entry__meta"><span>AUG 25</span><span>AILHAT · CATEGORY</span></div><div class="founder-entry__body"><h3>Naming portfolio intelligence.</h3><p>ailhat stopped looking like another monitoring product when the portfolio itself became the unit of intelligence: opportunity, risk, drift, and work across products rather than inside one host.</p></div></article>
+        <article class="founder-entry founder-entry--with-proof"><div class="founder-entry__meta"><span>AUG 25</span><span>LEDGATO · REALITY CHECK</span></div><div class="founder-entry__body"><h3>A compelling interface is not an operational product.</h3><p>The live UI looked convincing before the underlying execution was genuinely available. That gap became product-design feedback, not something to hide behind presentation.</p><figure class="proof-object proof-object--terminal"><figcaption>PROOF OBJECT · LIVE RUNTIME FAILURE</figcaption><code>ENGINE NOT AVAILABLE HERE</code><p>The public <code>/app</code> surface exposed the actual infrastructure boundary: the Python-backed runtime worked in the workstation environment, not in the Vercel serverless deployment.</p><a href="https://ledgato.vercel.app/app">Open current LEDGATo /app ↗</a></figure></div></article>
+        <article class="founder-entry"><div class="founder-entry__meta"><span>AUG 25</span><span>WORKFORCE · ARCHITECTURE</span></div><div class="founder-entry__body"><h3>Product agents started becoming shared infrastructure.</h3><p>What began as individual agents attached to products evolved toward a reusable, governed operating layer with shared identities, skills, handoffs, harness leverage, and ecosystem awareness.</p></div></article>
       </div>
     </section>
 
     <section class="product-threads" aria-labelledby="threads-title">
-      <div class="section-marker"><span>05</span><span>PRODUCT STORYLINES</span></div>
-      <div class="product-threads__intro"><h2 id="threads-title">Products are threads through the record.</h2><p>They are subjects of the journal, not the organizing principle. Follow one storyline to see how its assumptions and role changed over time.</p></div>
+      <div class="section-marker"><span>05</span><span>BUILD THREADS / FOUNDATIONAL LAYER</span></div>
+      <div class="product-threads__intro"><h2 id="threads-title">Products are threads through the record.</h2><p>The public products remain distinct. The governed workforce is documented separately as the infrastructure that connects and executes across them.</p></div>
       <div class="thread-list">
         <article><span>CONTEXT INTELLIGENCE</span><h3>ALVIRA</h3><p>From broad AI ecosystem ideas toward persistent context, continuous reflection, and Bridge as an unlocked capability.</p></article>
-        <article><span>PORTFOLIO INTELLIGENCE</span><h3>Ailhat</h3><p>From product observation toward an emerging category: portfolio-level intelligence connected to governed action.</p></article>
-        <article><span>AUTHORIZATION</span><h3>Ailhat / Direct</h3><p>The standalone Agent Control direction was integrated into Ailhat, placing permission, capacity, and governed action beside portfolio intelligence.</p></article>
-        <article><span>OPERATIONAL REALITY</span><h3>Ledgato</h3><p>Strong interface first; then the harder question of what is actually live, enforceable, and accountable.</p></article>
-        <article><span>EXECUTION</span><h3>Agent OS / Workforce</h3><p>From isolated product agents toward a reusable governed workforce and generalized agentic harness.</p></article>
+        <article><span>PORTFOLIO INTELLIGENCE</span><h3>ailhat</h3><p>From product observation toward an emerging category: portfolio-level intelligence connected to governed action through Direct.</p></article>
+        <article><span>OPERATIONAL REALITY</span><h3>LEDGATo</h3><p>Strong interface first; then the harder question of what is actually live, enforceable, and accountable.</p></article>
+        <article class="thread-list__foundation"><span>FOUNDATIONAL LAYER</span><h3>Governed Agent Workforce</h3><p>Shared execution substrate across the ecosystem—not a fourth product. Reusable identities, skills, handoffs, authorization boundaries, and generalized agentic harness leverage sit here.</p></article>
       </div>
     </section>
 
@@ -189,11 +190,20 @@
       <div class="journal-method__body"><h2 id="method-title">The archive should show its work.</h2>
         <div class="journal-method__grid">
           <div><span class="method-index">A</span><h3>Chronology</h3><p>What happened and when, including what was believed at the time.</p></div>
-          <div><span class="method-index">B</span><h3>Evidence</h3><p>Screenshots, deployments, PRs, prompts, notes, errors, prototypes, scans, and tests.</p></div>
+          <div><span class="method-index">B</span><h3>Evidence</h3><p>Screenshots, deployments, PRs, prompts, notes, errors, prototypes, scans, and tests—attached to the entries they actually changed.</p></div>
           <div><span class="method-index">C</span><h3>Interpretation</h3><p>Later understanding is useful, but it stays distinct from what was known in the moment.</p></div>
           <div><span class="method-index">D</span><h3>Attribution</h3><p>Models, tools, platforms, people, communities, and prior work that materially enabled the build.</p></div>
         </div>
       </div>
+    </section>
+
+    <section id="facilitation" class="facilitation" aria-labelledby="facilitation-title">
+      <div class="section-marker"><span>08</span><span>FACILITATION / OPEN BUILDS</span></div>
+      <div class="facilitation__heading"><h2 id="facilitation-title">Observation can become participation.</h2><p>Not a donation layer. Selected build tasks can be opened for sponsorship when the scope, proof target, execution budget, and human acceptance gate are explicit.</p></div>
+      <div class="open-builds">
+        <article><div><span>OPEN BUILD · ALVIRA</span><h3>Prove the living context loop.</h3><p>Move from a strong onboarding/interview surface to evidence that context can be revisited, corrected, reflected on, and made more useful over time.</p></div><dl><div><dt>WHY IT MATTERS</dt><dd>This is the difference between a profile builder and a true context-intelligence product.</dd></div><div><dt>AGENT EXECUTION COST</dt><dd>Scoped per task before sponsorship; never represented as a blank check.</dd></div><div><dt>HUMAN OVERSIGHT</dt><dd>Founder review, product acceptance, and regression checks remain required.</dd></div><div><dt>CURRENT PROOF</dt><dd>Working surface and persistent-context direction exist; longitudinal value is not yet proven.</dd></div><div><dt>SPONSORSHIP UNLOCKS</dt><dd>A bounded implementation or evidence-gathering task with its result returned to the public record.</dd></div></dl></article>
+      </div>
+      <p class="journal-note">Facilitation is task-level and governed. Funds support a defined build or experiment; they do not become unrestricted funds controlled by an autonomous agent.</p>
     </section>
 
     <section class="journal-closing" aria-labelledby="closing-title">

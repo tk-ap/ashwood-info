@@ -7,7 +7,7 @@
 }
 
 /* Resting field stays ambient. While a discovery is active, lift the field above
-   the primary homepage infrastructure so temporary reveal copy is never buried. */
+   background content so temporary reveal copy remains legible on larger screens. */
 body.ashwood-home-native .principles-field {
   z-index: 20;
 }
@@ -163,6 +163,31 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__usef
 }
 
 @media (max-width:760px) {
+  /* Mobile rule: permanent navigation always wins the tap stack. The randomized
+     discovery layer may animate beneath it, but can never capture a touch meant
+     for a static homepage link after a late layout shift or viewport resize. */
+  body.ashwood-home-native .principles-field,
+  body.ashwood-home-native .principles-field:has(.principle-hotspot.is-near),
+  body.ashwood-home-native .principles-field:has(.principle-hotspot.is-revealed),
+  body.ashwood-home-native .principles-field:has(.principle-hotspot:focus-visible) {
+    z-index: 20;
+  }
+
+  body.ashwood-home-native .masthead,
+  body.ashwood-home-native .intro,
+  body.ashwood-home-native .home-entryways,
+  body.ashwood-home-native .ashwood-capability-evidence,
+  body.ashwood-home-native .home-now,
+  body.ashwood-home-native .future-nav,
+  body.ashwood-home-native .ashwood-home-audio {
+    position: relative;
+    z-index: 240;
+  }
+
+  body.ashwood-home-native .ashwood-home-audio {
+    position: fixed;
+  }
+
   body.ashwood-home-native .principle-hotspot { width: clamp(150px, 46vw, 230px); min-height: 74px; }
   body.ashwood-home-native .principle-hotspot__useful { max-width: 220px; font-size: 9px; }
 }
