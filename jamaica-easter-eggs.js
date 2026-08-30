@@ -92,7 +92,7 @@
     bird = document.createElement("div");
     bird.className = "ashwood-jm-bird";
     bird.setAttribute("aria-hidden", "true");
-    bird.innerHTML = '<span class="ashwood-jm-bird__wing ashwood-jm-bird__wing--left"></span><span class="ashwood-jm-bird__wing ashwood-jm-bird__wing--right"></span><span class="ashwood-jm-bird__body"></span>';
+    bird.innerHTML = '<span class="ashwood-jm-bird__tail ashwood-jm-bird__tail--upper"></span><span class="ashwood-jm-bird__tail ashwood-jm-bird__tail--lower"></span><span class="ashwood-jm-bird__wing ashwood-jm-bird__wing--left"></span><span class="ashwood-jm-bird__wing ashwood-jm-bird__wing--right"></span><span class="ashwood-jm-bird__body"></span><span class="ashwood-jm-bird__bill"></span>';
     document.body.appendChild(bird);
     return bird;
   };
@@ -145,12 +145,12 @@
       const controlY = Math.min(from.y, to.y) - lift;
 
       const animation = guide.animate([
-        { left: `${from.x}px`, top: `${from.y}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -5 : 5}deg) scaleX(${direction})`, opacity: 1, offset: 0 },
-        { left: `${controlX}px`, top: `${controlY}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -14 : 14}deg) scaleX(${direction})`, opacity: 1, offset: .52 },
-        { left: `${to.x}px`, top: `${to.y - 12}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? 3 : -3}deg) scaleX(${direction})`, opacity: 1, offset: .9 },
+        { left: `${from.x}px`, top: `${from.y}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -3 : 3}deg) scaleX(${direction})`, opacity: 1, offset: 0 },
+        { left: `${controlX}px`, top: `${controlY}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -8 : 8}deg) scaleX(${direction})`, opacity: 1, offset: .52 },
+        { left: `${to.x}px`, top: `${to.y - 12}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? 2 : -2}deg) scaleX(${direction})`, opacity: 1, offset: .9 },
         { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) rotate(0deg) scaleX(${direction})`, opacity: 1, offset: 1 }
       ], {
-        duration: window.innerWidth <= 760 ? 760 : 900,
+        duration: window.innerWidth <= 760 ? 820 : 980,
         easing: "cubic-bezier(.2,.72,.18,1)",
         fill: "forwards"
       });
@@ -161,28 +161,27 @@
       guide.style.top = `${to.y}px`;
       destination.classList.add("is-doctorbird-visited");
 
-      /* Hummingbird arrival: hover, reverse slightly, then correct forward before darting away. */
       const hover = guide.animate([
-        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: 0 },
-        { left: `${to.x - direction * 10}px`, top: `${to.y - 4}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: .38 },
-        { left: `${to.x + direction * 3}px`, top: `${to.y + 1}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: .72 },
-        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: 1 }
-      ], { duration: 460, easing: "cubic-bezier(.22,.72,.2,1)", fill: "forwards" });
+        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) scaleX(${direction})`, offset: 0 },
+        { left: `${to.x - direction * 12}px`, top: `${to.y - 5}px`, transform: `translate(-50%,-50%) scaleX(${direction})`, offset: .42 },
+        { left: `${to.x + direction * 4}px`, top: `${to.y + 1}px`, transform: `translate(-50%,-50%) scaleX(${direction})`, offset: .76 },
+        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) scaleX(${direction})`, offset: 1 }
+      ], { duration: 560, easing: "cubic-bezier(.22,.72,.2,1)", fill: "forwards" });
       await hover.finished.catch(() => {});
       if (token !== flightToken) return;
 
-      await pause(index === destinations.length - 1 ? 420 : 210);
+      await pause(index === destinations.length - 1 ? 520 : 260);
       destination.classList.remove("is-doctorbird-visited");
       from = to;
     }
 
     if (token !== flightToken) return;
-    const exitX = Math.min(window.innerWidth + 80, from.x + Math.max(150, window.innerWidth * .18));
+    const exitX = Math.min(window.innerWidth + 100, from.x + Math.max(170, window.innerWidth * .2));
     const exitY = Math.max(30, from.y - 110);
     const exit = guide.animate([
       { left: `${from.x}px`, top: `${from.y}px`, opacity: 1 },
       { left: `${exitX}px`, top: `${exitY}px`, opacity: 0 }
-    ], { duration: 620, easing: "cubic-bezier(.12,.82,.16,1)", fill: "forwards" });
+    ], { duration: 760, easing: "cubic-bezier(.12,.82,.16,1)", fill: "forwards" });
     await exit.finished.catch(() => {});
     if (token === flightToken) {
       guide.classList.remove("is-flying");
