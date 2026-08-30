@@ -150,7 +150,7 @@
         { left: `${to.x}px`, top: `${to.y - 12}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? 3 : -3}deg) scaleX(${direction})`, opacity: 1, offset: .9 },
         { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) rotate(0deg) scaleX(${direction})`, opacity: 1, offset: 1 }
       ], {
-        duration: window.innerWidth <= 760 ? 820 : 1040,
+        duration: window.innerWidth <= 760 ? 760 : 900,
         easing: "cubic-bezier(.2,.72,.18,1)",
         fill: "forwards"
       });
@@ -160,7 +160,18 @@
       guide.style.left = `${to.x}px`;
       guide.style.top = `${to.y}px`;
       destination.classList.add("is-doctorbird-visited");
-      await pause(index === destinations.length - 1 ? 760 : 620);
+
+      /* Hummingbird arrival: hover, reverse slightly, then correct forward before darting away. */
+      const hover = guide.animate([
+        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: 0 },
+        { left: `${to.x - direction * 10}px`, top: `${to.y - 4}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: .38 },
+        { left: `${to.x + direction * 3}px`, top: `${to.y + 1}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: .72 },
+        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) scaleX(${direction}) translateX(0)`, offset: 1 }
+      ], { duration: 460, easing: "cubic-bezier(.22,.72,.2,1)", fill: "forwards" });
+      await hover.finished.catch(() => {});
+      if (token !== flightToken) return;
+
+      await pause(index === destinations.length - 1 ? 420 : 210);
       destination.classList.remove("is-doctorbird-visited");
       from = to;
     }
@@ -171,7 +182,7 @@
     const exit = guide.animate([
       { left: `${from.x}px`, top: `${from.y}px`, opacity: 1 },
       { left: `${exitX}px`, top: `${exitY}px`, opacity: 0 }
-    ], { duration: 820, easing: "cubic-bezier(.25,.7,.2,1)", fill: "forwards" });
+    ], { duration: 620, easing: "cubic-bezier(.12,.82,.16,1)", fill: "forwards" });
     await exit.finished.catch(() => {});
     if (token === flightToken) {
       guide.classList.remove("is-flying");
@@ -198,7 +209,7 @@
           anchor: trigger,
           kicker: "NATURE / JAMAICA",
           title: "Doctor Bird.",
-          note: "Becomings awakens an abstract Doctor Bird — a nod to Jamaica’s national bird — and lets it guide you toward the paths that follow."
+          note: "The long twin streamertail feathers, iridescent green body, and red bill turn the Becomings guide into a specific nod to Jamaica’s Doctor Bird."
         });
       };
 
