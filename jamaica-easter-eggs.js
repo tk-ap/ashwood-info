@@ -34,7 +34,7 @@
     const inline = document.createElement("p");
     inline.className = "ashwood-jm-xaymaca-inline";
     inline.setAttribute("aria-live", "polite");
-    inline.innerHTML = '<span class="ashwood-jm-xaymaca-inline__name">XAYMACA</span><span class="ashwood-jm-xaymaca-inline__meaning">Land of wood and water</span>';
+    inline.innerHTML = '<span class="ashwood-jm-xaymaca-inline__name">XAYMACA</span><span class="ashwood-jm-xaymaca-inline__meaning">Land of wood and water</span><span class="ashwood-jm-xaymaca-inline__context">Jamaica’s name is believed to derive from the Taíno Xaymaca — a quiet resonance inside ASHWOOD.</span>';
     masthead.appendChild(inline);
 
     let holdTimer = 0;
@@ -98,7 +98,7 @@
           anchor: trigger,
           kicker: "NATURE / JAMAICA",
           title: "Doctor Bird.",
-          note: "The wing gesture is a quiet nod to Jamaica’s national bird, the swallow-tail hummingbird."
+          note: "The opening wing-pair is a quiet nod to Jamaica’s national bird, the swallow-tail hummingbird."
         });
       });
     }
