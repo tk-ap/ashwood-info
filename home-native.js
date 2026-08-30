@@ -41,6 +41,16 @@
   mobileHotspotDialogStyles.href = "/mobile-hotspot-dialog.css?v=20260830-dialog1";
   document.head.appendChild(mobileHotspotDialogStyles);
 
+  const jamaicaStyles = document.createElement("link");
+  jamaicaStyles.rel = "stylesheet";
+  jamaicaStyles.href = "/jamaica-easter-eggs.css?v=20260830-jm1";
+  document.head.appendChild(jamaicaStyles);
+
+  const jamaicaInteractions = document.createElement("script");
+  jamaicaInteractions.src = "/jamaica-easter-eggs.js?v=20260830-jm1";
+  jamaicaInteractions.defer = true;
+  document.head.appendChild(jamaicaInteractions);
+
   /* The six-of-six reveal should feel discovered, not like a canned system toast.
      Pick a message per browser session and apply it once curiosity.js creates the flash. */
   const threadMessages = [
