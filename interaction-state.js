@@ -45,6 +45,7 @@
   const style = document.createElement("style");
   style.id = "ashwood-interaction-state-style";
   style.textContent = `
+    .ashwood-capability-nudge{display:none!important}
     .ashwood-thread-carry{display:inline-flex;align-items:center;gap:7px;margin-left:10px;color:var(--ashwood-muted);font-size:7px;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;opacity:.52;white-space:nowrap}
     .ashwood-thread-carry::before{content:"";width:14px;height:1px;background:#009b3a;opacity:.72}
     body[data-ashwood-thread] .ashwood-site-header__section{display:inline-flex;align-items:center}
