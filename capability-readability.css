@@ -1,0 +1,183 @@
+/* Capability visual readability pass.
+   Meaning wins over density: stronger hierarchy, larger type, cleaner active states. */
+
+@media (min-width: 761px) {
+  body.ashwood-home-native .ashwood-capability-map {
+    width: min(58vw, 820px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__header {
+    max-width: 740px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__eyebrow {
+    font-size: 9px !important;
+    letter-spacing: .16em !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__title {
+    max-width: 23ch;
+    font-size: clamp(23px, 2.15vw, 32px) !important;
+    line-height: 1.06 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__authorship-key {
+    max-width: 66ch !important;
+    font-size: 9px !important;
+    line-height: 1.5 !important;
+    opacity: .8;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list {
+    height: clamp(380px, 44vh, 485px) !important;
+    margin-top: 28px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list::before {
+    padding-top: 5px !important;
+    color: color-mix(in srgb, var(--ashwood-field-green) 78%, var(--ashwood-ink)) !important;
+    font-size: 8px !important;
+    letter-spacing: .14em !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list::after {
+    top: 11% !important;
+    width: min(86%, 690px) !important;
+    padding: 10px 18px !important;
+    color: color-mix(in srgb, var(--ashwood-field-green) 78%, var(--ashwood-ink)) !important;
+    font-size: 7px !important;
+    letter-spacing: .12em !important;
+    opacity: .82 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item {
+    width: clamp(148px, 13.2vw, 188px) !important;
+    opacity: .94 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { left: 13% !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { left: 38% !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { left: 64% !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { left: 87% !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { width: clamp(220px, 21vw, 290px) !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { width: clamp(210px, 20vw, 280px) !important; }
+
+  body.ashwood-home-native .ashwood-capability-map__item::before {
+    left: -15px !important;
+    top: .42em !important;
+    width: 8px !important;
+    height: 8px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill {
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    letter-spacing: .13em !important;
+    text-shadow: 0 0 16px rgba(0,155,58,.08);
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill::after {
+    font-size: 7px !important;
+    letter-spacing: .055em !important;
+    opacity: .82 !important;
+  }
+
+  /* Expanded content gets its own readable surface instead of floating over neighboring labels. */
+  body.ashwood-home-native .ashwood-capability-map__item:hover,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within {
+    width: clamp(210px, 19vw, 265px) !important;
+    padding: 13px 15px !important;
+    border: 1px solid color-mix(in srgb, var(--ashwood-field-green) 22%, var(--ashwood-rule)) !important;
+    background: color-mix(in srgb, var(--ashwood-bg, #11110f) 95%, transparent) !important;
+    box-shadow: 0 16px 38px rgba(0,0,0,.18), 0 0 0 1px rgba(0,155,58,.025);
+    backdrop-filter: blur(8px);
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:hover::before,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within::before {
+    left: -5px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__useful {
+    font-size: 10px !important;
+    line-height: 1.55 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__authorship {
+    font-size: 7px !important;
+    line-height: 1.4 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__practice {
+    font-size: 9px !important;
+    line-height: 1.4 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__footer {
+    max-width: 740px !important;
+    padding-top: 13px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__closing {
+    max-width: 44ch !important;
+    font-size: 10px !important;
+    line-height: 1.5 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__link,
+  body.ashwood-home-native .ashwood-capability-map__reset {
+    font-size: 9px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.ashwood-home-native .ashwood-capability-map__eyebrow {
+    font-size: 9px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__title {
+    font-size: clamp(25px, 7.8vw, 34px) !important;
+    line-height: 1.05 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__authorship-key {
+    font-size: 10px !important;
+    line-height: 1.55 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item {
+    min-height: 128px !important;
+    padding: 20px 16px 20px 26px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    letter-spacing: .12em !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill::after {
+    display: block;
+    margin-left: 2px;
+    font-size: 8px !important;
+    opacity: .8 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__useful {
+    font-size: 10px !important;
+    line-height: 1.55 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice {
+    font-size: 9px !important;
+    line-height: 1.45 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__closing {
+    font-size: 10px !important;
+    line-height: 1.5 !important;
+  }
+}
