@@ -14,6 +14,7 @@
   ];
 
   const normalizedPath = window.location.pathname.replace(/\/$/, "") || "/";
+  if (normalizedPath === "/journal") import("/journal/alvira-current.js").catch(() => {});
   const currentRoute = primaryRoutes.find(({ path }) => normalizedPath === path);
 
   const ensureSharedHeaderStyles = () => {
