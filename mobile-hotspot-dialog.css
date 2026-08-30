@@ -1,0 +1,123 @@
+/* Mobile hotspot dialog
+   A discovered signal should read like a contained capability detail, not text floating in the void. */
+
+@media (max-width: 760px), (pointer: coarse) {
+  body.ashwood-home-native .principle-hotspot.is-revealed {
+    position: fixed !important;
+    left: 16px !important;
+    right: 16px !important;
+    top: auto !important;
+    bottom: max(92px, calc(env(safe-area-inset-bottom) + 76px)) !important;
+    z-index: 238 !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: min(46vh, 390px);
+    margin: 0 !important;
+    padding: 18px 18px 17px !important;
+    overflow: auto;
+    transform: none !important;
+    border: 1px solid color-mix(in srgb, var(--ashwood-field-green) 24%, var(--ashwood-rule)) !important;
+    border-radius: 0 !important;
+    background: color-mix(in srgb, var(--ashwood-bg, #11110f) 96%, transparent) !important;
+    box-shadow: 0 18px 46px rgba(0,0,0,.28), 0 0 0 1px rgba(0,155,58,.025);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    isolation: isolate;
+    text-align: left;
+  }
+
+  /* Keep the discovery mark, but stop the bloom from competing with the reading surface. */
+  body.ashwood-home-native .principle-hotspot.is-revealed::before {
+    left: 18px !important;
+    top: 18px !important;
+    width: 7px !important;
+    height: 7px !important;
+    transform: translate(-50%,-50%) scale(1) !important;
+    background: var(--ashwood-field-green) !important;
+    box-shadow: 0 0 0 5px rgba(0,155,58,.06), 0 0 16px rgba(0,155,58,.24) !important;
+    animation: none !important;
+  }
+
+  body.ashwood-home-native .principle-hotspot.is-revealed::after {
+    display: none !important;
+  }
+
+  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__label {
+    display: block;
+    margin: 0 0 12px 14px;
+    color: var(--ashwood-field-green) !important;
+    font-size: 10px !important;
+    line-height: 1.2;
+    letter-spacing: .16em !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+  }
+
+  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__quote {
+    display: block;
+    margin: 0;
+    color: var(--ashwood-ink) !important;
+    font-family: Georgia, serif;
+    font-size: clamp(15px, 4.3vw, 18px) !important;
+    line-height: 1.45 !important;
+    letter-spacing: -.01em;
+    opacity: .96 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+
+  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__useful,
+  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__useful-for {
+    display: block !important;
+    max-width: none !important;
+    margin: 14px 0 0 !important;
+    padding-top: 12px;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 16%, var(--ashwood-rule));
+    color: var(--ashwood-muted) !important;
+    font-size: 10px !important;
+    line-height: 1.55 !important;
+    letter-spacing: .025em !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+
+  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__useful strong,
+  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__useful-for strong {
+    display: block;
+    margin: 0 0 5px;
+    color: var(--ashwood-field-green) !important;
+    font-size: 8px !important;
+    line-height: 1.2;
+    letter-spacing: .15em !important;
+    text-transform: uppercase;
+  }
+
+  /* The selected dialog is readable; all other discovery marks remain quiet behind it. */
+  body.ashwood-home-native .principles-field:has(.principle-hotspot.is-revealed) .principle-hotspot:not(.is-revealed) {
+    opacity: .18 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  body.ashwood-home-native .principle-hotspot.is-revealed {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: max(84px, calc(env(safe-area-inset-bottom) + 70px)) !important;
+    padding: 16px 16px 15px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.ashwood-home-native .principle-hotspot.is-revealed,
+  body.ashwood-home-native .principle-hotspot.is-revealed * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
