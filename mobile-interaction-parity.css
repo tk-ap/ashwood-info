@@ -1,0 +1,101 @@
+/* Mobile interaction parity
+   Desktop hover/proximity behaviors must have an intentional touch/scroll/earned equivalent.
+   This layer never floats cultural context over core homepage copy. */
+
+@media (max-width: 760px), (pointer: coarse) {
+  /* XAYMACA becomes a normal-flow discovery beneath the masthead on touch devices.
+     It first appears through dwell, then remains as a quiet compact clue. */
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    z-index: 2 !important;
+    box-sizing: border-box;
+    width: min(100%, 390px);
+    max-width: 100% !important;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition:
+      max-height .48s cubic-bezier(.16,.8,.24,1),
+      margin .38s ease,
+      padding .38s ease,
+      opacity .34s ease,
+      transform .38s ease;
+  }
+
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-tease,
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-expanded {
+    max-height: 112px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid color-mix(in srgb, #009b3a 22%, var(--ashwood-rule));
+    opacity: .94;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-earned:not(.is-mobile-expanded):not(.is-mobile-tease) {
+    max-height: 30px;
+    margin-top: 8px;
+    padding-top: 6px;
+    opacity: .46;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-earned:not(.is-mobile-expanded):not(.is-mobile-tease) .ashwood-jm-xaymaca-inline__context {
+    display: none;
+  }
+
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity .ashwood-jm-xaymaca-inline__name {
+    font-size: 8px;
+  }
+
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity .ashwood-jm-xaymaca-inline__meaning {
+    font-size: 11px;
+  }
+
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity .ashwood-jm-xaymaca-inline__context {
+    font-size: 8px;
+    line-height: 1.5;
+  }
+
+  /* Touch gets a subtle physical acknowledgment without inventing hover. */
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity:active,
+  .iridescent-word--jamaica:active,
+  .ashwood-jm-1962:active {
+    opacity: .82;
+  }
+
+  /* Earned cultural context expands in flow; never position over hero/navigation. */
+  .ashwood-jm-motto-context.is-mobile-auto-visible,
+  .ashwood-jm-1962-context.is-mobile-auto-visible {
+    max-height: 118px !important;
+    opacity: .9 !important;
+    transform: translateY(0) !important;
+  }
+
+  .ashwood-jm-motto-context.is-mobile-auto-visible .ashwood-jm-context-title,
+  .ashwood-jm-motto-context.is-mobile-auto-visible .ashwood-jm-context-note,
+  .ashwood-jm-1962-context.is-mobile-auto-visible .ashwood-jm-context-title,
+  .ashwood-jm-1962-context.is-mobile-auto-visible .ashwood-jm-context-note {
+    display: block !important;
+  }
+
+  /* Keyboard/touch focus should be visible but restrained. */
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity:focus-visible,
+  .iridescent-word--jamaica:focus-visible,
+  .ashwood-jm-1962:focus-visible {
+    outline: 1px solid color-mix(in srgb, #009b3a 55%, transparent);
+    outline-offset: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ashwood-jm-xaymaca-inline.ashwood-mobile-parity { transition: none; }
+}
