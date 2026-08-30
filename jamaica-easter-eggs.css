@@ -1,0 +1,53 @@
+/* ASHWOOD Jamaican cultural easter eggs — quiet, contextual, discoverable. */
+.ashwood-jm-reveal{
+  position:fixed;z-index:310;max-width:min(330px,78vw);padding:12px 14px;
+  border:1px solid color-mix(in srgb,#009b3a 28%,var(--ashwood-rule));
+  background:color-mix(in srgb,var(--ashwood-bg,#11110f) 96%,transparent);
+  color:var(--ashwood-ink);box-shadow:0 16px 42px rgba(0,0,0,.18);
+  backdrop-filter:blur(8px);opacity:0;transform:translateY(6px);pointer-events:none;
+  transition:opacity .28s ease,transform .34s cubic-bezier(.16,.8,.24,1)
+}
+.ashwood-jm-reveal.is-visible{opacity:1;transform:translateY(0)}
+.ashwood-jm-reveal__kicker{display:block;margin-bottom:5px;color:#009b3a;font:700 8px/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}
+.ashwood-jm-reveal__title{display:block;font-family:Georgia,serif;font-size:15px;line-height:1.2}
+.ashwood-jm-reveal__note{display:block;margin-top:6px;color:var(--ashwood-muted);font-size:9px;line-height:1.45}
+
+/* The wordmark hides the older island-name resonance. */
+.wordmark.ashwood-jm-xaymaca{position:relative}
+.wordmark.ashwood-jm-xaymaca::after{
+  content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;opacity:0;
+  background:linear-gradient(135deg,transparent 0 42%,#f7c600 42.5% 46%,transparent 46.5% 53.5%,#009b3a 54% 58%,transparent 58.5%);
+  transition:opacity .28s ease
+}
+.wordmark.ashwood-jm-xaymaca:hover::after,.wordmark.ashwood-jm-xaymaca:focus-visible::after{opacity:.72}
+
+/* Motto provenance remains a secondary layer, not homepage copy. */
+.iridescent-word--jamaica{cursor:help;outline-offset:4px}
+.iridescent-word--jamaica.ashwood-jm-active{text-shadow:0 0 18px rgba(0,155,58,.22)}
+
+/* Independence coordinate appears only once curiosity has already been rewarded. */
+.ashwood-jm-1962{
+  position:absolute;right:clamp(22px,4vw,62px);bottom:clamp(14px,3vh,32px);z-index:23;
+  border:0;padding:0;background:none;color:var(--ashwood-muted);font:600 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.18em;opacity:0;pointer-events:none;transition:opacity .5s ease,color .25s ease
+}
+html[data-ashwood-discovery-count="3"] .ashwood-jm-1962,
+html[data-ashwood-discovery-count="4"] .ashwood-jm-1962,
+html[data-ashwood-discovery-count="5"] .ashwood-jm-1962,
+html[data-ashwood-discovery-count="6"] .ashwood-jm-1962{opacity:.38;pointer-events:auto}
+.ashwood-jm-1962:hover,.ashwood-jm-1962:focus-visible{opacity:1!important;color:#f7c600}
+
+/* Doctor Bird is suggested by a wing-pair during Becomings, never illustrated literally. */
+.becomings-bloom.ashwood-jm-doctorbird::before,.becomings-bloom.ashwood-jm-doctorbird::after{
+  content:"";position:absolute;left:50%;top:50%;width:54px;height:18px;border-top:1px solid rgba(0,155,58,.42);opacity:0;pointer-events:none
+}
+.becomings-bloom.ashwood-jm-doctorbird::before{transform:translate(-98%,-50%) rotate(-18deg);border-radius:100% 0 0 0}
+.becomings-bloom.ashwood-jm-doctorbird::after{transform:translate(-2%,-50%) rotate(18deg);border-radius:0 100% 0 0}
+.becomings-bloom.ashwood-jm-doctorbird.is-active::before,.becomings-bloom.ashwood-jm-doctorbird.is-active::after{animation:ashwood-jm-wing 1.7s ease both}
+@keyframes ashwood-jm-wing{0%{opacity:0;filter:blur(3px)}35%{opacity:.58;filter:blur(0)}100%{opacity:0;transform-origin:center}}
+
+@media(max-width:760px){
+  .ashwood-jm-reveal{left:18px!important;right:18px!important;top:auto!important;bottom:calc(18px + env(safe-area-inset-bottom))!important;max-width:none}
+  .ashwood-jm-1962{position:fixed;right:16px;bottom:78px;z-index:235}
+}
+@media(prefers-reduced-motion:reduce){.ashwood-jm-reveal,.ashwood-jm-1962{transition:none}.becomings-bloom.ashwood-jm-doctorbird::before,.becomings-bloom.ashwood-jm-doctorbird::after{animation:none!important}}
