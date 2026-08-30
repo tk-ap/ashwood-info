@@ -6,6 +6,11 @@
 
   document.body.classList.add("ashwood-home-native");
 
+  const interactionState = document.createElement("script");
+  interactionState.src = "/interaction-state.js?v=20260830-grammar1";
+  interactionState.defer = true;
+  document.head.appendChild(interactionState);
+
   const becomingsStyles = document.createElement("link");
   becomingsStyles.rel = "stylesheet";
   becomingsStyles.href = "/becomings-interaction.css?v=20260829-mobile-entrance";
@@ -20,6 +25,11 @@
   polishStyles.rel = "stylesheet";
   polishStyles.href = "/home-polish.css?v=20260830-field-balance1";
   document.head.appendChild(polishStyles);
+
+  const constellationStyles = document.createElement("link");
+  constellationStyles.rel = "stylesheet";
+  constellationStyles.href = "/capability-constellation.css?v=20260830-constellation1";
+  document.head.appendChild(constellationStyles);
 
   /* The six-of-six reveal should feel discovered, not like a canned system toast.
      Pick a message per browser session and apply it once curiosity.js creates the flash. */
