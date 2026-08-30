@@ -239,7 +239,7 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__usef
     min-height: 44px;
     margin: 0;
     padding: 0;
-    border: 1px solid color-mix(in srgb, var(--ashwood-gold) 38%, transparent);
+    border: 1px solid color-mix(in srgb, #009b3a 42%, transparent);
     border-radius: 50%;
     background: color-mix(in srgb, var(--ashwood-paper) 76%, transparent);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, .03), 0 8px 24px rgba(0, 0, 0, .08);
@@ -279,7 +279,7 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__usef
 
   body.ashwood-home-native .principle-hotspot__label::after {
     content: "·";
-    color: var(--ashwood-gold);
+    color: #009b3a;
     font-size: 24px;
     font-weight: 400;
     line-height: 1;
@@ -315,7 +315,7 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__usef
   body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__label {
     position: static;
     display: block;
-    color: var(--ashwood-gold);
+    color: #009b3a;
     font-size: 9px;
     letter-spacing: .16em;
     text-align: left;
@@ -347,6 +347,6 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__usef
     line-height: 1.45;
   }
 
-  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__useful strong { color: var(--ashwood-gold); }
+  body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__useful strong { color: #009b3a; }
   body.ashwood-home-native .ashwood-curiosity-progress { display: none; }
 }
