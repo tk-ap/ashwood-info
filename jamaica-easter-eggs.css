@@ -61,39 +61,50 @@ html[data-ashwood-discovery-count="6"] .ashwood-jm-1962{opacity:.38;pointer-even
 @keyframes ashwood-jm-wing-left{0%{opacity:0;transform:translate(-100%,-45%) rotate(-7deg) scale(.18,.45);filter:blur(3px)}35%{opacity:.72;filter:blur(0)}70%{opacity:.82;transform:translate(-100%,-52%) rotate(-24deg) scale(1)}100%{opacity:0;transform:translate(-100%,-46%) rotate(-11deg) scale(.72)}}
 @keyframes ashwood-jm-wing-right{0%{opacity:0;transform:translate(0,-45%) rotate(7deg) scale(.18,.45);filter:blur(3px)}35%{opacity:.72;filter:blur(0)}70%{opacity:.82;transform:translate(0,-52%) rotate(24deg) scale(1)}100%{opacity:0;transform:translate(0,-46%) rotate(11deg) scale(.72)}}
 
-/* Awakened Doctor Bird: an abstract navigational guide, visible enough to read in the void. */
+/* Awakened Doctor Bird: streamertail silhouette first. */
 .ashwood-jm-bird{
-  position:fixed;left:0;top:0;z-index:360;width:54px;height:34px;opacity:0;pointer-events:none;
-  transform:translate(-50%,-50%);filter:drop-shadow(0 0 11px rgba(0,155,58,.38));will-change:left,top,transform,opacity
+  position:fixed;left:0;top:0;z-index:360;width:92px;height:48px;opacity:0;pointer-events:none;
+  transform:translate(-50%,-50%);filter:drop-shadow(0 0 12px rgba(0,155,58,.34));will-change:left,top,transform,opacity
 }
 .ashwood-jm-bird.is-flying{opacity:1}
 .ashwood-jm-bird__body{
-  position:absolute;left:20px;top:13px;width:16px;height:8px;border-radius:72% 38% 66% 46%;
-  background:linear-gradient(90deg,#009b3a 0 66%,#f7c600 66% 80%,#f5f3ef 80%);transform:rotate(-7deg);
-  box-shadow:0 0 0 1px rgba(245,243,239,.08),0 0 10px rgba(0,155,58,.16)
+  position:absolute;left:34px;top:18px;width:20px;height:10px;border-radius:78% 42% 72% 48%;
+  background:linear-gradient(110deg,#003f24 0%,#008c46 36%,#00b85d 60%,#006a35 100%);
+  transform:rotate(-6deg);box-shadow:inset -4px -2px 6px rgba(0,0,0,.24),0 0 12px rgba(0,155,58,.2)
 }
-.ashwood-jm-bird__body::before{content:"";position:absolute;right:-11px;top:2px;width:12px;height:1.5px;background:#f7c600;transform:rotate(-5deg);transform-origin:left center;opacity:.95}
-.ashwood-jm-bird__body::after{content:"";position:absolute;left:-11px;top:4px;width:14px;height:1.5px;background:#009b3a;box-shadow:3px 4px 0 -0.2px #f7c600;transform:rotate(17deg);transform-origin:right center;opacity:.78}
+/* Red bill: thin and directional. */
+.ashwood-jm-bird__body::before{
+  content:"";position:absolute;right:-18px;top:2px;width:20px;height:2px;border-radius:999px;
+  background:linear-gradient(90deg,#d32929,#ff5348);transform:rotate(-5deg);transform-origin:left center;
+  box-shadow:0 0 4px rgba(211,41,41,.18)
+}
+/* Twin black streamertail feathers dominate the silhouette. */
+.ashwood-jm-bird__body::after{
+  content:"";position:absolute;right:15px;top:5px;width:48px;height:2px;border-radius:999px;
+  background:linear-gradient(90deg,rgba(13,15,13,.96),rgba(13,15,13,.82));
+  box-shadow:4px 7px 0 -0.2px rgba(13,15,13,.92);
+  transform:rotate(8deg);transform-origin:right center;opacity:.98
+}
 .ashwood-jm-bird__wing{
-  position:absolute;left:21px;top:10px;width:23px;height:12px;border-top:2px solid #00b747;border-radius:100% 20% 0 0;
-  box-shadow:0 -1px 0 rgba(247,198,0,.24);transform-origin:3px 3px
+  position:absolute;left:36px;top:15px;width:30px;height:15px;
+  border-top:2px solid rgba(112,224,166,.82);border-radius:100% 22% 0 0;
+  background:linear-gradient(155deg,rgba(0,155,58,.11),transparent 66%);
+  box-shadow:0 -1px 0 rgba(247,198,0,.12);filter:drop-shadow(0 0 3px rgba(0,155,58,.16));
+  transform-origin:4px 4px
 }
-.ashwood-jm-bird__wing--left{transform:rotate(-35deg);animation:ashwood-jm-flap-left .12s ease-in-out infinite alternate}
-.ashwood-jm-bird__wing--right{transform:scaleX(-1) rotate(-35deg);animation:ashwood-jm-flap-right .12s ease-in-out infinite alternate}
-@keyframes ashwood-jm-flap-left{from{transform:rotate(-56deg) scaleY(.72)}to{transform:rotate(38deg) scaleY(1.12)}}
-@keyframes ashwood-jm-flap-right{from{transform:scaleX(-1) rotate(-56deg) scaleY(.72)}to{transform:scaleX(-1) rotate(38deg) scaleY(1.12)}}
+.ashwood-jm-bird__wing--left{transform:rotate(-35deg);animation:ashwood-jm-flap-left .105s ease-in-out infinite alternate}
+.ashwood-jm-bird__wing--right{transform:scaleX(-1) rotate(-35deg);animation:ashwood-jm-flap-right .105s ease-in-out infinite alternate}
+@keyframes ashwood-jm-flap-left{from{transform:rotate(-62deg) scaleY(.62);opacity:.54}to{transform:rotate(43deg) scaleY(1.16);opacity:.94}}
+@keyframes ashwood-jm-flap-right{from{transform:scaleX(-1) rotate(-62deg) scaleY(.62);opacity:.54}to{transform:scaleX(-1) rotate(43deg) scaleY(1.16);opacity:.94}}
 
-.home-entryway.is-doctorbird-visited{
-  position:relative;z-index:361;color:var(--ashwood-ink)!important;
-  text-shadow:0 0 18px rgba(0,155,58,.24);transform:translateY(-3px);
-  transition:transform .28s ease,color .28s ease,text-shadow .28s ease
-}
+/* Arrival is a perch/found mark, not a full link highlight. */
+.home-entryway.is-doctorbird-visited{position:relative;z-index:361;transform:none!important;text-shadow:none!important}
 .home-entryway.is-doctorbird-visited::after{
-  content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;
-  background:linear-gradient(90deg,#009b3a 0 68%,#f7c600 68% 79%,transparent 79%);opacity:.9;
-  animation:ashwood-jm-route-glow .85s ease both
+  content:"";position:absolute;left:-10px;top:50%;width:6px;height:6px;border-radius:50%;
+  background:#009b3a;box-shadow:0 0 0 3px rgba(0,155,58,.08),0 0 14px rgba(0,155,58,.35),8px 0 0 -2px #f7c600;
+  transform:translateY(-50%) scale(.3);animation:ashwood-jm-perch-pulse .88s cubic-bezier(.16,.8,.24,1) both
 }
-@keyframes ashwood-jm-route-glow{0%{transform:scaleX(0);transform-origin:left;opacity:0}42%{transform:scaleX(1);opacity:.92}100%{opacity:.3}}
+@keyframes ashwood-jm-perch-pulse{0%{opacity:0;transform:translateY(-50%) scale(.3)}38%{opacity:1;transform:translateY(-50%) scale(1.25)}72%{opacity:.92;transform:translateY(-50%) scale(1)}100%{opacity:.18;transform:translateY(-50%) scale(.8)}}
 
 @media(max-width:760px){
   .ashwood-jm-reveal{left:18px!important;right:18px!important;top:auto!important;bottom:calc(18px + env(safe-area-inset-bottom))!important;max-width:none}
@@ -102,9 +113,12 @@ html[data-ashwood-discovery-count="6"] .ashwood-jm-1962{opacity:.38;pointer-even
   .ashwood-jm-xaymaca-inline__meaning{font-size:11px}
   .ashwood-jm-xaymaca-inline__context{font-size:8px;max-width:42ch}
   .becomings-bloom.ashwood-jm-doctorbird::before,.becomings-bloom.ashwood-jm-doctorbird::after{width:62px;height:28px}
-  .ashwood-jm-bird{width:44px;height:28px;z-index:360}
-  .ashwood-jm-bird__body{left:16px;top:11px;width:14px;height:7px}
-  .ashwood-jm-bird__wing{left:17px;top:9px;width:19px;height:10px}
+  .ashwood-jm-bird{width:74px;height:40px;z-index:360}
+  .ashwood-jm-bird__body{left:27px;top:15px;width:17px;height:9px}
+  .ashwood-jm-bird__body::before{right:-15px;width:17px}
+  .ashwood-jm-bird__body::after{right:13px;width:40px;box-shadow:3px 6px 0 -0.2px rgba(13,15,13,.92)}
+  .ashwood-jm-bird__wing{left:29px;top:12px;width:25px;height:13px}
+  .home-entryway.is-doctorbird-visited::after{left:-7px}
 }
 @media(prefers-reduced-motion:reduce){
   .ashwood-jm-reveal,.ashwood-jm-1962,.ashwood-jm-xaymaca-inline{transition:none}
