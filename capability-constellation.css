@@ -1,0 +1,230 @@
+/* ASHWOOD capability constellation
+   Six discovered signals resolve into a connected operating pattern rather than a competency list. */
+
+@media (min-width: 761px) {
+  body.ashwood-home-native .ashwood-capability-map {
+    width: min(49vw, 700px) !important;
+    right: clamp(52px, 6vw, 96px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__header {
+    max-width: 610px;
+    margin-left: auto;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list {
+    position: relative !important;
+    display: block !important;
+    width: 100%;
+    height: clamp(330px, 39vh, 430px);
+    margin: 18px 0 8px !important;
+    border: 0 !important;
+    overflow: visible;
+    isolation: isolate;
+  }
+
+  /* The field is deliberately diagrammatic, not dashboard-like. */
+  body.ashwood-home-native .ashwood-capability-map__list::before {
+    content: "";
+    position: absolute;
+    inset: 4% 3% 2%;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      linear-gradient(28deg, transparent 49.82%, color-mix(in srgb, var(--ashwood-field-green) 18%, transparent) 49.92% 50.08%, transparent 50.18%),
+      linear-gradient(151deg, transparent 49.82%, color-mix(in srgb, var(--ashwood-field-green) 14%, transparent) 49.92% 50.08%, transparent 50.18%),
+      linear-gradient(84deg, transparent 49.86%, color-mix(in srgb, var(--ashwood-field-green) 10%, transparent) 49.94% 50.06%, transparent 50.14%),
+      radial-gradient(circle at 50% 50%, transparent 0 15%, color-mix(in srgb, var(--ashwood-field-green) 14%, transparent) 15.25% 15.45%, transparent 15.7% 31%, color-mix(in srgb, var(--ashwood-field-green) 8%, transparent) 31.2% 31.35%, transparent 31.6%);
+    opacity: .88;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list::after {
+    content: "THROUGHLINE";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 0;
+    display: grid;
+    place-items: center;
+    width: 86px;
+    height: 86px;
+    transform: translate(-50%, -50%);
+    border: 1px solid color-mix(in srgb, var(--ashwood-field-green) 42%, transparent);
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--ashwood-field-green) 13%, transparent), transparent 67%);
+    color: color-mix(in srgb, var(--ashwood-field-green) 76%, var(--ashwood-ink));
+    font: 600 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .18em;
+    text-indent: .18em;
+    box-shadow: 0 0 30px rgba(0,155,58,.055);
+    pointer-events: none;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item {
+    position: absolute !important;
+    z-index: 1;
+    display: block !important;
+    width: clamp(130px, 12.5vw, 176px);
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    transform: translate(-50%, -50%);
+    opacity: .78;
+    transition: opacity .28s ease, transform .35s cubic-bezier(.16,.8,.24,1), filter .3s ease;
+    animation: ashwood-constellation-resolve .9s cubic-bezier(.16,.8,.24,1) both;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { left: 19%; top: 19%; animation-delay: 1.18s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { left: 78%; top: 15%; animation-delay: 1.28s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { left: 87%; top: 52%; animation-delay: 1.38s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { left: 51%; top: 82%; animation-delay: 1.48s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { left: 15%; top: 70%; animation-delay: 1.58s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { left: 50%; top: 20%; animation-delay: 1.68s; }
+
+  body.ashwood-home-native .ashwood-capability-map__item::before {
+    content: "";
+    position: absolute;
+    left: -13px;
+    top: .45em;
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--ashwood-field-green);
+    border-radius: 50%;
+    background: var(--ashwood-bg, #11110f);
+    box-shadow: 0 0 0 4px rgba(0,155,58,.045), 0 0 14px rgba(0,155,58,.12);
+    transition: transform .28s ease, background .28s ease, box-shadow .28s ease;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill {
+    display: block;
+    margin: 0;
+    color: var(--ashwood-field-green) !important;
+    font-size: 8px !important;
+    letter-spacing: .18em !important;
+    line-height: 1.2;
+  }
+
+  /* Details are present, but the field begins as a pattern rather than six mini cards. */
+  body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice {
+    display: block !important;
+    max-height: 0;
+    margin: 0 !important;
+    overflow: hidden;
+    opacity: 0 !important;
+    transform: translateY(5px);
+    pointer-events: none;
+    transition: max-height .38s ease, margin .28s ease, opacity .25s ease, transform .3s ease;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:hover,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within {
+    z-index: 8;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.04);
+    filter: drop-shadow(0 10px 24px rgba(0,0,0,.16));
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:hover::before,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within::before {
+    background: var(--ashwood-field-green);
+    transform: scale(1.22);
+    box-shadow: 0 0 0 6px rgba(0,155,58,.07), 0 0 20px rgba(0,155,58,.22);
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__practice {
+    max-height: 88px;
+    margin-top: 7px !important;
+    opacity: 1 !important;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__description {
+    color: var(--ashwood-ink) !important;
+    font-size: 8px !important;
+    line-height: 1.45 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__authorship {
+    color: var(--ashwood-muted) !important;
+    font-size: 6px !important;
+    letter-spacing: .13em !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__practice {
+    width: fit-content !important;
+    color: var(--ashwood-field-green) !important;
+    font-size: 8px !important;
+    line-height: 1.3;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__footer {
+    max-width: 610px;
+    margin: 4px 0 0 auto !important;
+    padding-top: 10px;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 20%, var(--ashwood-rule));
+  }
+
+  @keyframes ashwood-constellation-resolve {
+    0% { opacity: 0; filter: blur(5px); transform: translate(-50%, -50%) scale(.82); }
+    55% { opacity: .36; filter: blur(1.5px); }
+    100% { opacity: .78; filter: blur(0); transform: translate(-50%, -50%) scale(1); }
+  }
+}
+
+/* Touch keeps the relationship language but avoids tiny spatial targets. */
+@media (max-width: 760px) {
+  body.ashwood-home-native .ashwood-capability-map__list {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    gap: 1px !important;
+    margin-top: 18px !important;
+    padding: 1px !important;
+    background: color-mix(in srgb, var(--ashwood-field-green) 18%, transparent);
+    border: 0 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item {
+    display: block !important;
+    min-height: 132px !important;
+    padding: 18px 15px !important;
+    border: 0 !important;
+    background: var(--ashwood-bg, #11110f) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    flex: 0 0 auto;
+    border: 1px solid var(--ashwood-field-green);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0,155,58,.16);
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice {
+    grid-column: auto !important;
+    margin-top: 8px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.ashwood-home-native .ashwood-capability-map__item { animation: none !important; }
+}
