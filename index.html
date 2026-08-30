@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
     <link rel="stylesheet" href="/home-native.css?v=20260828-utility1" />
     <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio6" />
-    <link rel="stylesheet" href="/hotspot-immersive.css?v=20260828-latent2" />
+    <link rel="stylesheet" href="/hotspot-immersive.css?v=20260829-touch-signals" />
     <link rel="stylesheet" href="/home-balance.css?v=20260828-balance2" />
     <style>
       /* PR #3 composition pass: create a left/right conversation without turning Home into a grid. */
@@ -79,7 +79,7 @@
     </style>
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/home-native.js?v=20260829-becomings-fix" defer></script>
-    <script src="/curiosity.js?v=20260827-1" defer></script>
+    <script src="/curiosity.js?v=20260829-touch-signals" defer></script>
     <script src="/capability-entry.js?v=20260828-entry1" defer></script>
     <script src="/theme.js?v=20260827-1" defer></script>
   </head>
@@ -150,9 +150,18 @@
         const hotspots = [...field.querySelectorAll('.principle-hotspot')];
         const surface = field.closest('.shell') || document.body;
         const protectedSelectors = ['.masthead', '.intro', '.home-entryways', '.home-now', '.future-nav', '.ashwood-home-audio'];
+        const isTouchLayout = () => window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+        const setHint = (message) => {
+          const hint = field.querySelector('.principles-field__hint');
+          if (hint) hint.textContent = message;
+        };
         const close = () => {
-          hotspots.forEach((hotspot) => hotspot.classList.remove('is-revealed', 'is-near'));
+          hotspots.forEach((hotspot) => {
+            hotspot.classList.remove('is-revealed', 'is-near');
+            hotspot.setAttribute('aria-pressed', 'false');
+          });
           field.classList.remove('is-pinned');
+          if (isTouchLayout()) setHint('Tap a signal.');
         };
         const overlapArea = (a, b, padding = 0) => {
           const left = Math.max(a.left, b.left - padding);
@@ -166,6 +175,16 @@
           .map((el) => el.getBoundingClientRect())
           .filter((rect) => rect.width > 0 && rect.height > 0);
         const randomize = () => {
+          if (isTouchLayout()) {
+            hotspots.forEach((hotspot) => {
+              hotspot.style.removeProperty('left');
+              hotspot.style.removeProperty('top');
+              hotspot.style.removeProperty('right');
+              hotspot.style.removeProperty('bottom');
+            });
+            setHint('Tap a signal.');
+            return;
+          }
           const rect = field.getBoundingClientRect();
           const protectedAreas = protectedRects();
           const placed = [];
@@ -223,6 +242,7 @@
           });
         };
         const point = (clientX, clientY) => {
+          if (isTouchLayout()) return;
           const rect = field.getBoundingClientRect();
           field.style.setProperty('--field-x', Math.max(0, Math.min(100, (clientX - rect.left) / rect.width * 100)) + '%');
           field.style.setProperty('--field-y', Math.max(0, Math.min(100, (clientY - rect.top) / rect.height * 100)) + '%');
@@ -244,9 +264,19 @@
         hotspots.forEach((hotspot) => hotspot.addEventListener('click', (event) => {
           event.stopPropagation();
           const wasRevealed = hotspot.classList.contains('is-revealed');
-          hotspots.forEach((item) => item.classList.remove('is-revealed', 'is-near'));
-          if (!wasRevealed) { hotspot.classList.add('is-revealed'); field.classList.add('is-pinned'); }
-          else { field.classList.remove('is-pinned'); }
+          hotspots.forEach((item) => {
+            item.classList.remove('is-revealed', 'is-near');
+            item.setAttribute('aria-pressed', 'false');
+          });
+          if (!wasRevealed) {
+            hotspot.classList.add('is-revealed');
+            hotspot.setAttribute('aria-pressed', 'true');
+            field.classList.add('is-pinned');
+            if (isTouchLayout()) setHint('Tap the open signal again to close.');
+          } else {
+            field.classList.remove('is-pinned');
+            if (isTouchLayout()) setHint('Tap a signal.');
+          }
         }));
         document.addEventListener('click', (event) => { if (!field.contains(event.target) && !event.target.closest('.principle-hotspot')) close(); });
         document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });

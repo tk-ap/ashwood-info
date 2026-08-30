@@ -372,7 +372,7 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...discovered])); } catch (_) {}
     updateProgress();
     announce(`${discovered.size} of ${hotspots.length} signals found.`);
-    if (discovered.size === hotspots.length) unlockReward(false);
+    if (!coarsePointer && discovered.size === hotspots.length) unlockReward(false);
   };
 
   hotspots.forEach((hotspot) => {
@@ -392,5 +392,5 @@
 
   let rememberedReward = false;
   try { rememberedReward = localStorage.getItem(REWARD_KEY) === "1" && discovered.size === hotspots.length; } catch (_) {}
-  if (rememberedReward) unlockReward(true);
+  if (!coarsePointer && rememberedReward) unlockReward(true);
 })();
