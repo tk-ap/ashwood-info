@@ -41,6 +41,16 @@
   mobileHotspotDialogStyles.href = "/mobile-hotspot-dialog.css?v=20260830-dialog1";
   document.head.appendChild(mobileHotspotDialogStyles);
 
+  const mobileDiscoveryStyles = document.createElement("link");
+  mobileDiscoveryStyles.rel = "stylesheet";
+  mobileDiscoveryStyles.href = "/mobile-discovery-surface.css?v=20260830-surface2";
+  document.head.appendChild(mobileDiscoveryStyles);
+
+  const mobileDiscoveryInteractions = document.createElement("script");
+  mobileDiscoveryInteractions.src = "/mobile-discovery-surface.js?v=20260830-surface2";
+  mobileDiscoveryInteractions.defer = true;
+  document.head.appendChild(mobileDiscoveryInteractions);
+
   const jamaicaStyles = document.createElement("link");
   jamaicaStyles.rel = "stylesheet";
   jamaicaStyles.href = "/jamaica-easter-eggs.css?v=20260830-jm1";
