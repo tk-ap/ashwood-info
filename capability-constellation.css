@@ -1,14 +1,16 @@
-/* ASHWOOD capability constellation
-   Six discovered signals resolve into a connected operating pattern rather than a competency list. */
+/* ASHWOOD capability operating-pattern map
+   The geometry is semantic:
+   SIGNAL → FRICTION → SYSTEMS → RESILIENCE is the core working loop.
+   TRANSLATION spans the loop. RANGE frames the contexts in which the loop operates. */
 
 @media (min-width: 761px) {
   body.ashwood-home-native .ashwood-capability-map {
-    width: min(49vw, 700px) !important;
-    right: clamp(52px, 6vw, 96px) !important;
+    width: min(54vw, 760px) !important;
+    right: clamp(42px, 5vw, 82px) !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__header {
-    max-width: 610px;
+    max-width: 680px;
     margin-left: auto;
   }
 
@@ -16,71 +18,99 @@
     position: relative !important;
     display: block !important;
     width: 100%;
-    height: clamp(330px, 39vh, 430px);
-    margin: 18px 0 8px !important;
+    height: clamp(350px, 42vh, 455px);
+    margin: 22px 0 10px !important;
     border: 0 !important;
     overflow: visible;
     isolation: isolate;
   }
 
-  /* The field is deliberately diagrammatic, not dashboard-like. */
+  /* One explainable diagram: a working loop, not decorative constellation geometry. */
   body.ashwood-home-native .ashwood-capability-map__list::before {
-    content: "";
+    content: "HOW I TEND TO MOVE THROUGH COMPLEX WORK";
     position: absolute;
-    inset: 4% 3% 2%;
+    inset: 0;
     z-index: -2;
     pointer-events: none;
-    background:
-      linear-gradient(28deg, transparent 49.82%, color-mix(in srgb, var(--ashwood-field-green) 18%, transparent) 49.92% 50.08%, transparent 50.18%),
-      linear-gradient(151deg, transparent 49.82%, color-mix(in srgb, var(--ashwood-field-green) 14%, transparent) 49.92% 50.08%, transparent 50.18%),
-      linear-gradient(84deg, transparent 49.86%, color-mix(in srgb, var(--ashwood-field-green) 10%, transparent) 49.94% 50.06%, transparent 50.14%),
-      radial-gradient(circle at 50% 50%, transparent 0 15%, color-mix(in srgb, var(--ashwood-field-green) 14%, transparent) 15.25% 15.45%, transparent 15.7% 31%, color-mix(in srgb, var(--ashwood-field-green) 8%, transparent) 31.2% 31.35%, transparent 31.6%);
-    opacity: .88;
-  }
-
-  body.ashwood-home-native .ashwood-capability-map__list::after {
-    content: "THROUGHLINE";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 0;
-    display: grid;
-    place-items: center;
-    width: 86px;
-    height: 86px;
-    transform: translate(-50%, -50%);
-    border: 1px solid color-mix(in srgb, var(--ashwood-field-green) 42%, transparent);
-    border-radius: 50%;
-    background: radial-gradient(circle, color-mix(in srgb, var(--ashwood-field-green) 13%, transparent), transparent 67%);
-    color: color-mix(in srgb, var(--ashwood-field-green) 76%, var(--ashwood-ink));
+    padding-top: 2px;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 24%, var(--ashwood-rule));
+    border-bottom: 1px solid color-mix(in srgb, var(--ashwood-field-green) 12%, var(--ashwood-rule));
+    color: color-mix(in srgb, var(--ashwood-field-green) 66%, var(--ashwood-muted));
     font: 600 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
     letter-spacing: .18em;
-    text-indent: .18em;
-    box-shadow: 0 0 30px rgba(0,155,58,.055);
+    background:
+      /* core pathway */
+      linear-gradient(to right,
+        transparent 9%,
+        color-mix(in srgb, var(--ashwood-field-green) 34%, transparent) 9.1% 88%,
+        transparent 88.1%) 0 45% / 100% 1px no-repeat,
+      /* translation span */
+      linear-gradient(to right,
+        transparent 16%,
+        color-mix(in srgb, var(--ashwood-field-green) 18%, transparent) 16.1% 82%,
+        transparent 82.1%) 0 74% / 100% 1px no-repeat,
+      /* relationship drops from the four working stages to translation */
+      linear-gradient(to bottom,
+        transparent 45%,
+        color-mix(in srgb, var(--ashwood-field-green) 12%, transparent) 45.1% 74%,
+        transparent 74.1%) 12% 0 / 1px 100% no-repeat,
+      linear-gradient(to bottom,
+        transparent 45%,
+        color-mix(in srgb, var(--ashwood-field-green) 12%, transparent) 45.1% 74%,
+        transparent 74.1%) 37% 0 / 1px 100% no-repeat,
+      linear-gradient(to bottom,
+        transparent 45%,
+        color-mix(in srgb, var(--ashwood-field-green) 12%, transparent) 45.1% 74%,
+        transparent 74.1%) 63% 0 / 1px 100% no-repeat,
+      linear-gradient(to bottom,
+        transparent 45%,
+        color-mix(in srgb, var(--ashwood-field-green) 12%, transparent) 45.1% 74%,
+        transparent 74.1%) 88% 0 / 1px 100% no-repeat;
+  }
+
+  /* RANGE is not a seventh step; it is the contextual perimeter around the working loop. */
+  body.ashwood-home-native .ashwood-capability-map__list::after {
+    content: "RANGE  /  DIFFERENT DISCIPLINES · ROLES · CONTEXTS";
+    position: absolute;
+    left: 50%;
+    top: 12%;
+    z-index: 0;
+    width: min(82%, 610px);
+    padding: 9px 16px;
+    transform: translateX(-50%);
+    border: 1px solid color-mix(in srgb, var(--ashwood-field-green) 22%, transparent);
+    border-bottom-color: transparent;
+    border-radius: 999px 999px 0 0;
+    color: color-mix(in srgb, var(--ashwood-field-green) 68%, var(--ashwood-muted));
+    text-align: center;
+    font: 600 6px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .15em;
     pointer-events: none;
+    opacity: .72;
   }
 
   body.ashwood-home-native .ashwood-capability-map__item {
     position: absolute !important;
-    z-index: 1;
+    z-index: 2;
     display: block !important;
-    width: clamp(130px, 12.5vw, 176px);
+    width: clamp(126px, 12vw, 168px);
     min-height: 0 !important;
     padding: 0 !important;
     border: 0 !important;
     background: transparent !important;
     transform: translate(-50%, -50%);
-    opacity: .78;
+    opacity: .82;
     transition: opacity .28s ease, transform .35s cubic-bezier(.16,.8,.24,1), filter .3s ease;
-    animation: ashwood-constellation-resolve .9s cubic-bezier(.16,.8,.24,1) both;
+    animation: ashwood-pattern-resolve .78s cubic-bezier(.16,.8,.24,1) both;
   }
 
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { left: 19%; top: 19%; animation-delay: 1.18s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { left: 78%; top: 15%; animation-delay: 1.28s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { left: 87%; top: 52%; animation-delay: 1.38s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { left: 51%; top: 82%; animation-delay: 1.48s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { left: 15%; top: 70%; animation-delay: 1.58s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { left: 50%; top: 20%; animation-delay: 1.68s; }
+  /* DOM order: signal, friction, translation, systems, resilience, range. */
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { left: 12%; top: 45%; animation-delay: 1.12s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { left: 37%; top: 45%; animation-delay: 1.22s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { left: 63%; top: 45%; animation-delay: 1.32s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { left: 88%; top: 45%; animation-delay: 1.42s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { left: 50%; top: 74%; width: clamp(170px, 18vw, 240px); animation-delay: 1.55s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { left: 50%; top: 18%; width: clamp(150px, 16vw, 220px); animation-delay: 1.66s; }
 
   body.ashwood-home-native .ashwood-capability-map__item::before {
     content: "";
@@ -96,19 +126,37 @@
     transition: transform .28s ease, background .28s ease, box-shadow .28s ease;
   }
 
+  /* The four core stages say what each step does. */
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) .ashwood-capability-map__skill::after { content: "  /  notice"; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) .ashwood-capability-map__skill::after { content: "  /  diagnose"; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) .ashwood-capability-map__skill::after { content: "  /  structure"; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) .ashwood-capability-map__skill::after { content: "  /  hold"; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) .ashwood-capability-map__skill::after { content: "  /  make the loop legible"; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) .ashwood-capability-map__skill::after { content: "  /  carry it across contexts"; }
+
   body.ashwood-home-native .ashwood-capability-map__skill {
     display: block;
     margin: 0;
     color: var(--ashwood-field-green) !important;
     font-size: 8px !important;
-    letter-spacing: .18em !important;
-    line-height: 1.2;
+    letter-spacing: .16em !important;
+    line-height: 1.25;
+    white-space: nowrap;
   }
 
-  /* Details are present, but the field begins as a pattern rather than six mini cards. */
+  body.ashwood-home-native .ashwood-capability-map__skill::after {
+    color: var(--ashwood-muted);
+    font-size: 6px;
+    letter-spacing: .08em;
+    text-transform: lowercase;
+    opacity: .68;
+  }
+
+  /* Details remain available, but the initial view reads as one operating pattern. */
   body.ashwood-home-native .ashwood-capability-map__description,
   body.ashwood-home-native .ashwood-capability-map__authorship,
-  body.ashwood-home-native .ashwood-capability-map__practice {
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful {
     display: block !important;
     max-height: 0;
     margin: 0 !important;
@@ -137,17 +185,20 @@
   body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__description,
   body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__authorship,
   body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__useful,
   body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__description,
   body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__authorship,
-  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__practice {
-    max-height: 88px;
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__useful {
+    max-height: 120px;
     margin-top: 7px !important;
     opacity: 1 !important;
     transform: translateY(0);
     pointer-events: auto;
   }
 
-  body.ashwood-home-native .ashwood-capability-map__description {
+  body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__useful {
     color: var(--ashwood-ink) !important;
     font-size: 8px !important;
     line-height: 1.45 !important;
@@ -167,39 +218,46 @@
   }
 
   body.ashwood-home-native .ashwood-capability-map__footer {
-    max-width: 610px;
+    max-width: 680px;
     margin: 4px 0 0 auto !important;
     padding-top: 10px;
     border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 20%, var(--ashwood-rule));
   }
 
-  @keyframes ashwood-constellation-resolve {
-    0% { opacity: 0; filter: blur(5px); transform: translate(-50%, -50%) scale(.82); }
-    55% { opacity: .36; filter: blur(1.5px); }
-    100% { opacity: .78; filter: blur(0); transform: translate(-50%, -50%) scale(1); }
+  @keyframes ashwood-pattern-resolve {
+    0% { opacity: 0; filter: blur(4px); transform: translate(-50%, -50%) translateY(9px); }
+    100% { opacity: .82; filter: blur(0); transform: translate(-50%, -50%) translateY(0); }
   }
 }
 
-/* Touch keeps the relationship language but avoids tiny spatial targets. */
+/* Touch becomes an explicit sequence rather than shrinking a diagram until it stops being legible. */
 @media (max-width: 760px) {
   body.ashwood-home-native .ashwood-capability-map__list {
     position: relative;
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
-    gap: 1px !important;
+    display: flex !important;
+    flex-direction: column;
+    gap: 0 !important;
     margin-top: 18px !important;
-    padding: 1px !important;
-    background: color-mix(in srgb, var(--ashwood-field-green) 18%, transparent);
+    padding: 0 !important;
+    background: transparent !important;
     border: 0 !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__item {
     display: block !important;
-    min-height: 132px !important;
-    padding: 18px 15px !important;
+    min-height: 112px !important;
+    padding: 17px 14px 17px 24px !important;
     border: 0 !important;
-    background: var(--ashwood-bg, #11110f) !important;
+    border-left: 1px solid color-mix(in srgb, var(--ashwood-field-green) 34%, transparent) !important;
+    background: transparent !important;
   }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { order: 5; margin-top: 8px; border-top: 1px solid color-mix(in srgb,var(--ashwood-field-green) 18%,transparent)!important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { order: 3; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { order: 4; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { order: 0; margin-bottom: 8px; border-left-color: color-mix(in srgb,var(--ashwood-field-green) 16%,transparent)!important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { order: 1; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { order: 2; }
 
   body.ashwood-home-native .ashwood-capability-map__skill {
     display: flex;
@@ -219,7 +277,8 @@
 
   body.ashwood-home-native .ashwood-capability-map__description,
   body.ashwood-home-native .ashwood-capability-map__authorship,
-  body.ashwood-home-native .ashwood-capability-map__practice {
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful {
     grid-column: auto !important;
     margin-top: 8px !important;
   }
