@@ -26,20 +26,24 @@
   };
 
   const wordmark = document.querySelector(".wordmark");
-  if (wordmark) {
+  const masthead = document.querySelector(".masthead");
+  if (wordmark && masthead) {
     wordmark.classList.add("ashwood-jm-xaymaca");
     wordmark.setAttribute("title", "A deeper layer is hidden here.");
+
+    const inline = document.createElement("p");
+    inline.className = "ashwood-jm-xaymaca-inline";
+    inline.setAttribute("aria-live", "polite");
+    inline.innerHTML = '<span class="ashwood-jm-xaymaca-inline__name">XAYMACA</span><span class="ashwood-jm-xaymaca-inline__meaning">Land of wood and water</span>';
+    masthead.appendChild(inline);
+
     let holdTimer = 0;
-    const openXaymaca = () => show({
-      anchor: wordmark,
-      kicker: "XAYMACA / JAMAICA",
-      title: "Land of wood and water.",
-      note: "Jamaica’s name is believed to derive from the Taíno Xaymaca — a quiet resonance inside ASHWOOD."
-    });
-    wordmark.addEventListener("pointerenter", () => { holdTimer = window.setTimeout(openXaymaca, 900); });
-    wordmark.addEventListener("pointerleave", () => window.clearTimeout(holdTimer));
+    const openXaymaca = () => inline.classList.add("is-visible");
+    const closeXaymaca = () => inline.classList.remove("is-visible");
+    wordmark.addEventListener("pointerenter", () => { holdTimer = window.setTimeout(openXaymaca, 500); });
+    wordmark.addEventListener("pointerleave", () => { window.clearTimeout(holdTimer); closeXaymaca(); });
     wordmark.addEventListener("focus", openXaymaca);
-    wordmark.addEventListener("dblclick", openXaymaca);
+    wordmark.addEventListener("blur", closeXaymaca);
   }
 
   const motto = document.querySelector(".iridescent-word--jamaica");
