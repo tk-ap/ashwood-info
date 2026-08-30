@@ -8,7 +8,7 @@
 
   const becomingsStyles = document.createElement("link");
   becomingsStyles.rel = "stylesheet";
-  becomingsStyles.href = "/becomings-interaction.css?v=20260828-becomings2";
+  becomingsStyles.href = "/becomings-interaction.css?v=20260829-mobile-entrance";
   document.head.appendChild(becomingsStyles);
 
   const balanceStyles = document.createElement("link");
@@ -144,6 +144,12 @@
     becomingsTrigger.addEventListener("blur", leaveSequence);
     becomingsTrigger.addEventListener("click", (event) => {
       event.preventDefault();
+      if (window.matchMedia("(max-width: 760px), (pointer: coarse)").matches) {
+        document.dispatchEvent(new CustomEvent("ashwood:open-capability-map", {
+          detail: { entrance: true, trigger: becomingsTrigger }
+        }));
+        return;
+      }
       runSequence();
     });
 

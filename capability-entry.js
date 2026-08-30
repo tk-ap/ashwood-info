@@ -141,11 +141,14 @@
   applyCapabilitySynthesis();
   installHotspotApplicationCues();
 
-  const openDirectMap = ({ updateUrl = true } = {}) => {
+  let entranceTrigger = null;
+  const openDirectMap = ({ updateUrl = true, entrance = false, trigger = null } = {}) => {
     const capabilityMap = map();
     if (!capabilityMap) return false;
     applyCapabilitySynthesis();
     document.body.classList.add("has-viewed-capability-map");
+    document.body.classList.toggle("is-capability-entrance", entrance);
+    entranceTrigger = entrance ? trigger : null;
     capabilityMap.dataset.entryMode = "direct";
 
     const reset = capabilityMap.querySelector(".ashwood-capability-map__reset");
@@ -173,6 +176,7 @@
   const closeDirectMap = () => {
     if (completedDiscovery()) return;
     document.body.classList.remove("has-viewed-capability-map");
+    document.body.classList.remove("is-capability-entrance");
     const capabilityMap = map();
     if (capabilityMap) {
       delete capabilityMap.dataset.entryMode;
@@ -186,7 +190,14 @@
     url.searchParams.delete("capabilities");
     url.searchParams.delete("from");
     history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+    entranceTrigger?.focus({ preventScroll: true });
+    entranceTrigger = null;
   };
+
+  document.addEventListener("ashwood:open-capability-map", (event) => {
+    const detail = event.detail || {};
+    openDirectMap({ updateUrl: true, entrance: Boolean(detail.entrance), trigger: detail.trigger || null });
+  });
 
   document.addEventListener("click", (event) => {
     const reset = event.target.closest(".ashwood-capability-map__reset");

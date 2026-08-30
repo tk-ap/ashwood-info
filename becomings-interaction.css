@@ -125,6 +125,36 @@
   .home-entryway.is-becoming-highlight { transform: none; }
   .home-entryway.is-becoming-highlight .home-entryway__title,
   .home-entryway.is-becoming-highlight .home-entryway__signal { transform: translateX(3px); }
+
+  /* On touch, Becomings is an explicit entrance into the professional
+     throughline—not a hover effect recreated with a finger. */
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    width: 100%;
+    max-height: none;
+    height: 100dvh;
+    margin: 0;
+    padding: max(24px, env(safe-area-inset-top)) 18px max(28px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--ashwood-paper);
+    box-sizing: border-box;
+  }
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map__header {
+    position: sticky;
+    top: calc(-1 * max(24px, env(safe-area-inset-top)));
+    z-index: 1;
+    margin: calc(-1 * max(24px, env(safe-area-inset-top))) -18px 10px;
+    padding: max(24px, env(safe-area-inset-top)) 18px 12px;
+    background: var(--ashwood-paper);
+  }
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map__reset {
+    min-height: 44px;
+    padding: 8px 0;
+    color: #009b3a;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
