@@ -86,6 +86,7 @@
 
   let bird = null;
   let flightToken = 0;
+  let lastLaunchAt = 0;
   const ensureBird = () => {
     if (bird) return bird;
     bird = document.createElement("div");
@@ -126,10 +127,12 @@
 
     const guide = ensureBird();
     const start = center(trigger);
+    guide.getAnimations().forEach((animation) => animation.cancel());
     guide.style.left = `${start.x}px`;
     guide.style.top = `${start.y}px`;
+    guide.style.opacity = "1";
     guide.classList.add("is-flying");
-    await pause(180);
+    await pause(220);
 
     let from = start;
     for (let index = 0; index < destinations.length; index += 1) {
@@ -137,17 +140,17 @@
       const destination = destinations[index];
       const to = center(destination);
       const direction = to.x >= from.x ? 1 : -1;
-      const lift = Math.max(36, Math.min(110, Math.abs(to.x - from.x) * .2 + Math.abs(to.y - from.y) * .14));
+      const lift = Math.max(44, Math.min(128, Math.abs(to.x - from.x) * .22 + Math.abs(to.y - from.y) * .16));
       const controlX = from.x + (to.x - from.x) * .52;
       const controlY = Math.min(from.y, to.y) - lift;
 
       const animation = guide.animate([
-        { left: `${from.x}px`, top: `${from.y}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -5 : 5}deg) scaleX(${direction})`, offset: 0 },
-        { left: `${controlX}px`, top: `${controlY}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -14 : 14}deg) scaleX(${direction})`, offset: .52 },
-        { left: `${to.x}px`, top: `${to.y - 10}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? 3 : -3}deg) scaleX(${direction})`, offset: .9 },
-        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) rotate(0deg) scaleX(${direction})`, offset: 1 }
+        { left: `${from.x}px`, top: `${from.y}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -5 : 5}deg) scaleX(${direction})`, opacity: 1, offset: 0 },
+        { left: `${controlX}px`, top: `${controlY}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? -14 : 14}deg) scaleX(${direction})`, opacity: 1, offset: .52 },
+        { left: `${to.x}px`, top: `${to.y - 12}px`, transform: `translate(-50%,-50%) rotate(${direction > 0 ? 3 : -3}deg) scaleX(${direction})`, opacity: 1, offset: .9 },
+        { left: `${to.x}px`, top: `${to.y}px`, transform: `translate(-50%,-50%) rotate(0deg) scaleX(${direction})`, opacity: 1, offset: 1 }
       ], {
-        duration: window.innerWidth <= 760 ? 780 : 980,
+        duration: window.innerWidth <= 760 ? 820 : 1040,
         easing: "cubic-bezier(.2,.72,.18,1)",
         fill: "forwards"
       });
@@ -157,20 +160,23 @@
       guide.style.left = `${to.x}px`;
       guide.style.top = `${to.y}px`;
       destination.classList.add("is-doctorbird-visited");
-      await pause(index === destinations.length - 1 ? 720 : 560);
+      await pause(index === destinations.length - 1 ? 760 : 620);
       destination.classList.remove("is-doctorbird-visited");
       from = to;
     }
 
     if (token !== flightToken) return;
-    const exitX = Math.min(window.innerWidth + 60, from.x + Math.max(120, window.innerWidth * .14));
-    const exitY = Math.max(36, from.y - 90);
+    const exitX = Math.min(window.innerWidth + 80, from.x + Math.max(150, window.innerWidth * .18));
+    const exitY = Math.max(30, from.y - 110);
     const exit = guide.animate([
-      { left: `${from.x}px`, top: `${from.y}px`, opacity: .92 },
+      { left: `${from.x}px`, top: `${from.y}px`, opacity: 1 },
       { left: `${exitX}px`, top: `${exitY}px`, opacity: 0 }
-    ], { duration: 760, easing: "cubic-bezier(.25,.7,.2,1)", fill: "forwards" });
+    ], { duration: 820, easing: "cubic-bezier(.25,.7,.2,1)", fill: "forwards" });
     await exit.finished.catch(() => {});
-    if (token === flightToken) guide.classList.remove("is-flying");
+    if (token === flightToken) {
+      guide.classList.remove("is-flying");
+      guide.style.opacity = "0";
+    }
   };
 
   const doctorBird = () => {
@@ -181,16 +187,26 @@
     if (trigger && !trigger.dataset.jmDoctorBird) {
       trigger.dataset.jmDoctorBird = "1";
       let activations = 0;
-      trigger.addEventListener("click", () => {
+
+      const launch = ({ explain = false } = {}) => {
+        const now = Date.now();
+        if (now - lastLaunchAt < 5200) return;
+        lastLaunchAt = now;
         activations += 1;
-        window.setTimeout(() => flyBird(trigger), 420);
-        if (activations === 3) show({
+        window.setTimeout(() => flyBird(trigger), 300);
+        if (explain || activations === 3) show({
           anchor: trigger,
           kicker: "NATURE / JAMAICA",
           title: "Doctor Bird.",
           note: "Becomings awakens an abstract Doctor Bird — a nod to Jamaica’s national bird — and lets it guide you toward the paths that follow."
         });
+      };
+
+      trigger.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "mouse") launch();
       });
+      trigger.addEventListener("focus", () => launch());
+      trigger.addEventListener("click", () => launch());
     }
     return true;
   };
