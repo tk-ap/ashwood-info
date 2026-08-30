@@ -36,6 +36,11 @@
   readabilityStyles.href = "/capability-readability.css?v=20260830-readability1";
   document.head.appendChild(readabilityStyles);
 
+  const mobileHotspotDialogStyles = document.createElement("link");
+  mobileHotspotDialogStyles.rel = "stylesheet";
+  mobileHotspotDialogStyles.href = "/mobile-hotspot-dialog.css?v=20260830-dialog1";
+  document.head.appendChild(mobileHotspotDialogStyles);
+
   /* The six-of-six reveal should feel discovered, not like a canned system toast.
      Pick a message per browser session and apply it once curiosity.js creates the flash. */
   const threadMessages = [
