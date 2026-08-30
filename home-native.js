@@ -16,6 +16,42 @@
   balanceStyles.href = "/home-balance.css?v=20260828-balance1";
   document.head.appendChild(balanceStyles);
 
+  const polishStyles = document.createElement("link");
+  polishStyles.rel = "stylesheet";
+  polishStyles.href = "/home-polish.css?v=20260830-field-balance1";
+  document.head.appendChild(polishStyles);
+
+  /* The six-of-six reveal should feel discovered, not like a canned system toast.
+     Pick a message per browser session and apply it once curiosity.js creates the flash. */
+  const threadMessages = [
+    "The pattern is becoming visible.",
+    "Different work. Same underlying thread.",
+    "The throughline was here all along.",
+    "The pieces are starting to connect.",
+    "You found a recurring signal.",
+    "One practice. Many forms."
+  ];
+  const threadMessageKey = "ashwood.thread.message.v1";
+  let threadMessage = "";
+  try { threadMessage = sessionStorage.getItem(threadMessageKey) || ""; } catch (_) {}
+  if (!threadMessages.includes(threadMessage)) {
+    threadMessage = threadMessages[Math.floor(Math.random() * threadMessages.length)];
+    try { sessionStorage.setItem(threadMessageKey, threadMessage); } catch (_) {}
+  }
+
+  const applyThreadMessage = () => {
+    const copy = document.querySelector(".ashwood-thread-flash span");
+    if (!copy) return false;
+    copy.textContent = threadMessage;
+    return true;
+  };
+  if (!applyThreadMessage()) {
+    const threadObserver = new MutationObserver(() => {
+      if (applyThreadMessage()) threadObserver.disconnect();
+    });
+    threadObserver.observe(document.body, { childList: true, subtree: true });
+  }
+
   const shell = document.querySelector(".shell");
   const player = document.querySelector(".ashwood-audio");
   const sourceToggle = player?.querySelector(".ashwood-audio__toggle");
