@@ -121,6 +121,53 @@ html[data-ashwood-discovery-count="6"] .ashwood-jm-1962{opacity:.38;pointer-even
 }
 @keyframes ashwood-jm-perch-pulse{0%{opacity:0;transform:translateY(-50%) scale(.3)}38%{opacity:.82;transform:translateY(-50%) scale(1.15)}72%{opacity:.7;transform:translateY(-50%) scale(.95)}100%{opacity:.12;transform:translateY(-50%) scale(.8)}}
 
+/* Cultural provenance follows the same discovery grammar as capability hotspots.
+   A faint cue appears after curiosity has already been rewarded; attention reveals meaning. */
+.iridescent-word--jamaica{position:relative}
+.iridescent-word--jamaica::before{
+  content:"JAMAICA / PROVENANCE";position:absolute;left:0;top:calc(100% + 8px);white-space:nowrap;
+  color:#009b3a;font:700 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.15em;
+  opacity:0;transform:translateY(-2px);pointer-events:none;transition:opacity .35s ease,transform .35s ease
+}
+.iridescent-word--jamaica::after{
+  content:"Out of Many, One People — the national motto behind ASHWOOD’s inversion.";
+  position:absolute;left:0;top:calc(100% + 20px);width:min(46ch,72vw);color:var(--ashwood-muted);
+  font:500 8px/1.5 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.01em;opacity:0;transform:translateY(-3px);pointer-events:none;
+  transition:opacity .35s ease,transform .35s ease
+}
+html[data-ashwood-discovery-count="2"] .iridescent-word--jamaica::before,
+html[data-ashwood-discovery-count="3"] .iridescent-word--jamaica::before,
+html[data-ashwood-discovery-count="4"] .iridescent-word--jamaica::before,
+html[data-ashwood-discovery-count="5"] .iridescent-word--jamaica::before,
+html[data-ashwood-discovery-count="6"] .iridescent-word--jamaica::before{opacity:.34}
+.iridescent-word--jamaica:hover::before,.iridescent-word--jamaica:focus-visible::before,
+.iridescent-word--jamaica:hover::after,.iridescent-word--jamaica:focus-visible::after{
+  opacity:.92;transform:translateY(0)
+}
+
+/* 1962 behaves as a field artifact: discover first, then the coordinate begins to explain itself. */
+.ashwood-jm-1962::before{
+  content:"INDEPENDENCE / JAMAICA";position:absolute;right:0;bottom:calc(100% + 9px);white-space:nowrap;
+  color:#009b3a;font:700 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;
+  opacity:0;transform:translateY(3px);pointer-events:none;transition:opacity .32s ease,transform .32s ease
+}
+.ashwood-jm-1962::after{
+  content:"6 August 1962 — a quiet coordinate for Jamaican independence.";
+  position:absolute;right:0;bottom:calc(100% + 22px);width:min(38ch,70vw);text-align:right;
+  color:var(--ashwood-muted);font:500 8px/1.45 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.01em;opacity:0;transform:translateY(4px);pointer-events:none;
+  transition:opacity .32s ease,transform .32s ease
+}
+.ashwood-jm-1962:hover::before,.ashwood-jm-1962:focus-visible::before,
+.ashwood-jm-1962:hover::after,.ashwood-jm-1962:focus-visible::after{
+  opacity:.94;transform:translateY(0)
+}
+html[data-ashwood-discovery-count="4"] .ashwood-jm-1962,
+html[data-ashwood-discovery-count="5"] .ashwood-jm-1962,
+html[data-ashwood-discovery-count="6"] .ashwood-jm-1962{animation:ashwood-jm-coordinate-breathe 3.8s ease-in-out 1}
+@keyframes ashwood-jm-coordinate-breathe{0%,100%{opacity:.38}42%{opacity:.8;color:#f7c600}62%{opacity:.52;color:var(--ashwood-muted)}}
+
 @media(max-width:760px){
   .ashwood-jm-reveal{left:18px!important;right:18px!important;top:auto!important;bottom:calc(18px + env(safe-area-inset-bottom))!important;max-width:none}
   .ashwood-jm-1962{position:fixed;right:16px;bottom:78px;z-index:235}
@@ -136,10 +183,33 @@ html[data-ashwood-discovery-count="6"] .ashwood-jm-1962{opacity:.38;pointer-even
   .ashwood-jm-bird__tail--lower{top:32px;transform:translateX(-56px) rotate(10deg)}
   .ashwood-jm-bird__wing{left:61px;top:17px;width:29px;height:16px}
   .home-entryway.is-doctorbird-visited::after{left:-7px}
+
+  /* Touch has no hover, so curiosity itself earns a brief contextual reveal. */
+  html[data-ashwood-discovery-count="2"] .iridescent-word--jamaica::before,
+  html[data-ashwood-discovery-count="3"] .iridescent-word--jamaica::before,
+  html[data-ashwood-discovery-count="4"] .iridescent-word--jamaica::before,
+  html[data-ashwood-discovery-count="5"] .iridescent-word--jamaica::before,
+  html[data-ashwood-discovery-count="6"] .iridescent-word--jamaica::before{animation:ashwood-jm-mobile-provenance 7s ease both}
+  html[data-ashwood-discovery-count="2"] .iridescent-word--jamaica::after,
+  html[data-ashwood-discovery-count="3"] .iridescent-word--jamaica::after,
+  html[data-ashwood-discovery-count="4"] .iridescent-word--jamaica::after,
+  html[data-ashwood-discovery-count="5"] .iridescent-word--jamaica::after,
+  html[data-ashwood-discovery-count="6"] .iridescent-word--jamaica::after{animation:ashwood-jm-mobile-context 7s ease both}
+  html[data-ashwood-discovery-count="3"] .ashwood-jm-1962::before,
+  html[data-ashwood-discovery-count="4"] .ashwood-jm-1962::before,
+  html[data-ashwood-discovery-count="5"] .ashwood-jm-1962::before,
+  html[data-ashwood-discovery-count="6"] .ashwood-jm-1962::before{animation:ashwood-jm-mobile-provenance 7s ease 1.2s both}
+  html[data-ashwood-discovery-count="3"] .ashwood-jm-1962::after,
+  html[data-ashwood-discovery-count="4"] .ashwood-jm-1962::after,
+  html[data-ashwood-discovery-count="5"] .ashwood-jm-1962::after,
+  html[data-ashwood-discovery-count="6"] .ashwood-jm-1962::after{animation:ashwood-jm-mobile-context 7s ease 1.2s both}
+  @keyframes ashwood-jm-mobile-provenance{0%,12%{opacity:0;transform:translateY(3px)}24%,62%{opacity:.8;transform:translateY(0)}100%{opacity:.28}}
+  @keyframes ashwood-jm-mobile-context{0%,18%{opacity:0;transform:translateY(4px)}30%,58%{opacity:.86;transform:translateY(0)}100%{opacity:0}}
 }
 @media(prefers-reduced-motion:reduce){
   .ashwood-jm-reveal,.ashwood-jm-1962,.ashwood-jm-xaymaca-inline{transition:none}
   .becomings-bloom.ashwood-jm-doctorbird::before,.becomings-bloom.ashwood-jm-doctorbird::after{animation:none!important;opacity:.24}
   .ashwood-jm-bird{display:none!important}
   .home-entryway.is-doctorbird-visited{transform:none}
+  .iridescent-word--jamaica::before,.iridescent-word--jamaica::after,.ashwood-jm-1962::before,.ashwood-jm-1962::after{animation:none!important}
 }
