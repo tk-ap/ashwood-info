@@ -1,6 +1,7 @@
-/* ASHWOOD v2 — capability disclosure spacing fix
+/* ASHWOOD v2 — capability disclosure + responsive collision safety
    Prevent hover/focus detail content from colliding with adjacent capability rows.
-   Desktop reserves space inside each capability cell; mobile remains naturally flowing. */
+   Wide desktop reserves disclosure space; compact desktop reflows into an editorial
+   sequence; mobile remains naturally flowing. */
 
 @media (min-width: 761px) {
   body.ashwood-home-native .ashwood-capability-map__list {
@@ -18,21 +19,20 @@
     padding-bottom: 12px !important;
   }
 
-  /* RANGE is framing copy; it should not inherit the large disclosure reserve. */
+  /* SYNTHESIS (legacy internal id: range) is the resolving capability. */
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
-    min-height: 92px !important;
+    min-height: 112px !important;
   }
 
-  /* TRANSLATION is intentionally a second register. Give it enough breathing room
-     below the core sequence so expanded details above cannot visually collide. */
+  /* TRANSLATION remains a second register on wide layouts. */
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) {
-    min-height: 156px !important;
+    min-height: 170px !important;
     margin-top: 14px !important;
     padding-top: 22px !important;
     border-top: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 16%, transparent) !important;
   }
 
-  /* Reveal detail into the reserved area instead of using max-height as layout pressure. */
+  /* Reveal detail into reserved space instead of allowing it to paint over neighbors. */
   body.ashwood-home-native .ashwood-capability-map__authorship,
   body.ashwood-home-native .ashwood-capability-map__practice,
   body.ashwood-home-native .ashwood-capability-map__useful {
@@ -58,7 +58,6 @@
     transition-delay: 0s !important;
   }
 
-  /* Ensure longer link/provenance labels wrap inside their own column. */
   body.ashwood-home-native .ashwood-capability-map__item,
   body.ashwood-home-native .ashwood-capability-map__item * {
     min-width: 0;
@@ -69,13 +68,159 @@
   body.ashwood-home-native .ashwood-capability-map__authorship {
     max-width: 100%;
     white-space: normal !important;
+    overflow-wrap: anywhere;
   }
 
-  /* The earned state now needs slightly more chapter height, but this is deliberate
-     reserved space rather than dynamic overlap. */
   body.ashwood-home-native.has-found-all-hotspots .principles-field,
   body.ashwood-home-native.has-viewed-capability-map .principles-field {
-    min-height: clamp(650px, 68vh, 760px) !important;
+    min-height: clamp(680px, 72vh, 800px) !important;
+  }
+}
+
+/* 1052px-class laptop/tablet widths need a different grammar, not a squeezed
+   four-column desktop constellation. Expansion is allowed to grow its grid row,
+   which keeps TRANSLATION/SYNTHESIS clear of the footer and each other. */
+@media (min-width: 761px) and (max-width: 1180px) {
+  body.ashwood-home-native.has-found-all-hotspots .principles-field,
+  body.ashwood-home-native.has-viewed-capability-map .principles-field {
+    min-height: clamp(940px, 108vh, 1080px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map[data-v2-mounted="discovery-field"] {
+    width: min(84%, 860px) !important;
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-areas:
+      "signal friction"
+      "systems adaptation"
+      "translation translation"
+      "synthesis synthesis" !important;
+    column-gap: clamp(24px, 4vw, 48px) !important;
+    row-gap: 26px !important;
+    padding: 22px 0 30px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__list::before {
+    display: none !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3),
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
+    width: auto !important;
+    min-height: 138px !important;
+    margin: 0 !important;
+    padding: 18px 0 18px 18px !important;
+    border: 0 !important;
+    border-left: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 26%, transparent) !important;
+    border-bottom: 0 !important;
+    text-align: left !important;
+    justify-self: stretch !important;
+    transform: none !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { grid-area: signal !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { grid-area: friction !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { grid-area: systems !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { grid-area: adaptation !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { grid-area: translation !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { grid-area: synthesis !important; }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3),
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
+    max-width: 70% !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) {
+    justify-self: start !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
+    justify-self: end !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) .ashwood-capability-map__practice {
+    margin-inline: 0 !important;
+  }
+
+  /* Compact desktop expands in document/grid flow instead of painting into a
+     fixed reserve. This intentionally moves what follows rather than overlapping it. */
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful {
+    max-height: 0 !important;
+    margin-top: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    visibility: hidden;
+    transform: translateY(4px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__useful,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__useful {
+    max-height: 180px !important;
+    margin-top: 7px !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible;
+    transform: none !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__footer {
+    margin-top: 30px !important;
+    padding-top: 18px !important;
+  }
+
+  /* CURRENT / SITREP must stop acting like a narrow absolute widget here. */
+  body.ashwood-home-native .home-now {
+    position: relative !important;
+    inset: auto !important;
+    width: min(66%, 680px) !important;
+    margin: clamp(62px, 8vh, 92px) 0 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: clamp(28px, 4vw, 48px) !important;
+    row-gap: 9px !important;
+    justify-content: start !important;
+    justify-items: start !important;
+    text-align: left !important;
+    padding-top: 14px !important;
+  }
+
+  body.ashwood-home-native .home-now__label {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-bottom: 3px;
+  }
+
+  body.ashwood-home-native .home-now span {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  body.ashwood-home-native .home-now {
+    width: min(78%, 620px) !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  body.ashwood-home-native .home-now__label {
+    grid-column: 1;
   }
 }
 
