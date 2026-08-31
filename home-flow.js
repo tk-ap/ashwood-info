@@ -7,6 +7,13 @@
   const body = document.body;
   const root = document.documentElement;
 
+  /* The homepage thesis is one sentence. Remove the authored hard break and let
+     responsive CSS decide whether a small screen needs to wrap naturally. */
+  const siteTitle = document.getElementById("site-title");
+  siteTitle?.querySelectorAll("br").forEach((breakNode) => {
+    breakNode.replaceWith(document.createTextNode(" "));
+  });
+
   /* Quiet reading/progress trace. */
   const progress = document.createElement("div");
   progress.className = "ashwood-flow-progress";
