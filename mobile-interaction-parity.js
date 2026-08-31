@@ -4,10 +4,10 @@
   const path = location.pathname.replace(/\/+$/, "") || "/";
   if (path !== "/" && path !== "/index.html") return;
 
-  /* Final homepage behavior layer: progress trace + one ordinary reveal grammar. */
+  /* Final homepage behavior layer: progress trace, reveal grammar, and Doctor Bird cursor. */
   if (!document.querySelector('script[data-ashwood-home-flow]')) {
     const flowScript = document.createElement("script");
-    flowScript.src = "/home-flow.js?v=20260831-flow1";
+    flowScript.src = "/home-flow.js?v=20260831-flow2";
     flowScript.defer = true;
     flowScript.dataset.ashwoodHomeFlow = "1";
     document.head.appendChild(flowScript);
