@@ -1,6 +1,9 @@
 @import url('/home-flow.css?v=20260831-flow1');
 @import url('/home-flow-tighten.css?v=20260831-tight3');
 
+/* Doctor Bird guide has five control cells: count, spacer, back, next, exit. */
+.ashwood-doctor-guide__controls { grid-template-columns: auto 1fr auto auto auto !important; }
+
 /* Mobile interaction parity
    Desktop hover/proximity behaviors must have an intentional touch/scroll/earned equivalent.
    This layer never floats cultural context over core homepage copy. */
