@@ -81,36 +81,44 @@
     return true;
   };
 
+  // Keep internal ids stable so prior discovery state and layout coordinates survive.
+  // Public labels express the synthesis without turning the map into a testimonial surface.
   const capabilitySynthesis = {
     signal: {
-      summary: "Strategic judgment that clarifies priorities, anticipates risk, and sharpens the next decision.",
-      useful: "High-stakes prioritization, early risk detection, and decisions under noise.",
-      cue: "prioritization · risk · ambiguity"
+      label: "SIGNAL",
+      summary: "I notice what is starting to matter.",
+      useful: "Priorities are unclear and weak signals need separating from noise.",
+      cue: "priority · risk · weak signals"
     },
     friction: {
-      summary: "Process-improvement instinct that spots avoidable drag and challenges assumptions before they calcify.",
-      useful: "Stalled processes, recurring workarounds, or preventable operational friction.",
-      cue: "process drag · workarounds · recurring friction"
+      label: "FRICTION",
+      summary: "I look for where intention and reality stop matching.",
+      useful: "The same workaround keeps appearing, or the experience is fighting its intent.",
+      cue: "workarounds · drag · mismatch"
     },
     translation: {
-      summary: "Communication that turns complexity into shared understanding across technical, operational, and executive audiences.",
-      useful: "Complex work needs to become clear enough for different audiences to act.",
-      cue: "complexity · alignment · decision clarity"
+      label: "TRANSLATION",
+      summary: "I turn difficult ideas into forms people can use.",
+      useful: "Complex work needs to become clear enough for different people to act.",
+      cue: "complexity · clarity · action"
     },
     systems: {
-      summary: "Systems thinking that converts recurring problems into durable structures, controls, and repeatable ways of working.",
-      useful: "A recurring problem needs durable structure instead of another patch.",
-      cue: "recurrence · controls · durable structure"
+      label: "SYSTEMS",
+      summary: "I look for the structure underneath the thing.",
+      useful: "A recurring problem needs durable structure rather than another patch.",
+      cue: "recurrence · structure · dependencies"
     },
     resilience: {
-      summary: "Reliable adaptation: learning quickly, maintaining rigor, and executing well as conditions change.",
-      useful: "Conditions are changing, stakes remain high, and execution still has to hold.",
-      cue: "change · handoffs · high-stakes execution"
+      label: "ADAPTATION",
+      summary: "I let evidence change the approach.",
+      useful: "Reality changes the conditions and the approach needs to change with it.",
+      cue: "change · evidence · iteration"
     },
     range: {
-      summary: "Cross-functional influence that connects disciplines, levels, and perspectives without losing trust or momentum.",
-      useful: "The work crosses functions, disciplines, or levels and needs someone to connect them.",
-      cue: "cross-functional work · ambiguity · coordination"
+      label: "SYNTHESIS",
+      summary: "I bring separate things into one coherent idea.",
+      useful: "The opportunity sits between disciplines, ideas, or mediums.",
+      cue: "disciplines · connections · coherence"
     }
   };
 
@@ -129,16 +137,65 @@
       label: "Builds · Governed execution systems",
       href: "/journal/",
       external: false
+    },
+    resilience: {
+      label: "LEDGATo · Operational reality",
+      href: "https://ledgato.vercel.app/",
+      external: true
+    },
+    range: {
+      label: "ASHWOOD · Modeling + Music + Builds",
+      href: "/about/",
+      external: false
     }
+  };
+
+  const refreshProvenanceLanguage = () => {
+    const evidence = document.querySelector(".ashwood-capability-evidence span");
+    if (evidence) evidence.textContent = "Patterns observed across projects, roles, and collaboration.";
+
+    const capabilityMap = map();
+    if (!capabilityMap) return;
+    capabilityMap.setAttribute("aria-label", "ASHWOOD capabilities map");
+
+    const eyebrow = capabilityMap.querySelector(".ashwood-capability-map__eyebrow");
+    if (eyebrow) eyebrow.textContent = "SIX / SIX · CAPABILITIES";
+
+    const title = capabilityMap.querySelector(".ashwood-capability-map__title");
+    if (title) title.textContent = "Patterns across the work.";
+
+    const sourceLine = capabilityMap.querySelector(".ashwood-capability-map__authorship-key");
+    if (sourceLine) sourceLine.textContent = "Recurring themes across projects, roles, and collaboration. The work below is where they become visible.";
+  };
+
+  const refreshHotspotLanguage = () => {
+    document.querySelectorAll(".principle-hotspot").forEach((hotspot) => {
+      const idClass = [...hotspot.classList].find((name) => name.startsWith("principle-hotspot--"));
+      const id = idClass?.replace("principle-hotspot--", "");
+      const synthesis = capabilitySynthesis[id];
+      if (!synthesis) return;
+
+      const label = hotspot.querySelector(".principle-hotspot__label");
+      const quote = hotspot.querySelector(".principle-hotspot__quote");
+      const useful = hotspot.querySelector(".principle-hotspot__useful");
+      if (label) label.textContent = synthesis.label;
+      if (quote) quote.textContent = synthesis.summary;
+      if (useful) useful.innerHTML = `<strong>Useful when</strong> ${synthesis.useful}`;
+      hotspot.setAttribute("aria-label", `${synthesis.label}. ${synthesis.summary} Useful when ${synthesis.useful}`);
+    });
   };
 
   const applyCapabilitySynthesis = () => {
     const capabilityMap = map();
     if (!capabilityMap) return;
+    refreshProvenanceLanguage();
     capabilityMap.querySelectorAll("[data-capability]").forEach((row) => {
       const id = row.dataset.capability;
       const synthesis = capabilitySynthesis[id];
       if (!synthesis) return;
+
+      const skill = row.querySelector(".ashwood-capability-map__skill");
+      if (skill) skill.textContent = synthesis.label;
 
       const description = row.querySelector(".ashwood-capability-map__description");
       if (description) description.textContent = synthesis.summary;
@@ -171,14 +228,17 @@
   const installProvenanceBridge = () => {
     const capabilityMap = map();
     const footer = capabilityMap?.querySelector(".ashwood-capability-map__footer");
-    if (!footer || footer.querySelector(".ashwood-capability-map__provenance")) return;
-    const provenance = document.createElement("div");
-    provenance.className = "ashwood-capability-map__provenance";
+    if (!footer) return;
+    let provenance = footer.querySelector(".ashwood-capability-map__provenance");
+    if (!provenance) {
+      provenance = document.createElement("div");
+      provenance.className = "ashwood-capability-map__provenance";
+      footer.append(provenance);
+    }
     provenance.innerHTML = `
-      <strong>TRACE / PROVENANCE</strong>
-      Selected build records can show human judgment, agent-supported execution, tools, collaborators, and evidence. The internal agent-os / Workforce remains infrastructure beneath the work, not another public ASHWOOD product.
-      <br /><a href="/journal/">Trace the builds →</a>`;
-    footer.append(provenance);
+      <strong>FOLLOW THE THREAD</strong>
+      See where these patterns become visible across builds, decisions, and field notes.
+      <br /><a href="/journal/">Trace the work →</a>`;
   };
 
   const installCurrentLanguage = () => {
@@ -208,8 +268,11 @@
 
   const prepareMap = () => {
     mountMapInDiscoveryField();
+    refreshHotspotLanguage();
+    refreshProvenanceLanguage();
     applyCapabilitySynthesis();
     installProvenanceBridge();
+    return Boolean(map());
   };
 
   prepareMap();
@@ -254,7 +317,7 @@
       const reset = capabilityMap.querySelector(".ashwood-capability-map__reset");
       if (reset) {
         reset.textContent = "↺ Reset field";
-        reset.setAttribute("aria-label", "Reset the observed strengths map and rediscover the six signals");
+        reset.setAttribute("aria-label", "Reset the capability map and rediscover the six signals");
       }
     }
     const url = new URL(window.location.href);
