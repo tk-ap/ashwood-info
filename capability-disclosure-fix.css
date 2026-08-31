@@ -1,0 +1,97 @@
+/* ASHWOOD v2 — capability disclosure spacing fix
+   Prevent hover/focus detail content from colliding with adjacent capability rows.
+   Desktop reserves space inside each capability cell; mobile remains naturally flowing. */
+
+@media (min-width: 761px) {
+  body.ashwood-home-native .ashwood-capability-map__list {
+    row-gap: 34px !important;
+    padding-bottom: 34px !important;
+  }
+
+  /* Core loop: reserve enough height for one expanded disclosure without changing
+     the row geometry after hover/focus. */
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1),
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2),
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4),
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) {
+    min-height: 176px !important;
+    padding-bottom: 12px !important;
+  }
+
+  /* RANGE is framing copy; it should not inherit the large disclosure reserve. */
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
+    min-height: 92px !important;
+  }
+
+  /* TRANSLATION is intentionally a second register. Give it enough breathing room
+     below the core sequence so expanded details above cannot visually collide. */
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) {
+    min-height: 156px !important;
+    margin-top: 14px !important;
+    padding-top: 22px !important;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 16%, transparent) !important;
+  }
+
+  /* Reveal detail into the reserved area instead of using max-height as layout pressure. */
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful {
+    max-height: none !important;
+    margin-top: 6px !important;
+    opacity: 0 !important;
+    transform: translateY(5px) !important;
+    visibility: hidden;
+    pointer-events: none !important;
+    transition: opacity .2s ease, transform .24s ease, visibility 0s linear .24s !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__useful,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__useful {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    visibility: visible;
+    pointer-events: auto !important;
+    transition-delay: 0s !important;
+  }
+
+  /* Ensure longer link/provenance labels wrap inside their own column. */
+  body.ashwood-home-native .ashwood-capability-map__item,
+  body.ashwood-home-native .ashwood-capability-map__item * {
+    min-width: 0;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful,
+  body.ashwood-home-native .ashwood-capability-map__authorship {
+    max-width: 100%;
+    white-space: normal !important;
+  }
+
+  /* The earned state now needs slightly more chapter height, but this is deliberate
+     reserved space rather than dynamic overlap. */
+  body.ashwood-home-native.has-found-all-hotspots .principles-field,
+  body.ashwood-home-native.has-viewed-capability-map .principles-field {
+    min-height: clamp(650px, 68vh, 760px) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Mobile remains normal document flow; no hidden reserved-detail blocks. */
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful {
+    visibility: visible !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful {
+    transition: none !important;
+  }
+}
