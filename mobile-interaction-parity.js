@@ -13,11 +13,21 @@
     document.head.appendChild(hotspotScript);
   }
 
-  /* Install the explicit Doctor Bird trigger before home-flow.js. Creating the
-     bird node here prevents the older automatic bird observer from mounting. */
+  /* Give the field an explicit explanation and two escape hatches: reveal the
+     capability map directly, or ask the Doctor Bird to interpret the homepage. */
+  if (!document.querySelector('script[data-ashwood-hotspot-guidance]')) {
+    const guidanceScript = document.createElement("script");
+    guidanceScript.src = "/hotspot-guidance.js?v=20260831-guide2";
+    guidanceScript.async = false;
+    guidanceScript.dataset.ashwoodHotspotGuidance = "1";
+    document.head.appendChild(guidanceScript);
+  }
+
+  /* Install the Doctor Bird guide before home-flow.js. Creating the bird node
+     here prevents the older automatic bird observer from mounting. */
   if (!document.querySelector('script[data-ashwood-doctor-bird-trigger]')) {
     const birdScript = document.createElement("script");
-    birdScript.src = "/doctor-bird-trigger.js?v=20260831-explicit1";
+    birdScript.src = "/doctor-bird-trigger.js?v=20260831-guide1";
     birdScript.async = false;
     birdScript.dataset.ashwoodDoctorBirdTrigger = "1";
     document.head.appendChild(birdScript);
