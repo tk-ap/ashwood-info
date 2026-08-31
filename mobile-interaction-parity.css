@@ -1,4 +1,5 @@
 @import url('/home-flow.css?v=20260831-flow1');
+@import url('/home-flow-tighten.css?v=20260831-tight1');
 
 /* Mobile interaction parity
    Desktop hover/proximity behaviors must have an intentional touch/scroll/earned equivalent.
