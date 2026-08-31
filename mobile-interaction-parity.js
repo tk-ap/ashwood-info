@@ -3,6 +3,16 @@
 
   const path = location.pathname.replace(/\/+$/, "") || "/";
   if (path !== "/" && path !== "/index.html") return;
+
+  /* Final homepage behavior layer: progress trace + one ordinary reveal grammar. */
+  if (!document.querySelector('script[data-ashwood-home-flow]')) {
+    const flowScript = document.createElement("script");
+    flowScript.src = "/home-flow.js?v=20260831-flow1";
+    flowScript.defer = true;
+    flowScript.dataset.ashwoodHomeFlow = "1";
+    document.head.appendChild(flowScript);
+  }
+
   if (!window.matchMedia("(max-width: 760px), (pointer: coarse)").matches) return;
 
   document.documentElement.classList.add("ashwood-mobile-interaction-parity");
