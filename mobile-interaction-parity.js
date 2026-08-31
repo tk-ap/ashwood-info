@@ -4,10 +4,10 @@
   const path = location.pathname.replace(/\/+$/, "") || "/";
   if (path !== "/" && path !== "/index.html") return;
 
-  /* Restore the original hotspot field runtime before layering newer homepage behavior. */
+  /* Restore the hotspot field runtime before layering newer homepage behavior. */
   if (!document.querySelector('script[data-ashwood-hotspot-runtime]')) {
     const hotspotScript = document.createElement("script");
-    hotspotScript.src = "/hotspot-runtime-restore.js?v=20260831-restore1";
+    hotspotScript.src = "/hotspot-runtime-restore.js?v=20260831-restore2";
     hotspotScript.async = false;
     hotspotScript.dataset.ashwoodHotspotRuntime = "1";
     document.head.appendChild(hotspotScript);
