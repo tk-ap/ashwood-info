@@ -14,8 +14,10 @@
     breakNode.replaceWith(document.createTextNode(" "));
   });
 
-  /* Cursor-following Doctor Bird.
-     The browser pointer remains the real hit target; this vector is visual only. */
+  /* Event-driven Doctor Bird.
+     It is no longer a hover cursor. A visitor earns the first sighting by finding
+     the first signal; later, the bird can act as a guide only when the discovery
+     system has already decided the visitor is actively searching and stalled. */
   const finePointer = window.matchMedia("(pointer: fine) and (hover: hover)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const discoveryField = document.querySelector(".principles-field");
@@ -23,8 +25,6 @@
   const installDoctorBird = () => {
     if (!discoveryField || !finePointer.matches || reduceMotion.matches) return;
     if (document.querySelector(".ashwood-doctor-bird-cursor")) return;
-
-    root.classList.add("has-doctor-bird-cursor");
 
     const bird = document.createElement("div");
     bird.className = "ashwood-doctor-bird-cursor";
@@ -64,94 +64,106 @@
       </svg>`;
     body.appendChild(bird);
 
-    let targetX = 0;
-    let targetY = 0;
-    let x = 0;
-    let y = 0;
+    let targetX = window.innerWidth * .72;
+    let targetY = window.innerHeight * .42;
+    let x = targetX + 160;
+    let y = targetY - 80;
     let vx = 0;
     let vy = 0;
     let bank = 0;
     let tailX = 0;
     let tailY = 0;
     let tailRotate = 0;
-    let lastMoveAt = performance.now();
-    let visible = false;
     let frame = 0;
-    let peckTimer = 0;
-    let hotspotHover = false;
+    let visible = false;
+    let mode = "sighting";
+    let hideTimer = 0;
+    let armed = false;
+    let lastDiscoveredCount = 0;
+    let firstSightingDone = false;
+    let lastAssistTarget = null;
+    let completionDone = false;
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const centerOf = (element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + Math.min(rect.height / 2, 34)
+      };
+    };
 
-    const showAt = (clientX, clientY) => {
-      targetX = clientX;
-      targetY = clientY;
+    const currentDiscoveredCount = () => discoveryField.querySelectorAll(".principle-hotspot.is-discovered").length;
+
+    const stopLater = (ms = 2200) => {
+      window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => {
+        visible = false;
+        bird.classList.remove("is-visible", "is-guide", "is-resolving");
+      }, ms);
+    };
+
+    const spawnTo = (point, nextMode = "sighting", holdMs = 2200) => {
+      if (!point || reduceMotion.matches || !finePointer.matches) return;
+      mode = nextMode;
+      targetX = point.x;
+      targetY = point.y;
       if (!visible) {
-        x = clientX;
-        y = clientY;
+        const enterFromRight = point.x < window.innerWidth * .66;
+        x = point.x + (enterFromRight ? 150 : -150);
+        y = point.y - 68;
         vx = 0;
         vy = 0;
       }
       visible = true;
       bird.classList.add("is-visible");
+      bird.classList.toggle("is-guide", nextMode === "guide");
+      bird.classList.toggle("is-resolving", nextMode === "resolve");
       if (!frame) frame = requestAnimationFrame(tick);
+      stopLater(holdMs);
     };
 
-    const hide = () => {
-      visible = false;
-      hotspotHover = false;
-      bird.classList.remove("is-visible", "is-hotspot-hover", "is-pecking");
-    };
-
-    const onPointerMove = (event) => {
-      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-      const now = performance.now();
-      targetX = event.clientX;
-      targetY = event.clientY;
-      lastMoveAt = now;
-      hotspotHover = Boolean(event.target.closest?.(".principle-hotspot"));
-      bird.classList.toggle("is-hotspot-hover", hotspotHover);
-      showAt(event.clientX, event.clientY);
-    };
-
-    const peck = () => {
-      window.clearTimeout(peckTimer);
-      bird.classList.remove("is-pecking");
-      void bird.offsetWidth;
-      bird.classList.add("is-pecking");
-      peckTimer = window.setTimeout(() => bird.classList.remove("is-pecking"), 220);
+    const resolveAndExit = () => {
+      if (completionDone) return;
+      completionDone = true;
+      const fieldRect = discoveryField.getBoundingClientRect();
+      const startPoint = {
+        x: clamp(fieldRect.right - 120, 120, window.innerWidth - 120),
+        y: clamp(fieldRect.top + Math.min(fieldRect.height * .45, 150), 90, window.innerHeight - 100)
+      };
+      spawnTo(startPoint, "resolve", 1900);
+      window.setTimeout(() => {
+        targetX = window.innerWidth + 110;
+        targetY = clamp(startPoint.y - 80, 40, window.innerHeight - 80);
+      }, 620);
     };
 
     const tick = (now) => {
       frame = 0;
       if (!visible) return;
 
-      /* Critically damped-feeling pursuit: enough lag to feel alive, not enough to
-         make the real click position confusing. */
-      const spring = hotspotHover ? 0.11 : 0.145;
-      const damping = hotspotHover ? 0.73 : 0.76;
+      const spring = mode === "guide" ? 0.105 : mode === "resolve" ? 0.12 : 0.135;
+      const damping = mode === "guide" ? 0.75 : 0.77;
       vx = (vx + (targetX - x) * spring) * damping;
       vy = (vy + (targetY - y) * spring) * damping;
       x += vx;
       y += vy;
 
       const speed = Math.hypot(vx, vy);
-      const bankTarget = clamp(vx * 1.25, -11, 11);
+      const bankTarget = clamp(vx * 1.2, -12, 12);
       bank += (bankTarget - bank) * 0.18;
 
-      /* Streamertails resist direction changes, then settle behind the body. */
-      const tailXTarget = clamp(-vx * 0.95, -9, 9);
-      const tailYTarget = clamp(-vy * 0.48, -4, 4);
-      const tailRotateTarget = clamp(-vy * 0.75 - vx * 0.12, -8, 8);
+      const tailXTarget = clamp(-vx * 0.95, -10, 10);
+      const tailYTarget = clamp(-vy * 0.5, -5, 5);
+      const tailRotateTarget = clamp(-vy * 0.72 - vx * 0.12, -9, 9);
       tailX += (tailXTarget - tailX) * 0.12;
       tailY += (tailYTarget - tailY) * 0.10;
       tailRotate += (tailRotateTarget - tailRotate) * 0.10;
 
-      const idleFor = now - lastMoveAt;
-      const hovering = speed < 0.55 && idleFor > 70;
-      const hoverY = hovering ? Math.sin(now / 190) * (hotspotHover ? 0.7 : 1.45) : 0;
-      const hoverX = hovering ? Math.cos(now / 260) * 0.55 : 0;
+      const hovering = speed < 0.5;
+      const hoverY = hovering ? Math.sin(now / 185) * (mode === "guide" ? .72 : 1.25) : 0;
+      const hoverX = hovering ? Math.cos(now / 260) * .5 : 0;
 
-      /* The bill tip is the visual pointer. */
       bird.style.transform = `translate3d(${x - 63 + hoverX}px, ${y - 18 + hoverY}px, 0) rotate(${bank}deg)`;
       bird.style.setProperty("--ashwood-bird-tail-x", `${tailX}px`);
       bird.style.setProperty("--ashwood-bird-tail-y", `${tailY}px`);
@@ -161,16 +173,54 @@
       frame = requestAnimationFrame(tick);
     };
 
-    discoveryField.addEventListener("pointerenter", (event) => showAt(event.clientX, event.clientY));
-    discoveryField.addEventListener("pointermove", onPointerMove, { passive: true });
-    discoveryField.addEventListener("pointerleave", hide);
-    discoveryField.addEventListener("pointerdown", peck);
+    /* Let curiosity.js settle remembered discoveries before arming. A returning
+       visitor should not get an unearned bird animation on page load. */
+    window.setTimeout(() => {
+      lastDiscoveredCount = currentDiscoveredCount();
+      firstSightingDone = lastDiscoveredCount > 0;
+      completionDone = body.classList.contains("has-found-all-hotspots");
+      armed = true;
+    }, 720);
+
+    const discoveryObserver = new MutationObserver((mutations) => {
+      if (!armed) return;
+
+      const count = currentDiscoveredCount();
+      if (count > lastDiscoveredCount) {
+        const newest = [...discoveryField.querySelectorAll(".principle-hotspot.is-discovered")]
+          .find((hotspot) => mutations.some((mutation) => mutation.target === hotspot));
+
+        if (!firstSightingDone && count === 1 && newest) {
+          firstSightingDone = true;
+          spawnTo(centerOf(newest), "sighting", 2500);
+        }
+        lastDiscoveredCount = count;
+      }
+
+      const assistTarget = discoveryField.querySelector(".principle-hotspot.is-assist-pulse");
+      if (assistTarget && assistTarget !== lastAssistTarget) {
+        lastAssistTarget = assistTarget;
+        spawnTo(centerOf(assistTarget), "guide", 3600);
+      } else if (!assistTarget) {
+        lastAssistTarget = null;
+      }
+    });
+    discoveryObserver.observe(discoveryField, { attributes: true, attributeFilter: ["class"], subtree: true });
+
+    const completionObserver = new MutationObserver(() => {
+      if (!armed || completionDone) return;
+      if (body.classList.contains("has-found-all-hotspots")) resolveAndExit();
+    });
+    completionObserver.observe(body, { attributes: true, attributeFilter: ["class"] });
 
     const disableIfNeeded = () => {
       if (finePointer.matches && !reduceMotion.matches) return;
-      hide();
-      root.classList.remove("has-doctor-bird-cursor");
+      visible = false;
       bird.remove();
+      window.clearTimeout(hideTimer);
+      if (frame) cancelAnimationFrame(frame);
+      discoveryObserver.disconnect();
+      completionObserver.disconnect();
     };
     finePointer.addEventListener?.("change", disableIfNeeded);
     reduceMotion.addEventListener?.("change", disableIfNeeded);
@@ -236,7 +286,6 @@
 
   registerStaticFlow();
 
-  /* Capability synthesis is created/mounted by the discovery system later. */
   const registerCapabilityMap = () => {
     const map = document.querySelector('.ashwood-capability-map[data-v2-mounted="discovery-field"], .ashwood-capability-map');
     if (map) register(map);
@@ -251,11 +300,9 @@
   });
   mutationObserver.observe(document.body, { childList: true, subtree: true });
 
-  /* Recalculate when discovery changes document height. */
   document.addEventListener("ashwood:open-capability-map", () => setTimeout(requestProgress, 80));
   document.addEventListener("ashwood:hotspot-found", () => setTimeout(requestProgress, 80));
 
-  /* If reduced-motion changes while the page is open, never leave content hidden. */
   const revealEverything = () => {
     if (!reduceMotion.matches) return;
     document.querySelectorAll(".ashwood-flow-reveal").forEach((element) => element.classList.add("is-flow-visible"));
