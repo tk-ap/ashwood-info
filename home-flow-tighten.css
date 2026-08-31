@@ -1,0 +1,68 @@
+/* ASHWOOD v2 — first-viewport tightening + doctor-bird cursor
+   Keep the thesis on one line, shorten the latent discovery field, and replace
+   the large flying CSS bird with a small vector cursor in discovery zones. */
+
+@media (min-width: 761px) {
+  body.ashwood-home-native .intro {
+    max-width: 100% !important;
+    padding-bottom: clamp(14px, 2vh, 24px) !important;
+  }
+
+  body.ashwood-home-native #site-title {
+    width: max-content;
+    max-width: 100% !important;
+    white-space: nowrap;
+    font-size: clamp(46px, 6.35vw, 92px) !important;
+    line-height: .9 !important;
+    letter-spacing: -.052em !important;
+  }
+
+  /* The latent field is an invitation, not a whole extra viewport. */
+  body.ashwood-home-native:not(.has-found-all-hotspots):not(.has-viewed-capability-map) .principles-field {
+    min-height: clamp(238px, 28vh, 310px) !important;
+  }
+
+  body.ashwood-home-native:not(.has-found-all-hotspots):not(.has-viewed-capability-map) .principle-hotspot {
+    width: clamp(156px, 18vw, 238px) !important;
+    min-height: 68px !important;
+    padding: 9px 12px 11px !important;
+  }
+
+  body.ashwood-home-native:not(.has-found-all-hotspots):not(.has-viewed-capability-map) .home-entryways {
+    margin-top: clamp(24px, 3.2vh, 42px) !important;
+  }
+}
+
+/* Fine-pointer discovery gets a crisp vector Doctor Bird cursor.
+   The hotspot is at the bill tip so the bird still points precisely at the target. */
+@media (pointer: fine) {
+  body.ashwood-home-native .principles-field,
+  body.ashwood-home-native .principles-field .principle-hotspot,
+  body.ashwood-home-native .becomings-trigger {
+    cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDQ4IDMyIj4KPHBhdGggZD0iTTIyIDE2QzE0IDEzIDggOSAyIDYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzExMTcxMyIgc3Ryb2tlLXdpZHRoPSIxLjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNMjIgMTdDMTQgMjAgOCAyNCAzIDI3IiBmaWxsPSJub25lIiBzdHJva2U9IiMxMTE3MTMiIHN0cm9rZS13aWR0aD0iMS43IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTE5IDEyYzQtNSAxMi01IDE3IDFjLTMgNy0xMCA5LTE3IDVjLTItMi0yLTQgMC02WiIgZmlsbD0iIzBhNmI0MyIvPgo8cGF0aCBkPSJNMjMgMTJjMy0zIDctNCAxMS0xYy0yIDEtNCAyLTUgNWMtMy0xLTUtMi02LTRaIiBmaWxsPSIjNTZhNTc5IiBvcGFjaXR5PSIuNzIiLz4KPGNpcmNsZSBjeD0iMzQiIGN5PSIxMyIgcj0iMy44IiBmaWxsPSIjMDYzODI2Ii8+CjxjaXJjbGUgY3g9IjM1IiBjeT0iMTIiIHI9Ii43IiBmaWxsPSIjZjdjNjAwIi8+CjxwYXRoIGQ9Ik0zNyAxM0w0NyAxMS44IiBzdHJva2U9IiNjNDI2MmUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+") 46 12, pointer !important;
+  }
+
+  /* Retire the oversized flying construction and its perch markers. */
+  body.ashwood-home-native .ashwood-jm-bird,
+  body.ashwood-home-native .becomings-bloom.ashwood-jm-doctorbird::before,
+  body.ashwood-home-native .becomings-bloom.ashwood-jm-doctorbird::after,
+  body.ashwood-home-native .home-entryway.is-doctorbird-visited::after {
+    display: none !important;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  body.ashwood-home-native #site-title {
+    font-size: clamp(44px, 6vw, 56px) !important;
+  }
+
+  body.ashwood-home-native:not(.has-found-all-hotspots):not(.has-viewed-capability-map) .principles-field {
+    min-height: 230px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.ashwood-home-native #site-title {
+    white-space: normal;
+  }
+}
