@@ -1,6 +1,6 @@
-/* ASHWOOD v2 — first-viewport tightening + doctor-bird cursor
-   Keep the thesis on one line, shorten the latent discovery field, and replace
-   the large flying CSS bird with a small vector cursor in discovery zones. */
+/* ASHWOOD v2 — first-viewport tightening + live Doctor Bird cursor
+   Keep the thesis on one line, shorten the latent discovery field, and let a
+   lightweight vector organism follow the real pointer without owning hit tests. */
 
 @media (min-width: 761px) {
   body.ashwood-home-native .intro {
@@ -33,16 +33,89 @@
   }
 }
 
-/* Fine-pointer discovery gets a crisp vector Doctor Bird cursor.
-   The hotspot is at the bill tip so the bird still points precisely at the target. */
-@media (pointer: fine) {
-  body.ashwood-home-native .principles-field,
-  body.ashwood-home-native .principles-field .principle-hotspot,
-  body.ashwood-home-native .becomings-trigger {
-    cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDQ4IDMyIj4KPHBhdGggZD0iTTIyIDE2QzE0IDEzIDggOSAyIDYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzExMTcxMyIgc3Ryb2tlLXdpZHRoPSIxLjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNMjIgMTdDMTQgMjAgOCAyNCAzIDI3IiBmaWxsPSJub25lIiBzdHJva2U9IiMxMTE3MTMiIHN0cm9rZS13aWR0aD0iMS43IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTE5IDEyYzQtNSAxMi01IDE3IDFjLTMgNy0xMCA5LTE3IDVjLTItMi0yLTQgMC02WiIgZmlsbD0iIzBhNmI0MyIvPgo8cGF0aCBkPSJNMjMgMTJjMy0zIDctNCAxMS0xYy0yIDEtNCAyLTUgNWMtMy0xLTUtMi02LTRaIiBmaWxsPSIjNTZhNTc5IiBvcGFjaXR5PSIuNzIiLz4KPGNpcmNsZSBjeD0iMzQiIGN5PSIxMyIgcj0iMy44IiBmaWxsPSIjMDYzODI2Ii8+CjxjaXJjbGUgY3g9IjM1IiBjeT0iMTIiIHI9Ii43IiBmaWxsPSIjZjdjNjAwIi8+CjxwYXRoIGQ9Ik0zNyAxM0w0NyAxMS44IiBzdHJva2U9IiNjNDI2MmUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+") 46 12, pointer !important;
+/* The actual browser pointer still performs every hit test. We only hide its
+   glyph while it is inside the discovery field and paint the Doctor Bird above it. */
+@media (pointer: fine) and (hover: hover) {
+  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field,
+  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot,
+  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot * {
+    cursor: none !important;
   }
 
-  /* Retire the oversized flying construction and its perch markers. */
+  .ashwood-doctor-bird-cursor {
+    --ashwood-bird-tail-x: 0px;
+    --ashwood-bird-tail-y: 0px;
+    --ashwood-bird-tail-rotate: 0deg;
+    --ashwood-bird-speed: 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 520;
+    width: 64px;
+    height: 40px;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 63px 18px;
+    will-change: transform, opacity;
+    transition: opacity .14s ease;
+    contain: layout style paint;
+  }
+
+  .ashwood-doctor-bird-cursor.is-visible { opacity: .98; }
+
+  .ashwood-doctor-bird-cursor__svg {
+    display: block;
+    width: 64px;
+    height: 40px;
+    overflow: visible;
+    transform-origin: 63px 18px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.18));
+  }
+
+  /* Hummingbird wings read as a luminous motion field rather than two cartoon
+     appendages. Their cadence is intentionally faster than the eye can parse. */
+  .ashwood-doctor-bird-cursor__wing-field {
+    transform-origin: 35px 21px;
+    filter: blur(1.05px);
+    opacity: calc(.40 + (var(--ashwood-bird-speed) * .18));
+    animation: ashwood-doctor-bird-wing-field .105s linear infinite alternate;
+  }
+
+  .ashwood-doctor-bird-cursor__tails {
+    transform-box: fill-box;
+    transform-origin: 100% 50%;
+    transform:
+      translate(var(--ashwood-bird-tail-x), var(--ashwood-bird-tail-y))
+      rotate(var(--ashwood-bird-tail-rotate));
+    will-change: transform;
+  }
+
+  .ashwood-doctor-bird-cursor__body,
+  .ashwood-doctor-bird-cursor__bill {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .ashwood-doctor-bird-cursor.is-hotspot-hover .ashwood-doctor-bird-cursor__wing-field {
+    opacity: .34;
+  }
+
+  /* A click reads as a quick feeding motion at the bill, then releases. */
+  .ashwood-doctor-bird-cursor.is-pecking .ashwood-doctor-bird-cursor__svg {
+    animation: ashwood-doctor-bird-peck .19s cubic-bezier(.2,.82,.2,1) both;
+  }
+
+  @keyframes ashwood-doctor-bird-wing-field {
+    from { transform: scaleY(.58) scaleX(.96); opacity: .27; }
+    to { transform: scaleY(1.18) scaleX(1.05); opacity: .52; }
+  }
+
+  @keyframes ashwood-doctor-bird-peck {
+    0% { transform: translateX(0) scale(1); }
+    44% { transform: translateX(3.5px) scale(.985); }
+    100% { transform: translateX(0) scale(1); }
+  }
+
+  /* Retire the old oversized CSS flight construction and perch markers. */
   body.ashwood-home-native .ashwood-jm-bird,
   body.ashwood-home-native .becomings-bloom.ashwood-jm-doctorbird::before,
   body.ashwood-home-native .becomings-bloom.ashwood-jm-doctorbird::after,
@@ -65,4 +138,14 @@
   body.ashwood-home-native #site-title {
     white-space: normal;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field,
+  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot,
+  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot * {
+    cursor: auto !important;
+  }
+
+  .ashwood-doctor-bird-cursor { display: none !important; }
 }
