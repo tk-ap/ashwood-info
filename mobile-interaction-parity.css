@@ -1,3 +1,5 @@
+@import url('/home-flow.css?v=20260831-flow1');
+
 /* Mobile interaction parity
    Desktop hover/proximity behaviors must have an intentional touch/scroll/earned equivalent.
    This layer never floats cultural context over core homepage copy. */
