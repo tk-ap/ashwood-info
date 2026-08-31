@@ -13,7 +13,7 @@
 
   const becomingsStyles = document.createElement("link");
   becomingsStyles.rel = "stylesheet";
-  becomingsStyles.href = "/becomings-interaction.css?v=20260829-mobile-entrance";
+  becomingsStyles.href = "/becomings-interaction.css?v=20260830-launch1";
   document.head.appendChild(becomingsStyles);
 
   const balanceStyles = document.createElement("link");

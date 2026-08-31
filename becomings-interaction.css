@@ -122,6 +122,14 @@
 }
 
 @media (max-width: 760px) {
+  .home-identity .becomings-trigger {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -10px -4px;
+    padding: 10px 4px;
+  }
   .home-entryway.is-becoming-highlight { transform: none; }
   .home-entryway.is-becoming-highlight .home-entryway__title,
   .home-entryway.is-becoming-highlight .home-entryway__signal { transform: translateX(3px); }
