@@ -4,11 +4,20 @@
   const path = location.pathname.replace(/\/+$/, "") || "/";
   if (path !== "/" && path !== "/index.html") return;
 
+  /* Restore the original hotspot field runtime before layering newer homepage behavior. */
+  if (!document.querySelector('script[data-ashwood-hotspot-runtime]')) {
+    const hotspotScript = document.createElement("script");
+    hotspotScript.src = "/hotspot-runtime-restore.js?v=20260831-restore1";
+    hotspotScript.async = false;
+    hotspotScript.dataset.ashwoodHotspotRuntime = "1";
+    document.head.appendChild(hotspotScript);
+  }
+
   /* Final homepage behavior layer: progress trace, reveal grammar, and event-driven Doctor Bird. */
   if (!document.querySelector('script[data-ashwood-home-flow]')) {
     const flowScript = document.createElement("script");
     flowScript.src = "/home-flow.js?v=20260831-flow3";
-    flowScript.defer = true;
+    flowScript.async = false;
     flowScript.dataset.ashwoodHomeFlow = "1";
     document.head.appendChild(flowScript);
   }
