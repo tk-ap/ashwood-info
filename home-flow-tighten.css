@@ -1,6 +1,6 @@
-/* ASHWOOD v2 — first-viewport tightening + live Doctor Bird cursor
-   Keep the thesis on one line, shorten the latent discovery field, and let a
-   lightweight vector organism follow the real pointer without owning hit tests. */
+/* ASHWOOD v2 — first-viewport tightening + event-driven Doctor Bird
+   Keep the thesis on one line, shorten the latent discovery field, and treat the
+   Doctor Bird as a response to curiosity rather than a permanent novelty cursor. */
 
 @media (min-width: 761px) {
   body.ashwood-home-native .intro {
@@ -33,15 +33,9 @@
   }
 }
 
-/* The actual browser pointer still performs every hit test. We only hide its
-   glyph while it is inside the discovery field and paint the Doctor Bird above it. */
+/* The browser cursor remains normal. The Doctor Bird appears only when a visitor
+   earns a sighting or needs help finding the next signal. */
 @media (pointer: fine) and (hover: hover) {
-  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field,
-  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot,
-  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot * {
-    cursor: none !important;
-  }
-
   .ashwood-doctor-bird-cursor {
     --ashwood-bird-tail-x: 0px;
     --ashwood-bird-tail-y: 0px;
@@ -57,11 +51,12 @@
     pointer-events: none;
     transform-origin: 63px 18px;
     will-change: transform, opacity;
-    transition: opacity .14s ease;
+    transition: opacity .24s ease;
     contain: layout style paint;
   }
 
   .ashwood-doctor-bird-cursor.is-visible { opacity: .98; }
+  .ashwood-doctor-bird-cursor.is-guide { opacity: 1; }
 
   .ashwood-doctor-bird-cursor__svg {
     display: block;
@@ -95,13 +90,14 @@
     vector-effect: non-scaling-stroke;
   }
 
-  .ashwood-doctor-bird-cursor.is-hotspot-hover .ashwood-doctor-bird-cursor__wing-field {
-    opacity: .34;
+  .ashwood-doctor-bird-cursor.is-guide .ashwood-doctor-bird-cursor__svg {
+    filter:
+      drop-shadow(0 2px 4px rgba(0,0,0,.18))
+      drop-shadow(0 0 8px rgba(0,155,58,.18));
   }
 
-  /* A click reads as a quick feeding motion at the bill, then releases. */
-  .ashwood-doctor-bird-cursor.is-pecking .ashwood-doctor-bird-cursor__svg {
-    animation: ashwood-doctor-bird-peck .19s cubic-bezier(.2,.82,.2,1) both;
+  .ashwood-doctor-bird-cursor.is-resolving .ashwood-doctor-bird-cursor__svg {
+    animation: ashwood-doctor-bird-resolve .95s cubic-bezier(.16,.8,.24,1) both;
   }
 
   @keyframes ashwood-doctor-bird-wing-field {
@@ -109,10 +105,10 @@
     to { transform: scaleY(1.18) scaleX(1.05); opacity: .52; }
   }
 
-  @keyframes ashwood-doctor-bird-peck {
-    0% { transform: translateX(0) scale(1); }
-    44% { transform: translateX(3.5px) scale(.985); }
-    100% { transform: translateX(0) scale(1); }
+  @keyframes ashwood-doctor-bird-resolve {
+    0% { transform: scale(1); }
+    48% { transform: scale(1.035); }
+    100% { transform: scale(.97); }
   }
 
   /* Retire the old oversized CSS flight construction and perch markers. */
@@ -124,6 +120,112 @@
   }
 }
 
+/* SITREP takes its visual grammar from a real situation-report card: a compact
+   field register with explicit questions instead of a decorative NOW ticker. */
+body.ashwood-home-native .home-now.home-sitrep {
+  display: block !important;
+  width: min(100%, 1040px) !important;
+  max-width: 1040px !important;
+  margin: clamp(88px, 10vh, 136px) auto 0 !important;
+  padding: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--ashwood-rule) 72%, transparent) !important;
+  text-align: left !important;
+  background: color-mix(in srgb, var(--ashwood-paper, #11130f) 96%, var(--ashwood-v2-field, #536b3d) 4%) !important;
+  overflow: hidden;
+}
+
+body.ashwood-home-native .home-sitrep__head {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+  min-height: 48px;
+  padding: 11px 16px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--ashwood-rule) 76%, transparent);
+}
+
+body.ashwood-home-native .home-sitrep__head::after {
+  content: "";
+  position: absolute;
+  top: 11px;
+  right: 74px;
+  width: 13px;
+  height: 13px;
+  border: 1px solid color-mix(in srgb, var(--ashwood-rule) 62%, transparent);
+  border-radius: 50%;
+  opacity: .36;
+}
+
+body.ashwood-home-native .home-sitrep__title {
+  justify-self: center;
+  margin-left: 72px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ashwood-ink);
+}
+
+body.ashwood-home-native .home-sitrep__date {
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ashwood-muted);
+}
+
+body.ashwood-home-native .home-sitrep__grid {
+  margin: 0;
+}
+
+body.ashwood-home-native .home-sitrep__row {
+  display: grid;
+  grid-template-columns: minmax(168px, 28%) minmax(0, 1fr);
+  min-height: 64px;
+  border-bottom: 1px solid color-mix(in srgb, var(--ashwood-rule) 64%, transparent);
+}
+
+body.ashwood-home-native .home-sitrep__row:last-child { border-bottom: 0; }
+
+body.ashwood-home-native .home-sitrep__row dt,
+body.ashwood-home-native .home-sitrep__row dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 15px 17px;
+}
+
+body.ashwood-home-native .home-sitrep__row dt {
+  border-right: 1px solid color-mix(in srgb, var(--ashwood-rule) 64%, transparent);
+  background: color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 14%, transparent);
+  color: var(--ashwood-ink);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body.ashwood-home-native .home-sitrep__row dd {
+  color: var(--ashwood-muted);
+  font-size: 9px;
+  line-height: 1.48;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+body.ashwood-home-native .home-sitrep__row:last-child dt {
+  background: color-mix(in srgb, var(--ashwood-gold, #d6c24a) 9%, var(--ashwood-v2-field, #536b3d) 8%);
+}
+
+body.ashwood-home-native .home-sitrep__row:last-child dd {
+  color: color-mix(in srgb, var(--ashwood-ink) 82%, var(--ashwood-muted));
+}
+
 @media (min-width: 761px) and (max-width: 900px) {
   body.ashwood-home-native #site-title {
     font-size: clamp(44px, 6vw, 56px) !important;
@@ -132,20 +234,47 @@
   body.ashwood-home-native:not(.has-found-all-hotspots):not(.has-viewed-capability-map) .principles-field {
     min-height: 230px !important;
   }
+
+  body.ashwood-home-native .home-sitrep__row {
+    grid-template-columns: minmax(150px, 32%) minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 760px) {
-  body.ashwood-home-native #site-title {
-    white-space: normal;
+  body.ashwood-home-native #site-title { white-space: normal; }
+
+  body.ashwood-home-native .home-now.home-sitrep {
+    width: 100% !important;
+    margin-top: 58px !important;
   }
+
+  body.ashwood-home-native .home-sitrep__head {
+    min-height: 44px;
+    padding-inline: 12px;
+  }
+
+  body.ashwood-home-native .home-sitrep__head::after { display: none; }
+
+  body.ashwood-home-native .home-sitrep__title {
+    justify-self: start;
+    margin-left: 0;
+    font-size: 11px;
+  }
+
+  body.ashwood-home-native .home-sitrep__row {
+    grid-template-columns: minmax(112px, 38%) minmax(0, 1fr);
+    min-height: 58px;
+  }
+
+  body.ashwood-home-native .home-sitrep__row dt,
+  body.ashwood-home-native .home-sitrep__row dd {
+    padding: 12px 11px;
+  }
+
+  body.ashwood-home-native .home-sitrep__row dt { font-size: 7.5px; }
+  body.ashwood-home-native .home-sitrep__row dd { font-size: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field,
-  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot,
-  html.has-doctor-bird-cursor body.ashwood-home-native .principles-field .principle-hotspot * {
-    cursor: auto !important;
-  }
-
   .ashwood-doctor-bird-cursor { display: none !important; }
 }
