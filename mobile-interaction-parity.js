@@ -13,7 +13,17 @@
     document.head.appendChild(hotspotScript);
   }
 
-  /* Final homepage behavior layer: progress trace, reveal grammar, and event-driven Doctor Bird. */
+  /* Install the explicit Doctor Bird trigger before home-flow.js. Creating the
+     bird node here prevents the older automatic bird observer from mounting. */
+  if (!document.querySelector('script[data-ashwood-doctor-bird-trigger]')) {
+    const birdScript = document.createElement("script");
+    birdScript.src = "/doctor-bird-trigger.js?v=20260831-explicit1";
+    birdScript.async = false;
+    birdScript.dataset.ashwoodDoctorBirdTrigger = "1";
+    document.head.appendChild(birdScript);
+  }
+
+  /* Final homepage behavior layer: progress trace and reveal grammar. */
   if (!document.querySelector('script[data-ashwood-home-flow]')) {
     const flowScript = document.createElement("script");
     flowScript.src = "/home-flow.js?v=20260831-flow3";
