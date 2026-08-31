@@ -49,7 +49,16 @@
         opacity:.72;
       }
 
-      body.ashwood-home-native .ashwood-field-guide__reveal {
+      body.ashwood-home-native .ashwood-field-guide__actions {
+        display:flex;
+        align-items:center;
+        gap:14px;
+        pointer-events:auto;
+        white-space:nowrap;
+      }
+
+      body.ashwood-home-native .ashwood-field-guide__reveal,
+      body.ashwood-home-native .ashwood-field-guide__bird {
         border:0;
         padding:7px 0;
         background:none;
@@ -60,21 +69,21 @@
         letter-spacing:.14em;
         text-transform:uppercase;
         cursor:pointer;
-        pointer-events:auto;
         opacity:.72;
         transition:color .25s ease,opacity .25s ease,letter-spacing .25s ease;
       }
 
+      body.ashwood-home-native .ashwood-field-guide__bird { color:#009b3a; }
+
       body.ashwood-home-native .ashwood-field-guide__reveal:hover,
-      body.ashwood-home-native .ashwood-field-guide__reveal:focus-visible {
+      body.ashwood-home-native .ashwood-field-guide__reveal:focus-visible,
+      body.ashwood-home-native .ashwood-field-guide__bird:hover,
+      body.ashwood-home-native .ashwood-field-guide__bird:focus-visible {
         color:var(--ashwood-gold);
         opacity:1;
         letter-spacing:.17em;
       }
 
-      /* A visitor should be able to tell that points exist before accidentally
-         finding one. The labels remain latent; only the anchor and a faint field
-         halo are visible until proximity resolves the thought. */
       body.ashwood-home-native:not(.has-found-all-hotspots):not(.has-viewed-capability-map)
       .principle-hotspot:not(.is-discovered)::before {
         width:6px !important;
@@ -114,11 +123,30 @@
     }
 
     @media (max-width:760px), (pointer:coarse) {
-      .ashwood-field-guide { display:none !important; }
+      body.ashwood-home-native .ashwood-field-guide{
+        position:relative;
+        z-index:245;
+        display:grid;
+        grid-template-columns:1fr auto;
+        gap:8px 12px;
+        width:100%;
+        margin:0 0 14px;
+        padding:0 0 10px;
+        border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 54%,transparent);
+        pointer-events:auto;
+      }
+      .ashwood-field-guide__count{grid-column:1;color:#009b3a;font-size:8px;letter-spacing:.14em;text-transform:uppercase}
+      .ashwood-field-guide__copy{grid-column:1 / -1;color:var(--ashwood-muted);font-family:Georgia,serif;font-size:10px;line-height:1.4;font-style:italic}
+      .ashwood-field-guide__actions{grid-column:1 / -1;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+      .ashwood-field-guide__reveal,.ashwood-field-guide__bird{border:0;padding:8px 0;background:none;font-family:inherit;font-size:8px;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}
+      .ashwood-field-guide__bird{color:#009b3a}
+      .ashwood-field-guide__reveal{color:var(--ashwood-ink)}
+      body.has-viewed-capability-map .ashwood-field-guide,
+      body.has-found-all-hotspots .ashwood-field-guide{display:none!important}
     }
 
     @media (prefers-reduced-motion:reduce) {
-      .ashwood-field-guide__reveal { transition:none !important; }
+      .ashwood-field-guide__reveal,.ashwood-field-guide__bird { transition:none !important; }
     }
   `;
   document.head.appendChild(style);
@@ -128,27 +156,31 @@
   guide.setAttribute('aria-live', 'polite');
   guide.innerHTML = `
     <span class="ashwood-field-guide__count">0 / 6 SIGNALS</span>
-    <span class="ashwood-field-guide__copy">Recurring patterns are hidden in the field. Move through it and they clarify.</span>
-    <button class="ashwood-field-guide__reveal" type="button">Reveal the pattern →</button>
+    <span class="ashwood-field-guide__copy">Recurring patterns are hidden in the field. Explore them, or ask the Doctor Bird for the throughline.</span>
+    <span class="ashwood-field-guide__actions">
+      <button class="ashwood-field-guide__bird" type="button" data-ashwood-bird-guide>Follow the bird →</button>
+      <button class="ashwood-field-guide__reveal" type="button">Reveal the pattern →</button>
+    </span>
   `;
   field.prepend(guide);
 
   const countEl = guide.querySelector('.ashwood-field-guide__count');
   const copyEl = guide.querySelector('.ashwood-field-guide__copy');
   const reveal = guide.querySelector('.ashwood-field-guide__reveal');
+  const birdGuide = guide.querySelector('.ashwood-field-guide__bird');
 
   const update = () => {
     const count = hotspots.filter((hotspot) => hotspot.classList.contains('is-discovered')).length;
     countEl.textContent = `${count} / ${hotspots.length} SIGNALS`;
 
     if (count === 0) {
-      copyEl.textContent = 'Recurring patterns are hidden in the field. Move through it and they clarify.';
+      copyEl.textContent = 'Recurring patterns are hidden in the field. Explore them, or ask the Doctor Bird for the throughline.';
     } else if (count === 1) {
-      copyEl.textContent = 'One signal found. The others are nearby.';
+      copyEl.textContent = 'One signal found. The others are nearby; the Doctor Bird can also walk you through the larger pattern.';
     } else if (count < 4) {
-      copyEl.textContent = 'The signals are connected. Keep exploring or reveal the pattern.';
+      copyEl.textContent = 'The signals are connected. Keep exploring, reveal the pattern, or follow the bird.';
     } else if (count < hotspots.length) {
-      copyEl.textContent = 'The pattern is already visible. Finish the field only if you want to.';
+      copyEl.textContent = 'The pattern is already visible. Finishing the field is optional.';
     } else {
       copyEl.textContent = 'The pattern is resolved.';
     }
@@ -157,6 +189,12 @@
   reveal.addEventListener('click', () => {
     document.dispatchEvent(new CustomEvent('ashwood:open-capability-map', {
       detail: { entrance: true, trigger: reveal }
+    }));
+  });
+
+  birdGuide.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('ashwood:start-bird-guide', {
+      detail: { trigger: birdGuide }
     }));
   });
 
