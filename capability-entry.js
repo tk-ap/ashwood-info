@@ -34,6 +34,17 @@
     .ashwood-capability-map__practice[data-internal="true"]:focus-visible{color:var(--ashwood-gold)}
     .ashwood-capability-map__practice[data-internal="true"]:hover::after,
     .ashwood-capability-map__practice[data-internal="true"]:focus-visible::after{color:var(--ashwood-gold)}
+    .ashwood-capability-map__provenance{
+      width:100%;margin:5px 0 0;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 54%,transparent);
+      color:var(--ashwood-muted);font-size:8px;line-height:1.45;letter-spacing:.035em
+    }
+    .ashwood-capability-map__provenance strong{
+      display:block;margin-bottom:4px;color:var(--ashwood-gold);font-size:7px;letter-spacing:.15em;text-transform:uppercase
+    }
+    .ashwood-capability-map__provenance a{
+      display:inline-flex;align-items:center;min-height:36px;margin-top:2px;color:var(--ashwood-ink);font-size:8px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none
+    }
+    .ashwood-capability-map__provenance a:hover,.ashwood-capability-map__provenance a:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .principle-hotspot__useful-for{
       display:block;max-width:290px;margin-top:8px;color:var(--ashwood-muted);font-size:8px;line-height:1.35;
       letter-spacing:.065em;opacity:0;transform:translateY(7px);filter:blur(2px);pointer-events:none;
@@ -52,6 +63,7 @@
       .ashwood-capability-evidence a{min-height:44px;display:inline-flex;align-items:center}
       .ashwood-capability-nudge{position:absolute;right:18px;top:auto;margin-top:12px;max-width:130px}
       .ashwood-capability-map__useful{grid-column:2}
+      .ashwood-capability-map__provenance a{min-height:44px}
       .principle-hotspot__useful-for{max-width:220px;font-size:8px}
       body.has-viewed-capability-map:not(.has-found-all-hotspots) .ashwood-capability-map{margin-top:26px}
     }
@@ -64,9 +76,9 @@
   const map = () => document.querySelector(".ashwood-capability-map");
   const completedDiscovery = () => document.body.classList.contains("has-found-all-hotspots");
 
-  // Hotspots are the first-person, situational discovery layer. The capability map is
-  // the synthesis layer: same underlying evidence, elevated into concise professional
-  // language rather than repeating the discovery copy verbatim.
+  // The six hotspots remain recurring capabilities. V2 changes the synthesis around them:
+  // current state stays explicit, practices remain distinct, and agent-os appears only through
+  // selected provenance rather than as a public product-like destination.
   const capabilitySynthesis = {
     signal: {
       summary: "Strategic judgment that clarifies priorities, anticipates risk, and sharpens the next decision.",
@@ -100,11 +112,30 @@
     }
   };
 
+  const practiceOverrides = {
+    friction: {
+      label: "ALVIRA · Context Intelligence",
+      href: "https://alviratech.vercel.app/",
+      external: true
+    },
+    translation: {
+      label: "BUILD JOURNAL · Field Notes + public proof",
+      href: "/journal/",
+      external: false
+    },
+    systems: {
+      label: "Builds · Governed execution systems",
+      href: "/journal/",
+      external: false
+    }
+  };
+
   const applyCapabilitySynthesis = () => {
     const capabilityMap = map();
     if (!capabilityMap) return;
     capabilityMap.querySelectorAll("[data-capability]").forEach((row) => {
-      const synthesis = capabilitySynthesis[row.dataset.capability];
+      const id = row.dataset.capability;
+      const synthesis = capabilitySynthesis[id];
       if (!synthesis) return;
 
       const description = row.querySelector(".ashwood-capability-map__description");
@@ -117,7 +148,45 @@
         row.querySelector(".ashwood-capability-map__authorship")?.before(useful);
       }
       useful.innerHTML = `<strong>Useful when →</strong>${synthesis.useful}`;
+
+      const override = practiceOverrides[id];
+      if (override) {
+        const practice = row.querySelector(".ashwood-capability-map__practice");
+        if (practice) {
+          practice.textContent = override.label;
+          practice.href = override.href;
+          practice.dataset.internal = String(!override.external);
+          if (override.external) {
+            practice.target = "_blank";
+            practice.rel = "noreferrer";
+          } else {
+            practice.removeAttribute("target");
+            practice.removeAttribute("rel");
+          }
+        }
+      }
     });
+  };
+
+  const installProvenanceBridge = () => {
+    const capabilityMap = map();
+    const footer = capabilityMap?.querySelector(".ashwood-capability-map__footer");
+    if (!footer || footer.querySelector(".ashwood-capability-map__provenance")) return;
+    const provenance = document.createElement("div");
+    provenance.className = "ashwood-capability-map__provenance";
+    provenance.innerHTML = `
+      <strong>TRACE / PROVENANCE</strong>
+      Selected build records can show human judgment, agent-supported execution, tools, collaborators, and evidence. The internal agent-os / Workforce remains infrastructure beneath the work, not another public ASHWOOD product.
+      <br /><a href="/journal/">Trace the builds →</a>`;
+    footer.append(provenance);
+  };
+
+  const installCurrentLanguage = () => {
+    const label = document.querySelector(".home-now__label");
+    if (!label) return;
+    const original = label.textContent.trim();
+    const datePart = original.includes("/") ? original.split("/").slice(1).join("/").trim() : original.replace(/^NOW\s*/i, "").trim();
+    label.textContent = datePart ? `CURRENT / SITREP · ${datePart}` : "CURRENT / SITREP";
   };
 
   // Essential value should be discoverable before click. Proximity/focus gets a concise
@@ -139,6 +208,8 @@
   };
 
   applyCapabilitySynthesis();
+  installProvenanceBridge();
+  installCurrentLanguage();
   installHotspotApplicationCues();
 
   let entranceTrigger = null;
@@ -146,6 +217,7 @@
     const capabilityMap = map();
     if (!capabilityMap) return false;
     applyCapabilitySynthesis();
+    installProvenanceBridge();
     document.body.classList.add("has-viewed-capability-map");
     document.body.classList.toggle("is-capability-entrance", entrance);
     entranceTrigger = entrance ? trigger : null;
