@@ -36,6 +36,11 @@
   readabilityStyles.href = "/capability-readability.css?v=20260830-readability1";
   document.head.appendChild(readabilityStyles);
 
+  const disclosureFixStyles = document.createElement("link");
+  disclosureFixStyles.rel = "stylesheet";
+  disclosureFixStyles.href = "/capability-disclosure-fix.css?v=20260831-space1";
+  document.head.appendChild(disclosureFixStyles);
+
   const mobileHotspotDialogStyles = document.createElement("link");
   mobileHotspotDialogStyles.rel = "stylesheet";
   mobileHotspotDialogStyles.href = "/mobile-hotspot-dialog.css?v=20260830-dialog1";
