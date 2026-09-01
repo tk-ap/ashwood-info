@@ -7,38 +7,44 @@
   const mobile = window.matchMedia("(max-width: 760px), (pointer: coarse)");
   const isMobile = mobile.matches;
 
-  /* Desktop keeps the latent discovery field. The Doctor Bird and home-flow layers
-     remain shared. Mobile owns a separate, authored capability-reading grammar. */
   if (!isMobile && !document.querySelector('script[data-ashwood-hotspot-runtime]')) {
-    const hotspotScript = document.createElement("script");
-    hotspotScript.src = "/hotspot-runtime-restore.js?v=20260831-restore2";
-    hotspotScript.async = false;
-    hotspotScript.dataset.ashwoodHotspotRuntime = "1";
-    document.head.appendChild(hotspotScript);
+    const script = document.createElement("script");
+    script.src = "/hotspot-runtime-restore.js?v=20260831-restore2";
+    script.async = false;
+    script.dataset.ashwoodHotspotRuntime = "1";
+    document.head.appendChild(script);
   }
 
   if (!isMobile && !document.querySelector('script[data-ashwood-hotspot-guidance]')) {
-    const guidanceScript = document.createElement("script");
-    guidanceScript.src = "/hotspot-guidance.js?v=20260831-guide2";
-    guidanceScript.async = false;
-    guidanceScript.dataset.ashwoodHotspotGuidance = "1";
-    document.head.appendChild(guidanceScript);
+    const script = document.createElement("script");
+    script.src = "/hotspot-guidance.js?v=20260831-guide2";
+    script.async = false;
+    script.dataset.ashwoodHotspotGuidance = "1";
+    document.head.appendChild(script);
   }
 
   if (!document.querySelector('script[data-ashwood-doctor-bird-trigger]')) {
-    const birdScript = document.createElement("script");
-    birdScript.src = "/doctor-bird-trigger.js?v=20260901-rendered-flight3";
-    birdScript.async = false;
-    birdScript.dataset.ashwoodDoctorBirdTrigger = "1";
-    document.head.appendChild(birdScript);
+    const script = document.createElement("script");
+    script.src = "/doctor-bird-trigger.js?v=20260901-rendered-restore4";
+    script.async = false;
+    script.dataset.ashwoodDoctorBirdTrigger = "1";
+    document.head.appendChild(script);
+  }
+
+  if (isMobile && !document.querySelector('script[data-ashwood-doctor-bird-mobile-motion]')) {
+    const script = document.createElement("script");
+    script.src = "/doctor-bird-mobile-motion.js?v=20260901-motion1";
+    script.async = false;
+    script.dataset.ashwoodDoctorBirdMobileMotion = "1";
+    document.head.appendChild(script);
   }
 
   if (!document.querySelector('script[data-ashwood-home-flow]')) {
-    const flowScript = document.createElement("script");
-    flowScript.src = "/home-flow.js?v=20260831-flow3";
-    flowScript.async = false;
-    flowScript.dataset.ashwoodHomeFlow = "1";
-    document.head.appendChild(flowScript);
+    const script = document.createElement("script");
+    script.src = "/home-flow.js?v=20260831-flow3";
+    script.async = false;
+    script.dataset.ashwoodHomeFlow = "1";
+    document.head.appendChild(script);
   }
 
   if (!isMobile) return;
@@ -47,65 +53,16 @@
   document.body.classList.add("ashwood-mobile-capability-native");
 
   const after = (ms, fn) => window.setTimeout(fn, ms);
-
   const capabilities = [
-    {
-      id: "signal",
-      label: "SIGNAL",
-      summary: "I notice what is starting to matter.",
-      useful: "Priorities are unclear and weak signals need separating from noise.",
-      practice: "ailhat · Portfolio Intelligence",
-      href: "https://ailhat.vercel.app/",
-      external: true
-    },
-    {
-      id: "friction",
-      label: "FRICTION",
-      summary: "I look for where intention and reality stop matching.",
-      useful: "The same workaround keeps appearing, or the experience is fighting its intent.",
-      practice: "ALVIRA · Context Intelligence",
-      href: "https://alviratech.vercel.app/",
-      external: true
-    },
-    {
-      id: "translation",
-      label: "TRANSLATION",
-      summary: "I turn difficult ideas into forms people can use.",
-      useful: "Complex work needs to become clear enough for different people to act.",
-      practice: "BUILD JOURNAL · Field Notes + public proof",
-      href: "/journal/",
-      external: false
-    },
-    {
-      id: "systems",
-      label: "SYSTEMS",
-      summary: "I look for the structure underneath the thing.",
-      useful: "A recurring problem needs durable structure rather than another patch.",
-      practice: "Builds · Governed execution systems",
-      href: "/journal/",
-      external: false
-    },
-    {
-      id: "resilience",
-      label: "ADAPTATION",
-      summary: "I let evidence change the approach.",
-      useful: "Reality changes the conditions and the approach needs to change with it.",
-      practice: "LEDGATo · Operational reality",
-      href: "https://ledgato.vercel.app/",
-      external: true
-    },
-    {
-      id: "range",
-      label: "SYNTHESIS",
-      summary: "I bring separate things into one coherent idea.",
-      useful: "The opportunity sits between disciplines, ideas, or mediums.",
-      practice: "ASHWOOD · Modeling + Music + Builds",
-      href: "/about/",
-      external: false
-    }
+    ["signal","SIGNAL","I notice what is starting to matter.","Priorities are unclear and weak signals need separating from noise.","ailhat · Portfolio Intelligence","https://ailhat.vercel.app/",true],
+    ["friction","FRICTION","I look for where intention and reality stop matching.","The same workaround keeps appearing, or the experience is fighting its intent.","ALVIRA · Context Intelligence","https://alviratech.vercel.app/",true],
+    ["translation","TRANSLATION","I turn difficult ideas into forms people can use.","Complex work needs to become clear enough for different people to act.","BUILD JOURNAL · Field Notes + public proof","/journal/",false],
+    ["systems","SYSTEMS","I look for the structure underneath the thing.","A recurring problem needs durable structure rather than another patch.","Builds · Governed execution systems","/journal/",false],
+    ["resilience","ADAPTATION","I let evidence change the approach.","Reality changes the conditions and the approach needs to change with it.","LEDGATo · Operational reality","https://ledgato.vercel.app/",true],
+    ["range","SYNTHESIS","I bring separate things into one coherent idea.","The opportunity sits between disciplines, ideas, or mediums.","ASHWOOD · Modeling + Music + Builds","/about/",false]
   ];
 
-  const mobileMapMarkup = () => `
+  const markup = () => `
     <p class="ashwood-mobile-capability-intro">Different roles. Different people. The same patterns kept showing up.</p>
     <div class="ashwood-capability-map__header">
       <p class="ashwood-capability-map__eyebrow">THE THROUGHLINE · SIX PATTERNS</p>
@@ -113,13 +70,13 @@
       <p class="ashwood-capability-map__authorship-key">Scroll the field. Each pattern is one way the work tends to move — and where it becomes useful now.</p>
     </div>
     <ol class="ashwood-capability-map__list">
-      ${capabilities.map((item) => `
-        <li class="ashwood-capability-map__item" data-capability="${item.id}">
-          <span class="ashwood-capability-map__skill">${item.label}</span>
-          <p class="ashwood-capability-map__description">${item.summary}</p>
-          <p class="ashwood-capability-map__useful"><strong>Useful when →</strong>${item.useful}</p>
+      ${capabilities.map(([id,label,summary,useful,practice,href,external]) => `
+        <li class="ashwood-capability-map__item" data-capability="${id}">
+          <span class="ashwood-capability-map__skill">${label}</span>
+          <p class="ashwood-capability-map__description">${summary}</p>
+          <p class="ashwood-capability-map__useful"><strong>Useful when →</strong>${useful}</p>
           <span class="ashwood-capability-map__authorship">WHERE IT SHOWS UP NOW →</span>
-          <a class="ashwood-capability-map__practice" data-internal="${String(!item.external)}" href="${item.href}"${item.external ? ' target="_blank" rel="noreferrer"' : ""}>${item.practice}</a>
+          <a class="ashwood-capability-map__practice" data-internal="${String(!external)}" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ""}>${practice}</a>
         </li>`).join("")}
     </ol>
     <footer class="ashwood-capability-map__footer">
@@ -138,48 +95,36 @@
       map.className = "ashwood-capability-map";
       map.dataset.mobileNative = "1";
       map.setAttribute("aria-label", "ASHWOOD capability throughline");
-      map.innerHTML = mobileMapMarkup();
+      map.innerHTML = markup();
       field.appendChild(map);
     } else if (map.parentElement !== field) {
       field.appendChild(map);
     }
 
-    /* Curiosity may construct its desktop map later. Mobile keeps exactly one map. */
     document.querySelectorAll(".ashwood-capability-map").forEach((candidate) => {
       if (candidate !== map) candidate.remove();
     });
 
-    const items = [...map.querySelectorAll(".ashwood-capability-map__item")];
     if (map.dataset.mobileReadingInstalled === "1") return true;
     map.dataset.mobileReadingInstalled = "1";
-
+    const items = [...map.querySelectorAll(".ashwood-capability-map__item")];
     let frame = 0;
-    const updateReadingState = () => {
+    const update = () => {
       frame = 0;
-      if (!items.length) return;
-      const readingLine = window.innerHeight * .46;
+      const line = innerHeight * .46;
       let closest = null;
-      let closestDistance = Infinity;
+      let distance = Infinity;
       items.forEach((item) => {
         const rect = item.getBoundingClientRect();
-        const center = rect.top + Math.min(rect.height * .34, 72);
-        const distance = Math.abs(center - readingLine);
-        if (distance < closestDistance) {
-          closest = item;
-          closestDistance = distance;
-        }
+        const d = Math.abs(rect.top + Math.min(rect.height * .34,72) - line);
+        if (d < distance) { distance = d; closest = item; }
       });
       items.forEach((item) => item.classList.toggle("is-mobile-reading", item === closest));
     };
-
-    const scheduleReadingState = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(updateReadingState);
-    };
-
-    window.addEventListener("scroll", scheduleReadingState, { passive: true });
-    window.addEventListener("resize", scheduleReadingState, { passive: true });
-    requestAnimationFrame(updateReadingState);
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    addEventListener("scroll", schedule, { passive:true });
+    addEventListener("resize", schedule, { passive:true });
+    requestAnimationFrame(update);
     return true;
   };
 
@@ -187,107 +132,38 @@
     const masthead = document.querySelector(".masthead");
     const inline = document.querySelector(".ashwood-jm-xaymaca-inline");
     if (!masthead || !inline || inline.dataset.mobileParity === "1") return false;
-
     inline.dataset.mobileParity = "1";
     inline.classList.add("ashwood-mobile-parity");
     inline.tabIndex = 0;
-    inline.setAttribute("role", "button");
-    inline.setAttribute("aria-label", "Reveal Xaymaca, the Jamaica name reference inside ASHWOOD");
-    inline.setAttribute("aria-expanded", "false");
-
-    let expanded = false;
-    let teased = false;
-    let teaseTimer = 0;
-    const collapse = () => {
-      expanded = false;
-      inline.classList.remove("is-mobile-expanded", "is-mobile-tease");
-      inline.classList.add("is-mobile-earned");
-      inline.setAttribute("aria-expanded", "false");
-    };
-    const expand = () => {
-      expanded = true;
-      inline.classList.remove("is-mobile-tease");
-      inline.classList.add("is-mobile-earned", "is-mobile-expanded");
-      inline.setAttribute("aria-expanded", "true");
-    };
-    const tease = () => {
-      if (teased || expanded) return;
-      teased = true;
-      inline.classList.add("is-mobile-earned", "is-mobile-tease");
-      inline.setAttribute("aria-expanded", "true");
-      teaseTimer = after(5200, collapse);
-    };
-
-    inline.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      window.clearTimeout(teaseTimer);
-      expanded ? collapse() : expand();
-    });
-    inline.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      window.clearTimeout(teaseTimer);
-      expanded ? collapse() : expand();
-    });
-
-    const dwellObserver = new IntersectionObserver((entries) => {
-      const visible = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= .55);
-      if (!visible || teased) return;
-      after(1500, () => {
-        const rect = masthead.getBoundingClientRect();
-        if (rect.bottom > 0 && rect.top < window.innerHeight) tease();
-      });
-    }, { threshold: [.55] });
-    dwellObserver.observe(masthead);
+    inline.setAttribute("role","button");
+    inline.setAttribute("aria-expanded","false");
+    let expanded=false, teased=false, timer=0;
+    const collapse=()=>{expanded=false;inline.classList.remove("is-mobile-expanded","is-mobile-tease");inline.classList.add("is-mobile-earned");inline.setAttribute("aria-expanded","false");};
+    const expand=()=>{expanded=true;inline.classList.remove("is-mobile-tease");inline.classList.add("is-mobile-earned","is-mobile-expanded");inline.setAttribute("aria-expanded","true");};
+    const toggle=(event)=>{event?.preventDefault();event?.stopPropagation();clearTimeout(timer);expanded?collapse():expand();};
+    inline.addEventListener("click",toggle);
+    inline.addEventListener("keydown",(event)=>{if(event.key!=="Enter"&&event.key!==" ")return;toggle(event);});
+    const io=new IntersectionObserver((entries)=>{if(teased||!entries.some((entry)=>entry.isIntersecting&&entry.intersectionRatio>=.55))return;after(1500,()=>{const r=masthead.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight&&!expanded){teased=true;inline.classList.add("is-mobile-earned","is-mobile-tease");inline.setAttribute("aria-expanded","true");timer=after(5200,collapse);}});},{threshold:[.55]});
+    io.observe(masthead);
     return true;
   };
 
-  const autoRevealEarned = () => {
-    const count = Number(document.documentElement.dataset.ashwoodDiscoveryCount || 0);
-    const mottoContext = document.querySelector(".ashwood-jm-motto-context");
-    const independenceContext = document.querySelector(".ashwood-jm-1962-context");
-    if (count >= 2 && mottoContext && mottoContext.dataset.mobileAutoShown !== "1") {
-      mottoContext.dataset.mobileAutoShown = "1";
-      mottoContext.classList.add("is-mobile-auto-visible");
-      after(5200, () => mottoContext.classList.remove("is-mobile-auto-visible"));
-    }
-    if (count >= 4 && independenceContext && independenceContext.dataset.mobileAutoShown !== "1") {
-      independenceContext.dataset.mobileAutoShown = "1";
-      independenceContext.classList.add("is-mobile-auto-visible");
-      after(5200, () => independenceContext.classList.remove("is-mobile-auto-visible"));
-    }
-  };
-
   const installTouchToggles = () => {
-    const motto = document.querySelector(".iridescent-word--jamaica");
-    const mottoContext = document.querySelector(".ashwood-jm-motto-context");
-    if (motto && mottoContext && motto.dataset.mobileParity !== "1") {
-      motto.dataset.mobileParity = "1";
-      motto.addEventListener("click", () => mottoContext.classList.toggle("is-mobile-auto-visible"));
-    }
-    const independence = document.querySelector(".ashwood-jm-1962");
-    const independenceContext = document.querySelector(".ashwood-jm-1962-context");
-    if (independence && independenceContext && independence.dataset.mobileParity !== "1") {
-      independence.dataset.mobileParity = "1";
-      independence.addEventListener("click", () => independenceContext.classList.toggle("is-mobile-auto-visible"));
-    }
+    [[".iridescent-word--jamaica",".ashwood-jm-motto-context"],[".ashwood-jm-1962",".ashwood-jm-1962-context"]].forEach(([triggerSelector,contextSelector])=>{
+      const trigger=document.querySelector(triggerSelector), context=document.querySelector(contextSelector);
+      if(!trigger||!context||trigger.dataset.mobileParity==="1")return;
+      trigger.dataset.mobileParity="1";
+      trigger.addEventListener("click",()=>context.classList.toggle("is-mobile-auto-visible"));
+    });
   };
 
   const install = () => {
     installCapabilityChapter();
     installXaymaca();
     installTouchToggles();
-    autoRevealEarned();
   };
 
   install();
   const observer = new MutationObserver(install);
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  const discoveryObserver = new MutationObserver(autoRevealEarned);
-  discoveryObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-ashwood-discovery-count"]
-  });
+  observer.observe(document.body,{childList:true,subtree:true});
 })();
