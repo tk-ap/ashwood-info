@@ -10,6 +10,72 @@
   const after = (ms, fn) => window.setTimeout(fn, ms);
   document.body.classList.add("ashwood-home-editorial");
 
+  const thesisStyle = document.createElement("style");
+  thesisStyle.textContent = `
+    .ashwood-home-thesis {
+      position: relative;
+      box-sizing: border-box;
+      width: 100%;
+      margin: clamp(62px,10vw,136px) 0 clamp(52px,8vw,110px);
+      padding: clamp(28px,4vw,52px) 0 clamp(34px,5vw,68px);
+      border-top: 1px solid color-mix(in srgb,var(--ashwood-field-green,#009b3a) 38%,var(--ashwood-rule));
+      border-bottom: 1px solid color-mix(in srgb,var(--ashwood-rule) 62%,transparent);
+    }
+    .ashwood-home-thesis__eyebrow {
+      display: block;
+      margin: 0 0 clamp(18px,2.6vw,30px);
+      color: var(--ashwood-field-green,#009b3a);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .ashwood-home-thesis__statement {
+      margin: 0;
+      max-width: 18ch;
+      color: var(--ashwood-ink);
+      font-family: Georgia,serif;
+      font-size: clamp(44px,6.7vw,98px);
+      font-weight: 400;
+      line-height: .94;
+      letter-spacing: -.05em;
+    }
+    .ashwood-home-thesis__statement em {
+      color: var(--ashwood-gold);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .ashwood-home-thesis__prompt {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: clamp(26px,3.4vw,42px) 0 0;
+      color: var(--ashwood-muted);
+      font-size: 8px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .ashwood-home-thesis__prompt::before {
+      content: "";
+      width: clamp(28px,5vw,72px);
+      height: 1px;
+      background: color-mix(in srgb,var(--ashwood-gold) 58%,transparent);
+    }
+    @media (max-width:760px),(pointer:coarse) {
+      .ashwood-home-thesis {
+        margin: 24px 0 56px;
+        padding: 30px 0 38px;
+      }
+      .ashwood-home-thesis__statement {
+        max-width: 12ch;
+        font-size: clamp(40px,12.2vw,58px);
+        line-height: .95;
+      }
+      .ashwood-home-thesis__prompt { margin-top: 28px; }
+    }
+  `;
+  document.head.appendChild(thesisStyle);
+
   const loadScript = (src, marker) => {
     if (document.querySelector(`script[${marker}]`)) return;
     const script = document.createElement("script");
@@ -81,6 +147,22 @@
     }
   ];
 
+  const installThesis = () => {
+    if (document.querySelector(".ashwood-home-thesis")) return;
+    const intro = document.querySelector(".intro");
+    const field = document.querySelector(".principles-field");
+    if (!intro || !field) return;
+
+    const section = document.createElement("section");
+    section.className = "ashwood-home-thesis";
+    section.setAttribute("aria-labelledby", "ashwood-home-thesis-title");
+    section.innerHTML = `
+      <span class="ashwood-home-thesis__eyebrow">THE INSTINCT</span>
+      <h2 class="ashwood-home-thesis__statement" id="ashwood-home-thesis-title">I notice what should exist next, then build the conditions for it to <em>become real.</em></h2>
+      <p class="ashwood-home-thesis__prompt">The throughline is how.</p>`;
+    field.before(section);
+  };
+
   const buildThroughline = () => {
     if (!isMobile) return;
     const field = document.querySelector(".principles-field");
@@ -94,9 +176,9 @@
     throughline.id = "throughline";
     throughline.setAttribute("aria-labelledby", "throughline-title");
     throughline.innerHTML = `
-      <p class="ashwood-throughline__eyebrow">THE THROUGHLINE · SIX PATTERNS</p>
-      <h2 class="ashwood-throughline__title" id="throughline-title">Different work.<br>Same underlying patterns.</h2>
-      <p class="ashwood-throughline__intro">Different roles. Different people. The same patterns kept showing up.</p>
+      <p class="ashwood-throughline__eyebrow">THE THROUGHLINE · HOW THE WORK MOVES</p>
+      <h2 class="ashwood-throughline__title" id="throughline-title">The forms change.<br>The method keeps returning.</h2>
+      <p class="ashwood-throughline__intro">Six recurring ways I notice, translate, build, adapt, and bring separate things into coherence.</p>
       <ol class="ashwood-throughline__list">
         ${capabilities.map((item, index) => `
           <li class="ashwood-throughline__item" data-capability="${item.id}">
@@ -245,12 +327,12 @@
     document.body.appendChild(panel);
 
     const stops = [
-      [".intro", "DOC / 01 / ORIENTATION", "One point of view. Many forms.", "ASHWOOD follows the ideas that keep becoming modeling, music, products, and systems."],
-      ["#throughline,.principles-field", "DOC / 02 / THROUGHLINE", "The medium changes. The patterns repeat.", "Signal, friction, translation, systems, adaptation, and synthesis are the connective tissue."],
-      [".home-entryway[data-kind='modeling']", "DOC / 03 / MODELING", "The image is part of the thinking.", "Modeling and photography are not decoration around the practice. They are one of its native forms."],
-      [".home-entryway[data-kind='music']", "DOC / 04 / MUSIC", "Sound is another way the point of view moves.", "Released music stays listenable inside ASHWOOD rather than becoming a dead outbound link."],
-      [".home-entryway[data-kind='builds']", "DOC / 05 / BUILDS", "Questions become systems.", "The Build Journal keeps the evidence: what was believed, what changed, what shipped, and why."],
-      [".home-now-editorial,.home-closing", "DOC / 06 / CONTINUE", "This is a living practice.", "Follow what is happening now—or choose a thread and make something together."]
+      [".intro", "DOC / 01 / ORIENTATION", "Follow the idea.", "ASHWOOD begins with curiosity: modeling, music, products, and systems are different forms the same point of view can take."],
+      [".ashwood-home-thesis", "DOC / 02 / INSTINCT", "Notice what should exist next.", "The recurring instinct is to identify the missing condition, then build what lets a different outcome become possible."],
+      ["#throughline,.principles-field", "DOC / 03 / THROUGHLINE", "The method keeps returning.", "Signal, friction, translation, systems, adaptation, and synthesis describe how the work moves."],
+      [".home-entryways", "DOC / 04 / BECOMINGS", "Then the pattern becomes something.", "Modeling, music, and builds are different manifestations—not separate identities competing for space."],
+      [".home-now-editorial", "DOC / 05 / NOW", "The practice stays live.", "The Build Journal keeps the beliefs, reversals, evidence, failures, and decisions behind what is being made now."],
+      [".home-closing", "DOC / 06 / CONTINUE", "Come make something.", "Choose a thread: collaborate, listen, follow the work, or go deeper into the practice."]
     ];
 
     let active = false;
@@ -359,6 +441,7 @@
   };
 
   const install = () => {
+    installThesis();
     refinePortals();
     simplifyNow();
     refineClosing();
@@ -375,6 +458,7 @@
   if (isMobile) {
     const observer = new MutationObserver(() => {
       cleanupMobileLegacy();
+      if (!document.querySelector(".ashwood-home-thesis")) installThesis();
       if (!document.querySelector(".ashwood-throughline-native")) buildThroughline();
       if (!document.querySelector(".ashwood-doc-editorial-launcher")) installDocEditorial();
     });
