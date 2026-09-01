@@ -101,8 +101,79 @@
     outline: 1px solid color-mix(in srgb, #009b3a 55%, transparent);
     outline-offset: 4px;
   }
+
+  /* Expanded capability maps must own their full rendered height. The theme layer
+     gives the direct entrance a fixed 100dvh height; that lets taller map content
+     paint beyond its box and collide with the links below. Use one viewport as a
+     minimum instead, then let content grow the discovery field naturally. */
+  body.ashwood-home-native.has-viewed-capability-map .principles-field,
+  body.ashwood-home-native.has-found-all-hotspots .principles-field {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  body.ashwood-home-native.is-capability-entrance.has-viewed-capability-map .ashwood-capability-map,
+  body.ashwood-home-native.has-found-all-hotspots .ashwood-capability-map {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    margin: 20px 0 18px !important;
+    box-sizing: border-box;
+    overflow: visible !important;
+  }
+
+  body.ashwood-home-native.has-viewed-capability-map .home-entryways,
+  body.ashwood-home-native.has-found-all-hotspots .home-entryways {
+    position: relative !important;
+    margin-top: clamp(28px, 7vw, 42px) !important;
+  }
+
+  /* Doctor Bird uses flight physics only with a fine pointer. On touch, keep the
+     guide visible as a small static companion while the bottom-sheet guide is open. */
+  .ashwood-doc-launcher {
+    bottom: max(14px, env(safe-area-inset-bottom)) !important;
+  }
+
+  body.ashwood-bird-guide-active .ashwood-doctor-bird-cursor {
+    display: block !important;
+    position: fixed !important;
+    left: auto !important;
+    right: max(14px, env(safe-area-inset-right)) !important;
+    top: max(72px, calc(env(safe-area-inset-top) + 52px)) !important;
+    bottom: auto !important;
+    z-index: 526 !important;
+    width: 88px !important;
+    height: auto !important;
+    aspect-ratio: 360 / 247;
+    opacity: .96 !important;
+    visibility: visible !important;
+    transform: none !important;
+    pointer-events: none !important;
+  }
+
+  body.ashwood-bird-guide-active .ashwood-doctor-bird-cursor img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
+
+  .ashwood-doctor-guide.is-visible {
+    z-index: 527 !important;
+    max-height: min(62dvh, 480px);
+    bottom: max(16px, env(safe-area-inset-bottom)) !important;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ashwood-jm-xaymaca-inline.ashwood-mobile-parity { transition: none; }
+  body.ashwood-bird-guide-active .ashwood-doctor-bird-cursor { transition: none !important; }
 }
