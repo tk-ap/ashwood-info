@@ -95,19 +95,19 @@
 
   const capabilities = [
     {
-      id: "signal",
-      name: "SIGNAL",
-      statement: "I notice what is starting to matter.",
-      useful: "Priorities are unclear and weak signals need separating from noise.",
+      id: "anticipation",
+      name: "ANTICIPATION",
+      statement: "I notice what is likely to matter next.",
+      useful: "A weak signal is becoming important before the need is obvious.",
       practice: "ailhat · Portfolio Intelligence",
       href: "https://ailhat.vercel.app/",
       external: true
     },
     {
-      id: "friction",
-      name: "FRICTION",
-      statement: "I look for where intention and reality stop matching.",
-      useful: "The same workaround keeps appearing, or the experience is fighting its intent.",
+      id: "diagnosis",
+      name: "DIAGNOSIS",
+      statement: "I find where intention and reality diverge.",
+      useful: "The stated intent and lived reality have started to pull apart.",
       practice: "ALVIRA · Context Intelligence",
       href: "https://alviratech.vercel.app/",
       external: true
@@ -115,8 +115,8 @@
     {
       id: "translation",
       name: "TRANSLATION",
-      statement: "I turn difficult ideas into forms people can use.",
-      useful: "Complex work needs to become clear enough for different people to act.",
+      statement: "I make complex ideas digestible.",
+      useful: "Complex work needs to become clear enough for different people to absorb and act on.",
       practice: "Build Journal · Field notes + public proof",
       href: "/journal/"
     },
@@ -178,7 +178,7 @@
     throughline.innerHTML = `
       <p class="ashwood-throughline__eyebrow">THE THROUGHLINE · HOW THE WORK MOVES</p>
       <h2 class="ashwood-throughline__title" id="throughline-title">The forms change.<br>The method keeps returning.</h2>
-      <p class="ashwood-throughline__intro">Six recurring ways I notice, translate, build, adapt, and bring separate things into coherence.</p>
+      <p class="ashwood-throughline__intro">Six recurring ways I anticipate, diagnose, translate, build, adapt, and bring separate things into coherence.</p>
       <ol class="ashwood-throughline__list">
         ${capabilities.map((item, index) => `
           <li class="ashwood-throughline__item" data-capability="${item.id}">
@@ -329,7 +329,7 @@
     const stops = [
       [".intro", "DOC / 01 / ORIENTATION", "Follow the idea.", "ASHWOOD begins with curiosity: modeling, music, products, and systems are different forms the same point of view can take."],
       [".ashwood-home-thesis", "DOC / 02 / INSTINCT", "Notice what should exist next.", "The recurring instinct is to identify the missing condition, then build what lets a different outcome become possible."],
-      ["#throughline,.principles-field", "DOC / 03 / THROUGHLINE", "The method keeps returning.", "Signal, friction, translation, systems, adaptation, and synthesis describe how the work moves."],
+      ["#throughline,.principles-field", "DOC / 03 / THROUGHLINE", "The method keeps returning.", "Anticipation, diagnosis, translation, systems, adaptation, and synthesis describe how the work moves."],
       [".home-entryways", "DOC / 04 / BECOMINGS", "Then the pattern becomes something.", "Modeling, music, and builds are different manifestations—not separate identities competing for space."],
       [".home-now-editorial", "DOC / 05 / NOW", "The practice stays live.", "The Build Journal keeps the beliefs, reversals, evidence, failures, and decisions behind what is being made now."],
       [".home-closing", "DOC / 06 / CONTINUE", "Come make something.", "Choose a thread: collaborate, listen, follow the work, or go deeper into the practice."]
