@@ -351,6 +351,26 @@ body.ashwood-home-native .principle-hotspot.is-revealed .principle-hotspot__usef
     color: #009b3a;
   }
 
+  /* The capability map mounts inside this grid on page load. Visibility alone does
+     not remove a relative element from layout, so keep the hidden map out of flow. */
+  body.ashwood-home-native .principles-field > .ashwood-capability-map[data-v2-mounted="discovery-field"] {
+    display: none !important;
+    grid-column: 1 / -1;
+  }
+
+  body.ashwood-home-native.has-found-all-hotspots .principles-field > .ashwood-capability-map[data-v2-mounted="discovery-field"],
+  body.ashwood-home-native.has-viewed-capability-map .principles-field > .ashwood-capability-map[data-v2-mounted="discovery-field"] {
+    display: block !important;
+  }
+
+  /* Once the map is the active mobile surface, hidden hotspot cards must stop
+     reserving grid rows ahead of it. Closing a direct map restores them. */
+  body.ashwood-home-native.has-found-all-hotspots .principles-field > .principle-hotspot,
+  body.ashwood-home-native.has-viewed-capability-map:not(.has-found-all-hotspots) .principles-field > .principle-hotspot,
+  body.ashwood-home-native.has-viewed-capability-map:not(.has-found-all-hotspots) .principles-field > .principles-field__hint {
+    display: none !important;
+  }
+
   /* Collapse the legacy reserved discovery volume once hotspots are in flow. */
   body.ashwood-home-native .principles-field + .home-entryways {
     margin-top: clamp(22px, 5vh, 36px) !important;
