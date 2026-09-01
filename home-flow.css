@@ -59,6 +59,7 @@
     margin: 0 0 0 auto !important;
     overflow: visible !important;
     transform: none !important;
+    box-sizing: border-box !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__header {
@@ -77,8 +78,9 @@
     row-gap: clamp(34px, 4.2vh, 54px) !important;
     width: 100% !important;
     height: auto !important;
-    padding: 26px 0 32px !important;
+    padding: 26px clamp(18px, 2vw, 28px) 32px 0 !important;
     overflow: visible !important;
+    box-sizing: border-box !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__list::before {
@@ -92,6 +94,7 @@
     inset: auto !important;
     width: auto !important;
     max-width: none !important;
+    min-width: 0 !important;
     min-height: 132px !important;
     margin: 0 !important;
     padding: 18px 0 18px 18px !important;
@@ -100,6 +103,17 @@
     text-align: left !important;
     justify-self: stretch !important;
     transform: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__skill,
+  body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__useful {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { grid-area: signal !important; }
@@ -266,6 +280,7 @@
 @media (min-width: 761px) and (max-width: 1180px) {
   body.ashwood-home-native .ashwood-capability-map[data-v2-mounted="discovery-field"] {
     width: 100% !important;
+    padding-right: clamp(18px, 2.6vw, 30px) !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__list {
@@ -275,11 +290,16 @@
       "systems adaptation"
       "translation translation"
       "synthesis synthesis" !important;
+    padding-right: 0 !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(3),
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
     width: min(78%, 620px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) {
+    padding-right: clamp(10px, 1.5vw, 18px) !important;
   }
 
   body.ashwood-home-native .home-entryways {
