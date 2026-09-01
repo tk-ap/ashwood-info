@@ -6,6 +6,11 @@
 
   document.body.classList.add("ashwood-home-native");
 
+  const risoCursor = document.createElement("script");
+  risoCursor.src = "/cursor-risograph.js?v=20260901-riso1";
+  risoCursor.defer = true;
+  document.head.appendChild(risoCursor);
+
   const interactionState = document.createElement("script");
   interactionState.src = "/interaction-state.js?v=20260830-grammar1";
   interactionState.defer = true;
