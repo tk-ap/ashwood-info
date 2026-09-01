@@ -18,13 +18,19 @@ For each interaction, define:
 
 ## Current homepage mappings
 
-- Capability hotspots: pointer discovery on desktop → touch-friendly hotspot/dialog surfaces on mobile.
+- Capability hotspots: pointer discovery on desktop → compact in-flow touch grid on mobile, with one capability expanding on tap.
 - Capability synthesis: spatial map on desktop → ordered vertical synthesis on mobile.
 - IN ME: click/tap native on both.
 - Becomings: hover/focus sequence on desktop → touch entrance/capability path on mobile; Doctor Bird can launch from touch.
 - XAYMACA: masthead hover/focus on desktop → masthead dwell reveal on mobile, then a persistent compact clue that can be expanded by touch.
 - Jamaican motto provenance: hover/focus after earned discovery on desktop → one-time automatic in-flow reveal when earned on mobile, then touch re-open.
 - 06 · 08 · 1962: field proximity/focus after earned discovery on desktop → one-time automatic in-flow reveal when earned on mobile, then touch re-open.
+
+## Hotspot regression contract
+
+The spatial hotspot field is an enhancement, not a dependency. On mobile it must remain in normal document flow, and the capability labels must remain discoverable and tappable without any fixed-position overlay.
+
+The hotspot layer must never overlap, obscure, or intercept the masthead, entryways, SITREP, utility navigation, audio controls, or any other core static link. Small portrait and landscape viewports must remain usable even if hotspot animation or enhanced discovery behavior is unavailable.
 
 ## Design principle
 
