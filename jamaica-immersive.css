@@ -1,0 +1,168 @@
+/* Jamaica provenance as environmental underprint, not detached fact cards. */
+
+/* XAYMACA lives beneath the ASHWOOD masthead as a persistent, quiet register. */
+body.ashwood-home-native .masthead {
+  overflow: visible;
+}
+body.ashwood-home-native .ashwood-jm-xaymaca-inline {
+  opacity: .34 !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+body.ashwood-home-native .ashwood-jm-xaymaca-inline__name,
+body.ashwood-home-native .ashwood-jm-xaymaca-inline__meaning {
+  opacity: 1;
+}
+body.ashwood-home-native .ashwood-jm-xaymaca-inline__name {
+  color: var(--ashwood-field-green, #009b3a) !important;
+}
+body.ashwood-home-native .ashwood-jm-xaymaca-inline__meaning::before {
+  color: var(--ashwood-gold, #b48732) !important;
+}
+body.ashwood-home-native .ashwood-jm-xaymaca-inline__context {
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: max-height .34s cubic-bezier(.16,.8,.24,1), margin .28s ease, opacity .28s ease, transform .28s ease;
+}
+body.ashwood-home-native .ashwood-jm-xaymaca-inline.is-visible {
+  opacity: .94 !important;
+}
+body.ashwood-home-native .ashwood-jm-xaymaca-inline.is-visible .ashwood-jm-xaymaca-inline__context {
+  max-height: 46px;
+  margin-top: 3px;
+  opacity: .72;
+  transform: translateY(0);
+}
+
+/* The national motto remains visibly underneath the ASHWOOD inversion.
+   Interaction reveals the explanation, not the existence of the provenance. */
+body.ashwood-home-native .ashwood-jm-motto-context,
+body.ashwood-home-native .ashwood-jm-motto-context.is-earned {
+  display: block !important;
+  max-width: 560px !important;
+  max-height: 24px !important;
+  margin: 6px 0 0 !important;
+  overflow: hidden !important;
+  opacity: .3 !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+body.ashwood-home-native .ashwood-jm-motto-context .ashwood-jm-context-kicker {
+  display: none !important;
+}
+body.ashwood-home-native .ashwood-jm-motto-context .ashwood-jm-context-title {
+  display: block !important;
+  margin: 0 !important;
+  color: color-mix(in srgb, var(--ashwood-field-green, #009b3a) 68%, var(--ashwood-muted)) !important;
+  font: 650 7px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace !important;
+  letter-spacing: .17em !important;
+  text-transform: uppercase;
+}
+body.ashwood-home-native .ashwood-jm-motto-context .ashwood-jm-context-title::before {
+  content: "JAMAICA / ";
+  color: var(--ashwood-gold, #b48732);
+}
+body.ashwood-home-native .ashwood-jm-motto-context .ashwood-jm-context-note {
+  display: none !important;
+}
+body.ashwood-home-native .ashwood-jm-motto-context.is-visible {
+  max-height: 84px !important;
+  margin-top: 7px !important;
+  opacity: .92 !important;
+}
+body.ashwood-home-native .ashwood-jm-motto-context.is-visible .ashwood-jm-context-title {
+  color: var(--ashwood-ink) !important;
+}
+body.ashwood-home-native .ashwood-jm-motto-context.is-visible .ashwood-jm-context-note {
+  display: block !important;
+  margin-top: 5px !important;
+  opacity: .72;
+}
+
+/* The phrase itself behaves like an overprint: ASHWOOD's inversion and the source
+   motto briefly occupy the same visual register when engaged. */
+body.ashwood-home-native .iridescent-word--jamaica {
+  transition: filter .35s ease, text-shadow .35s ease, opacity .35s ease;
+}
+body.ashwood-home-native .iridescent-word--jamaica.ashwood-jm-active {
+  filter: saturate(1.08);
+  text-shadow:
+    1px 0 0 color-mix(in srgb, var(--ashwood-gold, #b48732) 24%, transparent),
+    -1px 0 0 color-mix(in srgb, var(--ashwood-field-green, #009b3a) 28%, transparent),
+    0 0 18px color-mix(in srgb, var(--ashwood-field-green, #009b3a) 16%, transparent) !important;
+}
+
+html[data-ashwood-theme="paper-light"] body.ashwood-home-native .ashwood-jm-xaymaca-inline {
+  opacity: .42 !important;
+}
+html[data-ashwood-theme="paper-light"] body.ashwood-home-native .ashwood-jm-motto-context,
+html[data-ashwood-theme="paper-light"] body.ashwood-home-native .ashwood-jm-motto-context.is-earned {
+  opacity: .38 !important;
+}
+html[data-ashwood-theme="warm-dark"] body.ashwood-home-native .ashwood-jm-xaymaca-inline {
+  opacity: .28 !important;
+}
+html[data-ashwood-theme="phosphor-cyber"] body.ashwood-home-native .ashwood-jm-xaymaca-inline,
+html[data-ashwood-theme="phosphor-cyber"] body.ashwood-home-native .ashwood-jm-motto-context,
+html[data-ashwood-theme="phosphor-cyber"] body.ashwood-home-native .ashwood-jm-motto-context.is-earned {
+  opacity: .46 !important;
+}
+
+@media (max-width: 760px), (pointer: coarse) {
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline,
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline.ashwood-mobile-parity {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    z-index: 2 !important;
+    display: grid !important;
+    max-width: 100% !important;
+    max-height: 34px !important;
+    margin: 7px 0 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    opacity: .46 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline.is-visible,
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-expanded,
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-tease {
+    max-height: 112px !important;
+    opacity: .92 !important;
+  }
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline__context {
+    grid-column: 1 / -1 !important;
+    margin-left: 0 !important;
+  }
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline.is-visible .ashwood-jm-xaymaca-inline__context,
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-expanded .ashwood-jm-xaymaca-inline__context,
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline.ashwood-mobile-parity.is-mobile-tease .ashwood-jm-xaymaca-inline__context {
+    max-height: 56px !important;
+    margin-top: 5px !important;
+    opacity: .76 !important;
+  }
+
+  body.ashwood-home-native .ashwood-jm-motto-context,
+  body.ashwood-home-native .ashwood-jm-motto-context.is-earned {
+    max-width: 100% !important;
+    max-height: 24px !important;
+    margin-top: 7px !important;
+    opacity: .44 !important;
+  }
+  body.ashwood-home-native .ashwood-jm-motto-context.is-visible,
+  body.ashwood-home-native .ashwood-jm-motto-context.is-mobile-auto-visible {
+    max-height: 110px !important;
+    opacity: .92 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.ashwood-home-native .ashwood-jm-xaymaca-inline__context,
+  body.ashwood-home-native .iridescent-word--jamaica {
+    transition: none !important;
+  }
+}
