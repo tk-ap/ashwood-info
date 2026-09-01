@@ -1,0 +1,40 @@
+version: 0.1.0
+product_key: ashwood
+agent_os_repository: tk-ap/agent-os
+routing_source: registry/product-routing.yaml
+repository: tk-ap/tk-ap.github.io
+
+local:
+  owns:
+    - creative-portfolio-presentation
+    - founder-build-archive
+    - public-evidence-curation
+    - editorial-site-experience
+    - music-and-modeling-presentation
+  produces:
+    - public-evidence
+    - build-journal-entry
+    - portfolio-presentation
+    - verified-public-reference
+  consumes:
+    - verified-product-facts
+    - verified-outcome-evidence
+    - approved-public-assets
+  must_not_own:
+    - product-runtime-truth-for-other-products
+    - portfolio-intelligence
+    - canonical-workforce-routing
+    - generic-authorization-intelligence
+    - private-operating-machinery
+  constraints:
+    - creative-portfolio-and-build-journal-remain-distinct
+    - public-claims-must-be-supported-by-evidence
+    - photography-led-editorial-identity-and-asset-fidelity-are-acceptance-constraints
+    - visual-changes-require-mobile-and-desktop-verification
+    - merge-and-production-remain-human-gated
+
+rules:
+  canonical_product_role_from_routing_source: true
+  local_metadata_may_narrow_or_add_implementation_detail: true
+  local_metadata_must_not_redefine_canonical_role: true
+  cross_product_writes_require_explicit_task_authorization: true
