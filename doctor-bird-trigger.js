@@ -10,9 +10,8 @@
   const finePointer = window.matchMedia("(pointer: fine) and (hover: hover)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  /* Mount the bird node before home-flow.js. Its presence deliberately prevents
-     the older automatic bird observer from installing. The Doctor Bird now has
-     one clear role: an optional guide the visitor explicitly summons. */
+  /* Mount Doc before home-flow.js. His role is explicit: an optional ASHWOOD
+     field guide the visitor summons, with a few earned species-specific details. */
   if (document.querySelector(".ashwood-doctor-bird-cursor")) return;
 
   const bird = document.createElement("div");
@@ -68,6 +67,12 @@
     .ashwood-doctor-guide__eyebrow{margin:0 0 7px;color:#009b3a;font-size:7.5px;line-height:1;letter-spacing:.16em;text-transform:uppercase}
     .ashwood-doctor-guide__title{margin:0 0 7px;font-family:Georgia,serif;font-size:18px;font-weight:400;line-height:1.08;letter-spacing:-.018em}
     .ashwood-doctor-guide__copy{margin:0;color:var(--ashwood-muted);font-size:9.5px;line-height:1.52;letter-spacing:.02em}
+    .ashwood-doc-field-note{max-height:0;margin:0;padding:0;overflow:hidden;opacity:0;border-top:1px solid transparent;transition:max-height .42s cubic-bezier(.16,.8,.24,1),opacity .3s ease,margin .32s ease,padding .32s ease,border-color .32s ease}
+    .ashwood-doc-field-note.is-visible{max-height:150px;margin-top:11px;padding-top:9px;opacity:1;border-top-color:color-mix(in srgb,#009b3a 28%,var(--ashwood-rule))}
+    .ashwood-doc-field-note__kicker{display:block;margin-bottom:5px;color:#009b3a;font-size:7px;line-height:1;letter-spacing:.16em;text-transform:uppercase}
+    .ashwood-doc-field-note__fact,.ashwood-doc-field-note__aside{display:block;color:var(--ashwood-muted);font-size:8.5px;line-height:1.45}
+    .ashwood-doc-field-note__aside{margin-top:5px;font-family:Georgia,serif;font-size:10px;font-style:italic;color:color-mix(in srgb,var(--ashwood-ink) 78%,var(--ashwood-muted))}
+    .ashwood-doc-field-note__reverse{display:block;margin-top:6px;color:var(--ashwood-gold);font-size:7.5px;letter-spacing:.12em;text-transform:none}
     .ashwood-doctor-guide__controls{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 54%,transparent)}
     .ashwood-doctor-guide__count{color:var(--ashwood-muted);font-size:7px;letter-spacing:.14em;text-transform:uppercase}
     .ashwood-doctor-guide button{border:0;padding:7px 0;background:none;color:var(--ashwood-muted);font-family:inherit;font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}
@@ -75,6 +80,7 @@
     .ashwood-doctor-guide button:disabled{opacity:.22;cursor:default;font-style:normal}
     .ashwood-doctor-guide__next{color:var(--ashwood-ink)!important}
     .ashwood-doctor-guide__next:hover,.ashwood-doctor-guide__next:focus-visible{color:var(--ashwood-gold)!important}
+    .ashwood-doctor-bird-cursor.is-reversing .ashwood-doctor-bird-cursor__wing-field{filter:blur(1.25px);opacity:.62}
     body.ashwood-bird-guide-active [data-ashwood-guide-target="true"]{
       outline:1px solid color-mix(in srgb,#009b3a 32%,transparent);outline-offset:9px;
       transition:outline-color .32s ease
@@ -86,7 +92,7 @@
       .ashwood-doctor-guide__controls{grid-template-columns:auto 1fr auto auto}
     }
     @media(prefers-reduced-motion:reduce){
-      .ashwood-doctor-guide{transition:none!important}
+      .ashwood-doctor-guide,.ashwood-doc-field-note{transition:none!important}
       body.ashwood-bird-guide-active [data-ashwood-guide-target="true"]{outline-offset:5px}
     }
   `;
@@ -96,11 +102,17 @@
   panel.className = "ashwood-doctor-guide";
   panel.setAttribute("role", "dialog");
   panel.setAttribute("aria-modal", "false");
-  panel.setAttribute("aria-label", "ASHWOOD homepage guide");
+  panel.setAttribute("aria-label", "Doc, ASHWOOD homepage guide");
   panel.innerHTML = `
     <p class="ashwood-doctor-guide__eyebrow"></p>
     <h2 class="ashwood-doctor-guide__title"></h2>
     <p class="ashwood-doctor-guide__copy"></p>
+    <div class="ashwood-doc-field-note" aria-live="polite">
+      <span class="ashwood-doc-field-note__kicker">DOC / FIELD NOTE</span>
+      <span class="ashwood-doc-field-note__fact">Hummingbirds are the only birds that can truly fly backward.</span>
+      <span class="ashwood-doc-field-note__aside">Some things reveal themselves in reverse.</span>
+      <span class="ashwood-doc-field-note__reverse">Tahlia → ailhat</span>
+    </div>
     <div class="ashwood-doctor-guide__controls">
       <span class="ashwood-doctor-guide__count"></span>
       <span></span>
@@ -110,45 +122,52 @@
     </div>`;
   document.body.appendChild(panel);
 
+  const fieldNote = panel.querySelector(".ashwood-doc-field-note");
+  const backwardNoteKey = "ashwood.doc.backward-note.v1";
+  let backwardNoteSeen = false;
+  try { backwardNoteSeen = sessionStorage.getItem(backwardNoteKey) === "1"; } catch (_) {}
+  let fieldNoteTimer = 0;
+  let reverseTimer = 0;
+
   const stops = [
     {
       selectors: ["#site-title", ".intro"],
-      eyebrow: "01 / ORIENTATION",
+      eyebrow: "DOC / 01 / ORIENTATION",
       title: "I follow ideas wherever they go.",
       copy: "ASHWOOD is a living record of one point of view moving across creative work, product building, and the systems underneath both.",
       anchor: [.78, .58]
     },
     {
       selectors: [".principles-field"],
-      eyebrow: "02 / THROUGHLINE",
+      eyebrow: "DOC / 02 / THROUGHLINE",
       title: "The work has recurring patterns.",
       copy: "SIGNAL · FRICTION · TRANSLATION · SYSTEMS · ADAPTATION · SYNTHESIS are recurring ways the work tends to move. The field lets you discover them; the map makes them legible.",
       anchor: [.76, .48]
     },
     {
       selectors: [".home-entryways"],
-      eyebrow: "03 / MANIFESTATION",
+      eyebrow: "DOC / 03 / MANIFESTATION",
       title: "Different forms. Same point of view.",
       copy: "Modeling, music, and builds sit together because they are not separate identities here. They are different places the same curiosity becomes visible.",
       anchor: [.72, .42]
     },
     {
       selectors: [".home-entryways a[href='/journal/']", ".ashwood-capability-evidence", ".home-entryways"],
-      eyebrow: "04 / BUILD JOURNAL",
+      eyebrow: "DOC / 04 / BUILD JOURNAL",
       title: "The reasoning stays with the work.",
       copy: "The Build Journal records more than what shipped: what I believed, what changed, what failed, the evidence, and the decision that followed.",
       anchor: [.62, .58]
     },
     {
       selectors: [".home-now", "#now"],
-      eyebrow: "05 / SITREP",
+      eyebrow: "DOC / 05 / SITREP",
       title: "This is the live layer.",
       copy: "WHEN · WHERE · WHAT IT IS · WHAT IT IS DOING · WHAT I’M DOING ABOUT IT. SITREP connects the archive to the work happening now.",
       anchor: [.76, .36]
     },
     {
       selectors: [".future-nav", ".home-utility", ".home-entryways"],
-      eyebrow: "06 / CONTINUE",
+      eyebrow: "DOC / 06 / CONTINUE",
       title: "Choose a thread and follow it.",
       copy: "Explore the creative work, trace the builds, listen, or connect. The homepage is the map; the rest of ASHWOOD is the evidence.",
       anchor: [.72, .5]
@@ -203,7 +222,7 @@
   const hideBird = () => {
     visible = false;
     exiting = false;
-    bird.classList.remove("is-visible", "is-guide", "is-resolving");
+    bird.classList.remove("is-visible", "is-guide", "is-resolving", "is-reversing");
   };
 
   const flyOut = () => {
@@ -253,6 +272,9 @@
     const hoverY = hovering ? Math.sin(now / 185) * .9 : 0;
     const hoverX = hovering ? Math.cos(now / 260) * .4 : 0;
 
+    /* Doc always faces bill-forward. When the destination is behind him, the
+       negative velocity therefore reads as genuine backward flight rather than
+       a sprite flip or turn-around animation. */
     bird.style.transform = `translate3d(${x - 63 + hoverX}px, ${y - 18 + hoverY}px, 0) rotate(${bank}deg)`;
     bird.style.setProperty("--ashwood-bird-tail-x", `${tailX}px`);
     bird.style.setProperty("--ashwood-bird-tail-y", `${tailY}px`);
@@ -265,6 +287,25 @@
   const clearTarget = () => {
     currentTarget?.removeAttribute("data-ashwood-guide-target");
     currentTarget = null;
+  };
+
+  const showBackwardFieldNote = () => {
+    if (backwardNoteSeen || !fieldNote) return;
+    backwardNoteSeen = true;
+    try { sessionStorage.setItem(backwardNoteKey, "1"); } catch (_) {}
+    window.clearTimeout(fieldNoteTimer);
+    fieldNote.classList.add("is-visible");
+    if (currentTarget) positionPanel(pointFor(currentTarget, stops[index].anchor));
+    fieldNoteTimer = window.setTimeout(() => {
+      fieldNote.classList.remove("is-visible");
+      if (currentTarget) positionPanel(pointFor(currentTarget, stops[index].anchor));
+    }, 6800);
+  };
+
+  const markReverseFlight = () => {
+    window.clearTimeout(reverseTimer);
+    bird.classList.add("is-reversing");
+    reverseTimer = window.setTimeout(() => bird.classList.remove("is-reversing"), 1050);
   };
 
   const renderStop = () => {
@@ -300,7 +341,9 @@
     active = false;
     document.body.classList.remove("ashwood-bird-guide-active");
     window.clearTimeout(settleTimer);
+    window.clearTimeout(fieldNoteTimer);
     panel.classList.remove("is-visible");
+    fieldNote?.classList.remove("is-visible");
     clearTarget();
     flyOut();
   };
@@ -317,11 +360,15 @@
     renderStop();
   };
 
-  panel.querySelector(".ashwood-doctor-guide__back").addEventListener("click", () => {
+  const goBack = () => {
     if (!active || index <= 0) return;
+    markReverseFlight();
     index -= 1;
     renderStop();
-  });
+    if (!backwardNoteSeen) window.setTimeout(showBackwardFieldNote, reduceMotion.matches ? 60 : 540);
+  };
+
+  panel.querySelector(".ashwood-doctor-guide__back").addEventListener("click", goBack);
 
   panel.querySelector(".ashwood-doctor-guide__next").addEventListener("click", () => {
     if (!active) return;
@@ -347,10 +394,7 @@
       index += 1;
       renderStop();
     }
-    if (event.key === "ArrowLeft" && index > 0) {
-      index -= 1;
-      renderStop();
-    }
+    if (event.key === "ArrowLeft" && index > 0) goBack();
   });
 
   window.addEventListener("resize", () => {
