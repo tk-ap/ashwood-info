@@ -1,162 +1,210 @@
-/* ASHWOOD capability field
-   One surface, two states:
-   1) scattered hotspot evidence
-   2) the same field resolving into an operating pattern
-
-   SIGNAL → FRICTION → SYSTEMS → RESILIENCE is the core loop.
-   TRANSLATION spans the loop. RANGE frames the contexts around it. */
+/* ASHWOOD v2 capability synthesis
+   Discovery begins as six latent hotspots. Once earned/opened, the same field
+   resolves into a compact editorial throughline — not a dashboard or node map. */
 
 @media (min-width: 761px) {
-  body.ashwood-home-native .ashwood-capability-map {
-    position: fixed !important;
-    left: auto !important;
-    right: clamp(48px, 5.8vw, 96px) !important;
-    top: clamp(150px, 19vh, 205px) !important;
-    z-index: 76;
-    width: min(53vw, 760px) !important;
-    max-height: min(66vh, 610px) !important;
+  body.ashwood-home-native .principles-field {
+    position: relative !important;
+    isolation: isolate;
+  }
+
+  body.ashwood-home-native.has-found-all-hotspots .principles-field,
+  body.ashwood-home-native.has-viewed-capability-map .principles-field {
+    min-height: clamp(500px, 56vh, 620px) !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map[data-v2-mounted="discovery-field"] {
+    position: absolute !important;
+    inset: 0 0 auto auto !important;
+    z-index: 40 !important;
+    width: min(76%, 980px) !important;
+    max-height: none !important;
+    margin: 0 !important;
     padding: 0 !important;
     overflow: visible !important;
     background: transparent !important;
     box-shadow: none !important;
+    transform: none !important;
   }
 
-  /* The synthesis belongs to the void, not inside a card. */
+  body.ashwood-home-native.has-found-all-hotspots .principles-field::after,
+  body.ashwood-home-native.has-viewed-capability-map .principles-field::after {
+    content: "THE THREAD / RECURRING ACROSS THE WORK";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: min(18%, 210px);
+    color: color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 72%, var(--ashwood-muted));
+    font: 600 8px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    opacity: .66;
+    pointer-events: none;
+  }
+
   body.ashwood-home-native .ashwood-capability-map__header {
-    max-width: 680px;
-    margin: 0 0 18px auto !important;
-    padding: 0 0 12px !important;
-    border-bottom: 1px solid color-mix(in srgb, var(--ashwood-field-green) 22%, var(--ashwood-rule)) !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 6px 24px !important;
+    align-items: start !important;
+    margin: 0 0 22px !important;
+    padding: 0 0 16px !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 30%, var(--ashwood-rule)) !important;
     background: transparent !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__eyebrow {
-    color: var(--ashwood-field-green) !important;
-    font-size: 9px !important;
-    letter-spacing: .17em !important;
+    grid-column: 1;
+    margin: 0 !important;
+    color: var(--ashwood-v2-field, #536b3d) !important;
+    font-size: 8px !important;
+    letter-spacing: .18em !important;
+    text-transform: uppercase;
+  }
+
+  body.ashwood-home-native.has-found-all-hotspots .ashwood-capability-map__eyebrow {
+    color: var(--ashwood-gold) !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__title {
-    max-width: 19ch;
-    margin-top: 5px !important;
-    font-size: clamp(27px, 2.8vw, 42px) !important;
-    line-height: .98 !important;
-    letter-spacing: -.035em !important;
+    grid-column: 1;
+    max-width: 18ch !important;
+    margin: 0 !important;
+    font-family: Georgia, serif !important;
+    font-size: clamp(34px, 3.4vw, 52px) !important;
+    font-weight: 400 !important;
+    line-height: .96 !important;
+    letter-spacing: -.045em !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__authorship-key {
-    max-width: 58ch !important;
-    margin-top: 7px !important;
-    font-size: 10px !important;
-    line-height: 1.55 !important;
+    grid-column: 1;
+    max-width: 64ch !important;
+    margin: 4px 0 0 !important;
     color: color-mix(in srgb, var(--ashwood-ink) 72%, var(--ashwood-muted)) !important;
+    font-size: 10px !important;
+    line-height: 1.5 !important;
+    letter-spacing: .01em !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__reset {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: start;
+    min-height: 40px;
+    border: 0;
+    padding: 0 0 8px !important;
+    background: transparent;
+    color: color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 72%, var(--ashwood-muted)) !important;
     font-size: 8px !important;
-    color: color-mix(in srgb, var(--ashwood-field-green) 70%, var(--ashwood-muted)) !important;
+    letter-spacing: .14em !important;
+    text-transform: uppercase;
+    cursor: pointer;
   }
 
+  body.ashwood-home-native .ashwood-capability-map__reset:hover,
+  body.ashwood-home-native .ashwood-capability-map__reset:focus-visible {
+    color: var(--ashwood-gold) !important;
+    font-style: italic;
+  }
+
+  /* The core loop reads left-to-right as an editorial sequence. */
   body.ashwood-home-native .ashwood-capability-map__list {
     position: relative !important;
-    display: block !important;
-    width: 100%;
-    height: clamp(330px, 39vh, 420px);
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-areas:
+      "range range range range"
+      "signal friction systems resilience"
+      ". translation translation ." !important;
+    column-gap: clamp(20px, 2.4vw, 34px) !important;
+    row-gap: 24px !important;
+    width: 100% !important;
+    height: auto !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 22px 0 26px !important;
     border: 0 !important;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 18%, transparent) !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 14%, transparent) !important;
     overflow: visible !important;
     background: transparent !important;
-    isolation: isolate;
   }
 
   body.ashwood-home-native .ashwood-capability-map__list::before {
-    content: "HOW I TEND TO MOVE THROUGH COMPLEX WORK";
+    content: "NOTICE  →  DIAGNOSE  →  STRUCTURE  →  HOLD";
     position: absolute;
-    inset: 0;
-    z-index: -2;
-    pointer-events: none;
-    padding-top: 3px;
-    border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 22%, var(--ashwood-rule));
-    color: color-mix(in srgb, var(--ashwood-field-green) 74%, var(--ashwood-muted));
-    font: 600 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
-    letter-spacing: .17em;
-    background:
-      linear-gradient(to right,
-        transparent 8%,
-        color-mix(in srgb, var(--ashwood-field-green) 40%, transparent) 8.1% 91%,
-        transparent 91.1%) 0 47% / 100% 1px no-repeat,
-      linear-gradient(to right,
-        transparent 18%,
-        color-mix(in srgb, var(--ashwood-field-green) 20%, transparent) 18.1% 82%,
-        transparent 82.1%) 0 76% / 100% 1px no-repeat;
-  }
-
-  /* RANGE is contextual, not a fifth step. */
-  body.ashwood-home-native .ashwood-capability-map__list::after {
-    content: "RANGE  /  ACROSS DISCIPLINES · ROLES · CONTEXTS";
-    position: absolute;
-    left: 50%;
-    top: 13%;
-    width: min(82%, 620px);
-    padding: 9px 18px;
-    transform: translateX(-50%);
-    border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 25%, transparent);
-    border-left: 1px solid color-mix(in srgb, var(--ashwood-field-green) 14%, transparent);
-    border-right: 1px solid color-mix(in srgb, var(--ashwood-field-green) 14%, transparent);
-    color: color-mix(in srgb, var(--ashwood-field-green) 80%, var(--ashwood-muted));
-    text-align: center;
-    font: 600 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    left: 0;
+    top: 87px;
+    width: 100%;
+    color: color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 68%, var(--ashwood-muted));
+    font: 600 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
     letter-spacing: .14em;
+    text-align: center;
     pointer-events: none;
-    opacity: .8;
+    opacity: .55;
   }
 
   body.ashwood-home-native .ashwood-capability-map__item {
-    position: absolute !important;
-    z-index: 2;
+    position: relative !important;
+    inset: auto !important;
     display: block !important;
-    width: clamp(138px, 13vw, 186px);
+    width: auto !important;
+    min-width: 0 !important;
     min-height: 0 !important;
-    padding: 0 !important;
+    margin: 0 !important;
+    padding: 18px 0 0 16px !important;
     border: 0 !important;
+    border-left: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 26%, transparent) !important;
     background: transparent !important;
-    transform: translate(-50%, -50%);
+    transform: none !important;
     opacity: .94;
-    transition: opacity .28s ease, transform .32s cubic-bezier(.16,.8,.24,1), filter .28s ease;
-    animation: ashwood-field-resolve .72s cubic-bezier(.16,.8,.24,1) both;
   }
 
-  /* DOM order: signal, friction, translation, systems, resilience, range. */
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { left: 10%; top: 47%; animation-delay: 1.02s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { left: 36%; top: 47%; animation-delay: 1.12s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { left: 64%; top: 47%; animation-delay: 1.22s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { left: 90%; top: 47%; animation-delay: 1.32s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { left: 50%; top: 76%; width: clamp(190px, 20vw, 270px); animation-delay: 1.44s; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { left: 50%; top: 18%; width: clamp(180px, 19vw, 260px); animation-delay: 1.56s; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { grid-area: signal; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { grid-area: friction; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { grid-area: translation; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { grid-area: systems; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { grid-area: resilience; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
+    grid-area: range;
+    width: min(58%, 540px) !important;
+    justify-self: center;
+    padding: 0 18px 16px !important;
+    border-left: 0 !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 22%, transparent) !important;
+    text-align: center;
+  }
 
   body.ashwood-home-native .ashwood-capability-map__item::before {
     content: "";
     position: absolute;
-    left: -15px;
-    top: .55em;
+    left: -4px;
+    top: 23px;
     width: 7px;
     height: 7px;
-    border: 1px solid var(--ashwood-field-green);
+    border: 1px solid var(--ashwood-v2-field, #536b3d);
     border-radius: 50%;
     background: var(--ashwood-bg, #11110f);
-    box-shadow: 0 0 0 5px rgba(0,155,58,.05), 0 0 16px rgba(0,155,58,.16);
+    box-shadow: 0 0 0 5px rgba(83,107,61,.05), 0 0 13px rgba(83,107,61,.12);
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6)::before {
+    display: none;
   }
 
   body.ashwood-home-native .ashwood-capability-map__skill {
     display: block !important;
     margin: 0 !important;
-    color: var(--ashwood-field-green) !important;
-    font-size: clamp(11px, .92vw, 13px) !important;
+    color: var(--ashwood-v2-field, #536b3d) !important;
+    font-size: clamp(10px, .8vw, 12px) !important;
     font-weight: 650 !important;
-    letter-spacing: .13em !important;
+    letter-spacing: .12em !important;
     line-height: 1.25 !important;
     white-space: nowrap;
+  }
+
+  body.ashwood-home-native.has-found-all-hotspots .ashwood-capability-map__skill {
+    color: var(--ashwood-gold) !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) .ashwood-capability-map__skill::after { content: " / notice"; }
@@ -164,18 +212,31 @@
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) .ashwood-capability-map__skill::after { content: " / structure"; }
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) .ashwood-capability-map__skill::after { content: " / hold"; }
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) .ashwood-capability-map__skill::after { content: " / make it legible"; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) .ashwood-capability-map__skill::after { content: " / carry it across contexts"; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) .ashwood-capability-map__skill::after { content: " / across contexts"; }
 
   body.ashwood-home-native .ashwood-capability-map__skill::after {
-    color: color-mix(in srgb, var(--ashwood-ink) 68%, var(--ashwood-muted));
-    font-size: 9px;
+    color: color-mix(in srgb, var(--ashwood-ink) 66%, var(--ashwood-muted));
+    font-size: 8px;
     font-weight: 500;
-    letter-spacing: .04em;
+    letter-spacing: .035em;
     text-transform: lowercase;
   }
 
-  /* Evidence stays quiet until a capability is inspected. */
-  body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__description {
+    display: block !important;
+    max-width: 30ch;
+    margin: 7px 0 0 !important;
+    color: color-mix(in srgb, var(--ashwood-ink) 76%, var(--ashwood-muted)) !important;
+    font-size: 9px !important;
+    line-height: 1.46 !important;
+    opacity: .72 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) .ashwood-capability-map__description {
+    margin-inline: auto !important;
+  }
+
   body.ashwood-home-native .ashwood-capability-map__authorship,
   body.ashwood-home-native .ashwood-capability-map__practice,
   body.ashwood-home-native .ashwood-capability-map__useful {
@@ -185,147 +246,250 @@
     padding: 0 !important;
     overflow: hidden;
     opacity: 0 !important;
-    transform: translateY(5px);
+    transform: translateY(4px);
     pointer-events: none;
-    transition: max-height .35s ease, margin .25s ease, padding .25s ease, opacity .24s ease, transform .28s ease;
+    transition: max-height .3s ease, margin .2s ease, opacity .2s ease, transform .24s ease !important;
   }
 
-  body.ashwood-home-native .ashwood-capability-map__item:hover,
-  body.ashwood-home-native .ashwood-capability-map__item:focus-within {
-    z-index: 9;
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.025);
-  }
-
-  body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__description,
   body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__authorship,
   body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__practice,
   body.ashwood-home-native .ashwood-capability-map__item:hover .ashwood-capability-map__useful,
-  body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__description,
   body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__authorship,
   body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__practice,
   body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__useful {
-    max-height: 140px;
-    margin-top: 7px !important;
-    padding: 7px 9px !important;
+    max-height: 120px;
+    margin-top: 6px !important;
     opacity: 1 !important;
     transform: translateY(0);
     pointer-events: auto;
-    background: color-mix(in srgb, var(--ashwood-bg, #11110f) 94%, var(--ashwood-field-green) 6%);
-  }
-
-  body.ashwood-home-native .ashwood-capability-map__description,
-  body.ashwood-home-native .ashwood-capability-map__useful {
-    color: var(--ashwood-ink) !important;
-    font-size: 10px !important;
-    line-height: 1.5 !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__authorship {
     color: var(--ashwood-muted) !important;
-    font-size: 8px !important;
+    font-size: 7px !important;
     letter-spacing: .11em !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__practice {
     width: fit-content !important;
-    color: var(--ashwood-field-green) !important;
-    font-size: 10px !important;
+    color: var(--ashwood-v2-field, #536b3d) !important;
+    font-size: 9px !important;
     line-height: 1.35 !important;
+    text-decoration: none;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) .ashwood-capability-map__practice,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) .ashwood-capability-map__practice {
+    margin-inline: auto !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__footer {
-    max-width: 680px;
-    margin: 6px 0 0 auto !important;
-    padding-top: 10px !important;
-    border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 18%, var(--ashwood-rule)) !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, .8fr) minmax(280px, 1fr) !important;
+    gap: 28px !important;
+    align-items: start !important;
+    margin: 18px 0 0 !important;
+    padding: 14px 0 0 !important;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 18%, var(--ashwood-rule)) !important;
   }
 
-  /* Direct entrance and earned resolution are the same transformation. */
+  body.ashwood-home-native .ashwood-capability-map__closing {
+    max-width: 36ch;
+    margin: 0 !important;
+    color: var(--ashwood-muted) !important;
+    font-family: Georgia, serif;
+    font-size: 10px !important;
+    line-height: 1.45 !important;
+    font-style: italic;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__link {
+    min-height: 36px;
+    color: var(--ashwood-v2-field, #536b3d) !important;
+    font-size: 8px !important;
+    letter-spacing: .13em !important;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__provenance {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0 !important;
+    padding: 0 0 0 24px !important;
+    border-top: 0 !important;
+    border-left: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 18%, var(--ashwood-rule));
+  }
+
   body.has-viewed-capability-map:not(.has-found-all-hotspots) .principle-hotspot,
   body.has-viewed-capability-map:not(.has-found-all-hotspots) .principles-field__hint {
     opacity: 0 !important;
     pointer-events: none !important;
     filter: blur(3px) !important;
-    transition: opacity .45s ease, filter .45s ease !important;
   }
 
-  @keyframes ashwood-field-resolve {
-    0% { opacity: 0; filter: blur(4px); transform: translate(-50%, -50%) translateY(8px); }
-    100% { opacity: .94; filter: blur(0); transform: translate(-50%, -50%) translateY(0); }
+  body.has-viewed-capability-map .ashwood-curiosity-progress,
+  body.has-found-all-hotspots .ashwood-curiosity-progress,
+  body.has-viewed-capability-map .ashwood-capability-nudge,
+  body.has-found-all-hotspots .ashwood-capability-nudge {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.ashwood-home-native .home-now {
+    left: auto !important;
+    right: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    transform: none !important;
   }
 }
 
-/* On mobile the same logic unfolds vertically; the hero remains the entrance. */
 @media (max-width: 760px) {
-  body.ashwood-home-native .ashwood-capability-map {
+  body.ashwood-home-native .ashwood-capability-map[data-v2-mounted="discovery-field"] {
     position: relative !important;
     inset: auto !important;
     width: 100% !important;
     max-height: none !important;
-    margin: 24px 0 20px !important;
-    padding-top: 14px !important;
+    margin: 24px 0 18px !important;
+    padding: 14px 0 0 !important;
     overflow: visible !important;
     background: transparent !important;
+    transform: none !important;
+  }
+
+  body.ashwood-home-native.has-found-all-hotspots .principles-field,
+  body.ashwood-home-native.has-viewed-capability-map .principles-field {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__header {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+    margin-bottom: 14px !important;
+    padding-bottom: 14px !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__title {
-    max-width: 16ch;
-    font-size: clamp(28px, 9vw, 38px) !important;
+    max-width: 16ch !important;
+    font-size: clamp(30px, 9vw, 40px) !important;
     line-height: .98 !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__authorship-key {
+    max-width: 42ch !important;
     font-size: 11px !important;
     line-height: 1.55 !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__reset {
+    grid-row: auto !important;
+    min-height: 44px;
+    justify-self: start;
   }
 
   body.ashwood-home-native .ashwood-capability-map__list {
     display: flex !important;
     flex-direction: column;
+    height: auto !important;
     gap: 0 !important;
-    margin-top: 16px !important;
+    margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
     background: transparent !important;
   }
 
-  body.ashwood-home-native .ashwood-capability-map__item {
+  body.ashwood-home-native .ashwood-capability-map__item,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
     display: block !important;
-    min-height: 108px !important;
-    padding: 18px 12px 18px 25px !important;
+    min-height: 0 !important;
+    padding: 18px 0 18px 24px !important;
     border: 0 !important;
-    border-left: 1px solid color-mix(in srgb, var(--ashwood-field-green) 30%, transparent) !important;
-    background: transparent !important;
+    border-left: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 28%, transparent) !important;
+    border-bottom: 0 !important;
+    text-align: left !important;
+    transform: none !important;
   }
 
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { order: 0; margin-bottom: 8px; border-left-color: color-mix(in srgb, var(--ashwood-field-green) 14%, transparent) !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6) { order: 0; }
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(1) { order: 1; }
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(2) { order: 2; }
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(4) { order: 3; }
   body.ashwood-home-native .ashwood-capability-map__item:nth-child(5) { order: 4; }
-  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { order: 5; margin-top: 8px; border-top: 1px solid color-mix(in srgb, var(--ashwood-field-green) 18%, transparent) !important; }
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(3) { order: 5; }
+
+  body.ashwood-home-native .ashwood-capability-map__item::before,
+  body.ashwood-home-native .ashwood-capability-map__item:nth-child(6)::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -4px;
+    top: 24px;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--ashwood-v2-field, #536b3d);
+    border-radius: 50%;
+    background: var(--ashwood-bg, #11110f);
+  }
 
   body.ashwood-home-native .ashwood-capability-map__skill {
-    color: var(--ashwood-field-green) !important;
     font-size: 12px !important;
-    line-height: 1.3 !important;
     letter-spacing: .12em !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__description,
+  body.ashwood-home-native .ashwood-capability-map__useful,
+  body.ashwood-home-native .ashwood-capability-map__authorship,
+  body.ashwood-home-native .ashwood-capability-map__practice {
+    display: block !important;
+    max-height: none !important;
+    margin-top: 7px !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__description,
   body.ashwood-home-native .ashwood-capability-map__useful {
-    margin-top: 8px !important;
+    max-width: 40ch;
+    margin-inline: 0 !important;
     font-size: 11px !important;
     line-height: 1.55 !important;
   }
 
   body.ashwood-home-native .ashwood-capability-map__practice {
     min-height: 42px;
+    display: inline-flex !important;
+    align-items: center;
+    margin-inline: 0 !important;
     font-size: 11px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__footer {
+    display: block !important;
+    margin-top: 12px !important;
+    padding-top: 14px !important;
+  }
+
+  body.ashwood-home-native .ashwood-capability-map__provenance {
+    margin-top: 14px !important;
+    padding: 14px 0 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid color-mix(in srgb, var(--ashwood-v2-field, #536b3d) 18%, var(--ashwood-rule)) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.ashwood-home-native .ashwood-capability-map__item { animation: none !important; transition: none !important; }
+  body.ashwood-home-native .ashwood-capability-map,
+  body.ashwood-home-native .ashwood-capability-map__item {
+    animation: none !important;
+    transition: none !important;
+  }
 }

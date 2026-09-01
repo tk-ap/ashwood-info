@@ -6,10 +6,10 @@
   const style = document.createElement("style");
   style.textContent = `
     body.has-viewed-capability-map:not(.has-found-all-hotspots) .ashwood-capability-map{
-      opacity:1;visibility:visible;pointer-events:auto;filter:blur(0);transform:translateY(0) scale(1);transition-delay:.08s
+      opacity:1;visibility:visible;pointer-events:auto;filter:blur(0);transform:none;transition-delay:.08s
     }
     .ashwood-capability-evidence{
-      position:relative;z-index:181;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;width:min(62%,820px);margin:4px 0 10px;
+      position:relative;z-index:61;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;width:min(62%,820px);margin:4px 0 10px;
       color:var(--ashwood-muted);font-size:8px;line-height:1.45;letter-spacing:.055em
     }
     .ashwood-capability-evidence a{
@@ -23,7 +23,7 @@
     }
     .ashwood-capability-nudge.is-visible{opacity:.7;transform:translateY(0)}
     .ashwood-capability-map__useful{
-      grid-column:2;margin:2px 0 3px;color:var(--ashwood-muted);font-size:8px;line-height:1.38;letter-spacing:.025em
+      margin:5px 0 0;color:var(--ashwood-muted);font-size:9px;line-height:1.45;letter-spacing:.025em
     }
     .ashwood-capability-map__useful strong{
       display:inline;margin-right:5px;color:var(--ashwood-gold);font-size:7px;font-weight:600;letter-spacing:.13em;text-transform:uppercase
@@ -32,8 +32,17 @@
     .ashwood-capability-map__practice[data-internal="true"]::after{color:#009b3a}
     .ashwood-capability-map__practice[data-internal="true"]:hover,
     .ashwood-capability-map__practice[data-internal="true"]:focus-visible{color:var(--ashwood-gold)}
-    .ashwood-capability-map__practice[data-internal="true"]:hover::after,
-    .ashwood-capability-map__practice[data-internal="true"]:focus-visible::after{color:var(--ashwood-gold)}
+    .ashwood-capability-map__provenance{
+      width:100%;margin:10px 0 0;padding-top:11px;border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 54%,transparent);
+      color:var(--ashwood-muted);font-size:9px;line-height:1.5;letter-spacing:.025em
+    }
+    .ashwood-capability-map__provenance strong{
+      display:block;margin-bottom:5px;color:var(--ashwood-gold);font-size:7px;letter-spacing:.15em;text-transform:uppercase
+    }
+    .ashwood-capability-map__provenance a{
+      display:inline-flex;align-items:center;min-height:36px;margin-top:3px;color:var(--ashwood-ink);font-size:8px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none
+    }
+    .ashwood-capability-map__provenance a:hover,.ashwood-capability-map__provenance a:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .principle-hotspot__useful-for{
       display:block;max-width:290px;margin-top:8px;color:var(--ashwood-muted);font-size:8px;line-height:1.35;
       letter-spacing:.065em;opacity:0;transform:translateY(7px);filter:blur(2px);pointer-events:none;
@@ -51,9 +60,8 @@
       .ashwood-capability-evidence{width:100%;margin:8px 0 16px}
       .ashwood-capability-evidence a{min-height:44px;display:inline-flex;align-items:center}
       .ashwood-capability-nudge{position:absolute;right:18px;top:auto;margin-top:12px;max-width:130px}
-      .ashwood-capability-map__useful{grid-column:2}
+      .ashwood-capability-map__provenance a{min-height:44px}
       .principle-hotspot__useful-for{max-width:220px;font-size:8px}
-      body.has-viewed-capability-map:not(.has-found-all-hotspots) .ashwood-capability-map{margin-top:26px}
     }
     @media(prefers-reduced-motion:reduce){
       .ashwood-capability-nudge,.principle-hotspot__useful-for{transition:none}
@@ -64,9 +72,17 @@
   const map = () => document.querySelector(".ashwood-capability-map");
   const completedDiscovery = () => document.body.classList.contains("has-found-all-hotspots");
 
-  // Internal ids remain stable so prior discovery state and hotspot positioning do not break.
-  // Public language is the synthesis layer: recurring patterns across the work, roles,
-  // and collaboration, expressed without turning the map into a testimonial surface.
+  const mountMapInDiscoveryField = () => {
+    const field = document.querySelector(".principles-field");
+    const capabilityMap = map();
+    if (!field || !capabilityMap) return false;
+    if (capabilityMap.parentElement !== field) field.append(capabilityMap);
+    capabilityMap.dataset.v2Mounted = "discovery-field";
+    return true;
+  };
+
+  // Keep internal ids stable so prior discovery state and layout coordinates survive.
+  // Public labels express the synthesis without turning the map into a testimonial surface.
   const capabilitySynthesis = {
     signal: {
       label: "SIGNAL",
@@ -106,6 +122,34 @@
     }
   };
 
+  const practiceOverrides = {
+    friction: {
+      label: "ALVIRA · Context Intelligence",
+      href: "https://alviratech.vercel.app/",
+      external: true
+    },
+    translation: {
+      label: "BUILD JOURNAL · Field Notes + public proof",
+      href: "/journal/",
+      external: false
+    },
+    systems: {
+      label: "Builds · Governed execution systems",
+      href: "/journal/",
+      external: false
+    },
+    resilience: {
+      label: "LEDGATo · Operational reality",
+      href: "https://ledgato.vercel.app/",
+      external: true
+    },
+    range: {
+      label: "ASHWOOD · Modeling + Music + Builds",
+      href: "/about/",
+      external: false
+    }
+  };
+
   const refreshProvenanceLanguage = () => {
     const evidence = document.querySelector(".ashwood-capability-evidence span");
     if (evidence) evidence.textContent = "Patterns observed across projects, roles, and collaboration.";
@@ -120,11 +164,8 @@
     const title = capabilityMap.querySelector(".ashwood-capability-map__title");
     if (title) title.textContent = "Patterns across the work.";
 
-    const provenance = capabilityMap.querySelector(".ashwood-capability-map__authorship-key");
-    if (provenance) provenance.textContent = "Recurring themes across projects, roles, and collaboration. The work below is where they become visible.";
-
-    const reset = capabilityMap.querySelector(".ashwood-capability-map__reset");
-    if (reset && completedDiscovery()) reset.setAttribute("aria-label", "Reset the capability map and rediscover the six signals");
+    const sourceLine = capabilityMap.querySelector(".ashwood-capability-map__authorship-key");
+    if (sourceLine) sourceLine.textContent = "Recurring themes across projects, roles, and collaboration. The work below is where they become visible.";
   };
 
   const refreshHotspotLanguage = () => {
@@ -149,7 +190,8 @@
     if (!capabilityMap) return;
     refreshProvenanceLanguage();
     capabilityMap.querySelectorAll("[data-capability]").forEach((row) => {
-      const synthesis = capabilitySynthesis[row.dataset.capability];
+      const id = row.dataset.capability;
+      const synthesis = capabilitySynthesis[id];
       if (!synthesis) return;
 
       const skill = row.querySelector(".ashwood-capability-map__skill");
@@ -165,11 +207,49 @@
         row.querySelector(".ashwood-capability-map__authorship")?.before(useful);
       }
       useful.innerHTML = `<strong>Useful when →</strong>${synthesis.useful}`;
+
+      const override = practiceOverrides[id];
+      if (!override) return;
+      const practice = row.querySelector(".ashwood-capability-map__practice");
+      if (!practice) return;
+      practice.textContent = override.label;
+      practice.href = override.href;
+      practice.dataset.internal = String(!override.external);
+      if (override.external) {
+        practice.target = "_blank";
+        practice.rel = "noreferrer";
+      } else {
+        practice.removeAttribute("target");
+        practice.removeAttribute("rel");
+      }
     });
   };
 
-  // Essential value should be discoverable before click. Proximity/focus gets a concise
-  // application cue; click/tap still earns the richer first-person "Useful when" sentence.
+  const installProvenanceBridge = () => {
+    const capabilityMap = map();
+    const footer = capabilityMap?.querySelector(".ashwood-capability-map__footer");
+    if (!footer) return;
+    let provenance = footer.querySelector(".ashwood-capability-map__provenance");
+    if (!provenance) {
+      provenance = document.createElement("div");
+      provenance.className = "ashwood-capability-map__provenance";
+      footer.append(provenance);
+    }
+    provenance.innerHTML = `
+      <strong>FOLLOW THE THREAD</strong>
+      See where these patterns become visible across builds, decisions, and field notes.
+      <br /><a href="/journal/">Trace the work →</a>`;
+  };
+
+  const installCurrentLanguage = () => {
+    const label = document.querySelector(".home-now__label");
+    if (!label) return;
+    const original = label.textContent.trim();
+    if (/^CURRENT\s*\/\s*SITREP/i.test(original)) return;
+    const datePart = original.includes("/") ? original.split("/").slice(1).join("/").trim() : original.replace(/^NOW\s*/i, "").trim();
+    label.textContent = datePart ? `CURRENT / SITREP · ${datePart}` : "CURRENT / SITREP";
+  };
+
   const installHotspotApplicationCues = () => {
     document.querySelectorAll(".principle-hotspot").forEach((hotspot) => {
       if (hotspot.querySelector(".principle-hotspot__useful-for")) return;
@@ -186,17 +266,23 @@
     });
   };
 
-  refreshHotspotLanguage();
-  refreshProvenanceLanguage();
-  applyCapabilitySynthesis();
+  const prepareMap = () => {
+    mountMapInDiscoveryField();
+    refreshHotspotLanguage();
+    refreshProvenanceLanguage();
+    applyCapabilitySynthesis();
+    installProvenanceBridge();
+    return Boolean(map());
+  };
+
+  prepareMap();
+  installCurrentLanguage();
   installHotspotApplicationCues();
 
   let entranceTrigger = null;
   const openDirectMap = ({ updateUrl = true, entrance = false, trigger = null } = {}) => {
+    if (!prepareMap() && !map()) return false;
     const capabilityMap = map();
-    if (!capabilityMap) return false;
-    refreshHotspotLanguage();
-    applyCapabilitySynthesis();
     document.body.classList.add("has-viewed-capability-map");
     document.body.classList.toggle("is-capability-entrance", entrance);
     entranceTrigger = entrance ? trigger : null;
@@ -215,19 +301,16 @@
     }
 
     requestAnimationFrame(() => {
-      if (window.matchMedia("(max-width: 760px)").matches) {
-        capabilityMap.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-      } else {
-        capabilityMap.querySelector("a,button")?.focus({ preventScroll: true });
-      }
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      capabilityMap.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+      capabilityMap.querySelector("a,button")?.focus({ preventScroll: true });
     });
     return true;
   };
 
   const closeDirectMap = () => {
     if (completedDiscovery()) return;
-    document.body.classList.remove("has-viewed-capability-map");
-    document.body.classList.remove("is-capability-entrance");
+    document.body.classList.remove("has-viewed-capability-map", "is-capability-entrance");
     const capabilityMap = map();
     if (capabilityMap) {
       delete capabilityMap.dataset.entryMode;
@@ -268,7 +351,7 @@
     const onHome = (window.location.pathname.replace(/\/$/, "") || "/") === "/";
     if (!onHome || !map()) return;
     event.preventDefault();
-    openDirectMap();
+    openDirectMap({ trigger: entry });
   });
 
   const installProgressiveRecognition = () => {
@@ -294,7 +377,10 @@
     };
 
     new MutationObserver(update).observe(progress, { subtree: true, attributes: true, attributeFilter: ["class"] });
-    new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    new MutationObserver(() => {
+      prepareMap();
+      update();
+    }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
     update();
   };
 

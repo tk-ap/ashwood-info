@@ -3,6 +3,45 @@
 
   const path = location.pathname.replace(/\/+$/, "") || "/";
   if (path !== "/" && path !== "/index.html") return;
+
+  /* Restore the hotspot field runtime before layering newer homepage behavior. */
+  if (!document.querySelector('script[data-ashwood-hotspot-runtime]')) {
+    const hotspotScript = document.createElement("script");
+    hotspotScript.src = "/hotspot-runtime-restore.js?v=20260831-restore2";
+    hotspotScript.async = false;
+    hotspotScript.dataset.ashwoodHotspotRuntime = "1";
+    document.head.appendChild(hotspotScript);
+  }
+
+  /* Give the field an explicit explanation and two escape hatches: reveal the
+     capability map directly, or ask the Doctor Bird to interpret the homepage. */
+  if (!document.querySelector('script[data-ashwood-hotspot-guidance]')) {
+    const guidanceScript = document.createElement("script");
+    guidanceScript.src = "/hotspot-guidance.js?v=20260831-guide2";
+    guidanceScript.async = false;
+    guidanceScript.dataset.ashwoodHotspotGuidance = "1";
+    document.head.appendChild(guidanceScript);
+  }
+
+  /* Install the Doctor Bird guide before home-flow.js. Creating the bird node
+     here prevents the older automatic bird observer from mounting. */
+  if (!document.querySelector('script[data-ashwood-doctor-bird-trigger]')) {
+    const birdScript = document.createElement("script");
+    birdScript.src = "/doctor-bird-trigger.js?v=20260831-guide1";
+    birdScript.async = false;
+    birdScript.dataset.ashwoodDoctorBirdTrigger = "1";
+    document.head.appendChild(birdScript);
+  }
+
+  /* Final homepage behavior layer: progress trace and reveal grammar. */
+  if (!document.querySelector('script[data-ashwood-home-flow]')) {
+    const flowScript = document.createElement("script");
+    flowScript.src = "/home-flow.js?v=20260831-flow3";
+    flowScript.async = false;
+    flowScript.dataset.ashwoodHomeFlow = "1";
+    document.head.appendChild(flowScript);
+  }
+
   if (!window.matchMedia("(max-width: 760px), (pointer: coarse)").matches) return;
 
   document.documentElement.classList.add("ashwood-mobile-interaction-parity");

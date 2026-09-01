@@ -135,12 +135,34 @@
         <a href="/?capabilities=1&amp;from=home-evidence" data-capability-entry>View the throughline →</a>
       </aside>
 
-      <aside class="home-now" id="now" aria-label="Current ASHWOOD signals">
-        <span class="home-now__label">NOW / AUG 2026</span>
-        <span>Modeling — BarelySain</span>
-        <span>Building — ALVIRA · ailhat · LEDGATo</span>
-        <span>Listening — t.kap</span>
-      </aside>
+      <section class="home-now home-sitrep" id="now" aria-label="Current ASHWOOD situation report">
+        <header class="home-sitrep__head">
+          <span class="home-sitrep__title">SITREP</span>
+          <time class="home-sitrep__date" datetime="2026-08">AUG 2026</time>
+        </header>
+        <dl class="home-sitrep__grid">
+          <div class="home-sitrep__row">
+            <dt>WHEN?</dt>
+            <dd>AUG 2026 · ACTIVE BUILD CYCLE</dd>
+          </div>
+          <div class="home-sitrep__row">
+            <dt>WHERE?</dt>
+            <dd>LOS ANGELES · ASHWOOD / LIVE BUILD ENVIRONMENTS</dd>
+          </div>
+          <div class="home-sitrep__row">
+            <dt>WHAT IT IS</dt>
+            <dd>MODELING · MUSIC · AI PRODUCT BUILDING</dd>
+          </div>
+          <div class="home-sitrep__row">
+            <dt>WHAT IT IS DOING?</dt>
+            <dd>BARELYSAIN — MALIBU + DTLA · ALVIRA / ailhat / LEDGATo — ACTIVE · t.kap — LISTENING</dd>
+          </div>
+          <div class="home-sitrep__row">
+            <dt>WHAT ARE YOU DOING ABOUT IT?</dt>
+            <dd>BUILDING · TESTING · DOCUMENTING · OPEN TO COLLABORATION</dd>
+          </div>
+        </dl>
+      </section>
 
       <nav class="future-nav home-utility" aria-label="Ways to continue with TK">
         <a href="/connect">Work Together</a>
@@ -204,8 +226,6 @@
               ? 2 + xSeed * 92
               : 10 + Math.pow(xSeed, .68) * 82;
             const y = (compact ? 3 : 4) + Math.random() * (compact ? 90 : 88);
-            // On desktop, favor the right half enough to counterbalance the left-anchored hero,
-            // while retaining randomness so discovery never feels mechanically placed.
             const rightBias = compact ? 0 : (x / 100) * .24;
             candidates.push({ x, y, score: Math.random() - rightBias });
           }
@@ -218,73 +238,67 @@
               hotspot.style.top = pos.y + '%';
               hotspot.style.right = 'auto';
               hotspot.style.bottom = 'auto';
-              const candidate = hotspot.getBoundingClientRect();
-              const inside = candidate.left >= rect.left + edge && candidate.top >= rect.top + edge && candidate.right <= rect.right - edge && candidate.bottom <= rect.bottom - edge;
-              if (!inside) continue;
-
-              // Static interface is a hard boundary. Temporary discovery assets may never
-              // render over the masthead, hero links, primary entryways, NOW, utility nav,
-              // or the native audio control—even when the viewport is crowded.
-              const touchesStaticInterface = protectedAreas.some((area) => overlapArea(candidate, area, protection) > 0);
-              if (touchesStaticInterface) continue;
-
-              const hotspotPenalty = placed.reduce((sum, area) => sum + overlapArea(candidate, area, gap), 0);
-              if (hotspotPenalty === 0) { best = candidate; break; }
+              const candidateRect = hotspot.getBoundingClientRect();
+              const insideField = candidateRect.left >= rect.left + edge
+                && candidateRect.right <= rect.right - edge
+                && candidateRect.top >= rect.top + edge
+                && candidateRect.bottom <= rect.bottom - edge;
+              if (!insideField) continue;
+              const protectedOverlap = protectedAreas.reduce((sum, protectedRect) => sum + overlapArea(candidateRect, protectedRect, protection), 0);
+              if (protectedOverlap > 0) continue;
+              const hotspotPenalty = placed.reduce((sum, priorRect) => sum + overlapArea(candidateRect, priorRect, gap), 0);
               if (hotspotPenalty < lowestHotspotPenalty) {
                 lowestHotspotPenalty = hotspotPenalty;
-                best = candidate;
+                best = pos;
               }
+              if (hotspotPenalty === 0) break;
             }
             if (best) {
-              hotspot.style.left = ((best.left - rect.left) / rect.width * 100) + '%';
-              hotspot.style.top = ((best.top - rect.top) / rect.height * 100) + '%';
+              hotspot.style.left = best.x + '%';
+              hotspot.style.top = best.y + '%';
               placed.push(hotspot.getBoundingClientRect());
-            } else {
-              // Suppress a temporary asset rather than compromise a permanent navigation target.
-              hotspot.style.left = '-9999px';
-              hotspot.style.top = '-9999px';
             }
           });
         };
-        const point = (clientX, clientY) => {
-          if (isTouchLayout()) return;
-          const rect = field.getBoundingClientRect();
-          field.style.setProperty('--field-x', Math.max(0, Math.min(100, (clientX - rect.left) / rect.width * 100)) + '%');
-          field.style.setProperty('--field-y', Math.max(0, Math.min(100, (clientY - rect.top) / rect.height * 100)) + '%');
-          const nearest = hotspots.map((hotspot) => {
-            const r = hotspot.getBoundingClientRect();
-            return { hotspot, distance: Math.hypot((r.left + r.width / 2) - clientX, (r.top + 34) - clientY) };
-          }).sort((a, b) => a.distance - b.distance)[0];
-          hotspots.forEach((hotspot) => hotspot.classList.toggle('is-near', hotspot === nearest.hotspot && nearest.distance < 155));
-          field.classList.add('is-exploring');
-        };
-        randomize();
-        surface.addEventListener('pointermove', (event) => point(event.clientX, event.clientY), { passive: true });
-        surface.addEventListener('pointerenter', (event) => point(event.clientX, event.clientY), { passive: true });
-        window.addEventListener('resize', randomize, { passive: true });
-        field.addEventListener('pointerleave', () => {
-          field.classList.remove('is-exploring');
-          hotspots.forEach((hotspot) => { if (!hotspot.classList.contains('is-revealed')) hotspot.classList.remove('is-near'); });
-        });
-        hotspots.forEach((hotspot) => hotspot.addEventListener('click', (event) => {
-          event.stopPropagation();
-          const wasRevealed = hotspot.classList.contains('is-revealed');
+        const reveal = (hotspot, focus = false) => {
           hotspots.forEach((item) => {
-            item.classList.remove('is-revealed', 'is-near');
-            item.setAttribute('aria-pressed', 'false');
+            if (item !== hotspot) {
+              item.classList.remove('is-revealed', 'is-near');
+              item.setAttribute('aria-pressed', 'false');
+            }
           });
-          if (!wasRevealed) {
-            hotspot.classList.add('is-revealed');
-            hotspot.setAttribute('aria-pressed', 'true');
-            field.classList.add('is-pinned');
-            if (isTouchLayout()) setHint('Tap the open signal again to close.');
-          } else {
-            field.classList.remove('is-pinned');
-            if (isTouchLayout()) setHint('Tap a signal.');
-          }
-        }));
-        document.addEventListener('click', (event) => { if (!field.contains(event.target) && !event.target.closest('.principle-hotspot')) close(); });
-        document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+          hotspot.classList.add('is-revealed', 'is-near');
+          hotspot.setAttribute('aria-pressed', 'true');
+          field.classList.add('is-pinned');
+          if (focus) hotspot.focus({ preventScroll: true });
+        };
+        hotspots.forEach((hotspot) => {
+          hotspot.setAttribute('aria-pressed', 'false');
+          hotspot.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const shouldClose = hotspot.classList.contains('is-revealed');
+            shouldClose ? close() : reveal(hotspot);
+          });
+          hotspot.addEventListener('focus', () => reveal(hotspot));
+          hotspot.addEventListener('mouseenter', () => {
+            if (!isTouchLayout() && !field.classList.contains('is-pinned')) hotspot.classList.add('is-near');
+          });
+          hotspot.addEventListener('mouseleave', () => {
+            if (!field.classList.contains('is-pinned')) hotspot.classList.remove('is-near');
+          });
+        });
+        field.addEventListener('click', (event) => {
+          if (event.target === field) close();
+        });
+        window.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') close();
+        });
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          window.clearTimeout(resizeTimer);
+          resizeTimer = window.setTimeout(randomize, 140);
+        });
+        randomize();
       })();
     </script>
   </body>

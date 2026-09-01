@@ -6,6 +6,11 @@
 
   document.body.classList.add("ashwood-home-native");
 
+  const risoCursor = document.createElement("script");
+  risoCursor.src = "/cursor-risograph.js?v=20260901-riso1";
+  risoCursor.defer = true;
+  document.head.appendChild(risoCursor);
+
   const interactionState = document.createElement("script");
   interactionState.src = "/interaction-state.js?v=20260830-grammar1";
   interactionState.defer = true;
@@ -35,6 +40,11 @@
   readabilityStyles.rel = "stylesheet";
   readabilityStyles.href = "/capability-readability.css?v=20260830-readability1";
   document.head.appendChild(readabilityStyles);
+
+  const disclosureFixStyles = document.createElement("link");
+  disclosureFixStyles.rel = "stylesheet";
+  disclosureFixStyles.href = "/capability-disclosure-fix.css?v=20260831-space1";
+  document.head.appendChild(disclosureFixStyles);
 
   const mobileHotspotDialogStyles = document.createElement("link");
   mobileHotspotDialogStyles.rel = "stylesheet";

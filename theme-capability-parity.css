@@ -1,0 +1,276 @@
+/* ASHWOOD v2 — three-theme parity for capabilities + iridescent Becomings.
+   Loaded after the existing capability/mobile layers so legacy fallback colors
+   cannot leak through paper light, warm dark, or phosphor cyber. */
+
+html[data-ashwood-theme="warm-dark"] {
+  --ashwood-bg: var(--ashwood-paper);
+  --ashwood-v2-field: #5da875;
+  --ashwood-capability-surface: color-mix(in srgb, var(--ashwood-paper) 94%, var(--ashwood-field-green) 6%);
+  --ashwood-becomings-spectrum: linear-gradient(110deg, #78c796 0%, #d9bc63 28%, #73a6a4 50%, #8e7fb6 72%, #bd6571 100%);
+}
+
+html[data-ashwood-theme="paper-light"] {
+  --ashwood-bg: var(--ashwood-paper);
+  --ashwood-v2-field: #2f6b48;
+  --ashwood-capability-surface: color-mix(in srgb, #fffdf8 84%, var(--ashwood-field-green) 16%);
+  --ashwood-becomings-spectrum: linear-gradient(110deg, #1c5f43 0%, #17834a 22%, #b48732 44%, #3f7f84 66%, #6f4770 82%, #7b2635 100%);
+}
+
+html[data-ashwood-theme="phosphor-cyber"] {
+  --ashwood-bg: var(--ashwood-paper);
+  --ashwood-v2-field: #42ff8b;
+  --ashwood-capability-surface: color-mix(in srgb, var(--ashwood-paper) 91%, var(--ashwood-field-green) 9%);
+  --ashwood-becomings-spectrum: linear-gradient(110deg, #42ff8b 0%, #efff55 30%, #62f9ff 57%, #ff61df 82%, #42ff8b 100%);
+}
+
+/* Capability map inherits the active environment instead of legacy dark fallbacks. */
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__title,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__description,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__authorship-key,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__closing {
+  color: var(--ashwood-ink) !important;
+}
+
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__eyebrow,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__skill,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__practice,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__link,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__reset {
+  color: var(--ashwood-v2-field) !important;
+}
+
+html[data-ashwood-theme] body.ashwood-home-native.has-found-all-hotspots .ashwood-capability-map__eyebrow,
+html[data-ashwood-theme] body.ashwood-home-native.has-found-all-hotspots .ashwood-capability-map__skill {
+  color: var(--ashwood-gold) !important;
+}
+
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__item::before {
+  background: var(--ashwood-paper) !important;
+  border-color: var(--ashwood-v2-field) !important;
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--ashwood-v2-field) 7%, transparent),
+    0 0 13px color-mix(in srgb, var(--ashwood-v2-field) 18%, transparent) !important;
+}
+
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__item,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__list,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__header,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__footer,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__provenance {
+  border-color: color-mix(in srgb, var(--ashwood-v2-field) 22%, var(--ashwood-rule)) !important;
+}
+
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__authorship,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__useful,
+html[data-ashwood-theme] body.ashwood-home-native .ashwood-capability-map__skill::after {
+  color: var(--ashwood-muted) !important;
+}
+
+/* Paper mode needs a little more tonal separation without turning the chapter into cards. */
+html[data-ashwood-theme="paper-light"] body.ashwood-home-native .ashwood-capability-map__list {
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--ashwood-capability-surface) 34%, transparent),
+      transparent 12% 88%,
+      color-mix(in srgb, var(--ashwood-capability-surface) 34%, transparent)) !important;
+}
+
+html[data-ashwood-theme="paper-light"] body.ashwood-home-native .ashwood-capability-map__item {
+  opacity: 1 !important;
+}
+
+html[data-ashwood-theme="paper-light"] body.ashwood-home-native .ashwood-capability-map__description {
+  color: color-mix(in srgb, var(--ashwood-ink) 82%, var(--ashwood-muted)) !important;
+  opacity: .9 !important;
+}
+
+html[data-ashwood-theme="paper-light"] body.ashwood-home-native .ashwood-capability-map__item::before {
+  background: #fffdf8 !important;
+}
+
+/* Warm mode keeps the editorial field soft rather than pure black. */
+html[data-ashwood-theme="warm-dark"] body.ashwood-home-native .ashwood-capability-map__list {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ashwood-capability-surface) 36%, transparent), transparent) !important;
+}
+
+/* Cyber earns a faint phosphor register, not a new dashboard aesthetic. */
+html[data-ashwood-theme="phosphor-cyber"] body.ashwood-home-native .ashwood-capability-map__list {
+  background:
+    linear-gradient(rgba(66,255,139,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(66,255,139,.018) 1px, transparent 1px),
+    linear-gradient(90deg, transparent, rgba(66,255,139,.022), transparent) !important;
+  background-size: 26px 26px, 26px 26px, auto !important;
+}
+
+html[data-ashwood-theme="phosphor-cyber"] body.ashwood-home-native .ashwood-capability-map__item:hover,
+html[data-ashwood-theme="phosphor-cyber"] body.ashwood-home-native .ashwood-capability-map__item:focus-within {
+  text-shadow: 0 0 12px rgba(66,255,139,.10);
+}
+
+/* BECO(MINGS) behaves like iridescence: one source, shifting spectral forms. */
+.becomings-trigger:hover,
+.becomings-trigger:focus-visible,
+.becomings-trigger:active,
+.becomings-trigger.is-becoming-origin {
+  color: transparent !important;
+  background: var(--ashwood-becomings-spectrum) !important;
+  background-size: 300% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  animation: ashwood-iridescence 2.15s ease-in-out infinite, becomings-origin .72s cubic-bezier(.2,.8,.2,1) both !important;
+}
+
+.becomings-bloom::before {
+  border-color: color-mix(in srgb, var(--ashwood-v2-field) 54%, var(--ashwood-gold)) !important;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--ashwood-v2-field) 22%, transparent);
+}
+
+.becomings-bloom::after {
+  background:
+    radial-gradient(ellipse at 42% 48%, color-mix(in srgb, var(--ashwood-v2-field) 17%, transparent), transparent 48%),
+    radial-gradient(ellipse at 58% 43%, color-mix(in srgb, var(--ashwood-gold) 13%, transparent), transparent 45%),
+    radial-gradient(ellipse at 51% 60%, color-mix(in srgb, var(--ashwood-accent-2) 11%, transparent), transparent 48%),
+    radial-gradient(ellipse at center, color-mix(in srgb, var(--ashwood-oxblood) 7%, transparent), transparent 70%) !important;
+  filter: blur(14px) saturate(1.08) !important;
+}
+
+.home-entryway.is-becoming-highlight {
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--ashwood-v2-field) 8%, transparent),
+      color-mix(in srgb, var(--ashwood-gold) 5%, transparent) 36%,
+      color-mix(in srgb, var(--ashwood-accent-2) 5%, transparent) 68%,
+      transparent) !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--ashwood-v2-field) 30%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--ashwood-gold) 16%, transparent),
+    0 0 28px color-mix(in srgb, var(--ashwood-accent-2) 6%, transparent) !important;
+}
+
+.home-entryway.is-becoming-highlight .home-entryway__title {
+  color: transparent !important;
+  background: var(--ashwood-becomings-spectrum) !important;
+  background-size: 280% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  animation: ashwood-iridescence 2.35s ease-in-out infinite;
+  text-shadow: none !important;
+}
+
+.home-entryway.is-becoming-highlight::after {
+  background: var(--ashwood-gold) !important;
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--ashwood-gold) 68%, transparent),
+    0 0 22px color-mix(in srgb, var(--ashwood-v2-field) 25%, transparent) !important;
+}
+
+/* Connect is a continuation route, not one of the three forms revealed by Becomings. */
+.home-entryway:nth-child(4).is-becoming-highlight {
+  transform: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+.home-entryway:nth-child(4).is-becoming-highlight .home-entryway__title,
+.home-entryway:nth-child(4).is-becoming-highlight .home-entryway__signal {
+  color: inherit !important;
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  animation: none !important;
+  transform: none !important;
+}
+.home-entryway:nth-child(4).is-becoming-highlight::after { display: none !important; }
+
+/* Mobile QA: keep every discovery/capability control reachable and in flow. */
+@media (max-width: 760px), (pointer: coarse) {
+  body.ashwood-home-native .principle-hotspot,
+  body.ashwood-home-native .principle-hotspot.is-revealed,
+  body.ashwood-home-native .principle-hotspot.is-near {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    background: color-mix(in srgb, var(--ashwood-paper) 96%, transparent) !important;
+    border-color: color-mix(in srgb, var(--ashwood-v2-field) 38%, var(--ashwood-rule)) !important;
+  }
+
+  body.ashwood-home-native .principle-hotspot::before,
+  body.ashwood-home-native .principle-hotspot.is-revealed::before {
+    background: var(--ashwood-v2-field) !important;
+    box-shadow: 0 0 9px color-mix(in srgb, var(--ashwood-v2-field) 28%, transparent) !important;
+  }
+
+  body.ashwood-home-native .ashwood-mobile-hotspot-panel.is-visible {
+    max-height: min(52dvh, 420px) !important;
+    background: color-mix(in srgb, var(--ashwood-paper) 97%, transparent) !important;
+    border-color: color-mix(in srgb, var(--ashwood-v2-field) 24%, var(--ashwood-rule)) !important;
+    overscroll-behavior: contain;
+  }
+
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    padding-left: max(18px, env(safe-area-inset-left)) !important;
+    padding-right: max(18px, env(safe-area-inset-right)) !important;
+    background: var(--ashwood-paper) !important;
+    color: var(--ashwood-ink) !important;
+    overscroll-behavior: contain;
+  }
+
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map__header {
+    background: color-mix(in srgb, var(--ashwood-paper) 96%, transparent) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map__list {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map__item,
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map__item * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  body.ashwood-home-native.is-capability-entrance .ashwood-capability-map__skill {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  .ashwood-theme-switcher__button {
+    min-width: 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .becomings-trigger:active {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--ashwood-v2-field) 28%, transparent));
+  }
+}
+
+@media (max-width: 420px) {
+  body.ashwood-home-native .principles-field { gap: 8px !important; }
+  body.ashwood-home-native .ashwood-mobile-hotspot-panel { padding-inline: 14px; }
+  .ashwood-theme-switcher { padding: 2px !important; }
+  .ashwood-theme-switcher__button {
+    min-width: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .becomings-trigger:hover,
+  .becomings-trigger:focus-visible,
+  .becomings-trigger:active,
+  .becomings-trigger.is-becoming-origin,
+  .home-entryway.is-becoming-highlight .home-entryway__title {
+    animation: none !important;
+  }
+}
