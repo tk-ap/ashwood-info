@@ -4,171 +4,381 @@
   const path = location.pathname.replace(/\/+$/, "") || "/";
   if (path !== "/" && path !== "/index.html") return;
 
-  /* Restore the hotspot field runtime before layering newer homepage behavior. */
-  if (!document.querySelector('script[data-ashwood-hotspot-runtime]')) {
-    const hotspotScript = document.createElement("script");
-    hotspotScript.src = "/hotspot-runtime-restore.js?v=20260831-restore2";
-    hotspotScript.async = false;
-    hotspotScript.dataset.ashwoodHotspotRuntime = "1";
-    document.head.appendChild(hotspotScript);
-  }
-
-  /* Give the field an explicit explanation and two escape hatches: reveal the
-     capability map directly, or ask the Doctor Bird to interpret the homepage. */
-  if (!document.querySelector('script[data-ashwood-hotspot-guidance]')) {
-    const guidanceScript = document.createElement("script");
-    guidanceScript.src = "/hotspot-guidance.js?v=20260831-guide2";
-    guidanceScript.async = false;
-    guidanceScript.dataset.ashwoodHotspotGuidance = "1";
-    document.head.appendChild(guidanceScript);
-  }
-
-  /* Install the Doctor Bird guide before home-flow.js. Creating the bird node
-     here prevents the older automatic bird observer from mounting. */
-  if (!document.querySelector('script[data-ashwood-doctor-bird-trigger]')) {
-    const birdScript = document.createElement("script");
-    birdScript.src = "/doctor-bird-trigger.js?v=20260831-guide1";
-    birdScript.async = false;
-    birdScript.dataset.ashwoodDoctorBirdTrigger = "1";
-    document.head.appendChild(birdScript);
-  }
-
-  /* Final homepage behavior layer: progress trace and reveal grammar. */
-  if (!document.querySelector('script[data-ashwood-home-flow]')) {
-    const flowScript = document.createElement("script");
-    flowScript.src = "/home-flow.js?v=20260831-flow3";
-    flowScript.async = false;
-    flowScript.dataset.ashwoodHomeFlow = "1";
-    document.head.appendChild(flowScript);
-  }
-
-  if (!window.matchMedia("(max-width: 760px), (pointer: coarse)").matches) return;
-
-  document.documentElement.classList.add("ashwood-mobile-interaction-parity");
-
+  const mobile = window.matchMedia("(max-width: 760px), (pointer: coarse)");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const isMobile = mobile.matches;
   const after = (ms, fn) => window.setTimeout(fn, ms);
+  document.body.classList.add("ashwood-home-editorial");
 
-  /* XAYMACA: mobile should not require knowledge of a hover target.
-     A short masthead dwell reveals the full provenance once, then it collapses
-     into a small persistent clue that can be expanded again by touch/focus. */
+  const loadScript = (src, marker) => {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement("script");
+    script.src = src;
+    script.defer = true;
+    script.setAttribute(marker, "1");
+    document.head.appendChild(script);
+  };
+
+  /* Desktop keeps the latent discovery grammar. Mobile no longer loads the hunt. */
+  if (!isMobile) {
+    loadScript("/hotspot-runtime-restore.js?v=20260831-restore2", "data-ashwood-hotspot-runtime");
+    loadScript("/hotspot-guidance.js?v=20260831-guide2", "data-ashwood-hotspot-guidance");
+  }
+  loadScript("/doctor-bird-trigger.js?v=20260831-guide1", "data-ashwood-doctor-bird-trigger");
+  loadScript("/home-flow.js?v=20260831-flow3", "data-ashwood-home-flow");
+
+  const capabilities = [
+    {
+      id: "signal",
+      name: "SIGNAL",
+      statement: "I notice what is starting to matter.",
+      useful: "Priorities are unclear and weak signals need separating from noise.",
+      practice: "ailhat · Portfolio Intelligence",
+      href: "https://ailhat.vercel.app/",
+      external: true
+    },
+    {
+      id: "friction",
+      name: "FRICTION",
+      statement: "I look for where intention and reality stop matching.",
+      useful: "The same workaround keeps appearing, or the experience is fighting its intent.",
+      practice: "ALVIRA · Context Intelligence",
+      href: "https://alviratech.vercel.app/",
+      external: true
+    },
+    {
+      id: "translation",
+      name: "TRANSLATION",
+      statement: "I turn difficult ideas into forms people can use.",
+      useful: "Complex work needs to become clear enough for different people to act.",
+      practice: "Build Journal · Field notes + public proof",
+      href: "/journal/"
+    },
+    {
+      id: "systems",
+      name: "SYSTEMS",
+      statement: "I look for the structure underneath the thing.",
+      useful: "A recurring problem needs durable structure rather than another patch.",
+      practice: "Builds · Governed execution systems",
+      href: "/journal/"
+    },
+    {
+      id: "adaptation",
+      name: "ADAPTATION",
+      statement: "I let evidence change the approach.",
+      useful: "Reality changes the conditions and the approach needs to change with it.",
+      practice: "LEDGATo · Operational reality",
+      href: "https://ledgato.vercel.app/",
+      external: true
+    },
+    {
+      id: "synthesis",
+      name: "SYNTHESIS",
+      statement: "I bring separate things into one coherent idea.",
+      useful: "The opportunity sits between disciplines, ideas, or mediums.",
+      practice: "ASHWOOD · Modeling + Music + Builds",
+      href: "/about/"
+    }
+  ];
+
+  const buildThroughline = () => {
+    if (!isMobile) return;
+    const field = document.querySelector(".principles-field");
+    if (!field || field.querySelector(".ashwood-throughline-native")) return;
+
+    /* Do not inherit state from the old hotspot/capability-map machinery. */
+    field.querySelectorAll(".ashwood-capability-map,.ashwood-field-guide,.ashwood-mobile-hotspot-panel").forEach((node) => node.remove());
+
+    const throughline = document.createElement("section");
+    throughline.className = "ashwood-throughline-native";
+    throughline.id = "throughline";
+    throughline.setAttribute("aria-labelledby", "throughline-title");
+    throughline.innerHTML = `
+      <p class="ashwood-throughline__eyebrow">THE THROUGHLINE · SIX PATTERNS</p>
+      <h2 class="ashwood-throughline__title" id="throughline-title">Different work.<br>Same underlying patterns.</h2>
+      <p class="ashwood-throughline__intro">Different roles. Different people. The same patterns kept showing up.</p>
+      <ol class="ashwood-throughline__list">
+        ${capabilities.map((item, index) => `
+          <li class="ashwood-throughline__item" data-capability="${item.id}">
+            <span class="ashwood-throughline__index">${String(index + 1).padStart(2, "0")} / 06</span>
+            <span class="ashwood-throughline__name">${item.name}</span>
+            <p class="ashwood-throughline__statement">${item.statement}</p>
+            <p class="ashwood-throughline__useful"><strong>Useful when</strong>${item.useful}</p>
+            <a class="ashwood-throughline__practice" href="${item.href}"${item.external ? ' target="_blank" rel="noreferrer"' : ""}>${item.practice} →</a>
+          </li>`).join("")}
+      </ol>`;
+    field.appendChild(throughline);
+
+    const items = [...throughline.querySelectorAll(".ashwood-throughline__item")];
+    const setReading = () => {
+      const line = window.innerHeight * .47;
+      let closest = null;
+      let distance = Infinity;
+      items.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        const d = Math.abs((rect.top + Math.min(rect.height * .3, 110)) - line);
+        if (d < distance) { distance = d; closest = item; }
+      });
+      items.forEach((item) => item.classList.toggle("is-reading", item === closest));
+    };
+    let frame = 0;
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => { frame = 0; setReading(); });
+    };
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    setReading();
+  };
+
+  const refinePortals = () => {
+    const container = document.querySelector(".home-entryways");
+    if (!container || container.dataset.editorial === "1") return;
+    container.dataset.editorial = "1";
+
+    [...container.querySelectorAll(".home-entryway")].forEach((entry) => {
+      const href = entry.getAttribute("href") || "";
+      if (/connect/.test(href)) {
+        entry.remove();
+        return;
+      }
+      if (/portfolio/.test(href)) entry.dataset.kind = "modeling";
+      else if (/music/.test(href)) entry.dataset.kind = "music";
+      else if (/journal/.test(href)) entry.dataset.kind = "builds";
+    });
+  };
+
+  const simplifyNow = () => {
+    const section = document.querySelector("#now,.home-sitrep");
+    if (!section || section.classList.contains("home-now-editorial")) return;
+    section.className = "home-now home-now-editorial";
+    section.setAttribute("aria-label", "What is happening now");
+    section.innerHTML = `
+      <span class="home-now-editorial__label">NOW</span>
+      <p class="home-now-editorial__copy">Los Angeles · modeling, music, and product building in active motion.</p>
+      <a class="home-now-editorial__link" href="/journal/">Follow the Build Journal →</a>`;
+  };
+
+  const refineClosing = () => {
+    const nav = document.querySelector(".future-nav,.home-utility");
+    if (!nav || nav.classList.contains("home-closing")) return;
+    nav.className = "future-nav home-utility home-closing";
+    nav.setAttribute("aria-label", "Continue with TK Ashwood");
+    nav.innerHTML = `
+      <h2 class="home-closing__title">Come make something.</h2>
+      <span class="home-closing__links">
+        <a href="/connect/">Work together →</a>
+        <a href="/music/">Listen →</a>
+        <a href="/journal/">Follow the Journal →</a>
+        <a href="/about/">About →</a>
+      </span>`;
+  };
+
+  /* Keep the Jamaica clue mobile-native without floating it over core copy. */
   const installXaymaca = () => {
+    if (!isMobile) return;
     const masthead = document.querySelector(".masthead");
     const inline = document.querySelector(".ashwood-jm-xaymaca-inline");
-    if (!masthead || !inline || inline.dataset.mobileParity === "1") return false;
-
+    if (!masthead || !inline || inline.dataset.mobileParity === "1") return;
     inline.dataset.mobileParity = "1";
     inline.classList.add("ashwood-mobile-parity");
     inline.tabIndex = 0;
     inline.setAttribute("role", "button");
-    inline.setAttribute("aria-label", "Reveal Xaymaca, the Jamaica name reference inside ASHWOOD");
     inline.setAttribute("aria-expanded", "false");
-
     let expanded = false;
-    let teased = false;
-    let teaseTimer = 0;
-
-    const collapse = () => {
-      expanded = false;
-      inline.classList.remove("is-mobile-expanded", "is-mobile-tease");
+    const render = () => {
+      inline.classList.toggle("is-mobile-expanded", expanded);
       inline.classList.add("is-mobile-earned");
-      inline.setAttribute("aria-expanded", "false");
+      inline.setAttribute("aria-expanded", String(expanded));
     };
-
-    const expand = () => {
-      expanded = true;
-      inline.classList.remove("is-mobile-tease");
-      inline.classList.add("is-mobile-earned", "is-mobile-expanded");
-      inline.setAttribute("aria-expanded", "true");
-    };
-
-    const tease = () => {
-      if (teased || expanded) return;
-      teased = true;
-      inline.classList.add("is-mobile-earned", "is-mobile-tease");
-      inline.setAttribute("aria-expanded", "true");
-      teaseTimer = after(5200, collapse);
-    };
-
-    inline.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      window.clearTimeout(teaseTimer);
-      expanded ? collapse() : expand();
-    });
+    inline.addEventListener("click", (event) => { event.preventDefault(); expanded = !expanded; render(); });
     inline.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      window.clearTimeout(teaseTimer);
-      expanded ? collapse() : expand();
+      event.preventDefault(); expanded = !expanded; render();
     });
-
-    const dwellObserver = new IntersectionObserver((entries) => {
-      const visible = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= .55);
-      if (!visible || teased) return;
-      after(1500, () => {
-        const rect = masthead.getBoundingClientRect();
-        if (rect.bottom > 0 && rect.top < window.innerHeight) tease();
-      });
-    }, { threshold: [.55] });
-    dwellObserver.observe(masthead);
-    return true;
+    after(1500, () => {
+      const rect = masthead.getBoundingClientRect();
+      if (rect.bottom > 0) { inline.classList.add("is-mobile-tease"); after(4300, () => inline.classList.remove("is-mobile-tease")); }
+    });
   };
 
-  /* Motto + 1962: earned discovery should briefly reveal the deeper context on touch.
-     Afterward it recedes to the quieter earned state already provided by the base UI. */
-  const autoRevealEarned = () => {
-    const count = Number(document.documentElement.dataset.ashwoodDiscoveryCount || 0);
-    const mottoContext = document.querySelector(".ashwood-jm-motto-context");
-    const independenceContext = document.querySelector(".ashwood-jm-1962-context");
+  const installDocEditorial = () => {
+    if (!isMobile || document.querySelector(".ashwood-doc-editorial-launcher")) return;
+    const bird = document.querySelector(".ashwood-doctor-bird-cursor");
+    const rendered = bird?.querySelector("img");
+    if (!bird || !rendered) return;
 
-    if (count >= 2 && mottoContext && mottoContext.dataset.mobileAutoShown !== "1") {
-      mottoContext.dataset.mobileAutoShown = "1";
-      mottoContext.classList.add("is-mobile-auto-visible");
-      after(5200, () => mottoContext.classList.remove("is-mobile-auto-visible"));
+    /* Preserve the rendered artwork. Motion is additive and deterministic. */
+    bird.classList.add("ashwood-doc-editorial-bird");
+    bird.style.opacity = "0";
+    bird.style.visibility = "hidden";
+
+    if (!bird.querySelector(".ashwood-doc-wing-trace")) {
+      const near = rendered.cloneNode(true);
+      const far = rendered.cloneNode(true);
+      near.className = "ashwood-doc-wing-trace ashwood-doc-wing-trace--near";
+      far.className = "ashwood-doc-wing-trace ashwood-doc-wing-trace--far";
+      near.removeAttribute("id"); far.removeAttribute("id");
+      near.setAttribute("aria-hidden", "true"); far.setAttribute("aria-hidden", "true");
+      bird.append(far, near);
     }
 
-    if (count >= 4 && independenceContext && independenceContext.dataset.mobileAutoShown !== "1") {
-      independenceContext.dataset.mobileAutoShown = "1";
-      independenceContext.classList.add("is-mobile-auto-visible");
-      after(5200, () => independenceContext.classList.remove("is-mobile-auto-visible"));
-    }
+    const launcher = document.createElement("button");
+    launcher.className = "ashwood-doc-editorial-launcher";
+    launcher.type = "button";
+    launcher.textContent = "DOC / GUIDE";
+    document.body.appendChild(launcher);
+
+    const panel = document.createElement("aside");
+    panel.className = "ashwood-doc-editorial-panel";
+    panel.hidden = true;
+    panel.innerHTML = `
+      <p class="ashwood-doc-editorial-panel__eyebrow"></p>
+      <h2 class="ashwood-doc-editorial-panel__title"></h2>
+      <p class="ashwood-doc-editorial-panel__copy"></p>
+      <div class="ashwood-doc-editorial-panel__controls">
+        <span class="count"></span><span></span>
+        <button class="back" type="button">Back</button>
+        <button class="next" type="button">Next →</button>
+        <button class="exit" type="button">Exit</button>
+      </div>`;
+    document.body.appendChild(panel);
+
+    const stops = [
+      [".intro", "DOC / 01 / ORIENTATION", "One point of view. Many forms.", "ASHWOOD follows the ideas that keep becoming modeling, music, products, and systems."],
+      ["#throughline,.principles-field", "DOC / 02 / THROUGHLINE", "The medium changes. The patterns repeat.", "Signal, friction, translation, systems, adaptation, and synthesis are the connective tissue."],
+      [".home-entryway[data-kind='modeling']", "DOC / 03 / MODELING", "The image is part of the thinking.", "Modeling and photography are not decoration around the practice. They are one of its native forms."],
+      [".home-entryway[data-kind='music']", "DOC / 04 / MUSIC", "Sound is another way the point of view moves.", "Released music stays listenable inside ASHWOOD rather than becoming a dead outbound link."],
+      [".home-entryway[data-kind='builds']", "DOC / 05 / BUILDS", "Questions become systems.", "The Build Journal keeps the evidence: what was believed, what changed, what shipped, and why."],
+      [".home-now-editorial,.home-closing", "DOC / 06 / CONTINUE", "This is a living practice.", "Follow what is happening now—or choose a thread and make something together."]
+    ];
+
+    let active = false;
+    let index = 0;
+    let current = { x: innerWidth + 120, y: 130 };
+
+    const targetPoint = (el) => {
+      const rect = el.getBoundingClientRect();
+      return {
+        x: Math.max(66, Math.min(innerWidth - 68, rect.right - Math.min(42, rect.width * .12))),
+        y: Math.max(82, Math.min(innerHeight * .56, rect.top + Math.min(rect.height * .28, 126)))
+      };
+    };
+
+    const placeInstant = (point) => {
+      current = point;
+      bird.style.transform = `translate3d(${point.x - 41}px,${point.y - 28}px,0)`;
+    };
+
+    const flyTo = (point, backwards = false, entering = false) => {
+      bird.getAnimations().forEach((animation) => animation.cancel());
+      const start = entering ? { x: innerWidth + 115, y: Math.max(84, point.y - 92) } : current;
+      const mid = {
+        x: start.x + (point.x - start.x) * .52,
+        y: Math.min(start.y, point.y) - 28
+      };
+      bird.style.scale = backwards ? "-1 1" : "1 1";
+      bird.style.opacity = "1";
+      bird.style.visibility = "visible";
+      if (reduce.matches) { placeInstant(point); return Promise.resolve(); }
+      const animation = bird.animate([
+        { transform: `translate3d(${start.x - 41}px,${start.y - 28}px,0) rotate(0deg)` },
+        { transform: `translate3d(${mid.x - 41}px,${mid.y - 28}px,0) rotate(${backwards ? -4 : 4}deg)`, offset: .52 },
+        { transform: `translate3d(${point.x - 41}px,${point.y - 28}px,0) rotate(0deg)` }
+      ], {
+        duration: 720,
+        easing: "cubic-bezier(.22,.78,.22,1)",
+        fill: "forwards"
+      });
+      return animation.finished.catch(() => {}).then(() => placeInstant(point));
+    };
+
+    const afterScrollSettles = (callback) => {
+      if (reduce.matches) { callback(); return; }
+      let timer = 0;
+      const done = () => { window.clearTimeout(timer); window.removeEventListener("scroll", reset); callback(); };
+      const reset = () => { window.clearTimeout(timer); timer = window.setTimeout(done, 150); };
+      window.addEventListener("scroll", reset, { passive: true });
+      timer = window.setTimeout(done, 520);
+    };
+
+    const render = (backwards = false, entering = false) => {
+      const stop = stops[index];
+      const el = document.querySelector(stop[0]);
+      if (!el) return;
+      panel.hidden = true;
+      el.scrollIntoView({ behavior: reduce.matches ? "auto" : "smooth", block: "center" });
+      afterScrollSettles(() => {
+        if (!active) return;
+        const point = targetPoint(el);
+        flyTo(point, backwards, entering).then(() => {
+          if (!active) return;
+          panel.querySelector(".ashwood-doc-editorial-panel__eyebrow").textContent = stop[1];
+          panel.querySelector(".ashwood-doc-editorial-panel__title").textContent = stop[2];
+          panel.querySelector(".ashwood-doc-editorial-panel__copy").textContent = stop[3];
+          panel.querySelector(".count").textContent = `${String(index + 1).padStart(2,"0")} / 06`;
+          panel.querySelector(".back").disabled = index === 0;
+          panel.querySelector(".next").textContent = index === stops.length - 1 ? "Finish →" : "Next →";
+          panel.hidden = false;
+        });
+      });
+    };
+
+    const start = () => {
+      if (active) return;
+      active = true; index = 0;
+      launcher.hidden = true;
+      render(false, true);
+    };
+    const end = () => {
+      active = false; panel.hidden = true;
+      launcher.hidden = false;
+      if (reduce.matches) { bird.style.opacity = "0"; bird.style.visibility = "hidden"; return; }
+      const exit = { x: innerWidth + 120, y: Math.max(80, current.y - 70) };
+      flyTo(exit, false, false).then(() => { bird.style.opacity = "0"; bird.style.visibility = "hidden"; });
+    };
+    const next = () => {
+      if (!active) return;
+      if (index === stops.length - 1) { end(); return; }
+      index += 1; render(false, false);
+    };
+    const back = () => {
+      if (!active || index === 0) return;
+      index -= 1; render(true, false);
+    };
+
+    launcher.addEventListener("click", start);
+    panel.querySelector(".next").addEventListener("click", next);
+    panel.querySelector(".back").addEventListener("click", back);
+    panel.querySelector(".exit").addEventListener("click", end);
   };
 
-  /* Touch toggles remain available after the one-time automatic reveal. */
-  const installTouchToggles = () => {
-    const motto = document.querySelector(".iridescent-word--jamaica");
-    const mottoContext = document.querySelector(".ashwood-jm-motto-context");
-    if (motto && mottoContext && motto.dataset.mobileParity !== "1") {
-      motto.dataset.mobileParity = "1";
-      motto.addEventListener("click", () => {
-        mottoContext.classList.toggle("is-mobile-auto-visible");
-      });
-    }
-
-    const independence = document.querySelector(".ashwood-jm-1962");
-    const independenceContext = document.querySelector(".ashwood-jm-1962-context");
-    if (independence && independenceContext && independence.dataset.mobileParity !== "1") {
-      independence.dataset.mobileParity = "1";
-      independence.addEventListener("click", () => {
-        independenceContext.classList.toggle("is-mobile-auto-visible");
-      });
-    }
+  const cleanupMobileLegacy = () => {
+    if (!isMobile) return;
+    document.querySelectorAll(".ashwood-capability-map,.ashwood-curiosity-progress,.ashwood-thread-flash,.ashwood-field-guide,.ashwood-capability-nudge,.ashwood-mobile-hotspot-panel").forEach((node) => node.remove());
   };
 
   const install = () => {
+    refinePortals();
+    simplifyNow();
+    refineClosing();
+    buildThroughline();
     installXaymaca();
-    installTouchToggles();
-    autoRevealEarned();
+    cleanupMobileLegacy();
+    installDocEditorial();
   };
 
   install();
+  requestAnimationFrame(() => requestAnimationFrame(install));
+  window.addEventListener("load", install, { once: true });
 
-  const observer = new MutationObserver(install);
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  const discoveryObserver = new MutationObserver(autoRevealEarned);
-  discoveryObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-ashwood-discovery-count"]
-  });
+  if (isMobile) {
+    const observer = new MutationObserver(() => {
+      cleanupMobileLegacy();
+      if (!document.querySelector(".ashwood-throughline-native")) buildThroughline();
+      if (!document.querySelector(".ashwood-doc-editorial-launcher")) installDocEditorial();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    after(2400, () => observer.disconnect());
+  }
 })();
