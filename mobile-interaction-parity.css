@@ -1,5 +1,6 @@
 @import url('/home-flow.css?v=20260831-flow1');
 @import url('/home-flow-tighten.css?v=20260831-tight3');
+@import url('/theme-capability-parity.css?v=20260901-parity1');
 
 /* Doctor Bird guide has five control cells: count, spacer, back, next, exit. */
 .ashwood-doctor-guide__controls { grid-template-columns: auto 1fr auto auto auto !important; }
