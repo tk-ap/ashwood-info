@@ -1,174 +1,93 @@
 (() => {
   "use strict";
-
   const path = location.pathname.replace(/\/+$/, "") || "/";
   if (path !== "/" && path !== "/index.html") return;
-
-  /* Restore the hotspot field runtime before layering newer homepage behavior. */
-  if (!document.querySelector('script[data-ashwood-hotspot-runtime]')) {
-    const hotspotScript = document.createElement("script");
-    hotspotScript.src = "/hotspot-runtime-restore.js?v=20260831-restore2";
-    hotspotScript.async = false;
-    hotspotScript.dataset.ashwoodHotspotRuntime = "1";
-    document.head.appendChild(hotspotScript);
-  }
-
-  /* Give the field an explicit explanation and two escape hatches: reveal the
-     capability map directly, or ask the Doctor Bird to interpret the homepage. */
-  if (!document.querySelector('script[data-ashwood-hotspot-guidance]')) {
-    const guidanceScript = document.createElement("script");
-    guidanceScript.src = "/hotspot-guidance.js?v=20260831-guide2";
-    guidanceScript.async = false;
-    guidanceScript.dataset.ashwoodHotspotGuidance = "1";
-    document.head.appendChild(guidanceScript);
-  }
-
-  /* Install the Doctor Bird guide before home-flow.js. Creating the bird node
-     here prevents the older automatic bird observer from mounting. */
-  if (!document.querySelector('script[data-ashwood-doctor-bird-trigger]')) {
-    const birdScript = document.createElement("script");
-    birdScript.src = "/doctor-bird-trigger.js?v=20260831-guide1";
-    birdScript.async = false;
-    birdScript.dataset.ashwoodDoctorBirdTrigger = "1";
-    document.head.appendChild(birdScript);
-  }
-
-  /* Final homepage behavior layer: progress trace and reveal grammar. */
-  if (!document.querySelector('script[data-ashwood-home-flow]')) {
-    const flowScript = document.createElement("script");
-    flowScript.src = "/home-flow.js?v=20260831-flow3";
-    flowScript.async = false;
-    flowScript.dataset.ashwoodHomeFlow = "1";
-    document.head.appendChild(flowScript);
-  }
-
-  if (!window.matchMedia("(max-width: 760px), (pointer: coarse)").matches) return;
-
-  document.documentElement.classList.add("ashwood-mobile-interaction-parity");
-
+  const mobile = window.matchMedia("(max-width: 760px), (pointer: coarse)");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const isMobile = mobile.matches;
   const after = (ms, fn) => window.setTimeout(fn, ms);
-
-  /* XAYMACA: mobile should not require knowledge of a hover target.
-     A short masthead dwell reveals the full provenance once, then it collapses
-     into a small persistent clue that can be expanded again by touch/focus. */
-  const installXaymaca = () => {
-    const masthead = document.querySelector(".masthead");
-    const inline = document.querySelector(".ashwood-jm-xaymaca-inline");
-    if (!masthead || !inline || inline.dataset.mobileParity === "1") return false;
-
-    inline.dataset.mobileParity = "1";
-    inline.classList.add("ashwood-mobile-parity");
-    inline.tabIndex = 0;
-    inline.setAttribute("role", "button");
-    inline.setAttribute("aria-label", "Reveal Xaymaca, the Jamaica name reference inside ASHWOOD");
-    inline.setAttribute("aria-expanded", "false");
-
-    let expanded = false;
-    let teased = false;
-    let teaseTimer = 0;
-
-    const collapse = () => {
-      expanded = false;
-      inline.classList.remove("is-mobile-expanded", "is-mobile-tease");
-      inline.classList.add("is-mobile-earned");
-      inline.setAttribute("aria-expanded", "false");
-    };
-
-    const expand = () => {
-      expanded = true;
-      inline.classList.remove("is-mobile-tease");
-      inline.classList.add("is-mobile-earned", "is-mobile-expanded");
-      inline.setAttribute("aria-expanded", "true");
-    };
-
-    const tease = () => {
-      if (teased || expanded) return;
-      teased = true;
-      inline.classList.add("is-mobile-earned", "is-mobile-tease");
-      inline.setAttribute("aria-expanded", "true");
-      teaseTimer = after(5200, collapse);
-    };
-
-    inline.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      window.clearTimeout(teaseTimer);
-      expanded ? collapse() : expand();
-    });
-    inline.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      window.clearTimeout(teaseTimer);
-      expanded ? collapse() : expand();
-    });
-
-    const dwellObserver = new IntersectionObserver((entries) => {
-      const visible = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= .55);
-      if (!visible || teased) return;
-      after(1500, () => {
-        const rect = masthead.getBoundingClientRect();
-        if (rect.bottom > 0 && rect.top < window.innerHeight) tease();
-      });
-    }, { threshold: [.55] });
-    dwellObserver.observe(masthead);
-    return true;
-  };
-
-  /* Motto + 1962: earned discovery should briefly reveal the deeper context on touch.
-     Afterward it recedes to the quieter earned state already provided by the base UI. */
-  const autoRevealEarned = () => {
-    const count = Number(document.documentElement.dataset.ashwoodDiscoveryCount || 0);
-    const mottoContext = document.querySelector(".ashwood-jm-motto-context");
-    const independenceContext = document.querySelector(".ashwood-jm-1962-context");
-
-    if (count >= 2 && mottoContext && mottoContext.dataset.mobileAutoShown !== "1") {
-      mottoContext.dataset.mobileAutoShown = "1";
-      mottoContext.classList.add("is-mobile-auto-visible");
-      after(5200, () => mottoContext.classList.remove("is-mobile-auto-visible"));
+  const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
+  document.body.classList.add("ashwood-home-editorial");
+  const thesisStyle = document.createElement("style");
+  thesisStyle.textContent = `
+    .ashwood-home-thesis { position:relative; box-sizing:border-box; width:100%; margin:clamp(62px,10vw,136px) 0 clamp(52px,8vw,110px); padding:clamp(28px,4vw,52px) 0 clamp(34px,5vw,68px); border-top:1px solid color-mix(in srgb,var(--ashwood-field-green,#009b3a) 38%,var(--ashwood-rule)); border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 62%,transparent); }
+    .ashwood-home-thesis__eyebrow { display:block; margin:0 0 clamp(18px,2.6vw,30px); color:var(--ashwood-field-green,#009b3a); font-size:8px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; }
+    .ashwood-home-thesis__statement { margin:0; max-width:18ch; color:var(--ashwood-ink); font-family:Arial,Helvetica,sans-serif; font-size:clamp(44px,6.7vw,98px); font-weight:500; line-height:.94; letter-spacing:-.05em; }
+    .ashwood-home-thesis__statement em { color:var(--ashwood-gold); font-style:italic; font-weight:500; }
+    .ashwood-home-thesis__prompt { display:flex; align-items:center; gap:12px; margin:clamp(26px,3.4vw,42px) 0 0; color:var(--ashwood-muted); font-size:8px; letter-spacing:.16em; text-transform:uppercase; }
+    .ashwood-home-thesis__prompt::before { content:""; width:clamp(28px,5vw,72px); height:1px; background:color-mix(in srgb,var(--ashwood-gold) 58%,transparent); }
+    @media (max-width:760px),(pointer:coarse) { .ashwood-home-thesis { margin:24px 0 56px; padding:30px 0 38px; } .ashwood-home-thesis__statement { max-width:12ch; font-size:clamp(40px,12.2vw,58px); line-height:.95; } .ashwood-home-thesis__prompt { margin-top:28px; } }
+    @media (min-width:761px) and (pointer:fine) {
+      body.ashwood-doc-editorial-ready .ashwood-doc-launcher,
+      body.ashwood-doc-editorial-ready .ashwood-doctor-guide { display:none !important; }
+      .ashwood-doc-editorial-launcher { position:fixed; right:22px; bottom:22px; z-index:620; display:inline-flex; align-items:center; gap:9px; min-height:40px; padding:8px 14px; border:1px solid color-mix(in srgb,var(--ashwood-rule) 82%,transparent); border-radius:999px; background:color-mix(in srgb,var(--ashwood-paper) 94%,transparent); color:var(--ashwood-ink); backdrop-filter:blur(12px); font:700 8px/1 Arial,Helvetica,sans-serif; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; }
+      .ashwood-doc-editorial-launcher::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--ashwood-field-green,#009b3a); box-shadow:0 0 12px color-mix(in srgb,var(--ashwood-field-green,#009b3a) 55%,transparent); }
+      .ashwood-doc-editorial-panel { position:fixed; z-index:630; right:22px; bottom:22px; width:min(390px,calc(100vw - 44px)); box-sizing:border-box; padding:16px 17px 14px; border:1px solid var(--ashwood-rule); background:color-mix(in srgb,var(--ashwood-paper) 96%,transparent); backdrop-filter:blur(16px); box-shadow:0 18px 54px #0003; }
+      .ashwood-doc-editorial-panel[hidden] { display:none !important; }
+      .ashwood-doc-editorial-panel__eyebrow { margin:0 0 7px; color:var(--ashwood-field-green,#009b3a); font:700 8px/1 Arial,Helvetica,sans-serif; letter-spacing:.16em; }
+      .ashwood-doc-editorial-panel__title { margin:0 0 7px; color:var(--ashwood-ink); font:500 22px/1.05 Arial,Helvetica,sans-serif; letter-spacing:-.02em; }
+      .ashwood-doc-editorial-panel__copy { margin:0; color:var(--ashwood-muted); font:400 10px/1.55 Arial,Helvetica,sans-serif; }
+      .ashwood-doc-editorial-panel__controls { display:grid; grid-template-columns:auto 1fr auto auto auto; gap:10px; align-items:center; margin-top:13px; padding-top:11px; border-top:1px solid var(--ashwood-rule); }
+      .ashwood-doc-editorial-panel button { border:0; background:none; color:var(--ashwood-muted); font:700 8px/1 Arial,Helvetica,sans-serif; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; }
+      .ashwood-doc-editorial-panel .next { color:var(--ashwood-ink); }
+      .ashwood-doctor-bird-cursor.ashwood-doc-editorial-bird { display:block !important; z-index:625 !important; pointer-events:none !important; transition:none !important; will-change:transform; }
+      .ashwood-doctor-bird-cursor.ashwood-doc-editorial-bird.is-landed { pointer-events:auto !important; cursor:help; }
+      .ashwood-doctor-bird-cursor.ashwood-doc-editorial-bird img:not(.ashwood-doc-wing-trace) { animation:ashwood-doc-rendered-hover-desktop 1.15s ease-in-out infinite alternate; transform-origin:56% 58%; }
+      .ashwood-doc-wing-trace { position:absolute !important; inset:0 !important; width:100% !important; height:100% !important; object-fit:contain; opacity:.1; pointer-events:none; clip-path:polygon(8% 0,82% 0,79% 56%,18% 58%); transform-origin:64% 55%; animation:ashwood-doc-wing-trace-desktop .13s linear infinite alternate; }
+      .ashwood-doc-wing-trace--far { opacity:.055; animation-direction:alternate-reverse; animation-duration:.11s; }
+      .ashwood-doc-targeted { position:relative !important; outline:1px solid color-mix(in srgb,var(--ashwood-field-green,#009b3a) 32%,transparent); outline-offset:7px; }
+      .ashwood-doc-reference-marker { position:absolute; z-index:70; right:10px; top:10px; display:inline-flex; align-items:center; gap:7px; padding:6px 8px; border:1px solid color-mix(in srgb,var(--ashwood-field-green,#009b3a) 34%,transparent); background:color-mix(in srgb,var(--ashwood-paper) 94%,transparent); color:var(--ashwood-field-green,#009b3a); font:700 7px/1 Arial,Helvetica,sans-serif; letter-spacing:.14em; text-transform:uppercase; pointer-events:none; backdrop-filter:blur(8px); }
+      .ashwood-doc-reference-marker::before { content:""; width:5px; height:5px; border-radius:50%; background:var(--ashwood-gold); }
+      .ashwood-doc-fact { position:fixed; z-index:645; width:min(248px,calc(100vw - 32px)); box-sizing:border-box; padding:10px 12px 11px; border:1px solid color-mix(in srgb,var(--ashwood-field-green,#009b3a) 34%,var(--ashwood-rule)); background:color-mix(in srgb,var(--ashwood-paper) 97%,transparent); color:var(--ashwood-ink); box-shadow:0 12px 34px #0002; opacity:0; transform:translateY(5px); pointer-events:none; transition:opacity .18s ease,transform .22s ease; backdrop-filter:blur(12px); }
+      .ashwood-doc-fact.is-visible { opacity:1; transform:none; }
+      .ashwood-doc-fact__label { display:block; margin-bottom:5px; color:var(--ashwood-field-green,#009b3a); font:700 7px/1 Arial,Helvetica,sans-serif; letter-spacing:.16em; text-transform:uppercase; }
+      .ashwood-doc-fact__copy { display:block; font:500 10px/1.45 Arial,Helvetica,sans-serif; }
+      @keyframes ashwood-doc-rendered-hover-desktop { from { transform:translateY(-1px) rotate(-.4deg); } to { transform:translateY(1.5px) rotate(.45deg); } }
+      @keyframes ashwood-doc-wing-trace-desktop { from { transform:rotate(-5deg) scaleY(.86); filter:blur(.2px); } to { transform:rotate(7deg) scaleY(1.04); filter:blur(.55px); } }
     }
-
-    if (count >= 4 && independenceContext && independenceContext.dataset.mobileAutoShown !== "1") {
-      independenceContext.dataset.mobileAutoShown = "1";
-      independenceContext.classList.add("is-mobile-auto-visible");
-      after(5200, () => independenceContext.classList.remove("is-mobile-auto-visible"));
-    }
-  };
-
-  /* Touch toggles remain available after the one-time automatic reveal. */
-  const installTouchToggles = () => {
-    const motto = document.querySelector(".iridescent-word--jamaica");
-    const mottoContext = document.querySelector(".ashwood-jm-motto-context");
-    if (motto && mottoContext && motto.dataset.mobileParity !== "1") {
-      motto.dataset.mobileParity = "1";
-      motto.addEventListener("click", () => {
-        mottoContext.classList.toggle("is-mobile-auto-visible");
-      });
-    }
-
-    const independence = document.querySelector(".ashwood-jm-1962");
-    const independenceContext = document.querySelector(".ashwood-jm-1962-context");
-    if (independence && independenceContext && independence.dataset.mobileParity !== "1") {
-      independence.dataset.mobileParity = "1";
-      independence.addEventListener("click", () => {
-        independenceContext.classList.toggle("is-mobile-auto-visible");
-      });
-    }
-  };
-
-  const install = () => {
-    installXaymaca();
-    installTouchToggles();
-    autoRevealEarned();
-  };
-
+  `;
+  document.head.appendChild(thesisStyle);
+  const loadScript=(src,marker)=>{if(document.querySelector(`script[${marker}]`))return;const script=document.createElement("script");script.src=src;script.defer=true;script.setAttribute(marker,"1");document.head.appendChild(script);};
+  if(!isMobile){loadScript("/hotspot-runtime-restore.js?v=20260831-restore2","data-ashwood-hotspot-runtime");loadScript("/hotspot-guidance.js?v=20260831-guide2","data-ashwood-hotspot-guidance");}
+  loadScript("/doctor-bird-trigger.js?v=20260831-guide1","data-ashwood-doctor-bird-trigger");
+  loadScript("/home-flow.js?v=20260831-flow3","data-ashwood-home-flow");
+  const capabilities=[
+    {id:"anticipation",name:"ANTICIPATION",statement:"I notice what is likely to matter next.",useful:"A weak signal is becoming important before the need is obvious.",practice:"ailhat · Portfolio Intelligence",href:"https://ailhat.vercel.app/",external:true},
+    {id:"diagnosis",name:"DIAGNOSIS",statement:"I find where intention and reality diverge.",useful:"The stated intent and lived reality have started to pull apart.",practice:"ALVIRA · Context Intelligence",href:"https://alviratech.vercel.app/",external:true},
+    {id:"translation",name:"TRANSLATION",statement:"I make complex ideas digestible.",useful:"Complex work needs to become clear enough for different people to absorb and act on.",practice:"Build Journal · Field notes + public proof",href:"/journal/"},
+    {id:"systems",name:"SYSTEMS",statement:"I look for the structure underneath the thing.",useful:"A recurring problem needs durable structure rather than another patch.",practice:"Builds · Governed execution systems",href:"/journal/"},
+    {id:"adaptation",name:"ADAPTATION",statement:"I let evidence change the approach.",useful:"Reality changes the conditions and the approach needs to change with it.",practice:"LEDGATo · Operational reality",href:"https://ledgato.vercel.app/",external:true},
+    {id:"synthesis",name:"SYNTHESIS",statement:"I bring separate things into one coherent idea.",useful:"The opportunity sits between disciplines, ideas, or mediums.",practice:"ASHWOOD · Modeling + Music + Builds",href:"/about/"}
+  ];
+  const installThesis=()=>{if(document.querySelector(".ashwood-home-thesis"))return;const intro=document.querySelector(".intro"),field=document.querySelector(".principles-field");if(!intro||!field)return;const section=document.createElement("section");section.className="ashwood-home-thesis";section.setAttribute("aria-labelledby","ashwood-home-thesis-title");section.innerHTML=`<span class="ashwood-home-thesis__eyebrow">THE INSTINCT</span><h2 class="ashwood-home-thesis__statement" id="ashwood-home-thesis-title">I notice what should exist next, then build the conditions for it to <em>become real.</em></h2><p class="ashwood-home-thesis__prompt">The throughline is how.</p>`;field.before(section);};
+  const buildThroughline=()=>{if(!isMobile)return;const field=document.querySelector(".principles-field");if(!field||field.querySelector(".ashwood-throughline-native"))return;field.querySelectorAll(".ashwood-capability-map,.ashwood-field-guide,.ashwood-mobile-hotspot-panel").forEach((node)=>node.remove());const throughline=document.createElement("section");throughline.className="ashwood-throughline-native";throughline.id="throughline";throughline.setAttribute("aria-labelledby","throughline-title");throughline.innerHTML=`<p class="ashwood-throughline__eyebrow">THE THROUGHLINE · HOW THE WORK MOVES</p><h2 class="ashwood-throughline__title" id="throughline-title">The forms change.<br>The method keeps returning.</h2><p class="ashwood-throughline__intro">Six recurring ways I anticipate, diagnose, translate, build, adapt, and bring separate things into coherence.</p><ol class="ashwood-throughline__list">${capabilities.map((item,index)=>`<li class="ashwood-throughline__item" data-capability="${item.id}"><span class="ashwood-throughline__index">${String(index+1).padStart(2,"0")} / 06</span><span class="ashwood-throughline__name">${item.name}</span><p class="ashwood-throughline__statement">${item.statement}</p><p class="ashwood-throughline__useful"><strong>Useful when</strong>${item.useful}</p><a class="ashwood-throughline__practice" href="${item.href}"${item.external?' target="_blank" rel="noreferrer"':""}>${item.practice} →</a></li>`).join("")}</ol>`;field.appendChild(throughline);const items=[...throughline.querySelectorAll(".ashwood-throughline__item")];const setReading=()=>{const line=window.innerHeight*.47;let closest=null,distance=Infinity;items.forEach((item)=>{const rect=item.getBoundingClientRect();const d=Math.abs((rect.top+Math.min(rect.height*.3,110))-line);if(d<distance){distance=d;closest=item;}});items.forEach((item)=>item.classList.toggle("is-reading",item===closest));};let frame=0;const schedule=()=>{if(frame)return;frame=requestAnimationFrame(()=>{frame=0;setReading();});};window.addEventListener("scroll",schedule,{passive:true});window.addEventListener("resize",schedule,{passive:true});setReading();};
+  const refinePortals=()=>{const container=document.querySelector(".home-entryways");if(!container||container.dataset.editorial==="1")return;container.dataset.editorial="1";[...container.querySelectorAll(".home-entryway")].forEach((entry)=>{const href=entry.getAttribute("href")||"";if(/connect/.test(href)){entry.remove();return;}if(/portfolio/.test(href))entry.dataset.kind="modeling";else if(/music/.test(href))entry.dataset.kind="music";else if(/journal/.test(href))entry.dataset.kind="builds";});};
+  const simplifyNow=()=>{const section=document.querySelector("#now,.home-sitrep");if(!section||section.classList.contains("home-now-editorial"))return;section.className="home-now home-now-editorial";section.setAttribute("aria-label","What is happening now");section.innerHTML=`<span class="home-now-editorial__label">NOW</span><p class="home-now-editorial__copy">Los Angeles · modeling, music, and product building in active motion.</p><a class="home-now-editorial__link" href="/journal/">Follow the Build Journal →</a>`;};
+  const refineClosing=()=>{const nav=document.querySelector(".future-nav,.home-utility");if(!nav||nav.classList.contains("home-closing"))return;nav.className="future-nav home-utility home-closing";nav.setAttribute("aria-label","Continue with TK Ashwood");nav.innerHTML=`<h2 class="home-closing__title">Come make something.</h2><span class="home-closing__links"><a href="/connect/">Work together →</a><a href="/music/">Listen →</a><a href="/journal/">Follow the Journal →</a><a href="/about/">About →</a></span>`;};
+  const installXaymaca=()=>{if(!isMobile)return;const masthead=document.querySelector(".masthead"),inline=document.querySelector(".ashwood-jm-xaymaca-inline");if(!masthead||!inline||inline.dataset.mobileParity==="1")return;inline.dataset.mobileParity="1";inline.classList.add("ashwood-mobile-parity");inline.tabIndex=0;inline.setAttribute("role","button");inline.setAttribute("aria-expanded","false");let expanded=false;const render=()=>{inline.classList.toggle("is-mobile-expanded",expanded);inline.classList.add("is-mobile-earned");inline.setAttribute("aria-expanded",String(expanded));};inline.addEventListener("click",(event)=>{event.preventDefault();expanded=!expanded;render();});inline.addEventListener("keydown",(event)=>{if(event.key!=="Enter"&&event.key!==" ")return;event.preventDefault();expanded=!expanded;render();});after(1500,()=>{const rect=masthead.getBoundingClientRect();if(rect.bottom>0){inline.classList.add("is-mobile-tease");after(4300,()=>inline.classList.remove("is-mobile-tease"));}});};
+  const installDocEditorial=()=>{if(document.querySelector(".ashwood-doc-editorial-launcher"))return;const bird=document.querySelector(".ashwood-doctor-bird-cursor"),rendered=bird?.querySelector("img");if(!bird||!rendered)return;document.body.classList.add("ashwood-doc-editorial-ready");bird.classList.add("ashwood-doc-editorial-bird");bird.style.opacity="0";bird.style.visibility="hidden";if(!bird.querySelector(".ashwood-doc-wing-trace")){const near=rendered.cloneNode(true),far=rendered.cloneNode(true);near.className="ashwood-doc-wing-trace ashwood-doc-wing-trace--near";far.className="ashwood-doc-wing-trace ashwood-doc-wing-trace--far";near.removeAttribute("id");far.removeAttribute("id");near.setAttribute("aria-hidden","true");far.setAttribute("aria-hidden","true");bird.append(far,near);}const launcher=document.createElement("button");launcher.className="ashwood-doc-editorial-launcher";launcher.type="button";launcher.textContent=isMobile?"DOC / GUIDE":"FOLLOW DOC →";document.body.appendChild(launcher);const panel=document.createElement("aside");panel.className="ashwood-doc-editorial-panel";panel.hidden=true;panel.innerHTML=`<p class="ashwood-doc-editorial-panel__eyebrow"></p><h2 class="ashwood-doc-editorial-panel__title"></h2><p class="ashwood-doc-editorial-panel__copy"></p><div class="ashwood-doc-editorial-panel__controls"><span class="count"></span><span></span><button class="back" type="button">Back</button><button class="next" type="button">Next →</button><button class="exit" type="button">Exit</button></div>`;document.body.appendChild(panel);
+    const fact=document.createElement("aside");fact.className="ashwood-doc-fact";fact.setAttribute("aria-live","polite");fact.innerHTML=`<span class="ashwood-doc-fact__label">DOC'S NOTE / EASTER EGG</span><span class="ashwood-doc-fact__copy"></span>`;if(!isMobile)document.body.appendChild(fact);
+    const facts=["The Doctor Bird is Jamaica’s national bird—the red-billed streamertail.","The red-billed streamertail is endemic to Jamaica; its wild home is the island.","Male red-billed streamertails grow two long black tail feathers called streamers.","ASHWOOD’s XAYMACA detail points back to a Taíno name associated with Jamaica, commonly rendered as ‘land of wood and water.’"];
+    let factIndex=0,targetEl=null,marker=null;
+    const hideFact=()=>fact?.classList.remove("is-visible");
+    const positionFact=()=>{if(isMobile||!fact)return;const rect=bird.getBoundingClientRect(),width=Math.min(248,innerWidth-32);const left=clamp(rect.left+rect.width/2-width/2,16,innerWidth-width-16);const below=rect.bottom+10;const top=below+88<innerHeight?below:Math.max(16,rect.top-92);fact.style.left=`${left}px`;fact.style.top=`${top}px`;};
+    const showFact=()=>{if(isMobile||!fact||!bird.classList.contains("is-landed"))return;fact.querySelector(".ashwood-doc-fact__copy").textContent=facts[factIndex%facts.length];factIndex+=1;positionFact();fact.classList.add("is-visible");};
+    if(!isMobile){bird.setAttribute("aria-label","Doctor Bird. Hover for a Jamaica fact.");bird.tabIndex=0;bird.addEventListener("mouseenter",showFact);bird.addEventListener("mouseleave",hideFact);bird.addEventListener("focus",showFact);bird.addEventListener("blur",hideFact);window.addEventListener("resize",()=>{if(fact.classList.contains("is-visible"))positionFact();},{passive:true});}
+    const clearTarget=()=>{targetEl?.classList.remove("ashwood-doc-targeted");marker?.remove();targetEl=null;marker=null;};
+    const markTarget=(el)=>{clearTarget();if(isMobile)return;targetEl=el;targetEl.classList.add("ashwood-doc-targeted");marker=document.createElement("span");marker.className="ashwood-doc-reference-marker";marker.textContent="DOC / HERE";targetEl.appendChild(marker);};
+    const stops=[[".intro","DOC / 01 / ORIENTATION","Follow the idea.","ASHWOOD begins with curiosity: modeling, music, products, and systems are different forms the same point of view can take."],[".ashwood-home-thesis","DOC / 02 / INSTINCT","Notice what should exist next.","The recurring instinct is to identify the missing condition, then build what lets a different outcome become possible."],["#throughline,.principles-field","DOC / 03 / THROUGHLINE","The method keeps returning.","Anticipation, diagnosis, translation, systems, adaptation, and synthesis describe how the work moves."],[".home-entryways","DOC / 04 / BECOMINGS","Then the pattern becomes something.","Modeling, music, and builds are different manifestations—not separate identities competing for space."],[".home-now-editorial","DOC / 05 / NOW","The practice stays live.","The Build Journal keeps the beliefs, reversals, evidence, failures, and decisions behind what is being made now."],[".home-closing","DOC / 06 / CONTINUE","Come make something.","Choose a thread: collaborate, listen, follow the work, or go deeper into the practice."]];let active=false,index=0,current={x:innerWidth+80,y:130};
+    const targetPoint=(el)=>{const rect=el.getBoundingClientRect();if(!isMobile){return{x:clamp(rect.right-Math.min(92,Math.max(62,rect.width*.08)),110,innerWidth-110),y:clamp(rect.top+Math.min(104,Math.max(68,rect.height*.18)),100,innerHeight*.62)}}return{x:Math.max(66,Math.min(innerWidth-68,rect.right-Math.min(42,rect.width*.12))),y:Math.max(82,Math.min(innerHeight*.56,rect.top+Math.min(rect.height*.28,126)))};};
+    const placeInstant=(point)=>{current=point;bird.style.transform=`translate3d(${point.x-41}px,${point.y-28}px,0)`;};
+    const flyTo=(point,backwards=false,entering=false)=>{bird.getAnimations().forEach((animation)=>animation.cancel());bird.classList.remove("is-landed");bird.classList.add("is-visible");hideFact();const start=entering?{x:innerWidth+(isMobile?115:72),y:Math.max(84,point.y-(isMobile?92:28))}:current;const distance=Math.hypot(point.x-start.x,point.y-start.y);const lift=isMobile?Math.min(82,30+distance*.09):Math.min(34,14+distance*.035);const mid={x:start.x+(point.x-start.x)*.52,y:Math.min(start.y,point.y)-lift};const reverse=isMobile?backwards:point.x<start.x;bird.style.scale=reverse?"-1 1":"1 1";bird.style.opacity="1";bird.style.visibility="visible";if(reduce.matches){placeInstant(point);bird.classList.add("is-landed");return Promise.resolve();}const animation=bird.animate([{transform:`translate3d(${start.x-41}px,${start.y-28}px,0) rotate(0deg)`},{transform:`translate3d(${mid.x-41}px,${mid.y-28}px,0) rotate(${reverse?(isMobile?-5:-2.5):(isMobile?5:2.5)}deg)`,offset:.52},{transform:`translate3d(${point.x-41}px,${point.y-28}px,0) rotate(0deg)`}],{duration:isMobile?720:540,easing:"cubic-bezier(.22,.78,.22,1)",fill:"forwards"});return animation.finished.catch(()=>{}).then(()=>{placeInstant(point);bird.classList.add("is-landed");});};
+    const afterScrollSettles=(callback)=>{if(reduce.matches){callback();return;}let timer=0;const done=()=>{window.clearTimeout(timer);window.removeEventListener("scroll",reset);callback();};const reset=()=>{window.clearTimeout(timer);timer=window.setTimeout(done,135);};window.addEventListener("scroll",reset,{passive:true});timer=window.setTimeout(done,isMobile?520:380);};
+    const render=(backwards=false,entering=false)=>{const stop=stops[index],el=document.querySelector(stop[0]);if(!el)return;panel.hidden=true;markTarget(el);el.scrollIntoView({behavior:reduce.matches?"auto":"smooth",block:"center"});afterScrollSettles(()=>{if(!active)return;const point=targetPoint(el);flyTo(point,backwards,entering).then(()=>{if(!active)return;panel.querySelector(".ashwood-doc-editorial-panel__eyebrow").textContent=stop[1];panel.querySelector(".ashwood-doc-editorial-panel__title").textContent=stop[2];panel.querySelector(".ashwood-doc-editorial-panel__copy").textContent=stop[3];panel.querySelector(".count").textContent=`${String(index+1).padStart(2,"0")} / 06`;panel.querySelector(".back").disabled=index===0;panel.querySelector(".next").textContent=index===stops.length-1?"Finish →":"Next →";panel.hidden=false;});});};
+    const start=()=>{if(active)return;active=true;index=0;launcher.hidden=true;bird.classList.add("is-visible");bird.style.opacity="1";bird.style.visibility="visible";render(false,true);};
+    const end=()=>{active=false;panel.hidden=true;launcher.hidden=false;clearTarget();hideFact();bird.classList.remove("is-landed");if(reduce.matches){bird.classList.remove("is-visible");bird.style.opacity="0";bird.style.visibility="hidden";return;}const exit={x:innerWidth+(isMobile?120:72),y:Math.max(80,current.y-(isMobile?70:22))};flyTo(exit,false,false).then(()=>{bird.classList.remove("is-landed");bird.classList.remove("is-visible");bird.style.opacity="0";bird.style.visibility="hidden";});};
+    const next=()=>{if(!active)return;if(index===stops.length-1){end();return;}index+=1;render(false,false);};const back=()=>{if(!active||index===0)return;index-=1;render(true,false);};launcher.addEventListener("click",start);panel.querySelector(".next").addEventListener("click",next);panel.querySelector(".back").addEventListener("click",back);panel.querySelector(".exit").addEventListener("click",end);document.addEventListener("click",(event)=>{const trigger=event.target.closest("[data-ashwood-bird-guide]");if(!trigger)return;event.preventDefault();event.stopImmediatePropagation();start();},{capture:true});document.addEventListener("keydown",(event)=>{if(!active)return;if(event.key==="Escape")end();else if(event.key==="ArrowRight"){event.preventDefault();next();}else if(event.key==="ArrowLeft"){event.preventDefault();back();}});};
+  const cleanupMobileLegacy=()=>{if(!isMobile)return;document.querySelectorAll(".ashwood-capability-map,.ashwood-curiosity-progress,.ashwood-thread-flash,.ashwood-field-guide,.ashwood-capability-nudge,.ashwood-mobile-hotspot-panel").forEach((node)=>node.remove());};
+  const install=()=>{installThesis();refinePortals();simplifyNow();refineClosing();buildThroughline();installXaymaca();cleanupMobileLegacy();installDocEditorial();};
   install();
-
-  const observer = new MutationObserver(install);
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  const discoveryObserver = new MutationObserver(autoRevealEarned);
-  discoveryObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-ashwood-discovery-count"]
-  });
+  requestAnimationFrame(()=>requestAnimationFrame(install));
+  window.addEventListener("load",install,{once:true});
+  const observer=new MutationObserver(()=>{if(isMobile){cleanupMobileLegacy();if(!document.querySelector(".ashwood-throughline-native"))buildThroughline();}if(!document.querySelector(".ashwood-home-thesis"))installThesis();if(!document.querySelector(".ashwood-doc-editorial-launcher"))installDocEditorial();});observer.observe(document.body,{childList:true,subtree:true});after(3000,()=>observer.disconnect());
 })();
