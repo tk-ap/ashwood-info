@@ -11,8 +11,8 @@
   thesisStyle.textContent = `
     .ashwood-home-thesis { position:relative; box-sizing:border-box; width:100%; margin:clamp(62px,10vw,136px) 0 clamp(52px,8vw,110px); padding:clamp(28px,4vw,52px) 0 clamp(34px,5vw,68px); border-top:1px solid color-mix(in srgb,var(--ashwood-field-green,#009b3a) 38%,var(--ashwood-rule)); border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 62%,transparent); }
     .ashwood-home-thesis__eyebrow { display:block; margin:0 0 clamp(18px,2.6vw,30px); color:var(--ashwood-field-green,#009b3a); font-size:8px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; }
-    .ashwood-home-thesis__statement { margin:0; max-width:18ch; color:var(--ashwood-ink); font-family:Georgia,serif; font-size:clamp(44px,6.7vw,98px); font-weight:400; line-height:.94; letter-spacing:-.05em; }
-    .ashwood-home-thesis__statement em { color:var(--ashwood-gold); font-style:italic; font-weight:400; }
+    .ashwood-home-thesis__statement { margin:0; max-width:18ch; color:var(--ashwood-ink); font-family:Arial,Helvetica,sans-serif; font-size:clamp(44px,6.7vw,98px); font-weight:500; line-height:.94; letter-spacing:-.05em; }
+    .ashwood-home-thesis__statement em { color:var(--ashwood-gold); font-style:italic; font-weight:500; }
     .ashwood-home-thesis__prompt { display:flex; align-items:center; gap:12px; margin:clamp(26px,3.4vw,42px) 0 0; color:var(--ashwood-muted); font-size:8px; letter-spacing:.16em; text-transform:uppercase; }
     .ashwood-home-thesis__prompt::before { content:""; width:clamp(28px,5vw,72px); height:1px; background:color-mix(in srgb,var(--ashwood-gold) 58%,transparent); }
     @media (max-width:760px),(pointer:coarse) { .ashwood-home-thesis { margin:24px 0 56px; padding:30px 0 38px; } .ashwood-home-thesis__statement { max-width:12ch; font-size:clamp(40px,12.2vw,58px); line-height:.95; } .ashwood-home-thesis__prompt { margin-top:28px; } }
