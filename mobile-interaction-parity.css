@@ -38,7 +38,11 @@ body.ashwood-home-native.ashwood-home-editorial .home-entryway[data-kind="music"
 }
 
 body.ashwood-home-native.ashwood-home-editorial .home-entryway[data-kind="builds"]::before {
-  background: #111513 url('https://alviratech.vercel.app/alvira-logo-editorial-v2.png') center / cover no-repeat !important;
+  background-color: #111513 !important;
+  background-image: url('https://alviratech.vercel.app/alvira-logo-editorial-v2.png') !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
   filter: saturate(.78) contrast(1.05) brightness(.62);
   transform: scale(1.025);
   transition: transform 1.1s cubic-bezier(.16,.8,.24,1), filter .6s ease;
