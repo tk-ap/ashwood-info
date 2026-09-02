@@ -29,7 +29,8 @@ body.ashwood-home-native.ashwood-home-editorial .home-entryway__title,
 }
 
 /* Real media for the two secondary work portals. These should read as authored
-   work, not empty decorative fields. */
+   work, not empty decorative fields. Music uses the portrait already canonically
+   associated with the ASHWOOD music page; Builds uses ALVIRA-owned editorial media. */
 body.ashwood-home-native.ashwood-home-editorial .home-entryway[data-kind="music"]::before {
   background: url('/assets/digitals2026/about-portrait-upright.jpg') center 30% / cover no-repeat !important;
   filter: saturate(.72) contrast(1.06) brightness(.64);
