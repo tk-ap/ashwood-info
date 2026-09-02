@@ -69,7 +69,7 @@
      details and page regions as environmental context rather than cursor targets. */
   if (!document.querySelector('script[data-ashwood-doc-character]')) {
     const character = document.createElement("script");
-    character.src = "/doc-character.js?v=20260902-character1";
+    character.src = "/doc-character-v2.js?v=20260902-character2";
     character.defer = true;
     character.setAttribute("data-ashwood-doc-character", "1");
     document.head.appendChild(character);
