@@ -22,6 +22,7 @@
   <style>
     .build-doorways{display:grid;gap:1px;background:var(--ashwood-rule,#2b2925);border-block:1px solid var(--ashwood-rule,#2b2925)}
     .build-doorway{display:grid;gap:20px;padding:38px 28px;background:var(--ashwood-bg,#11110f);color:inherit;text-decoration:none;transition:background .2s ease}
+    .build-doorway--orientation{grid-column:1/-1;border-left:2px solid #d6c24a}
     .build-doorway:hover{background:color-mix(in srgb,var(--ashwood-bg,#11110f) 90%,#d6c24a 10%)}
     .build-doorway small{font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.56}
     .build-doorway h3{margin:0;font-size:clamp(30px,4vw,52px);line-height:.96;letter-spacing:-.035em}
@@ -55,8 +56,9 @@
 
     <section id="now" class="ecosystem-brief" aria-labelledby="now-title">
       <div class="section-marker"><span>00</span><span>NOW / ECOSYSTEM + BUILD THREADS</span></div>
-      <div class="ecosystem-brief__heading"><h2 id="now-title">Designing the boundary between judgment and execution.</h2><p>The public products stay distinct, but the shared problem is becoming clearer: what context should persist, what deserves attention, what machines should be allowed to do, how execution is carried forward, and where human judgment still defines success. Choose a question to follow deeper.</p></div>
+      <div class="ecosystem-brief__heading"><h2 id="now-title">Designing the boundary between judgment and execution.</h2><p>The public products stay distinct, but the shared problem is becoming clearer: what context should persist, what deserves attention, what machines should be allowed to do, how execution is carried forward, and where human judgment still defines success. If that language is new, start with AI, FROM ZERO. Otherwise, choose a question to follow deeper.</p></div>
       <div id="threads" class="build-doorways">
+        <a class="build-doorway build-doorway--orientation" href="/ai-from-zero/"><small>START HERE / AI, FROM ZERO</small><h3>Not sure what an agent is — or what any of this could do for you?</h3><p>A plain-language introduction to what AI can do, what an agent actually means, what to hand off, what to keep, and how to try one useful first delegation before worrying about infrastructure.</p><b>Start from zero →</b></a>
         <a class="build-doorway" href="/journal/alvira/"><small>Context Intelligence / ALVIRA</small><h3>What if AI actually knew what mattered?</h3><p>Build, reflect on, update, own, and reuse the understanding AI needs. Follow the path from MeOS and the encrypted dossier to ALVIRA Context, Reflect, Founding Beta, ownership, History, Reuse, and the living Context loop.</p><b>Enter ALVIRA thread →</b></a>
         <a class="build-doorway" href="/journal/ailhat/"><small>Portfolio Intelligence / ailhat</small><h3>What deserves attention next?</h3><p>Identify what across a portfolio deserves attention next, and why. Follow the category thesis, host-agnostic moat, first-value problem, and the shift from monitoring toward judgment and governed action.</p><b>Enter ailhat thread →</b></a>
         <a class="build-doorway" href="/journal/ledgato/"><small>Operational Reality / LEDGATo</small><h3>Is the agent actually inside the lines?</h3><p>Test whether agent authority and orchestration remain inside the intended boundaries at execution time. Follow the gap between interface and engine, intended orchestration and runtime reality, and what execution-time accountability might require.</p><b>Enter LEDGATo thread →</b></a>
@@ -102,7 +104,7 @@
       <p class="journal-kicker">THE ARCHIVE IS DEEPER THAN THE LANDING.</p>
       <h2 id="closing-title">The interesting part is still the movement.</h2>
       <p>This page is orientation. The product and infrastructure threads are where the decisions, reversals, technical boundaries, failures, and evidence get to keep their texture.</p>
-      <div class="journal-closing__links"><a href="/journal/alvira/">ALVIRA</a><a href="/journal/ailhat/">ailhat</a><a href="/journal/ledgato/">LEDGATo</a><a href="/journal/infrastructure/">Infrastructure</a><a href="/journal/field-notes/">Field Notes</a></div>
+      <div class="journal-closing__links"><a href="/ai-from-zero/">AI, FROM ZERO</a><a href="/journal/alvira/">ALVIRA</a><a href="/journal/ailhat/">ailhat</a><a href="/journal/ledgato/">LEDGATo</a><a href="/journal/infrastructure/">Infrastructure</a><a href="/journal/field-notes/">Field Notes</a></div>
     </section>
   </main>
   <footer class="journal-footer"><span>ASHWOOD · BUILD JOURNAL</span><span>© 2026 TK Ashwood</span></footer>
