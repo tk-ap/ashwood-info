@@ -1,0 +1,28 @@
+version: 0.1.0
+product_key: ashwood
+agent_os_repository: tk-ap/agent-os
+routing_source: registry/product-routing.yaml
+
+inbound:
+  - from: agent-os-workforce
+    contract: contracts/outcome-event.schema.json
+    purpose: receive verified outcomes that may become curated public build evidence
+  - from: ecosystem-products
+    contract: contracts/outcome-event.schema.json
+    purpose: receive verified product-state evidence before public documentation
+
+outbound:
+  - to: agent-os-workforce
+    contract: contracts/work-item.schema.json
+    trigger: accepted ASHWOOD site, portfolio, journal, or presentation work needs governed execution
+
+cross_market:
+  - trigger: public evidence reveals a product-level issue or opportunity rather than an ASHWOOD presentation issue
+    destination: owning-product
+    message: Hand the underlying product work back to its canonical owner; ASHWOOD should document verified outcomes, not silently implement another product's core responsibility.
+
+rules:
+  use_portable_contracts_for_cross_product_handoffs: true
+  cross_market_policy: policies/CROSS_MARKET_POLICY.md
+  integration_claims_require_verified_implementation: true
+  public-evidence-requires-verification-before-claiming-deployed-or-validated-state: true
