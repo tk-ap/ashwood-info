@@ -56,16 +56,18 @@
           <h2 id="dispatch-title">The ideas behind<br />the work.</h2>
           <p>ASHWOOD Dispatch is the editorial record behind the practice — essays on AI, creativity, learning, systems, culture, and whatever is compelling the work. The site keeps the full archive so the thinking can remain visible over time; email is simply how the next issue finds you.</p>
           <p><a href="/dispatch">Read the full Dispatch archive →</a></p>
-          <form class="dispatch-form" action="mailto:ashwood.info@agentmail.to" method="post" enctype="text/plain">
-            <input type="hidden" name="subject" value="ASHWOOD Dispatch interest" />
+          <form class="dispatch-form" action="/api/dispatch-subscribe" method="post">
+            <input type="hidden" name="source" value="ashwood_connect" />
+            <label style="position:absolute;left:-9999px" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
             <div class="dispatch-form__grid">
-              <label><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
-              <label><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+              <label><span>Name</span><input type="text" name="name" autocomplete="name" required maxlength="160" /></label>
+              <label><span>Email</span><input type="email" name="email" autocomplete="email" required maxlength="320" /></label>
             </div>
-            <label><span>What are you following? <em>Optional</em></span><textarea name="interest" rows="3" placeholder="AI, learning, creativity, systems, or the thread between them."></textarea></label>
+            <label><span>What are you following? <em>Optional</em></span><textarea name="interest" rows="3" maxlength="1200" placeholder="AI, learning, creativity, systems, or the thread between them."></textarea></label>
             <button class="connect-cta dispatch-form__submit" type="submit">Receive the next Dispatch <span aria-hidden="true">→</span></button>
+            <p class="dispatch-note" id="dispatch-form-status" aria-live="polite"></p>
           </form>
-          <p class="dispatch-note">For now, this opens your email app with your name, email, and optional interest note addressed to the dedicated ASHWOOD inbox. The archive itself remains public whether or not you subscribe.</p>
+          <p class="dispatch-note">Your details stay with the ASHWOOD Dispatch list and are not used to create an ALVIRA account or Founding Beta application.</p>
         </div>
       </section>
 
@@ -98,5 +100,19 @@
         <a href="/">Home</a><a href="/portfolio">Modeling</a><a href="/music">Music</a><a href="/journal">Builds</a><a href="/dispatch">Dispatch</a><a href="/about">About</a><a aria-current="page" href="/connect">Connect</a>
       </nav>
     </main>
+    <script>
+      (() => {
+        const state = new URLSearchParams(window.location.search).get('dispatch');
+        const status = document.getElementById('dispatch-form-status');
+        if (!state || !status) return;
+        const messages = {
+          confirmed: 'You’re on the list. Check your inbox for confirmation.',
+          subscribed: 'You’re on the list. The next Dispatch will find you here.',
+          invalid: 'Please check your name and email, then try again.',
+          error: 'Something went wrong while saving your subscription. Please try again.'
+        };
+        status.textContent = messages[state] || '';
+      })();
+    </script>
   </body>
 </html>
