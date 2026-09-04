@@ -256,3 +256,51 @@
   setIgnitionOrigin();
   render();
 })();
+
+/* Designer pass: keep Dispatch discoverable without letting it compete with the homepage hero. */
+(() => {
+  const placeDispatch = () => {
+    const teaser = document.querySelector(".home-dispatch-teaser");
+    const entryways = document.querySelector(".home-entryways");
+    if (!teaser || !entryways) return false;
+
+    entryways.after(teaser);
+    teaser.classList.add("home-dispatch-teaser--editorial-strip");
+
+    if (!document.querySelector("#home-dispatch-designer-pass")) {
+      const style = document.createElement("style");
+      style.id = "home-dispatch-designer-pass";
+      style.textContent = `
+        .home-dispatch-teaser--editorial-strip{
+          width:min(88%,1120px)!important;
+          margin:clamp(18px,3vh,34px) auto clamp(18px,3vh,34px)!important;
+          padding:16px 0 17px!important;
+          display:grid!important;
+          grid-template-columns:minmax(180px,.72fr) minmax(0,1.28fr);
+          column-gap:clamp(28px,5vw,72px);
+          align-items:start;
+        }
+        .home-dispatch-teaser--editorial-strip .home-dispatch-teaser__kicker{margin-bottom:8px!important}
+        .home-dispatch-teaser--editorial-strip h2{font-size:clamp(18px,2vw,28px)!important;line-height:1.04!important}
+        .home-dispatch-teaser--editorial-strip .home-dispatch-teaser__deck{margin-top:0!important;font-size:9px!important;max-width:62ch}
+        .home-dispatch-teaser--editorial-strip .home-dispatch-teaser__excerpt{margin-top:9px!important;font-size:clamp(12px,1.05vw,15px)!important}
+        .home-dispatch-teaser--editorial-strip .home-dispatch-teaser__meta{margin-top:10px!important}
+        @media(max-width:760px){
+          .home-dispatch-teaser--editorial-strip{width:100%!important;margin:18px 0 26px!important;padding:15px 0 17px!important;display:block!important}
+          .home-dispatch-teaser--editorial-strip h2{font-size:22px!important}
+          .home-dispatch-teaser--editorial-strip .home-dispatch-teaser__deck{margin-top:10px!important}
+          .home-dispatch-teaser--editorial-strip .home-dispatch-teaser__excerpt{font-size:14px!important}
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    return true;
+  };
+
+  if (!placeDispatch()) {
+    const observer = new MutationObserver(() => {
+      if (placeDispatch()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+})();
