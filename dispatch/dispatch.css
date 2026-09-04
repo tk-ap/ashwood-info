@@ -1,3 +1,5 @@
+@import url('/typography.css?v=20260904-type1');
+
 .dispatch-page {
   background: var(--ashwood-paper);
   color: var(--ashwood-ink);
