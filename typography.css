@@ -20,12 +20,16 @@ h1,
 .journal-page h1,
 .journal-hero h1,
 .dispatch-hero h1,
-.dispatch-postscript h2,
-.home-dispatch-teaser h2,
-.home-dispatch-teaser__excerpt {
+.dispatch-postscript h2 {
   font-family: var(--ashwood-font-editorial);
   font-weight: 400;
   letter-spacing: -.035em;
+}
+
+/* The home teaser creates its CSS at runtime, so these two declarations intentionally win. */
+.home-dispatch-teaser h2,
+.home-dispatch-teaser__excerpt {
+  font-family: var(--ashwood-font-editorial) !important;
 }
 
 /* Home gets the clearest contrast: authored statement vs. system evidence. */
