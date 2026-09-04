@@ -295,6 +295,29 @@
   text-decoration: none;
 }
 
+/* Authored layer: keep these literary even after local Dispatch component rules. */
+.dispatch-hero h1,
+.dispatch-archive__intro h1,
+.dispatch-archive__item h2,
+.dispatch-postscript h2,
+.dispatch-prose,
+.dispatch-beat,
+.dispatch-question,
+.dispatch-ethic,
+.dispatch-signoff {
+  font-family: var(--ashwood-font-editorial);
+}
+
+.dispatch-hero h1,
+.dispatch-archive__intro h1,
+.dispatch-archive__item h2,
+.dispatch-postscript h2,
+.dispatch-beat,
+.dispatch-question,
+.dispatch-signoff {
+  font-weight: 400;
+}
+
 @media (max-width: 760px) {
   .dispatch-shell { padding-top: 22px; }
   .dispatch-masthead { gap: 14px; }
