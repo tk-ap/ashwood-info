@@ -220,3 +220,47 @@
     initAudioCollapse();
   }
 })();
+
+/* Home-only editorial teaser for the inaugural ASHWOOD Dispatch. */
+(() => {
+  const path = location.pathname.replace(/\/+$/, "") || "/";
+  if (path !== "/" && path !== "/index.html") return;
+
+  const mount = () => {
+    const intro = document.querySelector(".intro");
+    if (!intro || document.querySelector(".home-dispatch-teaser")) return;
+
+    const style = document.createElement("style");
+    style.textContent = `
+      .home-dispatch-teaser{position:relative;z-index:62;width:min(62%,820px);margin:clamp(22px,3.5vh,40px) 0 clamp(18px,3vh,34px);padding:18px 0 20px;border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 72%,transparent);border-bottom:1px solid color-mix(in srgb,var(--ashwood-rule) 48%,transparent)}
+      .home-dispatch-teaser__kicker{margin:0 0 10px;color:var(--ashwood-gold);font-size:8px;letter-spacing:.17em;text-transform:uppercase}
+      .home-dispatch-teaser h2{margin:0;font-family:Georgia,serif;font-size:clamp(24px,3vw,38px);font-weight:400;line-height:1.02;letter-spacing:-.025em}
+      .home-dispatch-teaser__deck{max-width:60ch;margin:10px 0 0;color:var(--ashwood-muted);font-size:10px;line-height:1.55}
+      .home-dispatch-teaser__excerpt{max-width:58ch;margin:12px 0 0;font-family:Georgia,serif;font-size:clamp(13px,1.25vw,17px);line-height:1.5;color:var(--ashwood-ink)}
+      .home-dispatch-teaser__meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px}
+      .home-dispatch-teaser__date{color:var(--ashwood-muted);font-size:8px;letter-spacing:.09em;text-transform:uppercase}
+      .home-dispatch-teaser__link{color:var(--ashwood-ink);font-size:8px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none}
+      .home-dispatch-teaser__link:hover,.home-dispatch-teaser__link:focus-visible{color:var(--ashwood-gold);font-style:italic}
+      @media(max-width:760px){.home-dispatch-teaser{width:100%;margin:20px 0 28px;padding:17px 0 19px}.home-dispatch-teaser__deck{font-size:9px}.home-dispatch-teaser__excerpt{font-size:14px}.home-dispatch-teaser__link{min-height:44px;display:inline-flex;align-items:center}}
+    `;
+    document.head.append(style);
+
+    const section = document.createElement("section");
+    section.className = "home-dispatch-teaser";
+    section.setAttribute("aria-labelledby", "home-dispatch-title");
+    section.innerHTML = `
+      <p class="home-dispatch-teaser__kicker">INAUGURAL DISPATCH · 001</p>
+      <h2 id="home-dispatch-title">THE MIND IS THE MOAT</h2>
+      <p class="home-dispatch-teaser__deck">On AI, anti-intellectualism, human context, and why knowledge should create more participants—not more dependents.</p>
+      <p class="home-dispatch-teaser__excerpt">“What worries me is anti-intellectualism becoming automated.”</p>
+      <div class="home-dispatch-teaser__meta">
+        <time class="home-dispatch-teaser__date" datetime="2026-09-02">September 2, 2026</time>
+        <a class="home-dispatch-teaser__link" href="/dispatch/001-the-mind-is-the-moat/">Read the inaugural Dispatch →</a>
+      </div>`;
+
+    intro.after(section);
+  };
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount, { once: true });
+  else mount();
+})();
