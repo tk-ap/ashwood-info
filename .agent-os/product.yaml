@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.2.0
 product_key: ashwood
 agent_os_repository: tk-ap/agent-os
 routing_source: registry/product-routing.yaml
@@ -10,16 +10,20 @@ local:
     - founder-build-archive
     - public-evidence-curation
     - editorial-site-experience
-    - music-and-modeling-presentation
+    - creative-practice-presentation
   produces:
     - public-evidence
     - build-journal-entry
     - portfolio-presentation
+    - writing-ideas-entry
+    - poetry-entry
+    - visual-art-archive-entry
     - verified-public-reference
   consumes:
     - verified-product-facts
     - verified-outcome-evidence
     - approved-public-assets
+    - approved-creative-work
   must_not_own:
     - product-runtime-truth-for-other-products
     - portfolio-intelligence
@@ -28,13 +32,62 @@ local:
     - private-operating-machinery
   constraints:
     - creative-portfolio-and-build-journal-remain-distinct
+    - writing-ideas-and-build-journal-remain-distinct
+    - poetry-is-a-first-class-creative-discipline-not-a-field-notes-subsection
+    - visual-art-may-use-selected-archive-framing-when-the-public-record-is-incomplete
     - public-claims-must-be-supported-by-evidence
     - photography-led-editorial-identity-and-asset-fidelity-are-acceptance-constraints
     - visual-changes-require-mobile-and-desktop-verification
     - merge-and-production-remain-human-gated
+
+content_architecture:
+  creative_practice:
+    purpose: authored creative work and public creative identity
+    disciplines:
+      - modeling
+      - music
+      - poetry
+      - visual-art
+    rules:
+      - poetry-is-first-class-and-must-not-be-nested-under-field-notes
+      - visual-art-archive-status-must-not-imply-a-comprehensive-current-portfolio
+      - modeling-remains-photography-led-and-current-work-should-lead-legacy-work
+
+  writing_ideas:
+    purpose: thinking, observation, argument, reflection, and correspondence
+    answers: "What do I think, notice, question, or believe?"
+    formats:
+      - essays
+      - field-notes
+      - letters-newsletter
+      - observations
+    rules:
+      - writing-may-reference-builds-without-becoming-build-journal-evidence
+      - field-notes-do-not-contain-or-own-poetry
+
+  build_journal:
+    purpose: documented record of turning ideas into working things
+    answers: "What did I build, why did I make that decision, what changed, and what evidence came out of it?"
+    qualifies_when:
+      - attached-to-an-actual-build-experiment-product-or-material-decision
+      - includes-decision-or-change-context
+      - preserves-evidence-or-provenance-when-material
+    does_not_include_by-default:
+      - standalone-essays
+      - general-observations
+      - poetry
+      - visual-art
+    rules:
+      - if-an-entry-could-exist-without-something-being-built-it-probably-belongs-in-writing-ideas
+      - build-journal-and-writing-ideas-may-cross-link-but-should-not-duplicate-the-same-entry
+
+  cross_linking:
+    allowed: true
+    rule: related-thinking-and-build-evidence-may-link-to-each-other-without-collapsing-content-lanes
 
 rules:
   canonical_product_role_from_routing_source: true
   local_metadata_may_narrow_or_add_implementation_detail: true
   local_metadata_must_not_redefine_canonical_role: true
   cross_product_writes_require_explicit_task_authorization: true
+  content_architecture_is-backend-guidance-until-separately-approved-for-live-implementation: true
