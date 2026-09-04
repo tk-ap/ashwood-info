@@ -1,0 +1,95 @@
+:root {
+  --ashwood-font-system: Arial, Helvetica, sans-serif;
+  --ashwood-font-editorial: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+}
+
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--ashwood-font-system);
+}
+
+/* Editorial / authored voice */
+h1,
+.ashwood-display,
+.page-intro h1,
+.portfolio-page h1,
+.journal-page h1,
+.journal-hero h1,
+.dispatch-hero h1,
+.dispatch-postscript h2,
+.home-dispatch-teaser h2,
+.home-dispatch-teaser__excerpt {
+  font-family: var(--ashwood-font-editorial);
+  font-weight: 400;
+  letter-spacing: -.035em;
+}
+
+/* Home gets the clearest contrast: authored statement vs. system evidence. */
+body.ashwood-home-native .intro h1 {
+  font-family: var(--ashwood-font-editorial);
+  font-weight: 400;
+  letter-spacing: -.045em;
+  line-height: .92;
+}
+
+body.ashwood-home-native .home-identity {
+  font-family: var(--ashwood-font-editorial);
+  font-style: italic;
+  letter-spacing: -.015em;
+}
+
+/* Modeling captions/titles can feel editorial without turning utility copy decorative. */
+.portfolio-page .portfolio-title,
+.portfolio-page .campaign-title,
+.portfolio-page .book-title,
+.portfolio-page .project-title {
+  font-family: var(--ashwood-font-editorial);
+  font-weight: 400;
+}
+
+/* Dispatch prose and authored beats use one literary voice. */
+.dispatch-prose,
+.dispatch-beat,
+.dispatch-question,
+.dispatch-ethic,
+.dispatch-signoff {
+  font-family: var(--ashwood-font-editorial);
+}
+
+.dispatch-beat,
+.dispatch-question,
+.dispatch-signoff {
+  font-weight: 400;
+}
+
+/* Builds remain operational below the headline layer. */
+.journal-page .journal-nav,
+.journal-page .journal-meta,
+.journal-page .thread-meta,
+.journal-page .status,
+.home-sitrep,
+.home-entryways,
+.ashwood-capability-evidence,
+.ashwood-site-header,
+.ashwood-nav,
+.future-nav,
+.eyebrow,
+.section-label,
+.dispatch-label,
+.dispatch-meta,
+.dispatch-kicker,
+.dispatch-date,
+.dispatch-footer {
+  font-family: var(--ashwood-font-system);
+}
+
+@media (max-width: 760px) {
+  body.ashwood-home-native .intro h1 {
+    letter-spacing: -.035em;
+    line-height: .95;
+  }
+}
