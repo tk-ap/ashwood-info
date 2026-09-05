@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
   <link rel="stylesheet" href="/workspace/workspace.css?v=20260905-1" />
   <script src="/theme.js?v=20260827-1" defer></script>
-  <script src="/workspace/workspace.js?v=20260905-1" defer></script>
+  <script src="/workspace/app.js?v=20260905-private1" defer></script>
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -20,7 +20,7 @@
         <span class="workspace-label">Workspace</span>
       </div>
       <div class="workspace-actions">
-        <span class="live-state" id="live-state" aria-live="polite">Loading evidence…</span>
+        <span class="live-state" id="live-state" aria-live="polite">Locked</span>
         <button class="text-button" id="refresh-evidence" type="button">Refresh evidence</button>
         <button class="text-button" id="add-evidence" type="button">Add evidence</button>
       </div>
@@ -29,7 +29,7 @@
     <section class="workspace-intro" aria-labelledby="workspace-title">
       <p class="eyebrow">Goal → active bets → evidence → progress → next gap</p>
       <h1 id="workspace-title">Is the work moving the life?</h1>
-      <p class="workspace-lede">A living view of what the current ecosystem, creative work, and professional activity are actually advancing. Progress is evidence-backed; inferred mappings stay inspectable and correctable.</p>
+      <p class="workspace-lede">A private, living view of what the current ecosystem, creative work, and professional activity are actually advancing. Progress is evidence-backed; inferred mappings stay inspectable and correctable.</p>
     </section>
 
     <section class="pulse" aria-labelledby="pulse-title">
@@ -46,10 +46,10 @@
     <section class="goals" aria-labelledby="goals-title">
       <div class="section-heading-row">
         <div>
-          <p class="section-kicker">Saturn frame · working model</p>
+          <p class="section-kicker">Saturn frame</p>
           <h2 id="goals-title">Purpose buckets</h2>
         </div>
-        <p class="section-note">Seeded from the current direction; corrections are saved in this browser.</p>
+        <p class="section-note">Loading canonical goal contract…</p>
       </div>
       <div class="goal-grid" id="goal-grid"></div>
     </section>
@@ -60,7 +60,7 @@
           <p class="section-kicker">Live ecosystem</p>
           <h2 id="ecosystem-title">What exists now</h2>
         </div>
-        <p class="section-note">Public GitHub evidence only in this MVP. ailhat intelligence can replace or augment this adapter later.</p>
+        <p class="section-note">GitHub activity is direct evidence. ailhat is consumed as the Portfolio Intelligence source and remains provenance-labeled when its scan timestamp is unavailable.</p>
       </div>
       <div class="ecosystem-list" id="ecosystem-list"></div>
     </section>
@@ -73,6 +73,7 @@
         </div>
         <div class="filters" role="group" aria-label="Evidence filters">
           <button type="button" class="filter is-active" data-filter="all">All</button>
+          <button type="button" class="filter" data-filter="ailhat">ailhat</button>
           <button type="button" class="filter" data-filter="github">GitHub</button>
           <button type="button" class="filter" data-filter="manual">Manual</button>
         </div>
@@ -97,7 +98,7 @@
     </section>
 
     <footer class="workspace-footer">
-      <span>Internal operating surface · noindex</span>
+      <span>Private operating surface · authenticated · noindex</span>
       <a href="/WORKSPACE_GOAL_EVIDENCE_SYSTEM.md">Product contract ↗</a>
     </footer>
   </main>
@@ -106,7 +107,7 @@
     <form method="dialog" id="evidence-form">
       <div class="dialog-heading">
         <div>
-          <p class="section-kicker">Manual supplement</p>
+          <p class="section-kicker">Private evidence</p>
           <h2>Add evidence</h2>
         </div>
         <button class="dialog-close" value="cancel" aria-label="Close">×</button>
@@ -115,7 +116,7 @@
       <label>Goal bucket<select id="evidence-goal-input"></select></label>
       <label>Status<select id="evidence-status-input"><option value="COMPLETED">Completed</option><option value="IN_PROGRESS">In progress</option><option value="PLANNED">Planned</option></select></label>
       <label>Evidence date<input id="evidence-date-input" type="date" required /></label>
-      <label>Source / note<input id="evidence-source-input" type="text" placeholder="Optional URL, collaborator, release, booking, etc." /></label>
+      <label>Source / note<input id="evidence-source-input" type="text" placeholder="Optional collaborator, release, booking, source note, etc." /></label>
       <div class="dialog-actions"><button value="cancel" class="secondary-button">Cancel</button><button type="submit" class="primary-button">Save evidence</button></div>
     </form>
   </dialog>
