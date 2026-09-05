@@ -1,3 +1,5 @@
+@import url('/typography.css?v=20260904-type1');
+
 .dispatch-page {
   background: var(--ashwood-paper);
   color: var(--ashwood-ink);
@@ -291,6 +293,29 @@
 .dispatch-footer a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Authored layer: keep these literary even after local Dispatch component rules. */
+.dispatch-hero h1,
+.dispatch-archive__intro h1,
+.dispatch-archive__item h2,
+.dispatch-postscript h2,
+.dispatch-prose,
+.dispatch-beat,
+.dispatch-question,
+.dispatch-ethic,
+.dispatch-signoff {
+  font-family: var(--ashwood-font-editorial);
+}
+
+.dispatch-hero h1,
+.dispatch-archive__intro h1,
+.dispatch-archive__item h2,
+.dispatch-postscript h2,
+.dispatch-beat,
+.dispatch-question,
+.dispatch-signoff {
+  font-weight: 400;
 }
 
 @media (max-width: 760px) {
