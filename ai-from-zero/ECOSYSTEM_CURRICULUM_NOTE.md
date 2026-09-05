@@ -2,6 +2,33 @@
 
 AI from Zero should teach the whole ASHWOOD product ecosystem as one connected learning model, not use ALVIRA as the only product example.
 
+## Start with the person, not AI sophistication
+
+The first educational promise is:
+
+> **You already have an entry point for AI. It is whatever you are trying to do.**
+
+AI from Zero should not imply that meaningful AI use begins with agents, automation, coding, or technical literacy. Most people should begin with a problem, goal, responsibility, business, craft, or recurring burden they already recognize.
+
+Examples should deliberately include people who may never build an agentic workflow:
+
+- a streetwear founder organizing a drop, creative direction, supplier comparison, launch plan, customer questions, or campaign brief
+- an athlete/bodybuilder organizing training logs, posing notes, competition preparation, coach feedback, or content planning, without substituting AI for qualified health/coaching judgment
+- a jewelry-boutique owner reasoning across inventory, margins, best sellers, merchandising, vendors, pop-ups, and customer communication
+- a pastor or community leader organizing sermon notes, scripture references, study questions, events, and communication while retaining human theological/pastoral judgment
+- a content creator learning from their own posts, comments, audience questions, scripts, analytics, sponsors, and research
+- employees, students, caregivers, job seekers, travelers, parents, artists, and anyone dealing with information, decisions, planning, writing, comparison, remembering, or repeated work
+
+The curriculum should teach the **lightest useful form of AI first**:
+
+1. **Ask** — use AI as a thinking partner.
+2. **Bring your material** — supply the real notes, goals, examples, drafts, data, history, or constraints.
+3. **Reuse structure** — save useful context, prompts, briefs, checklists, examples, and templates instead of rebuilding them each time.
+4. **Repeat** — notice the tasks and thought patterns that recur.
+5. **Automate only if earned** — turn bounded repeated work into a workflow or agent only when doing so genuinely reduces burden or improves reliability.
+
+A better conversation, clearer plan, stronger draft, useful comparison, or organized body of notes can be the complete win. AI literacy is not measured by how agentic the implementation becomes.
+
 ## Teaching sequence
 
 A useful progression for someone learning to build with AI / agentic workforces is:
@@ -33,11 +60,13 @@ ALVIRA and ailhat may both produce excellent prompts, but neither should be taug
 
 The useful transformation is:
 
-**maintained context → clarified intent → canonical Build Brief → builder-specific adapter prompt/export**
+**maintained context → clarified intent → canonical working brief → destination-specific adapter prompt/export**
 
-A Build Brief can capture the goal, problem, target user, desired experience, relevant context, existing assets, constraints, non-goals, requirements, references, acceptance criteria, and open questions. It should remain portable across cto.new, Base44, Codex, Claude Code, Replit, Lovable, or future builders.
+A software **Build Brief** is one important example, not the only possible application. Depending on the person's actual goal, maintained Context may support a campaign brief, brand brief, content brief, research brief, event brief, decision brief, or another useful working artifact. These should not automatically become separate product SKUs or navigation items; treat them as context-derived forms of the same underlying capability unless real user behavior proves a need to productize them separately.
 
-The prompt is disposable. The user's maintained context and canonical specification are the durable assets.
+For software/build work, a Build Brief can capture the goal, problem, target user, desired experience, relevant context, existing assets, constraints, non-goals, requirements, references, acceptance criteria, and open questions. It should remain portable across cto.new, Base44, Codex, Claude Code, Replit, Lovable, or future builders.
+
+The prompt is disposable. The user's maintained context and reviewed working specification are the durable assets.
 
 ### ailhat
 
