@@ -40,6 +40,28 @@ The six success conditions are:
 
 These are not merely values or aspirational labels. `/workspace` should treat them as success criteria when evaluating whether an accomplishment, role, collaboration, product, or next action represents actual progress.
 
+## Purpose, with edges
+
+> **Know what is yours. Know what is not.**
+
+### You are here to: See, translate, and build.
+
+- Recognize the hidden pattern beneath a human or systemic problem.
+- Give precise language to what others sense but cannot yet name.
+- Design frameworks, communities, experiences, or institutions that keep working.
+- Guide consequential decisions where your judgment is genuinely invited.
+- Model leadership based on clarity, standards, reciprocity, and distributed responsibility.
+
+### You are not here to: Prove, rescue, or perform.
+
+- Outwork everyone to justify your place in the room.
+- Carry responsibility without authority, resources, or recognition.
+- Translate endlessly for people committed to misunderstanding you.
+- Stabilize every relationship while your own needs remain implicit.
+- Confuse visible busyness, prestige, or universal approval with success.
+
+This is an explicit scope boundary for `/workspace`: the system should not count activity as progress merely because it demonstrates effort. It should identify work that repeatedly places the user in rescue, proof, performance, unrecognized responsibility, or one-sided stabilization patterns as potential contradiction evidence.
+
 ## Daily operating rule
 
 > **One durable commitment.**
@@ -83,11 +105,12 @@ The companion frames the next chapter as building career evidence rather than si
 
 ## Workspace interpretation
 
-ASHWOOD `/workspace` should use this source in four ways:
+ASHWOOD `/workspace` should use this source in five ways:
 
 1. **Goal evidence:** Does an accomplishment create durable evidence toward the life being built?
-2. **Success placement:** Is insight being recognized and converted into durable architecture, clean authority, sustainable influence, reciprocal relationships, and structured freedom?
-3. **Alignment:** Does the work pass Recognition, Authority, Foundation, Body, Reciprocity, and Freedom checks?
-4. **Next action:** Prefer one durable commitment and the smallest honest step over maximizing activity volume.
+2. **Purpose fit:** Does the work primarily ask the user to see, translate, build, guide, and model clear/distributed leadership—or to prove, rescue, perform, over-carry, or stabilize?
+3. **Success placement:** Is insight being recognized and converted into durable architecture, clean authority, sustainable influence, reciprocal relationships, and structured freedom?
+4. **Alignment:** Does the work pass Recognition, Authority, Foundation, Body, Reciprocity, and Freedom checks?
+5. **Next action:** Prefer one durable commitment and the smallest honest step over maximizing activity volume.
 
 The reconstructed domain buckets (ownership, leadership, relationships, modeling, music, writing/art, learning) remain useful classifications for evidence, but they are subordinate to this Saturn operating frame. Do not present those reconstructed labels as verbatim source language unless a later source confirms them.
