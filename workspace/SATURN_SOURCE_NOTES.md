@@ -23,6 +23,23 @@ Identity signals shown in the source:
 - System builder
 - Selective guide
 
+## Success Compass
+
+> **Success is not more effort. It is better placement.**
+
+The source defines success as placing original insight where it is recognized, resourced, embodied, and able to become something durable.
+
+The six success conditions are:
+
+1. **Recognized insight** — Your pattern recognition changes a decision, system, relationship, or result.
+2. **Durable architecture** — You turn complexity into a clear framework that continues working without constant rescue.
+3. **Clean authority** — Your responsibility, decision rights, resources, and compensation are proportionate.
+4. **Sustainable influence** — The result does not require chronic urgency, self-abandonment, or depletion.
+5. **Reciprocal relationships** — People communicate directly, follow through, repair, and respect your return rhythm.
+6. **Structured freedom** — Strong foundations give you room for movement, discovery, privacy, and reinvention.
+
+These are not merely values or aspirational labels. `/workspace` should treat them as success criteria when evaluating whether an accomplishment, role, collaboration, product, or next action represents actual progress.
+
 ## Daily operating rule
 
 > **One durable commitment.**
@@ -56,6 +73,8 @@ A choice is evaluated against six dimensions visible in the source:
 - **Reciprocity** — Are honesty, effort, and care moving both ways?
 - **Freedom** — Does the structure preserve meaningful agency and choice?
 
+The Success Compass provides the outcome-oriented expression of these same dimensions: Recognition → Recognized insight; Foundation → Durable architecture; Authority → Clean authority; Body → Sustainable influence; Reciprocity → Reciprocal relationships; Freedom → Structured freedom.
+
 ## Next personal year
 
 > **Review what deserves another year of your life.**
@@ -64,10 +83,11 @@ The companion frames the next chapter as building career evidence rather than si
 
 ## Workspace interpretation
 
-ASHWOOD `/workspace` should use this source in three ways:
+ASHWOOD `/workspace` should use this source in four ways:
 
 1. **Goal evidence:** Does an accomplishment create durable evidence toward the life being built?
-2. **Alignment:** Does the work pass Recognition, Authority, Foundation, Body, Reciprocity, and Freedom checks?
-3. **Next action:** Prefer one durable commitment and the smallest honest step over maximizing activity volume.
+2. **Success placement:** Is insight being recognized and converted into durable architecture, clean authority, sustainable influence, reciprocal relationships, and structured freedom?
+3. **Alignment:** Does the work pass Recognition, Authority, Foundation, Body, Reciprocity, and Freedom checks?
+4. **Next action:** Prefer one durable commitment and the smallest honest step over maximizing activity volume.
 
 The reconstructed domain buckets (ownership, leadership, relationships, modeling, music, writing/art, learning) remain useful classifications for evidence, but they are subordinate to this Saturn operating frame. Do not present those reconstructed labels as verbatim source language unless a later source confirms them.
