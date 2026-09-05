@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI, FROM ZERO Reference — a plain-language, interactive guide to the technical words you encounter while building with AI and agentic workforces." />
+  <link rel="canonical" href="https://ashwood-info.vercel.app/ai-from-zero/reference/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ASHWOOD" />
+  <meta property="og:title" content="AI, FROM ZERO — De-jargon the build" />
+  <meta property="og:description" content="Markdown, CLIs, repositories, agents, harnesses, permissions, deployments, evidence, and the other words that show up when you build with AI." />
+  <meta property="og:url" content="https://ashwood-info.vercel.app/ai-from-zero/reference/" />
+  <meta property="og:image" content="https://ashwood-info.vercel.app/assets/social/ashwood-og-1200x630.jpg" />
+  <meta name="theme-color" content="#10110f" />
+  <title>AI, FROM ZERO — Reference — ASHWOOD</title>
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
+  <script src="/theme.js?v=20260827-1" defer></script>
+  <style>
+    .zero-ref-page{--soft:color-mix(in srgb,var(--ashwood-ink) 7%,transparent)}
+    .zero-ref-page .shell{max-width:1500px}
+    .ref-hero{padding:clamp(92px,14vh,170px) 0 clamp(72px,10vh,120px)}
+    .ref-hero h1{max-width:10ch;margin:16px 0 0;font-size:clamp(54px,9vw,128px);font-weight:500;line-height:.88;letter-spacing:-.065em}
+    .ref-hero .lede{max-width:760px;margin:32px 0 0;color:var(--ashwood-muted);font-size:clamp(18px,2vw,28px);line-height:1.45}
+    .ref-back{display:inline-flex;min-height:44px;align-items:center;color:var(--ashwood-ochre);text-decoration:none;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+    .ref-section{border-top:1px solid var(--ashwood-rule);padding:clamp(64px,8vw,116px) 0}
+    .ref-marker{display:flex;justify-content:space-between;gap:20px;margin-bottom:44px;color:var(--ashwood-muted);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+    .ref-marker span:first-child{color:var(--ashwood-ochre)}
+    .mental-model{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--ashwood-rule);border:1px solid var(--ashwood-rule)}
+    .mental-model article{min-width:0;padding:24px 18px;background:var(--ashwood-paper)}
+    .mental-model small,.ref-detail small,.ref-term-count,.ref-filter button{font-size:9px;letter-spacing:.13em;text-transform:uppercase}
+    .mental-model small,.ref-detail small{color:var(--ashwood-ochre)}
+    .mental-model strong{display:block;margin-top:32px;font-size:clamp(19px,2vw,27px);font-weight:500;line-height:1.05;overflow-wrap:anywhere}
+    .mental-model p{margin:10px 0 0;color:var(--ashwood-muted);font-size:12px;line-height:1.55}
+    .ref-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.5fr);gap:36px clamp(48px,7vw,100px);align-items:end}
+    .ref-heading h2{max-width:10ch;margin:0;font-size:clamp(46px,7vw,100px);font-weight:500;line-height:.9;letter-spacing:-.055em}
+    .ref-heading p{max-width:42ch;margin:0;color:var(--ashwood-muted);font-size:clamp(16px,1.45vw,21px);line-height:1.6}
+    .ref-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;margin-top:48px;padding-bottom:22px;border-bottom:1px solid var(--ashwood-rule)}
+    .ref-search{width:100%;min-height:48px;padding:0 14px;border:1px solid var(--ashwood-rule);background:var(--ashwood-paper);color:var(--ashwood-ink);font:inherit}
+    .ref-search:focus{outline:1px solid var(--ashwood-ochre);outline-offset:2px}
+    .ref-term-count{display:flex;align-items:center;color:var(--ashwood-muted);white-space:nowrap}
+    .ref-filter{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .ref-filter button{min-height:40px;padding:8px 12px;border:1px solid var(--ashwood-rule);background:var(--ashwood-paper);color:var(--ashwood-ink);cursor:pointer}
+    .ref-filter button:hover,.ref-filter button:focus-visible,.ref-filter button[aria-pressed="true"]{border-color:var(--ashwood-ochre);color:var(--ashwood-ochre)}
+    .ref-workspace{display:grid;grid-template-columns:minmax(250px,.42fr) minmax(0,1fr);gap:1px;margin-top:28px;background:var(--ashwood-rule);border:1px solid var(--ashwood-rule)}
+    .ref-list{max-height:720px;overflow:auto;background:var(--ashwood-paper)}
+    .ref-term{display:grid;width:100%;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:17px 18px;border:0;border-bottom:1px solid var(--ashwood-rule);background:transparent;color:var(--ashwood-ink);text-align:left;cursor:pointer;font:inherit}
+    .ref-term strong{font-size:17px;font-weight:500}
+    .ref-term span{color:var(--ashwood-muted);font-size:9px;letter-spacing:.11em;text-transform:uppercase}
+    .ref-term:hover,.ref-term:focus-visible,.ref-term[aria-selected="true"]{background:var(--soft)}
+    .ref-term[aria-selected="true"] strong{color:var(--ashwood-ochre)}
+    .ref-detail{min-height:620px;padding:clamp(30px,5vw,64px);background:var(--ashwood-paper)}
+    .ref-detail h3{max-width:12ch;margin:12px 0 28px;font-size:clamp(42px,6vw,82px);font-weight:500;line-height:.92;letter-spacing:-.055em}
+    .ref-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--ashwood-rule);border:1px solid var(--ashwood-rule)}
+    .ref-detail-grid section{padding:24px;background:var(--ashwood-paper)}
+    .ref-detail-grid h4{margin:0 0 12px;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ashwood-ochre)}
+    .ref-detail-grid p{margin:0;color:var(--ashwood-muted);font-size:14px;line-height:1.68}
+    .ref-example{margin-top:26px;padding:22px;border:1px solid var(--ashwood-rule);background:var(--soft)}
+    .ref-example pre{margin:12px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font:500 13px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .ref-build-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+    .ref-build-links a{display:inline-flex;min-height:40px;align-items:center;padding:8px 12px;border:1px solid var(--ashwood-rule);color:var(--ashwood-ink);text-decoration:none;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+    .ref-build-links a:hover,.ref-build-links a:focus-visible{border-color:var(--ashwood-ochre);color:var(--ashwood-ochre)}
+    .ref-empty{padding:26px;color:var(--ashwood-muted);line-height:1.6}
+    .ref-principle{max-width:21ch;margin:0;font-size:clamp(34px,5.1vw,74px);font-weight:500;line-height:.98;letter-spacing:-.045em}
+    .ref-footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;padding:42px 0 10px;border-top:1px solid var(--ashwood-rule);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ashwood-muted)}
+    .ref-footer nav{display:flex;flex-wrap:wrap;gap:12px 24px}.ref-footer a{text-decoration:none;color:var(--ashwood-ink)}
+    @media(max-width:980px){.mental-model{grid-template-columns:repeat(3,minmax(0,1fr))}.ref-heading{grid-template-columns:1fr}.ref-workspace{grid-template-columns:1fr}.ref-list{max-height:360px}.ref-detail{min-height:0}}
+    @media(max-width:680px){.zero-ref-page .shell{padding-inline:clamp(18px,5vw,28px)}.ref-hero h1{font-size:clamp(50px,15vw,76px)}.mental-model{grid-template-columns:1fr 1fr}.ref-controls{grid-template-columns:1fr}.ref-detail-grid{grid-template-columns:1fr}.ref-detail{padding:28px 18px}.ref-footer{flex-direction:column}}
+  </style>
+</head>
+<body class="zero-ref-page">
+  <main class="shell" id="top">
+    <header class="masthead">
+      <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
+      <span class="section-label">AI, FROM ZERO / REFERENCE</span>
+    </header>
+
+    <section class="ref-hero" aria-labelledby="ref-title">
+      <a class="ref-back" href="/ai-from-zero/">← Back to AI, FROM ZERO</a>
+      <p class="eyebrow">DE-JARGON THE BUILD / USE THIS WHILE YOU WORK</p>
+      <h1 id="ref-title">What does that word actually mean?</h1>
+      <p class="lede">Technical language should not be the price of admission. Search the words you encounter while building with AI, understand them in plain English, see what they look like, and connect them back to the actual ASHWOOD builds.</p>
+    </section>
+
+    <section class="ref-section" aria-labelledby="model-title">
+      <div class="ref-marker"><span>01</span><span>THE MENTAL MODEL</span></div>
+      <div class="ref-heading">
+        <h2 id="model-title">Six things people constantly mix together.</h2>
+        <p>You do not need perfect definitions before you start. You do need a rough map of what role each layer plays.</p>
+      </div>
+      <div class="mental-model" style="margin-top:48px">
+        <article><small>MODEL</small><strong>The intelligence.</strong><p>The system that can interpret and generate language, code, images, or other outputs.</p></article>
+        <article><small>AGENT</small><strong>The worker.</strong><p>A model given a goal, context, tools, and some ability to take multiple steps.</p></article>
+        <article><small>WORKFLOW</small><strong>The path.</strong><p>The sequence of steps the work should follow.</p></article>
+        <article><small>HARNESS</small><strong>The workplace.</strong><p>The surrounding system that gives an agent tools, instructions, memory, checks, and a place to run.</p></article>
+        <article><small>WORKFORCE</small><strong>The team.</strong><p>Multiple agents or harnesses coordinated toward larger work.</p></article>
+        <article><small>GOVERNANCE</small><strong>The boundaries.</strong><p>The rules for what machines may do, when humans must decide, and what evidence must remain.</p></article>
+      </div>
+    </section>
+
+    <section class="ref-section" id="reference" aria-labelledby="reference-title">
+      <div class="ref-marker"><span>02</span><span>REFERENCE / INTERACTIVE</span></div>
+      <div class="ref-heading">
+        <h2 id="reference-title">Look it up without leaving the build.</h2>
+        <p>This is intentionally broader than “AI terms.” A person starting from zero may need <em>Markdown</em> explained just as much as <em>agent harness</em>.</p>
+      </div>
+
+      <div class="ref-controls">
+        <label><span class="sr-only">Search concepts</span><input class="ref-search" id="ref-search" type="search" autocomplete="off" placeholder="Search: markdown, CLI, branch, harness, permissions…" /></label>
+        <span class="ref-term-count" id="ref-count" aria-live="polite"></span>
+      </div>
+      <div class="ref-filter" role="group" aria-label="Filter concepts by category">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="foundation" aria-pressed="false">Foundation</button>
+        <button type="button" data-filter="building" aria-pressed="false">Building</button>
+        <button type="button" data-filter="agents" aria-pressed="false">Agents</button>
+        <button type="button" data-filter="production" aria-pressed="false">Production + Governance</button>
+      </div>
+
+      <div class="ref-workspace">
+        <div class="ref-list" id="ref-list" role="listbox" aria-label="AI from Zero concepts"></div>
+        <article class="ref-detail" id="ref-detail" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <section class="ref-section" aria-labelledby="principle-title">
+      <div class="ref-marker"><span>03</span><span>THE RULE</span></div>
+      <p class="ref-principle" id="principle-title">If the explanation requires more jargon than the word itself, it is not finished.</p>
+    </section>
+
+    <footer class="ref-footer">
+      <span>ASHWOOD · AI, FROM ZERO</span>
+      <nav aria-label="Continue through ASHWOOD"><a href="/ai-from-zero/">AI, FROM ZERO</a><a href="/journal/">Builds</a><a href="/about/">About</a><a href="/connect/">Connect</a></nav>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const concepts = [
+        {term:'Markdown',category:'foundation',plain:'A simple way to format plain text using characters like # for headings and - for lists.',care:'AI coding tools use Markdown constantly for instructions, notes, README files, plans, and documentation.',example:'# ALVIRA\n\n## Current work\n- Improve onboarding\n- Test Context portability',builds:['ALVIRA','Agent OS']},
+        {term:'Terminal',category:'foundation',plain:'A text-based window for telling your computer what to do by typing commands.',care:'Many AI coding agents operate through the terminal because commands are easy for software to run and verify.',example:'pwd\nls\ncd my-project',builds:['ASHWOOD','Agent OS']},
+        {term:'CLI',aka:'command-line interface',category:'foundation',plain:'A program you control by typing commands instead of clicking buttons.',care:'Git, Vercel, npm, and many AI tools expose CLIs, which lets both humans and agents operate them predictably.',example:'git status\nnpm run dev\nvercel deploy',builds:['ASHWOOD','Agent OS','LEDGATo']},
+        {term:'JSON',category:'foundation',plain:'A structured text format for storing information as names and values.',care:'APIs, agent tools, configuration, and structured AI output often pass data as JSON.',example:'{\n  "task": "deploy",\n  "approved": false\n}',builds:['Agent OS','LEDGATo']},
+        {term:'YAML',category:'foundation',plain:'A human-readable way to write structured configuration using indentation.',care:'Workflows, agent registries, deployment settings, and CI systems often use YAML files.',example:'agent: builder\ntools:\n  - github\n  - vercel',builds:['Agent OS']},
+        {term:'Localhost',category:'foundation',plain:'Your own computer acting like a small web server so you can test a site or app before publishing it.',care:'A build may work on localhost but fail after deployment because the production environment is different.',example:'http://localhost:3000',builds:['ASHWOOD','LEDGATo']},
+        {term:'Environment',category:'foundation',plain:'The place and conditions where software is running: your laptop, a preview server, production, and so on.',care:'Different environments can have different tools, secrets, permissions, or runtime limits.',example:'local → preview → production',builds:['ALVIRA','ASHWOOD','LEDGATo']},
+        {term:'Repository',aka:'repo',category:'building',plain:'The project folder plus its saved history, usually managed with Git.',care:'It is the working home for code, documentation, configuration, and the record of how the build changed.',example:'tk-ap/tk-ap.github.io',builds:['ASHWOOD','Agent OS']},
+        {term:'Git',category:'building',plain:'A system that records changes to files so you can see history, compare versions, and safely collaborate.',care:'Git is what makes branches, commits, reversals, and pull requests possible.',example:'git status\ngit add .\ngit commit -m "update"',builds:['ASHWOOD','Agent OS']},
+        {term:'Commit',category:'building',plain:'A named checkpoint in a project’s history.',care:'Commits make changes traceable. They let you point to exactly when a decision or implementation entered the codebase.',example:'feat(ai-from-zero): add interactive reference',builds:['ASHWOOD']},
+        {term:'Branch',category:'building',plain:'A parallel version of a project where you can make changes without immediately changing the main version.',care:'Branches let humans and agents experiment, test, and review work before it affects production.',example:'main\n  └── feat/ai-from-zero-dejargon',builds:['ASHWOOD','ALVIRA']},
+        {term:'Pull request',aka:'PR',category:'building',plain:'A proposal to merge one branch’s changes into another branch.',care:'A PR creates a review point: what changed, why, whether checks passed, and whether a human accepts it.',example:'feature branch → review → checks → merge',builds:['ASHWOOD','ALVIRA','Agent OS']},
+        {term:'API',category:'building',plain:'A defined way for one piece of software to ask another piece of software for data or actions.',care:'Agents become more useful when they can use APIs to search, send, read, create, or update things outside the model itself.',example:'your app → API request → service → response',builds:['ALVIRA','ailhat','LEDGATo']},
+        {term:'SDK',category:'building',plain:'A packaged set of code and instructions that helps developers use a platform or capability inside their own software.',care:'An SDK can make a product capability easier to adopt than asking every customer to wire the underlying API themselves.',example:'import ledgato\nledgato.check(action)',builds:['LEDGATo']},
+        {term:'Dependency',category:'building',plain:'Code your project relies on that was built somewhere else.',care:'Dependencies save time, but they also create version, security, compatibility, and maintenance obligations.',example:'package.json → dependencies',builds:['ASHWOOD','ALVIRA']},
+        {term:'Deployment',category:'building',plain:'Publishing a version of software into an environment where other people or systems can use it.',care:'A successful build is not automatically a successful deployment, and a successful deployment is not automatically a good user experience.',example:'repo → build → deploy → verify',builds:['ASHWOOD','ALVIRA','ailhat','LEDGATo']},
+        {term:'Model',category:'agents',plain:'The underlying AI system that interprets input and generates output.',care:'The model provides intelligence, but by itself it does not define the tools, permissions, memory, or workflow around the work.',example:'model + context → output',builds:['ALVIRA','Agent OS']},
+        {term:'Prompt',category:'agents',plain:'Instructions or context given to an AI model for a particular interaction.',care:'Prompts matter, but reliable agent systems need more than one clever prompt: tools, state, boundaries, and verification also matter.',example:'Goal: compare these options.\nConstraints: under $100.\nReturn: tradeoffs.',builds:['ALVIRA','Agent OS']},
+        {term:'Agent',category:'agents',plain:'An AI system given a goal and some ability to take multiple steps, often using tools along the way.',care:'The useful question is not whether something is called an agent, but what it can actually do, what it can access, and where it must stop.',example:'goal → reason → use tool → inspect result → continue or ask',builds:['Agent OS','LEDGATo']},
+        {term:'Agent harness',category:'agents',plain:'The surrounding system that gives an agent its instructions, tools, context, memory, checks, and execution environment.',care:'The harness is what turns raw model capability into repeatable work. Better harnesses reduce randomness and make behavior easier to inspect.',example:'model + tools + context + rules + loop + evidence',builds:['Agent OS','LEDGATo']},
+        {term:'Workflow',category:'agents',plain:'The ordered path a task follows from start to finish.',care:'A workflow makes delegation explicit: what happens first, what can repeat, what requires approval, and what counts as done.',example:'task → research → draft → review → publish',builds:['Agent OS','ailhat']},
+        {term:'Tool calling',category:'agents',plain:'An AI model choosing to use an external capability instead of only generating text.',care:'Tools are how an agent can move from “telling you what to do” toward actually reading, creating, checking, or changing something.',example:'model decides → call GitHub tool → receive result → continue',builds:['Agent OS','LEDGATo']},
+        {term:'Context',category:'agents',plain:'The information available to the AI right now that helps it understand the task, person, project, or situation.',care:'Missing or stale context forces re-explanation and can make otherwise capable AI give the wrong answer for the right-sounding reasons.',example:'goal + preferences + constraints + history + current state',builds:['ALVIRA']},
+        {term:'Memory',category:'agents',plain:'A mechanism for carrying useful information from one interaction or task into another.',care:'Memory can improve continuity, but it needs rules for what is true, current, superseded, inferred, or worth keeping.',example:'interaction → candidate memory → verify → reuse later',builds:['ALVIRA','Agent OS']},
+        {term:'MCP',aka:'Model Context Protocol',category:'agents',plain:'A standard way for AI applications to discover and use external tools or data sources through a common interface.',care:'Standards like MCP can reduce one-off integrations and make tools more portable across different AI hosts.',example:'AI host ↔ MCP server ↔ tool/data source',builds:['Agent OS']},
+        {term:'Orchestration',category:'agents',plain:'Coordinating multiple tasks, agents, tools, or steps so the overall job moves in the right order.',care:'Once work spans more than one agent or system, something has to decide routing, dependencies, retries, and handoffs.',example:'router → specialist A / specialist B → evidence → acceptance',builds:['Agent OS','ailhat']},
+        {term:'Human in the loop',category:'production',plain:'A design where a person is deliberately required at certain points instead of letting the system act entirely on its own.',care:'Human judgment is especially important for high-impact decisions, ambiguity, consent, spending, publishing, and irreversible actions.',example:'agent prepares → human approves → agent executes',builds:['ALVIRA','Agent OS','LEDGATo']},
+        {term:'Authentication',aka:'auth',category:'production',plain:'Proving who someone or something is.',care:'Before software can decide what you are allowed to do, it usually has to establish your identity.',example:'sign in → identity established',builds:['ALVIRA','ailhat']},
+        {term:'Authorization',category:'production',plain:'Deciding what an authenticated person or agent is allowed to do.',care:'An agent can be correctly identified and still need strict limits on which actions, data, budgets, or systems it may use.',example:'identity + policy → allowed / denied / ask',builds:['Agent OS','LEDGATo']},
+        {term:'Permission boundary',category:'production',plain:'The line between what a system may do on its own and what requires a person or higher authority.',care:'Clear boundaries make delegation safer and make failures easier to understand when an agent attempts something outside its role.',example:'read: yes\nwrite draft: yes\npublish: ask first',builds:['Agent OS','LEDGATo']},
+        {term:'Approval gate',category:'production',plain:'A deliberate stop in a workflow where execution cannot continue until an authorized person or system approves it.',care:'Approval gates preserve human control without forcing a person to manually perform every routine step.',example:'prepare payment → STOP → approval → submit',builds:['Agent OS','LEDGATo']},
+        {term:'Revocation',category:'production',plain:'Taking away permission that was previously granted.',care:'Agent authority should not be permanent by default. A useful control system needs a way to reduce or remove access when circumstances change.',example:'permission granted → work changes → permission revoked',builds:['LEDGATo','Agent OS']},
+        {term:'Secret',category:'production',plain:'Sensitive information software uses to authenticate or access a service, such as an API key or token.',care:'Secrets should not be hard-coded into public code or casually exposed to an agent that does not need them.',example:'API_KEY=••••••••',builds:['ALVIRA','ASHWOOD','Agent OS']},
+        {term:'Log',category:'production',plain:'A record of events produced while software is running.',care:'Logs help answer “what happened?” when a build fails or an agent behaves unexpectedly.',example:'10:03 task started\n10:04 tool called\n10:04 permission denied',builds:['ailhat','LEDGATo']},
+        {term:'Trace',category:'production',plain:'A connected record showing how one request or task moved through multiple steps or systems.',care:'A trace is more useful than isolated logs when you need to understand an agent’s full path from instruction to action.',example:'request → model → tool → API → result → model → decision',builds:['LEDGATo','Agent OS']},
+        {term:'Evidence',category:'production',plain:'The retained proof that supports a claim about what work was attempted, completed, changed, or verified.',care:'Agent work becomes easier to trust when “done” is backed by artifacts, checks, logs, diffs, receipts, or other inspectable proof.',example:'claim: deployed\nevidence: commit + deployment URL + verification check',builds:['Agent OS','LEDGATo','ASHWOOD']},
+        {term:'Verification',category:'production',plain:'Checking whether the output or action actually satisfies the requirement instead of assuming success because a tool returned “done.”',care:'Infrastructure can prove that something ran. Verification asks whether the result is correct, usable, and acceptable.',example:'deploy succeeded ≠ page looks right\nrun check + human acceptance',builds:['ASHWOOD','Agent OS','LEDGATo']},
+        {term:'Rollback',category:'production',plain:'Returning software or a system to an earlier known-good state after a bad change.',care:'Reversibility matters when agents can change real systems. A safe workflow should know what can be undone and how.',example:'bad release → restore previous release',builds:['ASHWOOD','ALVIRA']},
+        {term:'Rate limit',category:'production',plain:'A rule that caps how often a service may be used within a period of time.',care:'Agents can make many calls quickly. Rate limits can stop a workflow unexpectedly or create cost and reliability problems if ignored.',example:'100 requests / minute',builds:['ailhat','Agent OS']}
+      ];
+
+      const buildHref = {
+        'ASHWOOD':'/journal/',
+        'ALVIRA':'/journal/alvira/',
+        'ailhat':'/journal/ailhat/',
+        'LEDGATo':'/journal/ledgato/',
+        'Agent OS':'/journal/infrastructure/'
+      };
+      const categoryLabel = {foundation:'Foundation',building:'Building',agents:'Agents',production:'Production + governance'};
+      const search = document.getElementById('ref-search');
+      const list = document.getElementById('ref-list');
+      const detail = document.getElementById('ref-detail');
+      const count = document.getElementById('ref-count');
+      const filterButtons = [...document.querySelectorAll('[data-filter]')];
+      let activeFilter = 'all';
+      let selected = concepts[0].term;
+
+      function matchingConcepts(){
+        const q = search.value.trim().toLowerCase();
+        return concepts.filter((item) => {
+          const categoryMatch = activeFilter === 'all' || item.category === activeFilter;
+          const haystack = [item.term,item.aka,item.plain,item.care,...item.builds].filter(Boolean).join(' ').toLowerCase();
+          return categoryMatch && (!q || haystack.includes(q));
+        });
+      }
+
+      function renderDetail(item){
+        if(!item){
+          detail.innerHTML = '<div class="ref-empty"><strong>No matching concept.</strong><p>Try a broader word or switch back to All.</p></div>';
+          return;
+        }
+        selected = item.term;
+        const aka = item.aka ? ` · ${item.aka}` : '';
+        detail.innerHTML = `
+          <small>${categoryLabel[item.category]}${aka}</small>
+          <h3>${item.term}</h3>
+          <div class="ref-detail-grid">
+            <section><h4>Plain English</h4><p>${item.plain}</p></section>
+            <section><h4>Why you care</h4><p>${item.care}</p></section>
+          </div>
+          <div class="ref-example"><small>WHAT IT CAN LOOK LIKE</small><pre>${item.example}</pre></div>
+          <div class="ref-build-links" aria-label="See this concept in ASHWOOD builds">${item.builds.map((name)=>`<a href="${buildHref[name]}">See in ${name} →</a>`).join('')}</div>`;
+      }
+
+      function render(){
+        const matches = matchingConcepts();
+        count.textContent = `${matches.length} concept${matches.length === 1 ? '' : 's'}`;
+        list.innerHTML = matches.map((item) => `<button class="ref-term" type="button" role="option" aria-selected="${item.term === selected}" data-term="${item.term}"><strong>${item.term}</strong><span>${categoryLabel[item.category]}</span></button>`).join('') || '<div class="ref-empty">No matches yet.</div>';
+        const current = matches.find((item)=>item.term === selected) || matches[0];
+        if(current) selected = current.term;
+        renderDetail(current);
+        [...list.querySelectorAll('[data-term]')].forEach((button)=>button.addEventListener('click',()=>{
+          selected = button.dataset.term;
+          render();
+        }));
+      }
+
+      search.addEventListener('input', render);
+      filterButtons.forEach((button)=>button.addEventListener('click',()=>{
+        activeFilter = button.dataset.filter;
+        filterButtons.forEach((item)=>item.setAttribute('aria-pressed',String(item === button)));
+        render();
+      }));
+      render();
+    })();
+  </script>
+</body>
+</html>
