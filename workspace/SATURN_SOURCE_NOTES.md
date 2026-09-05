@@ -62,6 +62,42 @@ These are not merely values or aspirational labels. `/workspace` should treat th
 
 This is an explicit scope boundary for `/workspace`: the system should not count activity as progress merely because it demonstrates effort. It should identify work that repeatedly places the user in rescue, proof, performance, unrecognized responsibility, or one-sided stabilization patterns as potential contradiction evidence.
 
+## Integrated portrait / strategy convergence
+
+The companion explicitly treats its reflective systems as multiple maps of one operating system rather than independent authorities:
+
+> **Four maps. One operating system.**
+
+The practical instruction is to notice where several systems independently point toward the same choice, not to obey any single chart literally.
+
+### Connection to the portrait
+
+> **Choose work where discernment, aesthetics, human behavior, and language matter. Do not confuse keeping the peace with alignment.**
+
+This should inform `/workspace` as a fit signal, especially when comparing roles, advisory work, creative work, collaborations, and products. It is a qualitative hypothesis rather than objective market evidence and should remain labeled accordingly.
+
+### Repeated message
+
+> **See the pattern → make it understandable → build the structure → own part of the value.**
+
+The companion links professional progression to a compounding sequence: expertise becomes reputation, reputation attracts strategic partnerships, and partnerships should increasingly create ownership rather than only more hours.
+
+This repeated message is highly relevant to the ecosystem: product-building, education, writing, advisory work, and professional opportunities should be evaluated partly by whether they convert pattern recognition into reusable structure and then into durable ownership/leverage.
+
+### 12–18 month strategy priorities
+
+> **Build visible leadership around a valuable skill, collaborate with the right people, and accumulate ownership—not just income.**
+
+The source specifies five priorities:
+
+1. Become known for one thing.
+2. Build relationship equity.
+3. Negotiate ownership when possible.
+4. Create intellectual property.
+5. Price from value, not discomfort.
+
+These are source-backed strategic priorities and should be treated as more authoritative than reconstructed workspace category names when evaluating medium-term direction.
+
 ## Daily operating rule
 
 > **One durable commitment.**
@@ -187,14 +223,16 @@ The companion frames the next chapter as building career evidence rather than si
 
 ## Workspace interpretation
 
-ASHWOOD `/workspace` should use this source in seven ways:
+ASHWOOD `/workspace` should use this source in nine ways:
 
 1. **Goal evidence:** Does an accomplishment create durable evidence toward the life being built?
 2. **Purpose fit:** Does the work primarily ask the user to see, translate, build, guide, and model clear/distributed leadership—or to prove, rescue, perform, over-carry, or stabilize?
 3. **Success placement:** Is insight being recognized and converted into durable architecture, clean authority, sustainable influence, reciprocal relationships, and structured freedom?
-4. **Alignment:** Does the work pass Recognition, Authority, Foundation, Body, Reciprocity, and Freedom checks?
-5. **Career evidence:** Does new evidence strengthen or weaken the role, advisory, or ownership hypotheses?
-6. **Market signal:** Prefer real external response over internal certainty. Record experiments and what reality returned.
-7. **Next action:** Prefer one durable commitment and the smallest action capable of producing a real market signal over maximizing activity volume.
+4. **Portrait fit:** Does the opportunity meaningfully use discernment, aesthetics, human behavior, and language, while avoiding false harmony as a substitute for alignment?
+5. **Strategic compounding:** Does the work move through pattern → understanding → structure → ownership, or merely generate more activity/hours?
+6. **12–18 month priorities:** Does evidence strengthen being known for one thing, relationship equity, ownership, IP creation, and value-based pricing?
+7. **Career evidence:** Does new evidence strengthen or weaken the role, advisory, or ownership hypotheses?
+8. **Market signal:** Prefer real external response over internal certainty. Record experiments and what reality returned.
+9. **Next action:** Prefer one durable commitment and the smallest action capable of producing a real market signal over maximizing activity volume.
 
 The reconstructed domain buckets (ownership, leadership, relationships, modeling, music, writing/art, learning) remain useful classifications for evidence, but they are subordinate to this Saturn operating frame. Do not present those reconstructed labels as verbatim source language unless a later source confirms them.
