@@ -1,1 +1,123 @@
-placeholder
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#f5f3ef" />
+  <title>Workspace — ASHWOOD</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20260905-1" />
+  <script src="/theme.js?v=20260827-1" defer></script>
+  <script src="/workspace/workspace.js?v=20260905-1" defer></script>
+</head>
+<body class="workspace-page">
+  <main class="workspace-shell">
+    <header class="workspace-masthead">
+      <div>
+        <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
+        <span class="workspace-label">Workspace</span>
+      </div>
+      <div class="workspace-actions">
+        <span class="live-state" id="live-state" aria-live="polite">Loading evidence…</span>
+        <button class="text-button" id="refresh-evidence" type="button">Refresh evidence</button>
+        <button class="text-button" id="add-evidence" type="button">Add evidence</button>
+      </div>
+    </header>
+
+    <section class="workspace-intro" aria-labelledby="workspace-title">
+      <p class="eyebrow">Goal → active bets → evidence → progress → next gap</p>
+      <h1 id="workspace-title">Is the work moving the life?</h1>
+      <p class="workspace-lede">A living view of what the current ecosystem, creative work, and professional activity are actually advancing. Progress is evidence-backed; inferred mappings stay inspectable and correctable.</p>
+    </section>
+
+    <section class="pulse" aria-labelledby="pulse-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker">Current pulse</p>
+          <h2 id="pulse-title">What moved</h2>
+        </div>
+        <span class="as-of" id="as-of"></span>
+      </div>
+      <div class="pulse-grid" id="pulse-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="goals" aria-labelledby="goals-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker">Saturn frame · working model</p>
+          <h2 id="goals-title">Purpose buckets</h2>
+        </div>
+        <p class="section-note">Seeded from the current direction; corrections are saved in this browser.</p>
+      </div>
+      <div class="goal-grid" id="goal-grid"></div>
+    </section>
+
+    <section class="ecosystem" aria-labelledby="ecosystem-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker">Live ecosystem</p>
+          <h2 id="ecosystem-title">What exists now</h2>
+        </div>
+        <p class="section-note">Public GitHub evidence only in this MVP. ailhat intelligence can replace or augment this adapter later.</p>
+      </div>
+      <div class="ecosystem-list" id="ecosystem-list"></div>
+    </section>
+
+    <section class="evidence" aria-labelledby="evidence-title">
+      <div class="section-heading-row evidence-heading">
+        <div>
+          <p class="section-kicker">Evidence ledger</p>
+          <h2 id="evidence-title">Why progress changed</h2>
+        </div>
+        <div class="filters" role="group" aria-label="Evidence filters">
+          <button type="button" class="filter is-active" data-filter="all">All</button>
+          <button type="button" class="filter" data-filter="github">GitHub</button>
+          <button type="button" class="filter" data-filter="manual">Manual</button>
+        </div>
+      </div>
+      <div class="evidence-list" id="evidence-list"></div>
+    </section>
+
+    <section class="attention" aria-labelledby="attention-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker">Not just a celebration layer</p>
+          <h2 id="attention-title">Attention & contradictions</h2>
+        </div>
+      </div>
+      <div class="attention-list" id="attention-list"></div>
+    </section>
+
+    <section class="next-action" aria-labelledby="next-title">
+      <p class="section-kicker">Highest-value next move</p>
+      <h2 id="next-title">What deserves attention next?</h2>
+      <div id="next-action-card"></div>
+    </section>
+
+    <footer class="workspace-footer">
+      <span>Internal operating surface · noindex</span>
+      <a href="/WORKSPACE_GOAL_EVIDENCE_SYSTEM.md">Product contract ↗</a>
+    </footer>
+  </main>
+
+  <dialog id="evidence-dialog" class="evidence-dialog">
+    <form method="dialog" id="evidence-form">
+      <div class="dialog-heading">
+        <div>
+          <p class="section-kicker">Manual supplement</p>
+          <h2>Add evidence</h2>
+        </div>
+        <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      </div>
+      <label>What happened?<textarea id="evidence-title-input" required rows="3" placeholder="e.g. Recorded a new track with…"></textarea></label>
+      <label>Goal bucket<select id="evidence-goal-input"></select></label>
+      <label>Status<select id="evidence-status-input"><option value="COMPLETED">Completed</option><option value="IN_PROGRESS">In progress</option><option value="PLANNED">Planned</option></select></label>
+      <label>Evidence date<input id="evidence-date-input" type="date" required /></label>
+      <label>Source / note<input id="evidence-source-input" type="text" placeholder="Optional URL, collaborator, release, booking, etc." /></label>
+      <div class="dialog-actions"><button value="cancel" class="secondary-button">Cancel</button><button type="submit" class="primary-button">Save evidence</button></div>
+    </form>
+  </dialog>
+</body>
+</html>
