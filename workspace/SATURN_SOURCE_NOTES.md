@@ -98,6 +98,34 @@ The source specifies five priorities:
 
 These are source-backed strategic priorities and should be treated as more authoritative than reconstructed workspace category names when evaluating medium-term direction.
 
+## Beyond the Saturn Return: larger weather
+
+The companion presents additional astrological cycles as a reflective timing layer around the core Saturn work. Treat these as interpretive prompts from the source system, not as objective causal facts or guarantees.
+
+> **The larger weather around your becoming.**
+
+The source says Saturn remains the main assignment, while overlapping cycles are used to reflect on career definition, visibility, ownership, communication, and shared resources changing at once.
+
+### Combined strategy
+
+> **Saturn says refine one thing. Jupiter says make it visible. The nodes and Pluto say own more of the value. Uranus says update the medium. Neptune says verify the dream.**
+
+For `/workspace`, this is useful only as a strategic synthesis prompt. It should translate into observable questions:
+
+- **Refine one thing:** Is focus becoming clearer, or is work fragmenting?
+- **Make it visible:** Is valuable work becoming legible to the right market and collaborators?
+- **Own more of the value:** Is expertise converting into IP, equity, product ownership, or durable leverage?
+- **Update the medium:** Are outdated formats/channels being replaced when they constrain the work?
+- **Verify the dream:** Are aspirations being tested against evidence, economics, adoption, and real market response?
+
+### Jupiter in Leo cycle
+
+The source labels a visible cycle **Jun 30, 2026 – Jul 26, 2027** with the phrase:
+
+> **Visibility becomes an income strategy.**
+
+The companion connects this to becoming recognizable, publishing, pitching, leading, and pricing with self-respect. In `/workspace`, treat this as a reflective timing hypothesis that reinforces existing source-backed priorities around visible leadership and market signal—not as a prediction that visibility will automatically produce income.
+
 ## Daily operating rule
 
 > **One durable commitment.**
@@ -223,7 +251,7 @@ The companion frames the next chapter as building career evidence rather than si
 
 ## Workspace interpretation
 
-ASHWOOD `/workspace` should use this source in nine ways:
+ASHWOOD `/workspace` should use this source in ten ways:
 
 1. **Goal evidence:** Does an accomplishment create durable evidence toward the life being built?
 2. **Purpose fit:** Does the work primarily ask the user to see, translate, build, guide, and model clear/distributed leadership—or to prove, rescue, perform, over-carry, or stabilize?
@@ -233,6 +261,7 @@ ASHWOOD `/workspace` should use this source in nine ways:
 6. **12–18 month priorities:** Does evidence strengthen being known for one thing, relationship equity, ownership, IP creation, and value-based pricing?
 7. **Career evidence:** Does new evidence strengthen or weaken the role, advisory, or ownership hypotheses?
 8. **Market signal:** Prefer real external response over internal certainty. Record experiments and what reality returned.
-9. **Next action:** Prefer one durable commitment and the smallest action capable of producing a real market signal over maximizing activity volume.
+9. **Timing/reflection layer:** Use the source's combined-strategy prompts to ask about focus, visibility, ownership, medium, and verification while keeping them clearly separate from empirical evidence.
+10. **Next action:** Prefer one durable commitment and the smallest action capable of producing a real market signal over maximizing activity volume.
 
 The reconstructed domain buckets (ownership, leadership, relationships, modeling, music, writing/art, learning) remain useful classifications for evidence, but they are subordinate to this Saturn operating frame. Do not present those reconstructed labels as verbatim source language unless a later source confirms them.
