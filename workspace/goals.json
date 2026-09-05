@@ -1,8 +1,33 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "model_id": "saturn-operating-model",
-  "canonical_status": "reconstructed_pending_source_reconciliation",
-  "source_note": "Stable IDs are canonical for workspace use. Exact historical Saturn Return wording was not recoverable from available repo/library sources as of 2026-09-05; labels may be reconciled without changing IDs or evidence history.",
+  "canonical_status": "source_anchored_reconstructed_domains",
+  "source_note": "The operating frame and alignment criteria are now anchored to direct source language from the private MeOS Saturn Return Companion supplied by the user on 2026-09-05. Domain bucket labels remain reconstructed classifications unless a later source confirms verbatim historical labels.",
+  "north_star": "Build the life that can carry who you are.",
+  "chapter_frame": "This chapter is asking for adult authorship, not perfection. Choose what you will build, lead, sustain—and no longer carry.",
+  "morning_compass": {
+    "title": "Remember who you are.",
+    "statement": "I can act before certainty is perfect and build slowly enough to carry consequence.",
+    "identity_signals": ["Perceptive strategist", "Emotional truth-teller", "System builder", "Selective guide"]
+  },
+  "daily_rule": {
+    "title": "One durable commitment.",
+    "prompt": "What is the one action that creates lasting value today?"
+  },
+  "quick_return": {
+    "title": "Clarity before volume.",
+    "rule": "One recognized insight · one clean boundary · one durable action · a pace worth repeating.",
+    "actions": ["Change environments.", "Regulate the body.", "Say the choice aloud.", "Return responsibility.", "Take the smallest honest step."]
+  },
+  "alignment_dimensions": [
+    {"id":"recognition","name":"Recognition","question":"Will my judgment be genuinely valued here?"},
+    {"id":"authority","name":"Authority","question":"Does my responsibility match my influence and resources?"},
+    {"id":"foundation","name":"Foundation","question":"Will this create durable value beyond urgency or appearance?"},
+    {"id":"body","name":"Body","question":"Can my body sustain this pace for six months?"},
+    {"id":"reciprocity","name":"Reciprocity","question":"Are honesty, effort, and care moving both ways?"},
+    {"id":"freedom","name":"Freedom","question":"Does the structure preserve meaningful agency and choice?"}
+  ],
+  "next_personal_year_prompt": "Review what deserves another year of your life.",
   "goals": [
     {"id":"ownership","name":"Build & Own","description":"Build durable products, intellectual property, ownership, and leverage rather than optimizing only for income or activity.","priority":1.35,"success_signals":["shipped product capability","first paid client or revenue evidence","owned IP or reusable infrastructure","equity/ownership negotiated from proven value"],"repo_hints":["alvira","ailhat","ledgato","agent-os","agentfence","agent-availability"]},
     {"id":"leadership","name":"Visible Leadership","description":"Become known for one valuable point of view and capability by making the thinking, evidence, and work legible in public.","priority":1.3,"success_signals":["consistent public publishing","clear association with a valuable capability","inbound collaboration or opportunity","portfolio narrative becomes more coherent"],"repo_hints":["tk-ap.github.io","ashwood","ai-from-zero","alvira","ailhat"]},
