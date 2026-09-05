@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI, FROM ZERO — learn Markdown, structured prompting, prompt libraries, and how reusable context creates continuity across AI tools." />
+  <link rel="canonical" href="https://ashwood-info.vercel.app/ai-from-zero/continuity/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ASHWOOD" />
+  <meta property="og:title" content="Structure your AI work — AI, FROM ZERO" />
+  <meta property="og:description" content="Markdown → structured prompts → reusable prompt files → prompt libraries → workflows and agents." />
+  <meta property="og:url" content="https://ashwood-info.vercel.app/ai-from-zero/continuity/" />
+  <meta property="og:image" content="https://ashwood-info.vercel.app/assets/social/ashwood-og-1200x630.jpg" />
+  <meta name="theme-color" content="#10110f" />
+  <title>Structure your AI work — AI, FROM ZERO — ASHWOOD</title>
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
+  <script src="/theme.js?v=20260827-1" defer></script>
+  <style>
+    .continuity-page{--soft:color-mix(in srgb,var(--ashwood-ink) 7%,transparent)}
+    .continuity-page .shell{max-width:1500px}
+    .c-hero{padding:clamp(92px,14vh,170px) 0 clamp(74px,11vh,130px)}
+    .c-hero h1{max-width:10ch;margin:16px 0 0;font-size:clamp(54px,9vw,128px);font-weight:500;line-height:.88;letter-spacing:-.065em}
+    .c-hero .lede{max-width:780px;margin:32px 0 0;color:var(--ashwood-muted);font-size:clamp(18px,2vw,28px);line-height:1.45}
+    .c-back,.c-link{display:inline-flex;min-height:44px;align-items:center;color:var(--ashwood-ochre);text-decoration:none;font-size:10px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid transparent}
+    .c-back:hover,.c-link:hover,.c-back:focus-visible,.c-link:focus-visible{border-bottom-color:currentColor}
+    .c-section{border-top:1px solid var(--ashwood-rule);padding:clamp(68px,9vw,130px) 0}
+    .c-marker{display:flex;justify-content:space-between;gap:20px;margin-bottom:clamp(40px,6vw,72px);color:var(--ashwood-muted);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+    .c-marker span:first-child{color:var(--ashwood-ochre)}
+    .c-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.5fr);gap:36px clamp(48px,7vw,100px);align-items:end}
+    .c-heading h2{max-width:11ch;margin:0;font-size:clamp(46px,7vw,100px);font-weight:500;line-height:.9;letter-spacing:-.055em}
+    .c-heading p{max-width:44ch;margin:0;color:var(--ashwood-muted);font-size:clamp(16px,1.45vw,21px);line-height:1.6}
+    .c-thesis{max-width:22ch;margin:clamp(48px,7vw,90px) 0 0;font-size:clamp(31px,4.8vw,70px);font-weight:500;line-height:.98;letter-spacing:-.045em}
+    .c-ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;margin-top:clamp(50px,7vw,88px);background:var(--ashwood-rule);border:1px solid var(--ashwood-rule)}
+    .c-ladder article{min-width:0;padding:24px 18px;background:var(--ashwood-paper)}
+    .c-ladder small,.c-label{color:var(--ashwood-ochre);font-size:9px;letter-spacing:.13em;text-transform:uppercase}
+    .c-ladder strong{display:block;margin-top:34px;font-size:clamp(18px,2vw,27px);font-weight:500;line-height:1.04;overflow-wrap:anywhere}
+    .c-ladder p{margin:12px 0 0;color:var(--ashwood-muted);font-size:12px;line-height:1.55}
+    .md-workbench{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:clamp(50px,7vw,88px);background:var(--ashwood-rule);border:1px solid var(--ashwood-rule)}
+    .md-pane{min-width:0;padding:clamp(22px,3vw,36px);background:var(--ashwood-paper)}
+    .md-pane h3{margin:10px 0 18px;font-size:clamp(30px,3.8vw,54px);font-weight:500;line-height:.96;letter-spacing:-.04em}
+    textarea.md-input{width:100%;min-height:390px;padding:18px;border:1px solid var(--ashwood-rule);background:var(--soft);color:var(--ashwood-ink);resize:vertical;font:500 13px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .md-output{min-height:390px;padding:18px;border:1px solid var(--ashwood-rule);background:var(--soft);overflow-wrap:anywhere}
+    .md-output h1,.md-output h2,.md-output h3{margin:18px 0 8px;line-height:1}.md-output h1{font-size:32px}.md-output h2{font-size:25px}.md-output h3{font-size:20px}.md-output p,.md-output li{line-height:1.65}.md-output ul,.md-output ol{padding-left:22px}.md-output code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.md-output blockquote{margin:18px 0;padding-left:16px;border-left:2px solid var(--ashwood-ochre);color:var(--ashwood-muted)}
+    .md-cheatsheet{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:20px;background:var(--ashwood-rule);border:1px solid var(--ashwood-rule)}
+    .md-cheatsheet div{padding:16px;background:var(--ashwood-paper)}.md-cheatsheet code{display:block;margin-top:7px;font-size:12px;overflow-wrap:anywhere}.md-cheatsheet span{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ashwood-muted)}
+    .prompt-anatomy{display:grid;grid-template-columns:minmax(0,.7fr) minmax(320px,1.3fr);gap:clamp(40px,7vw,100px);margin-top:clamp(50px,7vw,88px);align-items:start}
+    .prompt-anatomy-copy h3{max-width:11ch;margin:0;font-size:clamp(37px,5.4vw,78px);font-weight:500;line-height:.93;letter-spacing:-.05em}.prompt-anatomy-copy p{max-width:44ch;color:var(--ashwood-muted);line-height:1.7}
+    .prompt-file{padding:clamp(24px,4vw,44px);border:1px solid var(--ashwood-rule);background:var(--soft)}
+    .prompt-file pre,.directory pre{margin:16px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font:500 13px/1.72 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .prompt-parts{margin-top:26px;border-top:1px solid var(--ashwood-rule)}
+    .prompt-parts article{display:grid;grid-template-columns:minmax(130px,.28fr) minmax(0,1fr);gap:20px;padding:18px 0;border-bottom:1px solid var(--ashwood-rule)}
+    .prompt-parts strong{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ashwood-ochre)}.prompt-parts p{margin:0;color:var(--ashwood-muted);line-height:1.6}
+    .continuity-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:clamp(50px,7vw,88px);background:var(--ashwood-rule);border:1px solid var(--ashwood-rule)}
+    .continuity-grid article{padding:clamp(25px,3.5vw,44px);background:var(--ashwood-paper)}.continuity-grid h3{margin:14px 0 18px;font-size:clamp(28px,3.3vw,46px);font-weight:500;line-height:.98;letter-spacing:-.04em}.continuity-grid p{margin:0;color:var(--ashwood-muted);line-height:1.65}
+    .callout{margin-top:36px;padding:clamp(26px,4vw,48px);border:1px solid var(--ashwood-rule);background:var(--soft)}.callout strong{display:block;max-width:26ch;font-size:clamp(24px,3vw,42px);font-weight:500;line-height:1.06;letter-spacing:-.035em}.callout p{max-width:70ch;margin:16px 0 0;color:var(--ashwood-muted);line-height:1.7}
+    .directory{display:grid;grid-template-columns:minmax(0,.75fr) minmax(320px,1.25fr);gap:clamp(40px,7vw,100px);margin-top:clamp(50px,7vw,88px);align-items:start}.directory h3{max-width:10ch;margin:0;font-size:clamp(38px,5.5vw,78px);font-weight:500;line-height:.92;letter-spacing:-.05em}.directory p{max-width:44ch;color:var(--ashwood-muted);line-height:1.7}.directory-box{padding:clamp(24px,4vw,44px);border:1px solid var(--ashwood-rule);background:var(--soft)}
+    .copy-button{min-height:44px;margin-top:22px;padding:10px 14px;border:1px solid var(--ashwood-rule);background:var(--ashwood-paper);color:var(--ashwood-ink);cursor:pointer;font:inherit;font-size:10px;letter-spacing:.09em;text-transform:uppercase}.copy-button:hover,.copy-button:focus-visible{border-color:var(--ashwood-ochre);color:var(--ashwood-ochre)}.copy-status{margin-left:12px;color:var(--ashwood-muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+    .portable-rules{margin-top:clamp(48px,6vw,76px);border-top:1px solid var(--ashwood-rule)}.portable-rules article{display:grid;grid-template-columns:minmax(150px,.25fr) minmax(0,1fr);gap:22px 42px;padding:24px 0;border-bottom:1px solid var(--ashwood-rule);align-items:baseline}.portable-rules h3{margin:0;font-size:clamp(24px,3vw,42px);font-weight:500;line-height:1}.portable-rules p{margin:0;color:var(--ashwood-muted);line-height:1.65}
+    .c-footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;padding:42px 0 10px;border-top:1px solid var(--ashwood-rule);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ashwood-muted)}.c-footer nav{display:flex;flex-wrap:wrap;gap:12px 24px}.c-footer a{text-decoration:none;color:var(--ashwood-ink)}
+    @media(max-width:980px){.c-heading,.prompt-anatomy,.directory{grid-template-columns:1fr}.c-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}.continuity-grid{grid-template-columns:1fr}.md-cheatsheet{grid-template-columns:1fr 1fr}}
+    @media(max-width:700px){.continuity-page .shell{padding-inline:clamp(18px,5vw,28px)}.c-hero h1{font-size:clamp(50px,15vw,76px)}.c-ladder,.md-workbench{grid-template-columns:1fr}.md-cheatsheet{grid-template-columns:1fr}.prompt-parts article,.portable-rules article{grid-template-columns:1fr;gap:8px}.c-footer{flex-direction:column}}
+  </style>
+</head>
+<body class="continuity-page">
+  <main class="shell" id="top">
+    <header class="masthead"><a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a><span class="section-label">AI, FROM ZERO / CONTINUITY</span></header>
+
+    <section class="c-hero" aria-labelledby="c-title">
+      <a class="c-back" href="/ai-from-zero/">← Back to AI, FROM ZERO</a>
+      <p class="eyebrow">STRUCTURE YOUR AI WORK / KEEP WHAT YOU LEARN</p>
+      <h1 id="c-title">Stop starting from zero every time you open a new chat.</h1>
+      <p class="lede">A clever prompt can help once. A small body of structured, reusable context can help again and again. This is where Markdown, prompt structure, prompt libraries, and continuity start fitting together.</p>
+    </section>
+
+    <section class="c-section" aria-labelledby="why-title">
+      <div class="c-marker"><span>01</span><span>WHY STRUCTURE HELPS</span></div>
+      <div class="c-heading"><h2 id="why-title">The goal is not prettier prompts.</h2><p>Structure makes intent easier for both you and the machine to inspect. It separates the goal from the background, constraints from preferences, instructions from source material, and “done” from “sounds plausible.”</p></div>
+      <p class="c-thesis">The useful unit is not a magic sentence. It is a reusable piece of work that carries meaning forward.</p>
+      <div class="c-ladder" aria-label="From chat to agent harness">
+        <article><small>01</small><strong>Conversation</strong><p>You explain something once inside a chat.</p></article>
+        <article><small>02</small><strong>Structured prompt</strong><p>The request has named parts and clearer boundaries.</p></article>
+        <article><small>03</small><strong>Prompt file</strong><p>You save the useful structure instead of rewriting it.</p></article>
+        <article><small>04</small><strong>Prompt library</strong><p>Reusable instructions become an organized personal asset.</p></article>
+        <article><small>05</small><strong>Workflow</strong><p>The prompt gains repeatable steps, inputs, outputs, and checks.</p></article>
+        <article><small>06</small><strong>Agent harness</strong><p>The workflow can be paired with tools, permissions, state, evidence, and execution.</p></article>
+      </div>
+    </section>
+
+    <section class="c-section" id="markdown" aria-labelledby="markdown-title">
+      <div class="c-marker"><span>02</span><span>MARKDOWN / THE PRACTICAL BASICS</span></div>
+      <div class="c-heading"><h2 id="markdown-title">Markdown is just structured plain text.</h2><p>A Markdown file is still readable if no special app opens it. The symbols give the text hierarchy: headings, lists, emphasis, quotes, links, and code. That simplicity is exactly why it travels well between humans, repositories, editors, and AI systems.</p></div>
+
+      <div class="md-workbench">
+        <section class="md-pane"><span class="c-label">EDIT THE MARKDOWN</span><h3>The text you store.</h3><textarea class="md-input" id="md-input" spellcheck="false"># Weekly research brief
+
+## Goal
+Find the three developments that materially affect my current work.
+
+## Context
+- I care about agent infrastructure.
+- I do **not** want generic AI news.
+- Separate evidence from inference.
+
+## Output
+1. What changed
+2. Why it matters
+3. What I should inspect next
+
+> If nothing important changed, say so.</textarea></section>
+        <section class="md-pane"><span class="c-label">LIVE PREVIEW</span><h3>The hierarchy a reader sees.</h3><div class="md-output" id="md-output"></div></section>
+      </div>
+      <div class="md-cheatsheet" aria-label="Markdown formatting cheat sheet">
+        <div><span>Heading</span><code># Main heading<br>## Section</code></div>
+        <div><span>List</span><code>- one item<br>- another</code></div>
+        <div><span>Emphasis</span><code>**important**<br>*emphasis*</code></div>
+        <div><span>Quote / note</span><code>&gt; remember this</code></div>
+        <div><span>Numbered steps</span><code>1. first<br>2. second</code></div>
+        <div><span>Inline code</span><code>`npm run dev`</code></div>
+        <div><span>Link</span><code>[name](https://…)</code></div>
+        <div><span>Divider</span><code>---</code></div>
+      </div>
+      <div class="callout"><strong>Markdown does not make the model smarter.</strong><p>It makes the information easier to parse, edit, compare, reuse, and move. Headings and lists create visible boundaries. That helps the model, but just as importantly it helps <em>you</em> see whether the request actually contains the information the work needs.</p></div>
+    </section>
+
+    <section class="c-section" id="prompting" aria-labelledby="prompting-title">
+      <div class="c-marker"><span>03</span><span>PROMPT STRUCTURE / NOT PROMPT MAGIC</span></div>
+      <div class="c-heading"><h2 id="prompting-title">Give the work a shape.</h2><p>There is no single perfect prompt formula. A useful structure exists to answer the questions a competent collaborator would need answered before doing the work.</p></div>
+      <div class="prompt-anatomy">
+        <div class="prompt-anatomy-copy"><h3>A strong reusable prompt usually names six things.</h3><p>Not every request needs every section. The point is to stop burying the important constraint in paragraph seven and hoping the model notices it.</p>
+          <div class="prompt-parts">
+            <article><strong>Outcome</strong><p>What are we trying to produce or decide?</p></article>
+            <article><strong>Context</strong><p>What background materially changes the answer?</p></article>
+            <article><strong>Inputs</strong><p>What source material or current data should be used?</p></article>
+            <article><strong>Constraints</strong><p>What must not happen? What limits matter?</p></article>
+            <article><strong>Process</strong><p>What reasoning, checks, or stages should the work include?</p></article>
+            <article><strong>Acceptance</strong><p>How will we know the result is actually good enough?</p></article>
+          </div>
+        </div>
+        <div class="prompt-file"><span class="c-label">REUSABLE PROMPT.MD</span><pre># Task: compare three options
+
+## Outcome
+Recommend the best option for this specific situation.
+
+## Relevant context
+[Insert only context that changes the decision.]
+
+## Inputs
+[Paste links, notes, data, or source material.]
+
+## Constraints
+- Stay under: ______
+- Do not: ______
+- Ask before: ______
+
+## Process
+1. State the decision criteria.
+2. Compare each option against them.
+3. Separate facts from assumptions.
+4. Surface missing information.
+
+## Output
+Give me:
+- recommendation
+- tradeoffs
+- evidence
+- uncertainty
+- next action
+
+## Done when
+I can understand why the recommendation won.</pre></div>
+      </div>
+    </section>
+
+    <section class="c-section" id="continuity" aria-labelledby="continuity-title">
+      <div class="c-marker"><span>04</span><span>CONTINUITY / THE CONTEXT ARGUMENT</span></div>
+      <div class="c-heading"><h2 id="continuity-title">A saved prompt is useful. It is not memory.</h2><p>The prompt describes how you want a kind of work done. Context describes what is true, important, preferred, constrained, or historically relevant to <em>you and the work</em>. Continuity comes from keeping those layers available and current instead of rebuilding them from scratch.</p></div>
+      <div class="continuity-grid">
+        <article><span class="c-label">PROMPT</span><h3>How should this kind of work happen?</h3><p>Reusable instructions, output shape, checks, decision rules, and questions to ask.</p></article>
+        <article><span class="c-label">CONTEXT</span><h3>What does the system need to understand?</h3><p>Your current goals, preferences, constraints, relevant history, examples, project state, and known decisions.</p></article>
+        <article><span class="c-label">CURRENT INPUT</span><h3>What is different this time?</h3><p>The new document, meeting, customer, dataset, opportunity, bug, question, or decision in front of you right now.</p></article>
+      </div>
+      <div class="callout"><strong>That separation is the continuity pattern: reusable method + maintained context + current input.</strong><p>If all three are jammed into one giant prompt, they become harder to update and easier to contradict. If they are separated, you can improve the method without rewriting your life story, update the context without rewriting the workflow, and swap in a new task without losing either.</p></div>
+      <div class="callout"><strong>This is also why the broader ALVIRA Context argument exists.</strong><p>Portable Markdown files are a strong baseline because you own them and can bring them to almost any interface. A maintained Context system goes further by helping keep relevant human context inspectable, current, selectively reusable, and less dependent on manual copy-paste. The education should stand on its own even if you never use ALVIRA; ALVIRA is one product response to the continuity problem.</p></div>
+    </section>
+
+    <section class="c-section" id="library" aria-labelledby="library-title">
+      <div class="c-marker"><span>05</span><span>PROMPT LIBRARY / BUILD YOUR OWN DIRECTORY</span></div>
+      <div class="c-heading"><h2 id="library-title">Your useful prompts should not disappear into chat history.</h2><p>Save them as ordinary text files you control. A prompt library can begin as one folder on your computer and work across ChatGPT, Claude, Gemini, a local model, an IDE, or whatever interface you prefer later.</p></div>
+      <div class="directory">
+        <div><h3>Start boring. Make it portable.</h3><p>Do not begin by shopping for a complicated prompt-management product. A directory of Markdown files is searchable, versionable, editable by humans and AI, and easy to move.</p><p>Organize by the <em>kind of work</em>, not by whichever model happens to be fashionable this month.</p></div>
+        <div class="directory-box"><span class="c-label">A PERSONAL AI WORK DIRECTORY</span><pre id="directory-template">ai-work/
+├── README.md
+├── context/
+│   ├── about-me.md
+│   ├── goals.md
+│   ├── preferences.md
+│   ├── constraints.md
+│   └── projects/
+├── prompts/
+│   ├── research/
+│   │   ├── compare-options.md
+│   │   └── deep-research.md
+│   ├── writing/
+│   │   ├── edit-for-clarity.md
+│   │   └── critique-draft.md
+│   ├── planning/
+│   │   └── turn-notes-into-plan.md
+│   └── decisions/
+│       └── decision-memo.md
+├── workflows/
+│   ├── weekly-review.md
+│   └── launch-check.md
+└── examples/
+    └── good-outputs.md</pre><button class="copy-button" id="copy-directory" type="button">Copy starter directory</button><span class="copy-status" id="copy-directory-status" aria-live="polite"></span></div>
+      </div>
+      <div class="portable-rules">
+        <article><span class="c-label">01 / WRITE FOR PORTABILITY</span><div><h3>Do not make every prompt depend on one interface.</h3><p>Keep the core instruction in ordinary Markdown. Add tool-specific notes only when they are genuinely necessary.</p></div></article>
+        <article><span class="c-label">02 / KEEP CONTEXT SEPARATE</span><div><h3>Do not paste your entire biography into every task.</h3><p>Reference or attach only the context that materially changes the work. Too much irrelevant context can be as unhelpful as too little.</p></div></article>
+        <article><span class="c-label">03 / SAVE EXAMPLES</span><div><h3>Examples teach “good” more clearly than adjectives.</h3><p>If a response is excellent, save it. A small library of accepted examples can become evidence of your preferred standard.</p></div></article>
+        <article><span class="c-label">04 / VERSION WHAT MATTERS</span><div><h3>Prompts evolve because your thinking evolves.</h3><p>When a reusable prompt becomes important, keep its history in Git or another versioned system so changes are inspectable instead of accidental.</p></div></article>
+        <article><span class="c-label">05 / NEVER STORE SECRETS</span><div><h3>Your prompt library is not a password vault.</h3><p>Do not store API keys, passwords, access tokens, private credentials, or other secrets inside ordinary prompt files.</p></div></article>
+      </div>
+    </section>
+
+    <section class="c-section" id="from-prompt-to-agent" aria-labelledby="agent-title">
+      <div class="c-marker"><span>06</span><span>WHEN A PROMPT BECOMES INFRASTRUCTURE</span></div>
+      <div class="c-heading"><h2 id="agent-title">Some saved prompts will stay prompts. Good.</h2><p>You do not need to turn everything into an agent. Repetition plus clear inputs, outputs, boundaries, and checks is the signal that a prompt may be ready to become a workflow. Tool use, permissions, persistent state, and evidence are signals that you are moving toward a harness.</p></div>
+      <div class="c-ladder">
+        <article><small>KEEP AS A PROMPT</small><strong>You still want a conversation.</strong><p>Judgment changes each time and the work benefits from active back-and-forth.</p></article>
+        <article><small>TEMPLATE IT</small><strong>The shape repeats.</strong><p>The same questions and output format recur, but the inputs change.</p></article>
+        <article><small>WORKFLOW IT</small><strong>The steps repeat.</strong><p>There is a stable sequence and known acceptance criteria.</p></article>
+        <article><small>ADD TOOLS</small><strong>The system needs to act.</strong><p>It must search, read, write, run code, send, create, or inspect external systems.</p></article>
+        <article><small>ADD GOVERNANCE</small><strong>The action has consequences.</strong><p>Permissions, approvals, revocation, logs, and evidence become part of the design.</p></article>
+        <article><small>HARNESS IT</small><strong>The work must be reliable.</strong><p>Instructions, context, tools, state, loops, checks, and boundaries become one operating environment.</p></article>
+      </div>
+      <p style="margin-top:36px"><a class="c-link" href="/ai-from-zero/reference/">Open the de-jargon reference →</a></p>
+    </section>
+
+    <footer class="c-footer"><span>ASHWOOD · AI, FROM ZERO</span><nav aria-label="Continue through ASHWOOD"><a href="/ai-from-zero/">Overview</a><a href="/ai-from-zero/reference/">Reference</a><a href="/journal/">Builds</a><a href="/about/">About</a></nav></footer>
+  </main>
+
+  <script>
+    (() => {
+      const input = document.getElementById('md-input');
+      const output = document.getElementById('md-output');
+      const escapeHtml = (value) => value.replace(/[&<>]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      function inline(value){
+        return escapeHtml(value)
+          .replace(/`([^`]+)`/g,'<code>$1</code>')
+          .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+          .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+          .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" rel="noopener">$1</a>');
+      }
+      function renderMarkdown(value){
+        const lines=value.split('\n');let html='';let list=null;
+        const closeList=()=>{if(list){html+=list==='ol'?'</ol>':'</ul>';list=null;}};
+        for(const raw of lines){const line=raw.trimEnd();
+          if(/^###\s+/.test(line)){closeList();html+=`<h3>${inline(line.replace(/^###\s+/,''))}</h3>`;continue;}
+          if(/^##\s+/.test(line)){closeList();html+=`<h2>${inline(line.replace(/^##\s+/,''))}</h2>`;continue;}
+          if(/^#\s+/.test(line)){closeList();html+=`<h1>${inline(line.replace(/^#\s+/,''))}</h1>`;continue;}
+          if(/^>\s?/.test(line)){closeList();html+=`<blockquote>${inline(line.replace(/^>\s?/,''))}</blockquote>`;continue;}
+          if(/^[-*]\s+/.test(line)){if(list!=='ul'){closeList();html+='<ul>';list='ul';}html+=`<li>${inline(line.replace(/^[-*]\s+/,''))}</li>`;continue;}
+          if(/^\d+\.\s+/.test(line)){if(list!=='ol'){closeList();html+='<ol>';list='ol';}html+=`<li>${inline(line.replace(/^\d+\.\s+/,''))}</li>`;continue;}
+          if(/^---+$/.test(line)){closeList();html+='<hr>';continue;}
+          if(!line.trim()){closeList();continue;}
+          closeList();html+=`<p>${inline(line)}</p>`;
+        }closeList();output.innerHTML=html;
+      }
+      input.addEventListener('input',()=>renderMarkdown(input.value));renderMarkdown(input.value);
+
+      const copy=document.getElementById('copy-directory');const directory=document.getElementById('directory-template');const status=document.getElementById('copy-directory-status');
+      copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(directory.textContent.trim());status.textContent='Copied';}catch(error){status.textContent='Select and copy above';}window.setTimeout(()=>status.textContent='',2400);});
+    })();
+  </script>
+</body>
+</html>
