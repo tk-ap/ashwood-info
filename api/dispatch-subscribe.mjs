@@ -60,20 +60,21 @@ export default async function handler(req, res) {
     try {
       const receipt = await sendAgentMail({
         to: email,
-        subject: "You’re on the ASHWOOD Dispatch list",
+        subject: "Welcome to ASHWOOD Dispatch",
         text: [
           `Hi ${rows[0]?.name || name},`,
           "",
-          "You’re on the list for ASHWOOD Dispatch.",
+          "Thanks for subscribing to ASHWOOD Dispatch.",
           "",
-          "Dispatch is sent when there is something worth sending — essays and notes on AI, creativity, learning, systems, culture, and the thinking behind the work.",
+          "You’ll receive new Dispatches when they’re published.",
           "",
-          "The full archive stays public here:",
+          "Read the archive:",
           "https://ashwood-info.vercel.app/dispatch",
           "",
-          "If you ever want to leave the list, reply to any Dispatch email and say unsubscribe.",
+          "If you ever want to unsubscribe, reply to any Dispatch email with ‘unsubscribe’.",
           "",
-          "— ASHWOOD",
+          "TK Ashwood",
+          "ASHWOOD",
         ].join("\n"),
       });
       if (receipt.messageId) {
