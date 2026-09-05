@@ -1,0 +1,146 @@
+name: Hermes Agent
+
+# Governed Hermes execution for tk-ap.github.io.
+#
+# Hermes runs as an Agent OS harness: Agent OS (tk-ap/agent-os, loaded as a
+# subdirectory) resolves the task, selects the minimum agent team, and Hermes
+# executes within the task envelope using its model provider and tools.
+#
+# Authentication and cost:
+#   - GitHub access: GITHUB_TOKEN (auto-provided, scoped to this repo).
+#   - Hermes model/provider: OPENROUTER_API_KEY (repo secret).
+#     If the secret is missing, the workflow prints setup instructions and exits.
+#   - Spending: controlled by your OpenRouter account and any per-key credit cap.
+#     The workflow does not set or manage credits.
+#
+# Known limitations / follow-ups:
+#   - Uses GITHUB_TOKEN rather than a GitHub App bot identity (follow-up).
+#   - Hermes model is whatever the Hermes default resolves to via OpenRouter.
+#     To pin a model, add a HERMES_MODEL repo secret.
+#   - Visual/interaction verification requires a human gate; Hermes cannot
+#     truly verify visuals. Build check only where the build fits in budget.
+#   - Scheduled runs are commented out by default.
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "What should Hermes do?"
+        required: false
+        type: string
+        default: "Review this PR as a governed Agent OS task"
+      task_class:
+        description: "Task class (pr-review | issue-triage | custom)"
+        required: false
+        type: string
+        default: "pr-review"
+
+  pull_request:
+    types: [opened, ready_for_review]
+
+  # Nightly triage / audit — disabled by default.
+  # schedule:
+  #   - cron: "0 6 * * *"
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: hermes-${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      HERMES_MODEL: ${{ secrets.HERMES_MODEL }}
+      AGENT_OS_DIR: ./agent-os
+
+    steps:
+      - name: Checkout product repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: false
+
+      - name: Checkout Agent OS (as a subdirectory)
+        uses: actions/checkout@v4
+        with:
+          repository: tk-ap/agent-os
+          path: agent-os
+          ref: main
+          fetch-depth: 1
+
+      - name: Install Hermes
+        run: |
+          set -euo pipefail
+          curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+          echo "Hermes installed"
+
+      - name: Preflight — required secrets and tooling
+        run: |
+          set -euo pipefail
+          echo "runtime: python=$(python3 --version 2>&1 || true), git=$(git --version 2>&1 || true), gh=$(gh --version 2>&1 | head -1 || true), hermes=$(hermes --version 2>&1 | head -1 || true)"
+          if [ -z "${{ secrets.OPENROUTER_API_KEY }}" ]; then
+            echo "ERROR: OPENROUTER_API_KEY repo secret is missing."
+            echo "Add it at: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            echo "Create a key at https://openrouter.ai/keys, then: gh secret set OPENROUTER_API_KEY --repo ${{ github.repository }}"
+            exit 1
+          fi
+          echo "OPENROUTER_API_KEY: set (value hidden)"
+          if [ -n "${{ secrets.HERMES_MODEL }}" ]; then
+            echo "HERMES_MODEL: ${{ secrets.HERMES_MODEL }}"
+          else
+            echo "HERMES_MODEL: not set — Hermes uses its default"
+          fi
+
+      - name: Build the prompt
+        id: prompt
+        run: |
+          set -euo pipefail
+          TASK_CLASS="${{ github.event.inputs.task_class || 'pr-review' }}"
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            PR_NUM="${{ github.event.pull_request.number }}"
+            cp .github/workflows/review-prompt.txt /tmp/hermes-prompt.txt
+            echo "PR_NUM=$PR_NUM" >> "$GITHUB_OUTPUT"
+            echo "prompt: governed PR review"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            RAW="${{ github.event.inputs.prompt || 'Review this PR as a governed Agent OS task' }}"
+            printf '%s\n' "$RAW" > /tmp/hermes-prompt.txt
+            echo "prompt: manual dispatch"
+          else
+            printf 'Triage this according to task class: %s\n' "$TASK_CLASS" > /tmp/hermes-prompt.txt
+            echo "prompt: scheduled/other triage"
+          fi
+
+          echo "prompt lines: $(wc -l < /tmp/hermes-prompt.txt)"
+
+      - name: Run Hermes
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          CMD=(hermes chat --query-file /tmp/hermes-prompt.txt --provider openrouter)
+          if [ -n "${HERMES_MODEL:-}" ]; then
+            CMD+=(--model "$HERMES_MODEL")
+          fi
+          echo "Running: ${CMD[*]}"
+          "${CMD[@]}"
+
+      - name: Deliver the result
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ -n "${{ steps.prompt.outputs.PR_NUM }}" ]; then
+            PR_NUM="${{ steps.prompt.outputs.PR_NUM }}"
+            gh pr comment "$PR_NUM" --repo "$GH_REPO" --body-file .github/workflows/pr-comment-body.txt
+            echo "posted comment on PR #$PR_NUM"
+          else
+            echo "Not a PR-triggered run — output is in the action log."
+          fi

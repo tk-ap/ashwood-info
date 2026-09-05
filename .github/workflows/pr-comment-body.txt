@@ -1,0 +1,9 @@
+**Hermes Agent OS PR review** (automated, governed)
+
+This review was produced by Hermes acting as an Agent OS harness. Router selected the minimum team and the review ran within the task envelope.
+
+Sources: the PR diff, AGENTS.md, .agent-os/product.yaml, and the Agent OS repo (BOOTSTRAP.md, registry/agents.yaml, policies).
+
+See the workflow run logs for the full review. If anything needs visual verification or human judgment, it will be flagged explicitly in the logs.
+
+This is an automated comment. Human merge remains gated.
