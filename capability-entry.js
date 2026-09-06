@@ -122,6 +122,18 @@
     }
   };
 
+  // Where to learn the idea, as opposed to where it shows up in practice. Link text
+  // is the AI from ZERO section's own authored title, not new copy.
+  // Mapping accepted by TK 2026-09-05; see ~/Work/ashwood-signal-zero-mapping.md.
+  const learningLane = {
+    translation: { label: "AI FROM ZERO \u00b7 AI can do more than chat", href: "/ai-from-zero/#more-than-chat" },
+    signal: { label: "AI FROM ZERO \u00b7 What should I hand off?", href: "/ai-from-zero/#handoff" },
+    friction: { label: "AI FROM ZERO \u00b7 Do I even need an agent?", href: "/ai-from-zero/#choose" },
+    resilience: { label: "AI FROM ZERO \u00b7 Why context + control matter", href: "/ai-from-zero/#context-control" },
+    systems: { label: "AI FROM ZERO \u00b7 Structure your AI work", href: "/ai-from-zero/#structure" },
+    range: { label: "AI FROM ZERO \u00b7 How the ASHWOOD ecosystem fits", href: "/ai-from-zero/#ecosystem" }
+  };
+
   const practiceOverrides = {
     friction: {
       label: "ALVIRA · Context Intelligence",
@@ -207,6 +219,32 @@
         row.querySelector(".ashwood-capability-map__authorship")?.before(useful);
       }
       useful.innerHTML = `<strong>Useful when →</strong>${synthesis.useful}`;
+
+      const learning = learningLane[id];
+      if (learning) {
+        // Reuse __authorship/__practice rather than parallel classes: seven stylesheets
+        // style this lane, including the progressive disclosure in
+        // capability-disclosure-fix.css that hides it until the row is hovered or
+        // focused. Our own nodes are identified by data-lane so the class is free.
+        let key = row.querySelector('[data-lane="learning-key"]');
+        if (!key) {
+          key = document.createElement("span");
+          key.className = "ashwood-capability-map__authorship";
+          key.dataset.lane = "learning-key";
+          key.textContent = "WHERE TO LEARN IT \u2192";
+          row.append(key);
+        }
+        let link = row.querySelector('[data-lane="learning"]');
+        if (!link) {
+          link = document.createElement("a");
+          link.className = "ashwood-capability-map__practice";
+          link.dataset.lane = "learning";
+          link.dataset.internal = "true";
+          row.append(link);
+        }
+        link.textContent = learning.label;
+        link.href = learning.href;
+      }
 
       const override = practiceOverrides[id];
       if (!override) return;
