@@ -2,7 +2,7 @@ version: 0.2.0
 product_key: ashwood
 agent_os_repository: tk-ap/agent-os
 routing_source: registry/product-routing.yaml
-repository: tk-ap/tk-ap.github.io
+repository: tk-ap/ashwood-info
 
 local:
   owns:
