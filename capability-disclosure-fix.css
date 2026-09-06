@@ -40,7 +40,11 @@
     margin-top: 6px !important;
     opacity: 0 !important;
     transform: translateY(5px) !important;
-    visibility: hidden;
+    /* Deliberately not visibility:hidden. That removes descendants from the tab
+       order, so the :focus-within rule below could never fire and all twelve links
+       in this lane were unreachable by keyboard and absent from the accessibility
+       tree. opacity:0 hides it visually while keeping it focusable, so tabbing to a
+       link triggers the reveal the rule was always written to perform. */
     pointer-events: none !important;
     transition: opacity .2s ease, transform .24s ease, visibility 0s linear .24s !important;
   }
@@ -53,7 +57,6 @@
   body.ashwood-home-native .ashwood-capability-map__item:focus-within .ashwood-capability-map__useful {
     opacity: 1 !important;
     transform: translateY(0) !important;
-    visibility: visible;
     pointer-events: auto !important;
     transition-delay: 0s !important;
   }
@@ -160,7 +163,7 @@
     margin-top: 0 !important;
     overflow: hidden !important;
     opacity: 0 !important;
-    visibility: hidden;
+    /* Not visibility:hidden - see the note above. */
     transform: translateY(4px) !important;
   }
 
@@ -174,7 +177,6 @@
     margin-top: 7px !important;
     overflow: visible !important;
     opacity: 1 !important;
-    visibility: visible;
     transform: none !important;
   }
 
