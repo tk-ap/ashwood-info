@@ -1,4 +1,4 @@
-/* Preview-only interaction references; loaded only with ?ashwood-orb=1. */
+/* Preview-only interaction references; loaded only with ?ashwood-preview=1. */
 .ashwood-preview-panel {
   position: relative;
   min-height: clamp(260px, 42vh, 520px);

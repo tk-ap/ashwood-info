@@ -1,11 +1,11 @@
 (() => {
   "use strict";
   const params = new URLSearchParams(window.location.search);
-  if (params.get("ashwood-orb") !== "1") return;
+  if (params.get("ashwood-preview") !== "1") return;
 
   const stylesheet = document.createElement("link");
   stylesheet.rel = "stylesheet";
-  stylesheet.href = "/reference-preview.css?v=20260905-preview2";
+  stylesheet.href = "/reference-preview.css?v=20260905-preview8";
   document.head.appendChild(stylesheet);
 
   const path = location.pathname.replace(/\/+$/, "") || "/";
