@@ -2,12 +2,13 @@
   "schema_version": "1.1",
   "model_id": "saturn-operating-model",
   "canonical_status": "source_anchored_reconstructed_domains",
-  "source_note": "The operating frame and alignment criteria are now anchored to direct source language from the private MeOS Saturn Return Companion supplied by the user on 2026-09-05. Domain bucket labels remain reconstructed classifications unless a later source confirms verbatim historical labels.",
+  "source_note": "The operating frame and alignment criteria are now anchored to direct source language from the private MeOS Saturn Return Companion supplied by the user on 2026-09-05. Domain bucket labels remain reconstructed classifications unless a later source confirms verbatim historical labels. Verbatim wording re-verified 2026-09-06 against saved copies of all eight MeOS sections and the \"Perceptive Architect\" decision reference: the freedom dimension was corrected from a paraphrase, and the morning-compass statement is recorded as one observed variant rather than a canonical line.",
   "north_star": "Build the life that can carry who you are.",
   "chapter_frame": "This chapter is asking for adult authorship, not perfection. Choose what you will build, lead, sustain—and no longer carry.",
   "morning_compass": {
     "title": "Remember who you are.",
     "statement": "I can act before certainty is perfect and build slowly enough to carry consequence.",
+    "statement_note": "The companion rotates this line. The statement above was captured 2026-09-05; a variant observed 2026-09-06 reads \"My sensitivity is information. My structure turns that information into impact.\" Neither is established as canonical.",
     "identity_signals": ["Perceptive strategist", "Emotional truth-teller", "System builder", "Selective guide"]
   },
   "daily_rule": {
@@ -25,8 +26,9 @@
     {"id":"foundation","name":"Foundation","question":"Will this create durable value beyond urgency or appearance?"},
     {"id":"body","name":"Body","question":"Can my body sustain this pace for six months?"},
     {"id":"reciprocity","name":"Reciprocity","question":"Are honesty, effort, and care moving both ways?"},
-    {"id":"freedom","name":"Freedom","question":"Does the structure preserve meaningful agency and choice?"}
+    {"id":"freedom","name":"Freedom","question":"Does the structure preserve enough autonomy, movement, and room to experiment?"}
   ],
+  "decision_sentence": "I choose the option where my insight is recognized, my role is clear, reciprocity is visible, my body can sustain the pace, and the structure creates durable freedom.",
   "next_personal_year_prompt": "Review what deserves another year of your life.",
   "goals": [
     {"id":"ownership","name":"Build & Own","description":"Build durable products, intellectual property, ownership, and leverage rather than optimizing only for income or activity.","priority":1.35,"success_signals":["shipped product capability","first paid client or revenue evidence","owned IP or reusable infrastructure","equity/ownership negotiated from proven value"],"repo_hints":["alvira","ailhat","ledgato","agent-os","agentfence","agent-availability"]},
