@@ -49,39 +49,6 @@
       </details>
     </section>
 
-    <section class="checkin" id="checkin" aria-labelledby="checkin-title">
-      <div class="section-heading-row">
-        <div>
-          <p class="section-kicker">Daily check-in</p>
-          <h2 id="checkin-title">Today</h2>
-        </div>
-        <p class="section-note" id="checkin-streak"></p>
-      </div>
-      <div class="checkin-grid">
-        <article class="checkin-panel" id="checkin-morning"></article>
-        <article class="checkin-panel" id="checkin-commitment"></article>
-      </div>
-      <div class="checkin-panel checkin-test" id="checkin-test"></div>
-      <div class="checkin-readout" id="checkin-readout" role="status" aria-live="polite"></div>
-      <details class="checkin-reference">
-        <summary>Green lights, red flags, and what to do when it is unclear</summary>
-        <div id="checkin-reference"></div>
-      </details>
-      <div class="checkin-panel" id="checkin-evening"></div>
-      <p class="checkin-privacy" id="checkin-privacy">Saved privately in this browser.</p>
-    </section>
-
-    <section class="pulse" aria-labelledby="pulse-title">
-      <div class="section-heading-row">
-        <div>
-          <p class="section-kicker">Current pulse</p>
-          <h2 id="pulse-title">What moved</h2>
-        </div>
-        <span class="as-of" id="as-of"></span>
-      </div>
-      <div class="pulse-grid" id="pulse-grid" aria-live="polite"></div>
-    </section>
-
     <section class="goals" aria-labelledby="goals-title">
       <div class="section-heading-row">
         <div>
@@ -93,18 +60,61 @@
       <div class="goal-grid" id="goal-grid"></div>
     </section>
 
-    <div class="visual-pair">
-      <section class="connections" aria-labelledby="connections-title">
-        <div class="section-heading-row"><div><p class="section-kicker">Projects → goals</p><h2 id="connections-title">The connections</h2></div></div>
-        <p class="chart-note">Links reflect recorded goal mappings, including inferred ones.</p>
-        <div id="connection-map"></div>
+    <details class="checkin disclosure" id="checkin-details">
+      <summary>Today · daily check-in</summary>
+      <section class="checkin" id="checkin" aria-labelledby="checkin-title">
+        <div class="section-heading-row">
+          <div>
+            <p class="section-kicker">Daily check-in</p>
+            <h2 id="checkin-title">Today</h2>
+          </div>
+          <p class="section-note" id="checkin-streak"></p>
+        </div>
+        <div class="checkin-grid">
+          <article class="checkin-panel" id="checkin-morning"></article>
+          <article class="checkin-panel" id="checkin-commitment"></article>
+        </div>
+        <div class="checkin-panel checkin-test" id="checkin-test"></div>
+        <div class="checkin-readout" id="checkin-readout" role="status" aria-live="polite"></div>
+        <details class="checkin-reference">
+          <summary>Green lights, red flags, and what to do when it is unclear</summary>
+          <div id="checkin-reference"></div>
+        </details>
+        <div class="checkin-panel" id="checkin-evening"></div>
+        <p class="checkin-privacy" id="checkin-privacy">Saved privately in this browser.</p>
       </section>
-      <section class="activity" aria-labelledby="activity-title">
-        <div class="section-heading-row"><div><p class="section-kicker">Last 14 days</p><h2 id="activity-title">The rhythm</h2></div></div>
-        <div id="activity-chart"></div>
-        <ol id="recent-activity" class="recent-activity"></ol>
+    </details>
+
+    <details class="pulse disclosure">
+      <summary>What moved · current pulse</summary>
+      <section class="pulse" aria-labelledby="pulse-title">
+        <div class="section-heading-row">
+          <div>
+            <p class="section-kicker">Current pulse</p>
+            <h2 id="pulse-title">What moved</h2>
+          </div>
+          <span class="as-of" id="as-of"></span>
+        </div>
+        <div class="pulse-grid" id="pulse-grid" aria-live="polite"></div>
       </section>
-    </div>
+    </details>
+
+    <details class="disclosure">
+      <summary>The connections &amp; rhythm</summary>
+      <div class="visual-pair">
+        <section class="connections" aria-labelledby="connections-title">
+          <div class="section-heading-row"><div><p class="section-kicker">Projects → goals</p><h2 id="connections-title">The connections</h2></div></div>
+          <p class="chart-note">Links reflect recorded goal mappings, including inferred ones.</p>
+          <div id="connection-map"></div>
+        </section>
+        <section class="activity" aria-labelledby="activity-title">
+          <div class="section-heading-row"><div><p class="section-kicker">Last 14 days</p><h2 id="activity-title">The rhythm</h2></div></div>
+          <div id="activity-chart"></div>
+          <ol id="recent-activity" class="recent-activity"></ol>
+        </section>
+      </div>
+    </details>
+
     <details class="ecosystem disclosure">
       <summary>Project details</summary>
       <div class="ecosystem-list" id="ecosystem-list"></div>
@@ -129,11 +139,11 @@
     </details>
 
     <details class="attention disclosure">
-      <summary>Gaps & attention</summary>
+      <summary>Gaps &amp; attention</summary>
       <div class="section-heading-row">
         <div>
           <p class="section-kicker">Not just a celebration layer</p>
-          <h2 id="attention-title">Attention & contradictions</h2>
+          <h2 id="attention-title">Attention &amp; contradictions</h2>
         </div>
       </div>
       <div class="attention-list" id="attention-list"></div>

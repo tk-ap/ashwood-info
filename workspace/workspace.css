@@ -71,6 +71,7 @@ summary{cursor:pointer}
 .disclosure{border-top:1px solid var(--line);padding:20px 0}
 .disclosure>summary{font-size:19px;padding:4px 0}
 .disclosure[open]>summary{margin-bottom:25px}
+.disclosure>.checkin,.disclosure>.pulse,.disclosure>.visual-pair{border-top:0;padding-top:4px}
 #evidence-selection{font-size:13px;color:var(--muted);margin-left:16px}
 .filters{display:flex;gap:6px;flex-wrap:wrap}
 .filter.is-active{background:var(--ink);color:var(--paper)}
