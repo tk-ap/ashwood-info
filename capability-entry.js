@@ -28,6 +28,18 @@
     .ashwood-capability-map__useful strong{
       display:inline;margin-right:5px;color:var(--ashwood-gold);font-size:7px;font-weight:600;letter-spacing:.13em;text-transform:uppercase
     }
+    .ashwood-capability-map__learning-key{
+      grid-column:2;display:block;margin:7px 0 0;color:var(--ashwood-muted);
+      font-size:7px;line-height:1.2;letter-spacing:.14em;text-transform:uppercase
+    }
+    .ashwood-capability-map__learning{
+      grid-column:2;display:inline-flex;align-items:center;gap:6px;width:max-content;max-width:100%;
+      margin:2px 0 0;color:var(--ashwood-gold);font-size:9px;font-weight:500;letter-spacing:.02em;text-decoration:none
+    }
+    .ashwood-capability-map__learning::after{content:"\u2192";font-size:8px;color:var(--ashwood-muted);transition:transform .2s ease}
+    .ashwood-capability-map__learning:hover,.ashwood-capability-map__learning:focus-visible{color:var(--ashwood-oxblood);text-decoration:underline}
+    .ashwood-capability-map__learning:hover::after{transform:translateX(2px)}
+    @media(prefers-reduced-motion:reduce){.ashwood-capability-map__learning::after{transition:none}}
     .ashwood-capability-map__practice[data-internal="true"]{color:#009b3a}
     .ashwood-capability-map__practice[data-internal="true"]::after{color:#009b3a}
     .ashwood-capability-map__practice[data-internal="true"]:hover,
@@ -122,6 +134,18 @@
     }
   };
 
+  // Where to learn the idea, as opposed to where it shows up in practice. Link text
+  // is the AI from ZERO section's own authored title, not new copy.
+  // Mapping accepted by TK 2026-09-05; see ~/Work/ashwood-signal-zero-mapping.md.
+  const learningLane = {
+    translation: { label: "AI FROM ZERO \u00b7 AI can do more than chat", href: "/ai-from-zero/#more-than-chat" },
+    signal: { label: "AI FROM ZERO \u00b7 What should I hand off?", href: "/ai-from-zero/#handoff" },
+    friction: { label: "AI FROM ZERO \u00b7 Do I even need an agent?", href: "/ai-from-zero/#choose" },
+    resilience: { label: "AI FROM ZERO \u00b7 Why context + control matter", href: "/ai-from-zero/#context-control" },
+    systems: { label: "AI FROM ZERO \u00b7 Structure your AI work", href: "/ai-from-zero/#structure" },
+    range: { label: "AI FROM ZERO \u00b7 How the ASHWOOD ecosystem fits", href: "/ai-from-zero/#ecosystem" }
+  };
+
   const practiceOverrides = {
     friction: {
       label: "ALVIRA · Context Intelligence",
@@ -207,6 +231,25 @@
         row.querySelector(".ashwood-capability-map__authorship")?.before(useful);
       }
       useful.innerHTML = `<strong>Useful when →</strong>${synthesis.useful}`;
+
+      const learning = learningLane[id];
+      if (learning) {
+        let key = row.querySelector(".ashwood-capability-map__learning-key");
+        if (!key) {
+          key = document.createElement("span");
+          key.className = "ashwood-capability-map__learning-key";
+          key.textContent = "WHERE TO LEARN IT \u2192";
+          row.append(key);
+        }
+        let link = row.querySelector(".ashwood-capability-map__learning");
+        if (!link) {
+          link = document.createElement("a");
+          link.className = "ashwood-capability-map__learning";
+          row.append(link);
+        }
+        link.textContent = learning.label;
+        link.href = learning.href;
+      }
 
       const override = practiceOverrides[id];
       if (!override) return;
