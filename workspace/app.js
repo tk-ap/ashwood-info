@@ -100,6 +100,24 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     return items.filter(item=>item.date);
   }
 
+  function ailhatOpportunities() {
+    if (!state.ailhat?.ok) return [];
+    const a = state.ailhat, out = [];
+    (a.work || []).forEach(w => out.push({
+      kind: w.priority || 'WORK',
+      title: w.title || 'Untitled work item',
+      meta: [w.suggested_execution_mode, w.expected_product_impact, w.estimated_minutes ? `~${w.estimated_minutes}m` : null].filter(Boolean).join(' · '),
+      url: 'https://ailhat.vercel.app/',
+    }));
+    if (a.attention?.top_issue) out.push({
+      kind: a.attention.priority || 'ATTENTION',
+      title: a.attention.top_issue,
+      meta: a.attention.top_next_action || '',
+      url: 'https://ailhat.vercel.app/',
+    });
+    return out;
+  }
+
   function allEvidence() { return [...state.persistedEvidence,...ailhatEvidence(),...state.githubEvidence].map(x=>({...x,goal:state.overrides[x.id]||x.goal})).sort((a,b)=>new Date(b.date)-new Date(a.date)); }
   function weight(x){const age=daysSince(x.date),fresh=age<=2?1:age<=7?.82:age<=14?.58:age<=30?.32:.08,status=x.status==='COMPLETED'?1.15:x.status==='PLANNED'?.25:.8;return fresh*status*(x.confidence||1);}
   function goalStats(goal){const ev=allEvidence().filter(x=>x.goal===goal.id||x.secondaryGoals?.includes(goal.id)),recent=ev.filter(x=>daysSince(x.date)<=30),weighted=recent.reduce((s,x)=>s+weight(x)*(x.goal===goal.id?1:.35),0),momentum=Math.min(100,Math.round(weighted*22)),newest=ev[0]?.date||null;let status='IN_PROGRESS';if(!newest||daysSince(newest)>30)status='STALE';else if(daysSince(newest)>14||momentum<18)status='NEEDS_ATTENTION';return{ev,recent,momentum,newest,status};}
@@ -120,7 +138,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
 
   function renderAttention(){const signals=[];GOALS.map(g=>({g,...goalStats(g)})).filter(x=>['STALE','NEEDS_ATTENTION'].includes(x.status)).forEach(x=>{const blind=['relationships','music','modeling','writing'].includes(x.g.id)&&!x.ev.some(e=>['manual','calendar','music','modeling'].includes(e.source));signals.push({kind:blind?'EVIDENCE GAP':x.status,goal:x.g.name,copy:blind?`Current automatic sources do not reliably observe ${x.g.name.toLowerCase()}. Missing evidence is not proof of neglect.`:`${x.g.name} has weak recent evidence relative to its stated priority.`});});const active14=state.repos.filter(r=>daysSince(r.pushed_at)<=14);if(active14.length>=6)signals.unshift({kind:'FOCUS CHECK',goal:'Visible Leadership',copy:`${active14.length} ecosystem repositories show activity in the last 14 days. Check whether that breadth is strengthening or fragmenting the public narrative.`});$('#attention-list').innerHTML=(signals.slice(0,6).length?signals:[{kind:'CLEAR',goal:'Workspace',copy:'No strong neglect or contradiction signal is supported by current evidence.'}]).map(s=>`<article class="attention-row"><span class="status-pill">${s.kind.replace('_',' ')}</span><div><strong>${escapeHtml(s.goal)}</strong><p>${escapeHtml(s.copy)}</p></div></article>`).join('');}
 
-  function renderNext(){const ranked=GOALS.map(g=>({g,...goalStats(g)})).sort((a,b)=>(a.momentum/a.g.priority)-(b.momentum/b.g.priority)),t=ranked[0],blind=['relationships','music','modeling','writing'].includes(t.g.id)&&!t.ev.some(e=>e.source==='manual');$('#next-action-card').innerHTML=`<article class="next-card"><p class="eyebrow">${escapeHtml(t.g.name)}</p><h3>${escapeHtml(blind?`Improve evidence before judging ${t.g.name.toLowerCase()}`:`Review the next active bet that materially advances ${t.g.name.toLowerCase()}`)}</h3><p>${escapeHtml(blind?'This bucket is under-observed by the current adapters. Add or connect one concrete piece of evidence rather than manufacturing a task from missing data.':`This bucket currently has the weakest evidence-weighted momentum relative to its priority (${t.momentum}/100).`)}</p></article>`;}
+  function renderNext(){const opps=ailhatOpportunities();$('#opportunity-list').innerHTML=opps.length?opps.map(o=>`<article class="next-card opportunity"><p class="eyebrow">ailhat · ${escapeHtml(o.kind)}</p><h3>${escapeHtml(o.title)}</h3>${o.meta?`<p>${escapeHtml(o.meta)}</p>`:''}<a href="${escapeHtml(o.url)}" target="_blank" rel="noopener">Open in ailhat →</a></article>`).join(''):'<p class="section-note">No open opportunities from ailhat right now.</p>';const ranked=GOALS.map(g=>({g,...goalStats(g)})).sort((a,b)=>(a.momentum/a.g.priority)-(b.momentum/b.g.priority)),t=ranked[0],blind=['relationships','music','modeling','writing'].includes(t.g.id)&&!t.ev.some(e=>e.source==='manual');$('#next-action-card').innerHTML=`<article class="next-card"><p class="eyebrow">${escapeHtml(t.g.name)}</p><h3>${escapeHtml(blind?`Improve evidence before judging ${t.g.name.toLowerCase()}`:`Review the next active bet that materially advances ${t.g.name.toLowerCase()}`)}</h3><p>${escapeHtml(blind?'This bucket is under-observed by the current adapters. Add or connect one concrete piece of evidence rather than manufacturing a task from missing data.':`This bucket currently has the weakest evidence-weighted momentum relative to its priority (${t.momentum}/100).`)}</p></article>`;}
 
   async function saveOverride(id,goal){try{await api('/api/workspace-state',{method:'POST',body:JSON.stringify({action:'set_override',evidence_id:id,goal_id:goal})});state.overrides[id]=goal;const item=[...state.githubEvidence,...state.persistedEvidence].find(x=>x.id===id);if(item)item.goal=goal;render();}catch(e){alert(e.message);}}
   function fillGoalSelect(){const sel=$('#evidence-goal-input');sel.innerHTML=GOALS.map(g=>`<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('');}
