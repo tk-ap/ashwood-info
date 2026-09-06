@@ -8,9 +8,9 @@
   <title>Workspace — ASHWOOD</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
-  <link rel="stylesheet" href="/workspace/workspace.css?v=20260905-1" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-visual1" />
   <script src="/theme.js?v=20260827-1" defer></script>
-  <script src="/workspace/app.js?v=20260905-private1" defer></script>
+  <script type="module" src="/workspace/app.js?v=20260906-visual1"></script>
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -21,15 +21,16 @@
       </div>
       <div class="workspace-actions">
         <span class="live-state" id="live-state" aria-live="polite">Locked</span>
+        <button class="text-button" id="sign-out" type="button">Lock workspace</button>
         <button class="text-button" id="refresh-evidence" type="button">Refresh evidence</button>
         <button class="text-button" id="add-evidence" type="button">Add evidence</button>
       </div>
     </header>
 
     <section class="workspace-intro" aria-labelledby="workspace-title">
-      <p class="eyebrow">Goal → active bets → evidence → progress → next gap</p>
-      <h1 id="workspace-title">Is the work moving the life?</h1>
-      <p class="workspace-lede">A private, living view of what the current ecosystem, creative work, and professional activity are actually advancing. Progress is evidence-backed; inferred mappings stay inspectable and correctable.</p>
+      <p class="eyebrow">Your private workspace</p>
+      <h1 id="workspace-title">Where the work is going.</h1>
+      <p class="workspace-lede">Goals, connections, and the evidence behind them.</p>
     </section>
 
     <section class="pulse" aria-labelledby="pulse-title">
@@ -47,41 +48,50 @@
       <div class="section-heading-row">
         <div>
           <p class="section-kicker">Saturn frame</p>
-          <h2 id="goals-title">Purpose buckets</h2>
+          <h2 id="goals-title">Your goals</h2>
         </div>
-        <p class="section-note">Loading canonical goal contract…</p>
+        <p class="section-note">Evidence over the last 30 days · select a goal to explore.</p>
       </div>
       <div class="goal-grid" id="goal-grid"></div>
     </section>
 
-    <section class="ecosystem" aria-labelledby="ecosystem-title">
-      <div class="section-heading-row">
-        <div>
-          <p class="section-kicker">Live ecosystem</p>
-          <h2 id="ecosystem-title">What exists now</h2>
-        </div>
-        <p class="section-note">GitHub activity is direct evidence. ailhat is consumed as the Portfolio Intelligence source and remains provenance-labeled when its scan timestamp is unavailable.</p>
-      </div>
+    <div class="visual-pair">
+      <section class="connections" aria-labelledby="connections-title">
+        <div class="section-heading-row"><div><p class="section-kicker">Projects → goals</p><h2 id="connections-title">The connections</h2></div></div>
+        <p class="chart-note">Links reflect recorded goal mappings, including inferred ones.</p>
+        <div id="connection-map"></div>
+      </section>
+      <section class="activity" aria-labelledby="activity-title">
+        <div class="section-heading-row"><div><p class="section-kicker">Last 14 days</p><h2 id="activity-title">The rhythm</h2></div></div>
+        <div id="activity-chart"></div>
+        <ol id="recent-activity" class="recent-activity"></ol>
+      </section>
+    </div>
+    <details class="ecosystem disclosure">
+      <summary>Project details</summary>
       <div class="ecosystem-list" id="ecosystem-list"></div>
-    </section>
+    </details>
 
-    <section class="evidence" aria-labelledby="evidence-title">
+    <details class="evidence disclosure" id="evidence-panel">
+      <summary>Explore the evidence <span id="evidence-selection">All goals</span></summary>
       <div class="section-heading-row evidence-heading">
         <div>
           <p class="section-kicker">Evidence ledger</p>
-          <h2 id="evidence-title">Why progress changed</h2>
+          <h2 id="evidence-title">Evidence ledger</h2>
         </div>
+        <button type="button" class="text-button" id="clear-goal">All goals</button>
         <div class="filters" role="group" aria-label="Evidence filters">
-          <button type="button" class="filter is-active" data-filter="all">All</button>
-          <button type="button" class="filter" data-filter="ailhat">ailhat</button>
-          <button type="button" class="filter" data-filter="github">GitHub</button>
-          <button type="button" class="filter" data-filter="manual">Manual</button>
+          <button type="button" aria-pressed="true" class="filter is-active" data-filter="all">All</button>
+          <button type="button" aria-pressed="false" class="filter" data-filter="ailhat">ailhat</button>
+          <button type="button" aria-pressed="false" class="filter" data-filter="github">GitHub</button>
+          <button type="button" aria-pressed="false" class="filter" data-filter="manual">Manual</button>
         </div>
       </div>
       <div class="evidence-list" id="evidence-list"></div>
-    </section>
+    </details>
 
-    <section class="attention" aria-labelledby="attention-title">
+    <details class="attention disclosure">
+      <summary>Gaps & attention</summary>
       <div class="section-heading-row">
         <div>
           <p class="section-kicker">Not just a celebration layer</p>
@@ -89,7 +99,7 @@
         </div>
       </div>
       <div class="attention-list" id="attention-list"></div>
-    </section>
+    </details>
 
     <section class="next-action" aria-labelledby="next-title">
       <p class="section-kicker">Highest-value next move</p>
@@ -98,8 +108,8 @@
     </section>
 
     <footer class="workspace-footer">
-      <span>Private operating surface · authenticated · noindex</span>
-      <a href="/WORKSPACE_GOAL_EVIDENCE_SYSTEM.md">Product contract ↗</a>
+      <span>Return anytime: <a href="/workspace/">/workspace/</a> · Bookmark this page</span>
+      <details><summary>About this view</summary><p id="goal-source-note"></p><p>Activity is evidence, not a measure of life completion. Sign-in lasts up to 30 days on this browser.</p></details>
     </footer>
   </main>
 
@@ -110,14 +120,14 @@
           <p class="section-kicker">Private evidence</p>
           <h2>Add evidence</h2>
         </div>
-        <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button>
       </div>
       <label>What happened?<textarea id="evidence-title-input" required rows="3" placeholder="e.g. Recorded a new track with…"></textarea></label>
       <label>Goal bucket<select id="evidence-goal-input"></select></label>
       <label>Status<select id="evidence-status-input"><option value="COMPLETED">Completed</option><option value="IN_PROGRESS">In progress</option><option value="PLANNED">Planned</option></select></label>
       <label>Evidence date<input id="evidence-date-input" type="date" required /></label>
       <label>Source / note<input id="evidence-source-input" type="text" placeholder="Optional collaborator, release, booking, source note, etc." /></label>
-      <div class="dialog-actions"><button value="cancel" class="secondary-button">Cancel</button><button type="submit" class="primary-button">Save evidence</button></div>
+      <div class="dialog-actions"><button type="button" data-close-dialog class="secondary-button">Cancel</button><button type="submit" class="primary-button">Save evidence</button></div>
     </form>
   </dialog>
 </body>
