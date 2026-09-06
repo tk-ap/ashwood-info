@@ -146,7 +146,11 @@
     margin-top: 0 !important;
     overflow: hidden !important;
     opacity: 0 !important;
-    visibility: hidden;
+    /* Deliberately not visibility:hidden. It removes descendants from the tab order,
+       so the :focus-within rule below could never fire and every link in this lane
+       was unreachable by keyboard and absent from the accessibility tree.
+       opacity:0 hides it visually while keeping it focusable, so tabbing to a link
+       triggers the reveal the rule was always written to perform. */
     transform: translateY(4px) !important;
     transition:
       max-height .46s var(--ashwood-flow-ease),
@@ -165,7 +169,6 @@
     margin-top: 7px !important;
     overflow: visible !important;
     opacity: 1 !important;
-    visibility: visible;
     transform: translateY(0) !important;
   }
 
