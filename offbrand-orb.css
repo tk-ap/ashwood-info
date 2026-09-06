@@ -60,17 +60,20 @@ html[data-ashwood-theme="phosphor-cyber"] body.ashwood-orb-preview {
 html:not(.ashwood-light) .ashwood-orb__body { border-color: color-mix(in srgb, var(--ashwood-ink) 15%, transparent); }
 
 .ashwood-orb__ring {
-  inset: -8%;
-  border: 1px solid color-mix(in srgb, var(--ashwood-ink) 11%, transparent);
-  opacity: .8;
-  transform: rotate(12deg) scale(1.02);
+  /* Measured off itsoffbrand.com: sub-pixel dashed circles at ~20% alpha, sitting
+     inside the orb at ~61% and ~51% of its diameter, not outside it. */
+  inset: 19.5%;
+  border-radius: 50%;
+  border: .7px dashed color-mix(in srgb, var(--ashwood-ink) 20%, transparent);
+  opacity: 1;
+  transform: rotate(60deg);
   animation: ashwood-orb-ring 34s linear infinite;
 }
 
 .ashwood-orb__ring--outer {
-  inset: -18%;
-  border-color: color-mix(in srgb, var(--ashwood-ink) 7%, transparent);
-  transform: rotate(-18deg) scale(.94);
+  inset: 24.5%;
+  border-color: color-mix(in srgb, var(--ashwood-ink) 20%, transparent);
+  transform: rotate(-60deg);
   animation-duration: 48s;
 }
 
@@ -92,9 +95,7 @@ body.ashwood-orb-preview .ashwood-capability-evidence { position: relative; z-in
 @keyframes ashwood-orb-ring { to { transform: rotate(372deg) scale(1.02); } }
 
 @media (max-width: 760px) {
-  .ashwood-orb { width: min(76vw, 420px); opacity: .72; filter: blur(2px); }
-  .ashwood-orb__ring { inset: -12%; }
-  .ashwood-orb__ring--outer { inset: -24%; }
+  .ashwood-orb { width: min(80vw, 440px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
