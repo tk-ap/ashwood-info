@@ -1,0 +1,42 @@
+/* Preview-only interaction references; loaded only with ?ashwood-orb=1. */
+.ashwood-preview-panel {
+  position: relative;
+  min-height: clamp(260px, 42vh, 520px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin: 4vh 0 8vh;
+  border: 1px solid color-mix(in srgb, var(--ashwood-rule) 70%, transparent);
+  background: color-mix(in srgb, var(--ashwood-paper) 78%, transparent);
+  isolation: isolate;
+}
+.ashwood-preview-panel__title { position: relative; z-index: 2; max-width: 11ch; margin: 0; text-align: center; font-size: clamp(42px, 8vw, 120px); line-height: .82; letter-spacing: -.07em; font-weight: 500; transition: opacity .2s ease, transform .2s ease; }
+.ashwood-preview-panel__motif { position: absolute; inset: 50% auto auto 50%; width: min(70vw, 420px); aspect-ratio: 1; transform: translate(-50%, -50%) rotate(calc(var(--ashwood-panel-progress, 0) * 180deg)) scale(calc(.42 + var(--ashwood-panel-progress, 0) * .68)); opacity: .4; transition: opacity .12s linear; }
+.ashwood-preview-panel__motif::before,.ashwood-preview-panel__motif::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background-image: radial-gradient(circle, var(--ashwood-ochre) 1px, transparent 1.5px); background-size: 14px 14px; mask-image: radial-gradient(circle, #000 0 42%, transparent 72%); }
+.ashwood-preview-panel__motif::after { transform: rotate(45deg) scale(.78); opacity: .62; }
+body.ashwood-preview-panel-active .ashwood-preview-panel__title { opacity: calc(1 - var(--ashwood-panel-progress, 0) * .72); transform: translateY(calc(var(--ashwood-panel-progress, 0) * -30px)); }
+@media (prefers-reduced-motion: reduce) { .ashwood-preview-panel__motif,.ashwood-preview-panel__title { transition: none; transform: translate(-50%, -50%) scale(1); } }
+
+.ashwood-archive-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 24px 0; }
+.ashwood-archive-controls button { min-height: 42px; border: 1px solid var(--ashwood-rule); padding: 10px 14px; background: transparent; color: inherit; cursor: pointer; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.ashwood-archive-controls button:hover,.ashwood-archive-controls button:focus-visible,.ashwood-archive-controls button[aria-pressed="true"] { border-color: var(--ashwood-oxblood); color: var(--ashwood-oxblood); }
+.ashwood-archive-controls__hint { color: var(--ashwood-muted); font-size: 11px; }
+.portfolio-page.ashwood-index-mode .archive-grid { grid-template-columns: 1fr; gap: 0; }
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame { display: grid; grid-template-columns: 3.5rem minmax(0,1fr); align-items: center; min-height: 56px; aspect-ratio: auto; border: 0; border-top: 1px solid var(--ashwood-rule); background: transparent; }
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame:last-child { border-bottom: 1px solid var(--ashwood-rule); }
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame::before { content: attr(data-index); color: var(--ashwood-ochre); font-size: 11px; letter-spacing: .12em; }
+.portfolio-page.ashwood-index-mode .archive-grid img { display: none; }
+.portfolio-page.ashwood-spatial-mode .archive-grid { position: relative; display: block; min-height: min(78vh, 760px); overflow: hidden; cursor: grab; background: color-mix(in srgb, var(--ashwood-paper) 88%, var(--ashwood-ochre) 12%); }
+.portfolio-page.ashwood-spatial-mode .archive-grid:active { cursor: grabbing; }
+.portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame { position: absolute; left: var(--spatial-left, 10%); top: var(--spatial-top, 10%); width: clamp(130px, 20vw, 260px); margin: 0; transform: translate3d(calc(var(--spatial-x, 0px) + var(--spatial-pan-x, 0px)), calc(var(--spatial-y, 0px) + var(--spatial-pan-y, 0px)), 0) rotate(var(--spatial-r, 0deg)) scale(var(--spatial-s, 1)); transition: transform .18s ease; }
+.portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame:hover { --spatial-s: 1.04; z-index: 2; }
+@media (max-width: 640px) { .portfolio-page.ashwood-spatial-mode .archive-grid { min-height: 560px; } .portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame { width: 44vw; } }
+
+/* auto-fit, not a fixed column count: the rail is built from however many
+   .zero-section elements the page actually has. */
+.ai-zero-preview-rail { display: grid; grid-template-columns: repeat(auto-fit, minmax(124px, 1fr)); gap: 6px; margin: 28px 0 8vh; }
+.ai-zero-preview-rail a { min-height: 76px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 10px; border: 1px solid var(--ashwood-rule); color: inherit; text-decoration: none; font-size: 10px; line-height: 1.35; letter-spacing: .08em; text-transform: uppercase; text-wrap: balance; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+.ai-zero-preview-rail a span { color: var(--ashwood-ochre); font-size: 9px; }
+.ai-zero-preview-rail a.is-active,.ai-zero-preview-rail a:hover,.ai-zero-preview-rail a:focus-visible { border-color: var(--ashwood-oxblood); background: var(--ashwood-oxblood); color: var(--ashwood-night-ink); }
+@media (max-width: 720px) { .ai-zero-preview-rail { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .ashwood-archive-controls button,.ashwood-archive-grid .asset-frame { transition: none; } }
