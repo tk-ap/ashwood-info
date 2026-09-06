@@ -114,6 +114,75 @@ Shows **what building these systems actually looked like**: decisions, failures,
 
 AI from Zero is education. AI Harness Engineering is applied technical education. Build Journal is evidence from actual building.
 
+## Build in public: document learning, not activity
+
+Build in public should be treated as an evidence loop, not as a mandate to post constant progress updates.
+
+Core principle:
+
+> **Document learning, not activity.**
+
+The useful public artifacts are:
+
+- the problem or hypothesis being investigated;
+- the smallest meaningful build used to test it;
+- evidence from real usage or observed failure;
+- decisions made in response to that evidence;
+- changed beliefs and why they changed;
+- meaningful milestones, launches, failures, and working demonstrations.
+
+Avoid low-signal updates whose primary content is that work happened.
+
+### AI-native build loop
+
+Teach the beginner-facing loop as:
+
+`hypothesis → small build → public evidence → feedback → revision → documented learning`
+
+This is the preferred AI from Zero framing for build in public. It should help learners understand that faster software creation changes what becomes scarce: judgment, proof, trust, distribution, audience, and the ability to learn from evidence.
+
+### Build in public ≠ perform in public
+
+Public building should not require founders or builders to narrate every action. The goal is to expose enough of the reasoning and evidence that others can understand what was learned and why the product changed.
+
+Examples of useful public evidence:
+
+| Expose | Learn / gain |
+| --- | --- |
+| Problem being investigated | People who recognize the problem |
+| Early prototype | Usability evidence |
+| Product decision | Judgment and reasoning signal |
+| Failure | Learning evidence |
+| Changed belief | Intellectual honesty and adaptation |
+| Metrics / result | Proof |
+| Open question | Potential collaborators |
+| Working product | Users and customers |
+
+### Relationship to the ASHWOOD Build Journal
+
+The ASHWOOD Build Journal / Founder Build Archive should implement this principle directly.
+
+It should preserve high-signal artifacts such as:
+
+- decisions;
+- evidence;
+- failures;
+- changed beliefs;
+- meaningful milestones;
+- working demonstrations;
+- outcomes.
+
+It should not become a chronological feed of routine work or a conventional founder diary.
+
+For abstract infrastructure products, the Build Journal also serves as market education. Public examples should show the underlying problem and evidence rather than merely announce features.
+
+Examples:
+
+- **ALVIRA** — show a repeated-context failure, what changed, and whether re-explanation decreased.
+- **LEDGATo / khrystal direction** — show an agent attempting a disallowed action, how enforcement behaved, and what was learned.
+
+The general concept must remain primary; ecosystem products are implementation evidence.
+
 ## Ecosystem examples, not product marketing
 
 ASHWOOD ecosystem products can be used as concrete case studies, but AI from Zero should remain useful to someone who never uses any of them.
@@ -133,8 +202,10 @@ A core bridge from AI from Zero into AI Harness Engineering should be:
 
 This question introduces the learner to the idea that the important artifact may no longer be a conventional app UI. It may be a system of context, instructions, tools, permissions, workflows, agents, evidence, and interfaces assembled around a human intention.
 
-## Curriculum principle
+## Curriculum principles
 
 **Mental model first. Jargon second. Implementation third.**
 
-The learner should understand why a concept exists before being expected to remember its name.
+**Document learning, not activity.**
+
+The learner should understand why a concept exists before being expected to remember its name, and should learn to treat building as a cycle of hypothesis, evidence, revision, and documented learning.
