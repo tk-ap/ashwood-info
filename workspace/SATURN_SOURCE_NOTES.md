@@ -1,6 +1,8 @@
 # Saturn Return source language for `/workspace`
 
-Source supplied directly from the private MeOS Saturn Return Companion on 2026-09-05.
+Source supplied directly from the private MeOS Saturn Return Companion on 2026-09-05, and
+extended 2026-09-06 from saved copies of all eight companion sections plus the "Perceptive
+Architect" decision reference.
 
 This source should anchor ASHWOOD `/workspace` synthesis. It is not evidence that the current reconstructed goal-bucket labels were the original labels; rather, it provides authoritative language for the operating frame, decision criteria, and progress interpretation.
 
@@ -265,3 +267,70 @@ ASHWOOD `/workspace` should use this source in ten ways:
 10. **Next action:** Prefer one durable commitment and the smallest action capable of producing a real market signal over maximizing activity volume.
 
 The reconstructed domain buckets (ownership, leadership, relationships, modeling, music, writing/art, learning) remain useful classifications for evidence, but they are subordinate to this Saturn operating frame. Do not present those reconstructed labels as verbatim source language unless a later source confirms them.
+
+
+## Decision sentence
+
+Recorded identically in the companion's Compass section and in the "Perceptive Architect" decision
+reference, which is the strongest provenance any line in this document has.
+
+> I choose the option where my insight is recognized, my role is clear, reciprocity is visible, my
+> body can sustain the pace, and the structure creates durable freedom.
+
+## The decision compass
+
+A practical instrument, distinct from the alignment dimensions recorded above, though clearly the
+same family.
+
+**Unresolved: the source gives two shapes for this.** The companion's Alignment Test scores **six**
+checks — recognition, authority, foundation, body, reciprocity, freedom. The decision reference
+gives **seven** — recognition, environment, body, reciprocity, foundation, freedom, reality test —
+dropping authority and adding environment and a reality test. One must be made canonical before
+this is built into anything that scores a decision. Do not silently merge them.
+
+The seven, as written in the decision reference:
+
+1. **Recognition** — Is my judgment genuinely valued here, or am I trying to convince people to see what I see?
+2. **Environment** — Do I become clearer and more like myself in this place and around these people?
+3. **Body** — After rest and food, does my body soften toward this choice or remain contracted?
+4. **Reciprocity** — Are responsibility, attention, honesty, and care moving in both directions?
+5. **Foundation** — Will this create durable value, or only urgency, activity, and appearance?
+6. **Freedom** — Does the structure preserve enough autonomy, movement, and room to experiment?
+7. **Reality test** — What consistent behavior or evidence supports the story I am telling myself?
+
+**Green lights:** trusted invitation; clear role and decision rights; depth plus reliability;
+autonomy within structure; time to think and speak aloud; visible long-term usefulness; sustainable
+pace; mutual respect and follow-through.
+
+**Red flags:** repeatedly proving your value; being everyone's stabilizer; charm without
+consistency; ambiguous authority or ownership; constant urgency and interruption; a body that stays
+tense or depleted; rigid routine with no room to explore; a relationship built on potential.
+
+**When unclear:** do not force an immediate answer. Change environments, talk it through with a
+trusted listener, sleep, restore the body, and notice which explanation sounds increasingly true
+over time.
+
+**Default priority:** protect clarity first — right environment, then regulated body, then honest
+dialogue, then evidence, then commitment.
+
+**Professional yes:** work where pattern recognition, strategy, language, systems, discernment and
+human insight matter more than endless output. **Professional no:** roles rewarding constant
+availability, vague responsibility, political self-promotion, or execution without influence.
+
+> Recognition is not the same as approval. You do not need everyone to agree; you need the right
+> people to understand and value the contribution.
+
+## Professional fit
+
+> Strategy · advising · systems · language · human behavior · experience · community
+
+The companion's Purpose section adds: the strongest work rewards pattern recognition and direction
+more than endless production, and gives room to retreat, think, return, and influence the structure.
+
+## What is deliberately not recorded here
+
+The companion also carries natal astrology, Human Design, numerology, Tree of Life and BaZi
+readings, and a transit-cycle section. Those are TK's private organizing language. They are
+excluded from this file on the same principle the ASHWOOD post generator already states — that
+astrology may be the personal language for an experience but is not an explanation for an outcome —
+and nothing in the public surface should derive from them.
