@@ -11,7 +11,7 @@
   // boot guard the reveal starts at its default opacity and visibly transitions out.
   const stylesheet = document.createElement("link");
   stylesheet.rel = "stylesheet";
-  stylesheet.href = "/offbrand-orb.css?v=20260905-preview3";
+  stylesheet.href = "/offbrand-orb.css?v=20260905-preview4";
   const endBoot = () => document.body.classList.remove("ashwood-orb-booting");
   stylesheet.addEventListener("load", () => {
     window.requestAnimationFrame(() => window.requestAnimationFrame(endBoot));

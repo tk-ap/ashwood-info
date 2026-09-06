@@ -140,16 +140,16 @@ body.ashwood-orb-booting .ashwood-orb-signal__dot { transition: none !important;
   pointer-events: auto;
 }
 .ashwood-orb-signal__dot {
-  width: 13px;
-  height: 13px;
+  width: 7px;
+  height: 7px;
   border: 1px solid color-mix(in srgb, var(--ashwood-oxblood) 70%, transparent);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--ashwood-ochre) 34%, transparent);
+  background: color-mix(in srgb, var(--ashwood-ochre) 26%, transparent);
   transition: transform .35s cubic-bezier(.16,.84,.28,1), background .35s ease;
 }
 .ashwood-orb-signal__toggle:hover .ashwood-orb-signal__dot,
 .ashwood-orb-signal__toggle:focus-visible .ashwood-orb-signal__dot,
-.ashwood-orb-signal.is-open .ashwood-orb-signal__dot { transform: scale(1.9); background: color-mix(in srgb, var(--ashwood-oxblood) 52%, transparent); }
+.ashwood-orb-signal.is-open .ashwood-orb-signal__dot { transform: scale(2.3); background: color-mix(in srgb, var(--ashwood-oxblood) 52%, transparent); }
 .ashwood-orb-signal__toggle:focus-visible { outline: 2px solid var(--ashwood-oxblood); outline-offset: 4px; }
 .ashwood-orb-signal__label {
   position: absolute;
