@@ -1,7 +1,7 @@
 # ASHWOOD v2 — Live Hotspot Capability Reconciliation
 
 Status: active v2 implementation decision  
-Canonical repository: `tk-ap/tk-ap.github.io`  
+Canonical repository: `tk-ap/ashwood-info`  
 Implementation branch: `ashwood-v2`  
 Production project: Vercel `alvira2/ashwood`
 
