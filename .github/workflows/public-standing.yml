@@ -1,0 +1,38 @@
+name: Public standing
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly, Monday 09:00 UTC — standing changes slowly; daily would only
+    # burn Apify proxy credit for no signal gain.
+    - cron: '0 9 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch public standing
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: node scripts/social-standing.mjs
+
+      - name: Commit and push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/public-standing.json
+          if git diff --cached --quiet; then
+            echo "No change in public standing; skipping commit."
+          else
+            git commit -m "chore: refresh public standing $(date -u +%Y-%m-%d)"
+            git push
+          fi

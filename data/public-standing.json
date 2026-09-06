@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-09-06T19:41:29.330Z",
+  "source": "apify",
+  "instagram": {
+    "account": "picturesoftk",
+    "total_posts": 84,
+    "latest_post_at": "2026-09-03T05:04:53.000Z",
+    "posts_30d": 1,
+    "avg_likes": 168,
+    "avg_comments": 7,
+    "recent_posts": [
+      {
+        "at": "2026-09-03T05:04:53.000Z",
+        "caption": "barely sain, somewhere in LA\n\nsun, concrete, clothes, motion.\n\nwork that doesn’t feel like work >>>\n\ncampaign behavior\n\nanother day in the s",
+        "likes": null,
+        "comments": 2,
+        "type": "Sidecar",
+        "url": "https://www.instagram.com/p/Dc0BN-lG5q8/"
+      }
+    ]
+  },
+  "tiktok": {
+    "account": "tiktokoftk",
+    "followers": 67,
+    "following": 36,
+    "verified": false,
+    "total_videos": 21,
+    "latest_video_at": "2026-09-05T01:23:06.000Z",
+    "videos_30d": 6,
+    "avg_plays": 284,
+    "avg_likes": 24,
+    "avg_comments": 2,
+    "recent_videos": [
+      {
+        "at": "2026-09-05T01:23:06.000Z",
+        "caption": "#catsoftiktok #animallover ",
+        "plays": 647,
+        "likes": 78,
+        "comments": 0,
+        "shares": 1
+      },
+      {
+        "at": "2026-09-05T01:02:53.000Z",
+        "caption": "thinking out loud… one side only 🤭 ✨#artistsoftiktok #poetry #blackpoet #fypシ゚viral #exp ",
+        "plays": 184,
+        "likes": 9,
+        "comments": 0,
+        "shares": 0
+      },
+      {
+        "at": "2026-09-05T00:45:44.000Z",
+        "caption": "love the daze, when work n play, feel the same 🤞🏽😮‍💨🌊 #barelysain @barelysain ",
+        "plays": 165,
+        "likes": 12,
+        "comments": 0,
+        "shares": 0
+      }
+    ]
+  }
+}
