@@ -35,6 +35,12 @@ export function verifyPassphrase(passphrase, salt, expectedHex) {
   return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
 }
 
+export function timingSafeEqualHex(a, b) {
+  const left = Buffer.from(String(a), 'hex');
+  const right = Buffer.from(String(b || ''), 'hex');
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
 export function cookieMap(req) {
   return Object.fromEntries(String(req.headers?.cookie || '').split(';').map(x => x.trim()).filter(Boolean).map(part => {
     const i = part.indexOf('=');
@@ -64,8 +70,20 @@ export function clearSession(res) {
   res.setHeader('Set-Cookie', 'ashwood_workspace_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
 }
 
+// Compare the browser's Origin against the host this request actually arrived on,
+// rather than an allowlist of known domains. An allowlist has to be maintained and
+// silently locks the workspace out whenever a domain changes; this cannot, because
+// whatever host serves the page is the host the browser reports. It still rejects a
+// third-party origin, which is the actual hole being closed: the previous check
+// accepted any *.vercel.app, a public suffix anyone can deploy to.
 export function sameOrigin(req) {
   const origin = String(req.headers?.origin || '');
   if (!origin) return true;
-  return origin === 'https://ashwood-info.vercel.app' || origin.endsWith('.vercel.app');
+  const host = String(req.headers?.['x-forwarded-host'] || req.headers?.host || '');
+  if (!host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
 }

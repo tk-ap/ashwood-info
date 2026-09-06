@@ -1,4 +1,4 @@
-import { clearSession, getSql, hashPassphrase, issueSession, json, parseBody, requireSession, sameOrigin, sha256, verifyPassphrase } from './_workspace.mjs';
+import { clearSession, getSql, hashPassphrase, issueSession, json, parseBody, requireSession, sameOrigin, sha256, timingSafeEqualHex, verifyPassphrase } from './_workspace.mjs';
 
 export default async function handler(req, res) {
   try {
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       if (auth.bootstrap_used_at || auth.pass_hash) return json(res, 409, { ok: false, error: 'Workspace setup is already complete' });
       const bootstrap = String(body.bootstrap || '');
       const passphrase = String(body.passphrase || '');
-      if (sha256(bootstrap) !== auth.bootstrap_hash) return json(res, 403, { ok: false, error: 'Invalid setup token' });
+      if (!timingSafeEqualHex(sha256(bootstrap), auth.bootstrap_hash)) return json(res, 403, { ok: false, error: 'Invalid setup token' });
       if (passphrase.length < 12) return json(res, 400, { ok: false, error: 'Passphrase must be at least 12 characters' });
       const { salt, hash } = hashPassphrase(passphrase);
       await sql`UPDATE workspace_auth SET pass_salt = ${salt}, pass_hash = ${hash}, bootstrap_used_at = NOW(), updated_at = NOW() WHERE id = 'owner'`;
