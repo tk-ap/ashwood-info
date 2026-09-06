@@ -34,11 +34,11 @@ html[data-ashwood-theme="phosphor-cyber"] body.ashwood-orb-preview {
   top: 50%;
   left: 50%;
   width: min(80vh, 760px);
-  aspect-ratio: 1;
+  aspect-ratio: 1.14;
   pointer-events: none;
   transform: translate3d(calc(-50% + var(--ashwood-orb-dx, 0px)), calc(-50% + var(--ashwood-orb-dy, 0px)), 0) rotate(var(--ashwood-orb-rotate, 0deg));
-  opacity: .88;
-  filter: blur(1px);
+  opacity: 1;
+  filter: none;
   will-change: transform;
 }
 
@@ -47,34 +47,29 @@ html[data-ashwood-theme="phosphor-cyber"] body.ashwood-orb-preview {
 .ashwood-orb__ring {
   position: absolute;
   inset: 0;
-  border-radius: 48% 52% 57% 43% / 42% 46% 54% 58%;
+  border-radius: 62% 38% 47% 53% / 38% 58% 42% 62%;
 }
 
 .ashwood-orb__body {
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255,255,255,.24), transparent 19%),
-    radial-gradient(circle at 70% 66%, var(--ashwood-orb-a), transparent 48%),
-    radial-gradient(circle at 38% 70%, var(--ashwood-orb-b), transparent 56%),
-    radial-gradient(circle at 62% 34%, var(--ashwood-orb-c), transparent 62%);
-  mix-blend-mode: multiply;
-  animation: ashwood-orb-breathe 16s ease-in-out infinite alternate;
+  border: 1px solid color-mix(in srgb, var(--ashwood-ink) 20%, transparent);
+  background: none;
+  animation: ashwood-orb-breathe 22s ease-in-out infinite alternate;
   transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) rotate(var(--ashwood-orb-inner-r, 0deg)) scale(var(--ashwood-orb-inner-s, 1));
-  transition: filter .25s ease;
 }
 
-html:not(.ashwood-light) .ashwood-orb__body { mix-blend-mode: screen; }
+html:not(.ashwood-light) .ashwood-orb__body { border-color: color-mix(in srgb, var(--ashwood-ink) 15%, transparent); }
 
 .ashwood-orb__ring {
   inset: -8%;
-  border: 1px dashed color-mix(in srgb, var(--ashwood-ochre) 30%, transparent);
-  opacity: .34;
+  border: 1px solid color-mix(in srgb, var(--ashwood-ink) 11%, transparent);
+  opacity: .8;
   transform: rotate(12deg) scale(1.02);
   animation: ashwood-orb-ring 34s linear infinite;
 }
 
 .ashwood-orb__ring--outer {
   inset: -18%;
-  border-color: color-mix(in srgb, var(--ashwood-oxblood) 24%, transparent);
+  border-color: color-mix(in srgb, var(--ashwood-ink) 7%, transparent);
   transform: rotate(-18deg) scale(.94);
   animation-duration: 48s;
 }
@@ -89,9 +84,9 @@ body.ashwood-orb-preview .home-utility,
 body.ashwood-orb-preview .ashwood-capability-evidence { position: relative; z-index: 2; }
 
 @keyframes ashwood-orb-breathe {
-  0% { border-radius: 48% 52% 57% 43% / 42% 46% 54% 58%; transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) scale(.94) rotate(calc(-4deg + var(--ashwood-orb-inner-r, 0deg))); }
-  50% { border-radius: 58% 42% 46% 54% / 53% 57% 43% 47%; }
-  100% { border-radius: 43% 57% 52% 48% / 57% 43% 57% 43%; transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) scale(1.08) rotate(calc(7deg + var(--ashwood-orb-inner-r, 0deg))); }
+  0% { border-radius: 62% 38% 47% 53% / 38% 58% 42% 62%; transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) scale(.94) rotate(calc(-4deg + var(--ashwood-orb-inner-r, 0deg))); }
+  50% { border-radius: 34% 66% 62% 38% / 61% 34% 66% 39%; }
+  100% { border-radius: 45% 55% 33% 67% / 56% 66% 34% 44%; transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) scale(1.08) rotate(calc(7deg + var(--ashwood-orb-inner-r, 0deg))); }
 }
 
 @keyframes ashwood-orb-ring { to { transform: rotate(372deg) scale(1.02); } }
