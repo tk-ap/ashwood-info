@@ -7,10 +7,19 @@
   const params = new URLSearchParams(window.location.search);
   if (params.get("ashwood-orb") !== "1") return;
 
+  // The stylesheet is injected, so it lands after these elements exist. Without the
+  // boot guard the reveal starts at its default opacity and visibly transitions out.
   const stylesheet = document.createElement("link");
   stylesheet.rel = "stylesheet";
-  stylesheet.href = "/offbrand-orb.css?v=20260905-preview2";
+  stylesheet.href = "/offbrand-orb.css?v=20260905-preview3";
+  const endBoot = () => document.body.classList.remove("ashwood-orb-booting");
+  stylesheet.addEventListener("load", () => {
+    window.requestAnimationFrame(() => window.requestAnimationFrame(endBoot));
+  }, { once: true });
+  // Fallback: a cached or failed stylesheet must never leave transitions disabled.
+  window.setTimeout(endBoot, 1200);
   document.head.appendChild(stylesheet);
+  document.body.classList.add("ashwood-orb-booting");
   document.body.classList.add("ashwood-orb-preview");
 
   // Own element rather than body::before: theme.js injects its own body::before rules
@@ -21,34 +30,45 @@
   wash.setAttribute("aria-hidden", "true");
   document.body.prepend(wash);
 
+  // The blob is decoration and stays behind .shell. The control cannot live inside it:
+  // .ashwood-orb has z-index 0, which caps every descendant below .shell's z-index 1,
+  // so a toggle nested in the orb never receives a hover or a click.
   const orb = document.createElement("div");
   orb.className = "ashwood-orb";
+  orb.setAttribute("aria-hidden", "true");
   orb.innerHTML = [
-    '<span class="ashwood-orb__body" aria-hidden="true"></span>',
-    '<span class="ashwood-orb__ring" aria-hidden="true"></span>',
-    '<span class="ashwood-orb__ring ashwood-orb__ring--outer" aria-hidden="true"></span>',
-    '<button type="button" class="ashwood-orb__toggle" aria-expanded="false" aria-controls="ashwood-orb-reveal">',
-    '<span class="ashwood-orb__toggle-label">Reveal the ASHWOOD field signal</span></button>',
-    '<div class="ashwood-orb__reveal" id="ashwood-orb-reveal" role="group" aria-label="ASHWOOD field signal">',
-    '<span class="ashwood-orb__reveal-label">FIELD SIGNAL / 01</span>',
+    '<span class="ashwood-orb__body"></span>',
+    '<span class="ashwood-orb__ring"></span>',
+    '<span class="ashwood-orb__ring ashwood-orb__ring--outer"></span>'
+  ].join("");
+  document.body.append(orb);
+
+  // Bounded affordance above the content. Deliberately small: a full-size transparent
+  // hit area at this depth would swallow clicks across the whole page.
+  const signal = document.createElement("div");
+  signal.className = "ashwood-orb-signal";
+  signal.innerHTML = [
+    '<button type="button" class="ashwood-orb-signal__toggle" aria-expanded="false" aria-controls="ashwood-orb-reveal">',
+    '<span class="ashwood-orb-signal__dot" aria-hidden="true"></span>',
+    '<span class="ashwood-orb-signal__label">Reveal the ASHWOOD field signal</span></button>',
+    '<div class="ashwood-orb-signal__reveal" id="ashwood-orb-reveal" role="group" aria-label="ASHWOOD field signal">',
+    '<span class="ashwood-orb-signal__eyebrow">FIELD SIGNAL / 01</span>',
     '<strong>The next build is already here.</strong>',
     '<p>Context. Attention. Permission. The hidden structure behind a useful handoff.</p>',
     '<a href="/ai-from-zero/">Enter AI from ZERO &rarr;</a></div>'
   ].join("");
-  // Appended, not prepended: the toggle is an ambient affordance and must not take
-  // the first tab stop ahead of the masthead.
-  document.body.append(orb);
+  document.body.append(signal);
 
-  const toggle = orb.querySelector(".ashwood-orb__toggle");
+  const toggle = signal.querySelector(".ashwood-orb-signal__toggle");
   const setOpen = (open) => {
-    orb.classList.toggle("is-open", open);
+    signal.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", String(open));
   };
-  orb.addEventListener("mouseenter", () => orb.classList.add("is-proximate"));
-  orb.addEventListener("mouseleave", () => { if (!orb.classList.contains("is-open")) orb.classList.remove("is-proximate"); });
-  toggle.addEventListener("click", () => setOpen(!orb.classList.contains("is-open")));
-  orb.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape" || !orb.classList.contains("is-open")) return;
+  signal.addEventListener("mouseenter", () => signal.classList.add("is-proximate"));
+  signal.addEventListener("mouseleave", () => { if (!signal.classList.contains("is-open")) signal.classList.remove("is-proximate"); });
+  toggle.addEventListener("click", () => setOpen(!signal.classList.contains("is-open")));
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !signal.classList.contains("is-open")) return;
     setOpen(false);
     toggle.focus();
   });
@@ -67,6 +87,7 @@
   let currentInnerX = 0;
   let currentInnerY = 0;
   let currentInnerR = 0;
+  const root = document.documentElement;
   let lastScrollY = window.scrollY;
   let scrollEnergy = 0;
   let frame = 0;
@@ -104,13 +125,13 @@
     scrollEnergy *= .9;
     targetY *= .985;
     targetR *= .985;
-    orb.style.setProperty("--ashwood-orb-dx", `${currentX.toFixed(2)}px`);
-    orb.style.setProperty("--ashwood-orb-dy", `${currentY.toFixed(2)}px`);
-    orb.style.setProperty("--ashwood-orb-rotate", `${currentR.toFixed(2)}deg`);
-    orb.style.setProperty("--ashwood-orb-inner-x", `${currentInnerX.toFixed(2)}px`);
-    orb.style.setProperty("--ashwood-orb-inner-y", `${currentInnerY.toFixed(2)}px`);
-    orb.style.setProperty("--ashwood-orb-inner-r", `${currentInnerR.toFixed(2)}deg`);
-    orb.style.setProperty("--ashwood-orb-energy", Math.abs(scrollEnergy).toFixed(3));
+    root.style.setProperty("--ashwood-orb-dx", `${currentX.toFixed(2)}px`);
+    root.style.setProperty("--ashwood-orb-dy", `${currentY.toFixed(2)}px`);
+    root.style.setProperty("--ashwood-orb-rotate", `${currentR.toFixed(2)}deg`);
+    root.style.setProperty("--ashwood-orb-inner-x", `${currentInnerX.toFixed(2)}px`);
+    root.style.setProperty("--ashwood-orb-inner-y", `${currentInnerY.toFixed(2)}px`);
+    root.style.setProperty("--ashwood-orb-inner-r", `${currentInnerR.toFixed(2)}deg`);
+    root.style.setProperty("--ashwood-orb-energy", Math.abs(scrollEnergy).toFixed(3));
     frame = (Math.abs(targetX - currentX) + Math.abs(targetY - currentY) + Math.abs(targetR - currentR) > .05)
       ? window.requestAnimationFrame(tick)
       : 0;

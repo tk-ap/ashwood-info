@@ -35,65 +35,13 @@ html[data-ashwood-theme="phosphor-cyber"] body.ashwood-orb-preview {
   left: 50%;
   width: min(80vh, 760px);
   aspect-ratio: 1;
-  pointer-events: auto;
+  pointer-events: none;
   transform: translate3d(calc(-50% + var(--ashwood-orb-dx, 0px)), calc(-50% + var(--ashwood-orb-dy, 0px)), 0) rotate(var(--ashwood-orb-rotate, 0deg));
   opacity: .88;
   filter: blur(1px);
   will-change: transform;
 }
 
-.ashwood-orb__reveal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 4;
-  width: min(270px, 72vw);
-  padding: 16px 17px 17px;
-  border: 1px solid color-mix(in srgb, var(--ashwood-ochre) 64%, var(--ashwood-rule));
-  background: color-mix(in srgb, var(--ashwood-paper) 90%, transparent);
-  color: var(--ashwood-ink);
-  box-shadow: 0 18px 48px rgba(0,0,0,.16);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(.84) rotate(-2deg);
-  transition: opacity .3s ease, transform .5s cubic-bezier(.16,.84,.28,1), visibility 0s linear .3s;
-}
-.ashwood-orb__reveal-label { display: block; color: var(--ashwood-oxblood); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
-.ashwood-orb__reveal strong { display: block; margin-top: 9px; font-size: 18px; line-height: 1.05; letter-spacing: -.03em; }
-.ashwood-orb__reveal p { margin: 10px 0 0; color: var(--ashwood-muted); font-size: 12px; line-height: 1.45; }
-.ashwood-orb__reveal a { display: inline-block; margin-top: 14px; color: var(--ashwood-oxblood); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
-.ashwood-orb.is-proximate .ashwood-orb__reveal,
-.ashwood-orb.is-open .ashwood-orb__reveal,
-.ashwood-orb:focus-within .ashwood-orb__reveal { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, -50%) scale(1) rotate(0deg); transition: opacity .3s ease, transform .5s cubic-bezier(.16,.84,.28,1), visibility 0s; }
-
-/* Real control, so the orb is not an aria-hidden focus trap. Fills the orb to keep
-   Codex's whole-orb hit area; the decorative layers below it are aria-hidden. */
-.ashwood-orb__toggle {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 48% 52% 57% 43% / 42% 46% 54% 58%;
-  background: transparent;
-  color: inherit;
-  cursor: crosshair;
-  font: inherit;
-}
-.ashwood-orb__toggle:focus-visible { outline: 2px solid var(--ashwood-oxblood); outline-offset: -8px; }
-.ashwood-orb__toggle-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  clip-path: inset(50%);
-}
-.ashwood-orb.is-open .ashwood-orb__toggle { cursor: pointer; }
 
 .ashwood-orb__body,
 .ashwood-orb__ring {
@@ -158,5 +106,87 @@ body.ashwood-orb-preview .ashwood-capability-evidence { position: relative; z-in
   .ashwood-orb { transform: translate3d(-50%, -50%, 0); }
   .ashwood-orb__body,
   .ashwood-orb__ring { animation: none; }
-  .ashwood-orb__reveal { transition: none; transform: translate(-50%, -50%); }
+}
+  
+body.ashwood-orb-booting .ashwood-orb-signal__reveal,
+body.ashwood-orb-booting .ashwood-orb-signal__dot { transition: none !important; }
+
+/* Control layer. Sits above .shell (z-index 1) because the blob's own z-index 0
+   creates a stacking context that would trap any nested control behind the page.
+   Kept below the nav at z-index 70. */
+.ashwood-orb-signal {
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  transform: translate3d(calc(-50% + var(--ashwood-orb-dx, 0px)), calc(-50% + var(--ashwood-orb-dy, 0px)), 0);
+  pointer-events: none;
+}
+.ashwood-orb-signal__toggle {
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: crosshair;
+  font: inherit;
+  pointer-events: auto;
+}
+.ashwood-orb-signal__dot {
+  width: 13px;
+  height: 13px;
+  border: 1px solid color-mix(in srgb, var(--ashwood-oxblood) 70%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ashwood-ochre) 34%, transparent);
+  transition: transform .35s cubic-bezier(.16,.84,.28,1), background .35s ease;
+}
+.ashwood-orb-signal__toggle:hover .ashwood-orb-signal__dot,
+.ashwood-orb-signal__toggle:focus-visible .ashwood-orb-signal__dot,
+.ashwood-orb-signal.is-open .ashwood-orb-signal__dot { transform: scale(1.9); background: color-mix(in srgb, var(--ashwood-oxblood) 52%, transparent); }
+.ashwood-orb-signal__toggle:focus-visible { outline: 2px solid var(--ashwood-oxblood); outline-offset: 4px; }
+.ashwood-orb-signal__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.ashwood-orb-signal__reveal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(270px, 72vw);
+  padding: 16px 17px 17px;
+  border: 1px solid color-mix(in srgb, var(--ashwood-ochre) 64%, var(--ashwood-rule));
+  background: color-mix(in srgb, var(--ashwood-paper) 96%, transparent);
+  color: var(--ashwood-ink);
+  box-shadow: 0 18px 48px rgba(0,0,0,.22);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.84) rotate(-2deg);
+  transition: opacity .3s ease, transform .5s cubic-bezier(.16,.84,.28,1), visibility 0s linear .3s;
+}
+.ashwood-orb-signal.is-proximate .ashwood-orb-signal__reveal,
+.ashwood-orb-signal.is-open .ashwood-orb-signal__reveal,
+.ashwood-orb-signal:focus-within .ashwood-orb-signal__reveal { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, -50%) scale(1) rotate(0deg); transition: opacity .3s ease, transform .5s cubic-bezier(.16,.84,.28,1), visibility 0s; }
+.ashwood-orb-signal__eyebrow { display: block; color: var(--ashwood-oxblood); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+.ashwood-orb-signal__reveal strong { display: block; margin-top: 9px; font-size: 18px; line-height: 1.05; letter-spacing: -.03em; }
+.ashwood-orb-signal__reveal p { margin: 10px 0 0; color: var(--ashwood-muted); font-size: 12px; line-height: 1.45; }
+.ashwood-orb-signal__reveal a { display: inline-block; margin-top: 14px; color: var(--ashwood-oxblood); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ashwood-orb-signal { transform: translate3d(-50%, -50%, 0); }
+  .ashwood-orb-signal__dot,
+  .ashwood-orb-signal__reveal { transition: none; }
 }
