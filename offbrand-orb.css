@@ -60,10 +60,12 @@ html[data-ashwood-theme="phosphor-cyber"] body.ashwood-orb-preview {
 html:not(.ashwood-light) .ashwood-orb__body { border-color: color-mix(in srgb, var(--ashwood-ink) 15%, transparent); }
 
 .ashwood-orb__ring {
-  /* Measured off itsoffbrand.com: sub-pixel dashed circles at ~20% alpha, sitting
-     inside the orb at ~61% and ~51% of its diameter, not outside it. */
+  /* Stroke treatment measured off itsoffbrand.com — sub-pixel dash at ~20% alpha,
+     inset to ~61% and ~51% of the orb, counter-rotated. The reference's contours are
+     perfect circles; ASHWOOD deliberately carries the blob language through them
+     instead, so every contour in the composition is organic. */
   inset: 19.5%;
-  border-radius: 50%;
+  border-radius: 57% 43% 39% 61% / 44% 63% 37% 56%;
   border: .7px dashed color-mix(in srgb, var(--ashwood-ink) 20%, transparent);
   opacity: 1;
   transform: rotate(60deg);
@@ -72,6 +74,8 @@ html:not(.ashwood-light) .ashwood-orb__body { border-color: color-mix(in srgb, v
 
 .ashwood-orb__ring--outer {
   inset: 24.5%;
+  /* A different contour, not a scaled copy of the first. */
+  border-radius: 41% 59% 63% 37% / 59% 38% 62% 41%;
   border-color: color-mix(in srgb, var(--ashwood-ink) 20%, transparent);
   transform: rotate(-60deg);
   animation-duration: 48s;
