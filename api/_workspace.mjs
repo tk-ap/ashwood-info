@@ -70,14 +70,20 @@ export function clearSession(res) {
   res.setHeader('Set-Cookie', 'ashwood_workspace_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
 }
 
-// vercel.app is a public shared suffix: anyone can deploy to it, so a bare
-// endsWith('.vercel.app') admits any attacker-controlled deployment. Preview URLs
-// still need to work, so match this project's own previews rather than the suffix.
-const PRODUCTION_ORIGIN = 'https://ashwood-info.vercel.app';
-const PREVIEW_ORIGIN = /^https:\/\/ashwood-info-[a-z0-9-]+\.vercel\.app$/;
-
+// Compare the browser's Origin against the host this request actually arrived on,
+// rather than an allowlist of known domains. An allowlist has to be maintained and
+// silently locks the workspace out whenever a domain changes; this cannot, because
+// whatever host serves the page is the host the browser reports. It still rejects a
+// third-party origin, which is the actual hole being closed: the previous check
+// accepted any *.vercel.app, a public suffix anyone can deploy to.
 export function sameOrigin(req) {
   const origin = String(req.headers?.origin || '');
   if (!origin) return true;
-  return origin === PRODUCTION_ORIGIN || PREVIEW_ORIGIN.test(origin);
+  const host = String(req.headers?.['x-forwarded-host'] || req.headers?.host || '');
+  if (!host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
 }
