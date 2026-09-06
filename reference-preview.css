@@ -18,7 +18,7 @@ body.ashwood-preview-panel-active .ashwood-preview-panel__title { opacity: calc(
 @media (prefers-reduced-motion: reduce) { .ashwood-preview-panel__motif,.ashwood-preview-panel__title { transition: none; transform: translate(-50%, -50%) scale(1); } }
 
 .ashwood-archive-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 24px 0; }
-.ashwood-archive-controls button { min-height: 42px; border: 1px solid var(--ashwood-rule); padding: 10px 14px; background: transparent; color: inherit; cursor: pointer; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.ashwood-archive-controls button { min-height: 44px; border: 1px solid var(--ashwood-rule); padding: 10px 14px; background: transparent; color: inherit; cursor: pointer; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
 .ashwood-archive-controls button:hover,.ashwood-archive-controls button:focus-visible,.ashwood-archive-controls button[aria-pressed="true"] { border-color: var(--ashwood-oxblood); color: var(--ashwood-oxblood); }
 .ashwood-archive-controls__hint { color: var(--ashwood-muted); font-size: 11px; }
 .portfolio-page.ashwood-index-mode .archive-grid { grid-template-columns: 1fr; gap: 0; }
@@ -39,4 +39,8 @@ body.ashwood-preview-panel-active .ashwood-preview-panel__title { opacity: calc(
 .ai-zero-preview-rail a span { color: var(--ashwood-ochre); font-size: 9px; }
 .ai-zero-preview-rail a.is-active,.ai-zero-preview-rail a:hover,.ai-zero-preview-rail a:focus-visible { border-color: var(--ashwood-oxblood); background: var(--ashwood-oxblood); color: var(--ashwood-night-ink); }
 @media (max-width: 720px) { .ai-zero-preview-rail { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); } }
-@media (prefers-reduced-motion: reduce) { .ashwood-archive-controls button,.ashwood-archive-grid .asset-frame { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .ai-zero-preview-rail a,
+  .ashwood-archive-controls button,
+  .portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame { transition: none; }
+}

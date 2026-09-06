@@ -5,7 +5,7 @@
 
   const stylesheet = document.createElement("link");
   stylesheet.rel = "stylesheet";
-  stylesheet.href = "/reference-preview.css?v=20260905-preview8";
+  stylesheet.href = "/reference-preview.css?v=20260905-preview9";
   document.head.appendChild(stylesheet);
 
   const path = location.pathname.replace(/\/+$/, "") || "/";
