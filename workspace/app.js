@@ -1,4 +1,5 @@
 import { renderOverview } from './overview.mjs';
+import { renderFrame, mountCheckin } from './frame.mjs';
 (() => {
   'use strict';
 
@@ -59,6 +60,8 @@ import { renderOverview } from './overview.mjs';
     if (kicker) kicker.textContent = 'Saturn frame';
     const note = $('#goal-source-note');
     if (note) note.textContent = goalModel.source_note;
+    renderFrame(goalModel);
+    mountCheckin(goalModel);
   }
 
   async function loadPersistentState() {

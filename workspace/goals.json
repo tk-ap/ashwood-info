@@ -27,6 +27,30 @@
     {"id":"reciprocity","name":"Reciprocity","question":"Are honesty, effort, and care moving both ways?"},
     {"id":"freedom","name":"Freedom","question":"Does the structure preserve meaningful agency and choice?"}
   ],
+  "decision_compass": {
+    "title": "The Perceptive Architect",
+    "subtitle": "A practical decision compass for personal and professional choices",
+    "canonical_note": "TK decided 2026-09-06 that the seven-check decision reference is canonical. alignment_dimensions above is retained as the companion's recorded six-check Alignment Test variant and is not the instrument.",
+    "warning": "Pause. This may be proving, urgency, or an old contract in disguise.",
+    "checks": [
+      {"id":"recognition","name":"Recognition","question":"Is my judgment genuinely valued here, or am I trying to convince people to see what I see?"},
+      {"id":"environment","name":"Environment","question":"Do I become clearer and more like myself in this place and around these people?"},
+      {"id":"body","name":"Body","question":"After rest and food, does my body soften toward this choice or remain contracted?"},
+      {"id":"reciprocity","name":"Reciprocity","question":"Are responsibility, attention, honesty, and care moving in both directions?"},
+      {"id":"foundation","name":"Foundation","question":"Will this create durable value, or only urgency, activity, and appearance?"},
+      {"id":"freedom","name":"Freedom","question":"Does the structure preserve enough autonomy, movement, and room to experiment?"},
+      {"id":"reality_test","name":"Reality test","question":"What consistent behavior or evidence supports the story I am telling myself?"}
+    ],
+    "green_lights": ["Trusted invitation","Clear role and decision rights","Depth plus reliability","Autonomy within structure","Time to think and speak aloud","Visible long-term usefulness","Sustainable pace","Mutual respect and follow-through"],
+    "red_flags": ["Repeatedly proving your value","Being everyone's stabilizer","Charm without consistency","Ambiguous authority or ownership","Constant urgency and interruption","A body that stays tense or depleted","Rigid routine with no room to explore","A relationship built on potential"],
+    "when_unclear": "Do not force an immediate answer. Change environments, talk it through with a trusted listener, sleep, restore the body, and notice which explanation sounds increasingly true over time.",
+    "default_priority": "Protect clarity first: right environment, then regulated body, then honest dialogue, then evidence, then commitment.",
+    "closing": "Recognition is not the same as approval. You do not need everyone to agree; you need the right people to understand and value the contribution."
+  },
+  "evening_evidence": {
+    "title": "Close the loop.",
+    "prompts": ["What did I build, clarify, or protect?", "What am I no longer carrying?"]
+  },
   "next_personal_year_prompt": "Review what deserves another year of your life.",
   "goals": [
     {"id":"ownership","name":"Build & Own","description":"Build durable products, intellectual property, ownership, and leverage rather than optimizing only for income or activity.","priority":1.35,"success_signals":["shipped product capability","first paid client or revenue evidence","owned IP or reusable infrastructure","equity/ownership negotiated from proven value"],"repo_hints":["alvira","ailhat","ledgato","agent-os","agentfence","agent-availability"]},

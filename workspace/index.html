@@ -8,9 +8,9 @@
   <title>Workspace — ASHWOOD</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
-  <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-visual1" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-frame1" />
   <script src="/theme.js?v=20260827-1" defer></script>
-  <script type="module" src="/workspace/app.js?v=20260906-visual1"></script>
+  <script type="module" src="/workspace/app.js?v=20260906-frame1"></script>
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -31,6 +31,44 @@
       <p class="eyebrow">Your private workspace</p>
       <h1 id="workspace-title">Where the work is going.</h1>
       <p class="workspace-lede">Goals, connections, and the evidence behind them.</p>
+    </section>
+
+    <section class="frame" id="frame" aria-labelledby="frame-north-star">
+      <p class="section-kicker">The frame</p>
+      <h2 class="frame-north-star" id="frame-north-star"></h2>
+      <p class="frame-chapter" id="frame-chapter"></p>
+      <div class="frame-decision" id="frame-decision" hidden></div>
+      <div class="frame-panels">
+        <article class="frame-panel" id="frame-quick-return"></article>
+        <article class="frame-panel" id="frame-daily-rule"></article>
+      </div>
+      <p class="frame-year" id="frame-year"></p>
+      <details class="frame-variant">
+        <summary>The recorded six-check variant</summary>
+        <div id="frame-variant"></div>
+      </details>
+    </section>
+
+    <section class="checkin" id="checkin" aria-labelledby="checkin-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker">Daily check-in</p>
+          <h2 id="checkin-title">Today</h2>
+        </div>
+        <p class="section-note" id="checkin-streak"></p>
+      </div>
+      <div class="checkin-grid">
+        <article class="checkin-panel" id="checkin-morning"></article>
+        <article class="checkin-panel" id="checkin-commitment"></article>
+      </div>
+      <div class="checkin-panel checkin-test" id="checkin-test"></div>
+      <div class="checkin-readout" id="checkin-readout" role="status" aria-live="polite"></div>
+      <details class="checkin-reference">
+        <summary>Green lights, red flags, and what to do when it is unclear</summary>
+        <div id="checkin-reference"></div>
+      </details>
+      <div class="checkin-panel" id="checkin-evening"></div>
+      <p class="checkin-privacy" id="checkin-privacy">Saved privately in this browser.</p>
     </section>
 
     <section class="pulse" aria-labelledby="pulse-title">
