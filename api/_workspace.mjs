@@ -35,6 +35,12 @@ export function verifyPassphrase(passphrase, salt, expectedHex) {
   return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
 }
 
+export function timingSafeEqualHex(a, b) {
+  const left = Buffer.from(String(a), 'hex');
+  const right = Buffer.from(String(b || ''), 'hex');
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
 export function cookieMap(req) {
   return Object.fromEntries(String(req.headers?.cookie || '').split(';').map(x => x.trim()).filter(Boolean).map(part => {
     const i = part.indexOf('=');
@@ -64,8 +70,14 @@ export function clearSession(res) {
   res.setHeader('Set-Cookie', 'ashwood_workspace_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
 }
 
+// vercel.app is a public shared suffix: anyone can deploy to it, so a bare
+// endsWith('.vercel.app') admits any attacker-controlled deployment. Preview URLs
+// still need to work, so match this project's own previews rather than the suffix.
+const PRODUCTION_ORIGIN = 'https://ashwood-info.vercel.app';
+const PREVIEW_ORIGIN = /^https:\/\/ashwood-info-[a-z0-9-]+\.vercel\.app$/;
+
 export function sameOrigin(req) {
   const origin = String(req.headers?.origin || '');
   if (!origin) return true;
-  return origin === 'https://ashwood-info.vercel.app' || origin.endsWith('.vercel.app');
+  return origin === PRODUCTION_ORIGIN || PREVIEW_ORIGIN.test(origin);
 }
