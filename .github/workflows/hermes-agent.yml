@@ -1,6 +1,6 @@
 name: Hermes Agent
 
-# Governed Hermes execution for tk-ap.github.io.
+# Governed Hermes execution for tk-ap/ashwood-info.
 #
 # Hermes runs as an Agent OS harness: Agent OS (tk-ap/agent-os, loaded as a
 # subdirectory) resolves the task, selects the minimum agent team, and Hermes
