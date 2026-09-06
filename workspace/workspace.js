@@ -164,7 +164,7 @@
 
       const commitSets = await Promise.all(state.repos.slice(0, 12).map(async repo => {
         try {
-          const commits = await github(`/repos/${USER}/${encodeURIComponent(repo.name)}/commits?per_page=6`);
+          const commits = await github(`/repos/${USER}/${encodeURIComponent(repo.name)}/commits?per_page=30`);
           return commits.map(commit => ({ repo, commit }));
         } catch {
           return [];
@@ -230,11 +230,20 @@
     };
   }
 
+  // Goals no adapter can observe. `relationships` is the strongest case: its
+  // repo_hints in goals.json are empty and no inferSecondaryGoals rule yields it,
+  // so it can never receive automatic evidence at all.
+  const BLIND_SPOT_GOALS = ['relationships', 'music', 'modeling', 'writing'];
+
+  function isBlindSpot(stat) {
+    return BLIND_SPOT_GOALS.includes(stat.goal.id) && !stat.evidence.some(e => e.source === 'manual');
+  }
+
   function attentionSignals() {
     const signals = [];
     const stats = GOALS.map(goal => ({ goal, ...goalStats(goal) }));
     stats.filter(s => s.status === 'STALE' || s.status === 'NEEDS_ATTENTION').forEach(s => {
-      const automaticBlindSpot = ['relationships', 'music', 'modeling', 'writing'].includes(s.goal.id) && !s.evidence.some(e => e.source === 'manual');
+      const automaticBlindSpot = isBlindSpot(s);
       signals.push({
         kind: automaticBlindSpot ? 'EVIDENCE GAP' : s.status,
         goal: s.goal.name,
@@ -260,8 +269,12 @@
   function nextAction() {
     const ranked = GOALS.map(goal => ({ goal, ...goalStats(goal) }))
       .sort((a, b) => (a.momentum / a.goal.priority) - (b.momentum / b.goal.priority));
-    const target = ranked[0];
-    const evidenceBlindSpot = ['relationships', 'music', 'modeling', 'writing'].includes(target.goal.id) && !target.evidence.some(e => e.source === 'manual');
+    // A goal the adapters cannot see always scores lowest, so without this it would
+    // occupy this slot permanently and no varying signal could ever surface here.
+    // Blind spots are still reported, by attentionSignals() as an EVIDENCE GAP.
+    const observable = ranked.filter(stat => !isBlindSpot(stat));
+    const target = observable[0] || ranked[0];
+    const evidenceBlindSpot = isBlindSpot(target);
     if (evidenceBlindSpot) {
       return {
         goal: target.goal.name,
