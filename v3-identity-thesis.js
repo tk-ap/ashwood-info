@@ -15,6 +15,8 @@
     { label:'THE INSTINCT', href:'/dive-deeper/' }
   ];
 
+  const IDLE_MANIFESTATION = '∞ manifestations';
+
   document.querySelector('.v3-provenance')?.remove();
   document.querySelector('.v3-manifesto-note')?.remove();
 
@@ -36,8 +38,8 @@
     .v3-manifestations__label.is-outgoing{transform:translate3d(0,-112%,0);opacity:0}
     .v3-manifestations__label.is-incoming{transform:translate3d(0,112%,0);opacity:0;transition:none}
 
-    /* Provenance is metadata attached to One Identity, not part of the sentence's
-       layout. Revealing it cannot push or wrap Infinite Manifestations. */
+    /* Provenance is metadata attached to identity, not part of the sentence's
+       layout. Revealing it cannot push or wrap the manifestations reel. */
     .v3-provenance-reveal{position:absolute;left:0;top:calc(100% + .55em);z-index:3;display:inline-flex;align-items:baseline;gap:.45em;max-width:min(72vw,620px);overflow:hidden;opacity:0;transform:translateY(-3px);transition:opacity .22s ease,transform .24s ease;pointer-events:none}
     .v3-provenance-reveal.is-open{opacity:1;transform:none}
     .v3-provenance-reveal__label{color:var(--ashwood-field-green);font:700 7px/1.3 Arial,Helvetica,sans-serif;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
@@ -57,9 +59,9 @@
 
   identity.innerHTML = `
     <span class="v3-identity-statement">
-      <button class="v3-identity-origin" type="button" aria-expanded="false">One Identity</button><span aria-hidden="true">.</span>
+      <button class="v3-identity-origin" type="button" aria-expanded="false">1 identity</button><span aria-hidden="true">;</span>
       <a class="v3-manifestations" href="/portfolio/" aria-label="Explore an ASHWOOD manifestation">
-        <span class="v3-manifestations__label">Infinite Manifestations</span>
+        <span class="v3-manifestations__label">${IDLE_MANIFESTATION}</span>
       </a><span aria-hidden="true">.</span>
     </span>
     <span class="v3-provenance-reveal" aria-live="polite">
@@ -81,7 +83,7 @@
   const lockReelGeometry = () => {
     const previous = manifestations.style.getPropertyValue('--v3-reel-width');
     if (previous) manifestations.style.removeProperty('--v3-reel-width');
-    manifestationLabel.textContent = 'Infinite Manifestations';
+    manifestationLabel.textContent = IDLE_MANIFESTATION;
     manifestationLabel.className = 'v3-manifestations__label';
     const width = Math.ceil(manifestationLabel.getBoundingClientRect().width);
     if (width > 0) manifestations.style.setProperty('--v3-reel-width', `${width}px`);
@@ -136,7 +138,7 @@
     manifestations.querySelectorAll('.v3-manifestations__label').forEach(node => node.remove());
     const idle = document.createElement('span');
     idle.className = 'v3-manifestations__label';
-    idle.textContent = 'Infinite Manifestations';
+    idle.textContent = IDLE_MANIFESTATION;
     manifestations.appendChild(idle);
     manifestationLabel = idle;
     manifestations.setAttribute('aria-label','Explore an ASHWOOD manifestation');
