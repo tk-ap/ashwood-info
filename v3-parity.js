@@ -36,7 +36,16 @@
     }
   };
 
+  const dedupeDocSurface = () => {
+    const launchers = [...document.querySelectorAll('.ashwood-doc-editorial-launcher')];
+    launchers.slice(1).forEach(node => node.remove());
+    const panels = [...document.querySelectorAll('.ashwood-doc-editorial-panel')];
+    panels.slice(1).forEach(node => node.remove());
+    document.querySelectorAll('.v3-doc,.v3-doc-panel').forEach(node => node.remove());
+  };
+
   const installDocBridge = () => {
+    dedupeDocSurface();
     if (document.querySelector('.ashwood-doc-editorial-launcher')) return;
 
     document.querySelector('.v3-thinking__intro')?.classList.add('ashwood-home-thesis');
@@ -69,6 +78,10 @@
       @media(max-width:760px),(pointer:coarse){.ashwood-doc-editorial-launcher{right:14px;bottom:14px}.ashwood-doc-editorial-panel{right:14px;bottom:14px;width:calc(100vw - 28px)}}
     `;
     document.head.appendChild(style);
+
+    const observer = new MutationObserver(dedupeDocSurface);
+    observer.observe(document.body, { childList:true, subtree:true });
+    window.setTimeout(() => observer.disconnect(), 4000);
   };
 
   installIridescentDoors();
