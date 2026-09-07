@@ -9,8 +9,10 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
   <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-frame1" />
+  <link rel="stylesheet" href="/workspace/workstreams.css?v=20260907-workstreams1" />
   <script src="/theme.js?v=20260827-1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260906-frame1"></script>
+  <script type="module" src="/workspace/workstreams.mjs?v=20260907-workstreams1"></script>
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -58,6 +60,19 @@
         <p class="section-note">Evidence over the last 30 days · select a goal to explore.</p>
       </div>
       <div class="goal-grid" id="goal-grid"></div>
+    </section>
+
+    <section class="workstreams" aria-labelledby="workstreams-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker">Current work</p>
+          <h2 id="workstreams-title">Active workstreams</h2>
+        </div>
+        <p class="section-note workstream-note"><span id="workstream-count">Loading workstreams…</span> · ASHWOOD shows the human-facing projection; execution truth stays in AgentOS, ailhat, and the owning repos.</p>
+      </div>
+      <div class="workstream-list" id="workstream-list" aria-live="polite">
+        <p class="workstream-empty">Loading canonical workstreams…</p>
+      </div>
     </section>
 
     <details class="checkin disclosure" id="checkin-details">
