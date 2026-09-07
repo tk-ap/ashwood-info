@@ -1,0 +1,162 @@
+/* Preview-only ambient orb inspired by Off+Brand; enabled by offbrand-orb.js. */
+body.ashwood-orb-preview {
+  --ashwood-orb-a: rgba(123, 38, 53, .22);
+  --ashwood-orb-b: rgba(180, 135, 50, .22);
+  --ashwood-orb-c: rgba(63, 127, 132, .13);
+}
+
+html:not(.ashwood-light) body.ashwood-orb-preview {
+  --ashwood-orb-a: rgba(123, 38, 53, .34);
+  --ashwood-orb-b: rgba(180, 135, 50, .2);
+  --ashwood-orb-c: rgba(80, 98, 116, .16);
+}
+
+html[data-ashwood-theme="phosphor-cyber"] body.ashwood-orb-preview {
+  --ashwood-orb-a: rgba(255, 97, 223, .22);
+  --ashwood-orb-b: rgba(66, 255, 139, .18);
+  --ashwood-orb-c: rgba(200, 255, 89, .12);
+  --ashwood-orb-wash: rgba(125, 255, 165, .05);
+}
+
+/* Own element, not body::before — theme.js injects higher-specificity body::before
+   rules (phosphor scanlines; `content: none` in every other theme) that would kill it. */
+.ashwood-orb-wash {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--ashwood-orb-x, 72%) var(--ashwood-orb-y, 34%), var(--ashwood-orb-wash, rgba(245, 243, 239, .08)), transparent 42%);
+}
+
+.ashwood-orb {
+  position: fixed;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: min(80vh, 760px);
+  aspect-ratio: 1;
+  pointer-events: auto;
+  transform: translate3d(calc(-50% + var(--ashwood-orb-dx, 0px)), calc(-50% + var(--ashwood-orb-dy, 0px)), 0) rotate(var(--ashwood-orb-rotate, 0deg));
+  opacity: .88;
+  filter: blur(1px);
+  will-change: transform;
+}
+
+.ashwood-orb__reveal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  width: min(270px, 72vw);
+  padding: 16px 17px 17px;
+  border: 1px solid color-mix(in srgb, var(--ashwood-ochre) 64%, var(--ashwood-rule));
+  background: color-mix(in srgb, var(--ashwood-paper) 90%, transparent);
+  color: var(--ashwood-ink);
+  box-shadow: 0 18px 48px rgba(0,0,0,.16);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.84) rotate(-2deg);
+  transition: opacity .3s ease, transform .5s cubic-bezier(.16,.84,.28,1), visibility 0s linear .3s;
+}
+.ashwood-orb__reveal-label { display: block; color: var(--ashwood-oxblood); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+.ashwood-orb__reveal strong { display: block; margin-top: 9px; font-size: 18px; line-height: 1.05; letter-spacing: -.03em; }
+.ashwood-orb__reveal p { margin: 10px 0 0; color: var(--ashwood-muted); font-size: 12px; line-height: 1.45; }
+.ashwood-orb__reveal a { display: inline-block; margin-top: 14px; color: var(--ashwood-oxblood); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.ashwood-orb.is-proximate .ashwood-orb__reveal,
+.ashwood-orb.is-open .ashwood-orb__reveal,
+.ashwood-orb:focus-within .ashwood-orb__reveal { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, -50%) scale(1) rotate(0deg); transition: opacity .3s ease, transform .5s cubic-bezier(.16,.84,.28,1), visibility 0s; }
+
+/* Real control, so the orb is not an aria-hidden focus trap. Fills the orb to keep
+   Codex's whole-orb hit area; the decorative layers below it are aria-hidden. */
+.ashwood-orb__toggle {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 48% 52% 57% 43% / 42% 46% 54% 58%;
+  background: transparent;
+  color: inherit;
+  cursor: crosshair;
+  font: inherit;
+}
+.ashwood-orb__toggle:focus-visible { outline: 2px solid var(--ashwood-oxblood); outline-offset: -8px; }
+.ashwood-orb__toggle-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.ashwood-orb.is-open .ashwood-orb__toggle { cursor: pointer; }
+
+.ashwood-orb__body,
+.ashwood-orb__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 48% 52% 57% 43% / 42% 46% 54% 58%;
+}
+
+.ashwood-orb__body {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,.24), transparent 19%),
+    radial-gradient(circle at 70% 66%, var(--ashwood-orb-a), transparent 48%),
+    radial-gradient(circle at 38% 70%, var(--ashwood-orb-b), transparent 56%),
+    radial-gradient(circle at 62% 34%, var(--ashwood-orb-c), transparent 62%);
+  mix-blend-mode: multiply;
+  animation: ashwood-orb-breathe 16s ease-in-out infinite alternate;
+  transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) rotate(var(--ashwood-orb-inner-r, 0deg)) scale(var(--ashwood-orb-inner-s, 1));
+  transition: filter .25s ease;
+}
+
+html:not(.ashwood-light) .ashwood-orb__body { mix-blend-mode: screen; }
+
+.ashwood-orb__ring {
+  inset: -8%;
+  border: 1px dashed color-mix(in srgb, var(--ashwood-ochre) 30%, transparent);
+  opacity: .34;
+  transform: rotate(12deg) scale(1.02);
+  animation: ashwood-orb-ring 34s linear infinite;
+}
+
+.ashwood-orb__ring--outer {
+  inset: -18%;
+  border-color: color-mix(in srgb, var(--ashwood-oxblood) 24%, transparent);
+  transform: rotate(-18deg) scale(.94);
+  animation-duration: 48s;
+}
+
+body.ashwood-orb-preview .shell { position: relative; z-index: 1; }
+body.ashwood-orb-preview .masthead,
+body.ashwood-orb-preview .intro,
+body.ashwood-orb-preview .principles-field,
+body.ashwood-orb-preview .home-entryways,
+body.ashwood-orb-preview .home-now,
+body.ashwood-orb-preview .home-utility,
+body.ashwood-orb-preview .ashwood-capability-evidence { position: relative; z-index: 2; }
+
+@keyframes ashwood-orb-breathe {
+  0% { border-radius: 48% 52% 57% 43% / 42% 46% 54% 58%; transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) scale(.94) rotate(calc(-4deg + var(--ashwood-orb-inner-r, 0deg))); }
+  50% { border-radius: 58% 42% 46% 54% / 53% 57% 43% 47%; }
+  100% { border-radius: 43% 57% 52% 48% / 57% 43% 57% 43%; transform: translate3d(var(--ashwood-orb-inner-x, 0px), var(--ashwood-orb-inner-y, 0px), 0) scale(1.08) rotate(calc(7deg + var(--ashwood-orb-inner-r, 0deg))); }
+}
+
+@keyframes ashwood-orb-ring { to { transform: rotate(372deg) scale(1.02); } }
+
+@media (max-width: 760px) {
+  .ashwood-orb { width: min(76vw, 420px); opacity: .72; filter: blur(2px); }
+  .ashwood-orb__ring { inset: -12%; }
+  .ashwood-orb__ring--outer { inset: -24%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ashwood-orb { transform: translate3d(-50%, -50%, 0); }
+  .ashwood-orb__body,
+  .ashwood-orb__ring { animation: none; }
+  .ashwood-orb__reveal { transition: none; transform: translate(-50%, -50%); }
+}
