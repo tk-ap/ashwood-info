@@ -14,17 +14,13 @@
   if (document.querySelector('.v3-global-nav')) return;
   const mast = document.querySelector('.v3-mast');
   if (!mast) return;
+  const mastBrand = mast.querySelector('[data-wordmark]') || mast.querySelector('.v3-wordmark');
+  if (!mastBrand) return;
 
   const style = document.createElement('style');
   style.textContent = `
-    .v3-global-nav-toggle{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:0 0 auto;
-      margin-left:8px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--ashwood-rule) 78%,transparent);
-      border-radius:999px;background:color-mix(in srgb,var(--ashwood-paper) 88%,transparent);color:var(--ashwood-ink);
-      font:600 9px/1 Arial,Helvetica,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
-      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)
-    }
-    .v3-global-nav-toggle__icon{font-size:13px;line-height:1;transform:translateY(-.5px)}
+    .v3-mast [data-wordmark],.v3-mast .v3-wordmark{cursor:pointer}
+    .v3-mast [data-wordmark]:focus-visible,.v3-mast .v3-wordmark:focus-visible{outline:1px solid currentColor;outline-offset:6px}
     .v3-global-nav{
       position:fixed;inset:0;z-index:950;background:color-mix(in srgb,var(--ashwood-paper) 96%,transparent);
       color:var(--ashwood-ink);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
@@ -47,7 +43,6 @@
     .v3-global-nav__secondary a{font-size:9px;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:4px}
     body.v3-global-nav-open{overflow:hidden}
     @media(max-width:900px){
-      .v3-global-nav-toggle__label{display:none}
       .v3-global-nav__body{grid-template-columns:1fr}
       .v3-global-nav__aside{border-left:0;border-top:1px solid var(--ashwood-rule);padding-top:24px;padding-bottom:28px}
       .v3-global-nav__links{padding-top:clamp(28px,5vh,48px);padding-bottom:20px}
@@ -58,15 +53,6 @@
     @media(prefers-reduced-motion:reduce){.v3-global-nav{transition:none!important}}
   `;
   document.head.appendChild(style);
-
-  const toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.className = 'v3-global-nav-toggle';
-  toggle.setAttribute('aria-expanded','false');
-  toggle.setAttribute('aria-controls','v3-global-nav');
-  toggle.setAttribute('aria-label','Open site navigation');
-  toggle.innerHTML = '<span class="v3-global-nav-toggle__icon" aria-hidden="true">☰</span><span class="v3-global-nav-toggle__label">Menu</span>';
-  mast.appendChild(toggle);
 
   const nav = document.createElement('aside');
   nav.className = 'v3-global-nav';
@@ -98,21 +84,36 @@
     </div>`;
   document.body.appendChild(nav);
 
+  mastBrand.setAttribute('role','button');
+  mastBrand.setAttribute('aria-expanded','false');
+  mastBrand.setAttribute('aria-controls','v3-global-nav');
+  mastBrand.setAttribute('aria-label','Open ASHWOOD navigation');
+
   const close = () => {
     nav.classList.remove('is-open');
     nav.setAttribute('aria-hidden','true');
-    toggle.setAttribute('aria-expanded','false');
+    mastBrand.setAttribute('aria-expanded','false');
     document.body.classList.remove('v3-global-nav-open');
   };
   const open = () => {
     nav.classList.add('is-open');
     nav.setAttribute('aria-hidden','false');
-    toggle.setAttribute('aria-expanded','true');
+    mastBrand.setAttribute('aria-expanded','true');
     document.body.classList.add('v3-global-nav-open');
     nav.querySelector('.v3-global-nav__close')?.focus();
   };
+  const toggleNav = () => nav.classList.contains('is-open') ? close() : open();
 
-  toggle.addEventListener('click', () => nav.classList.contains('is-open') ? close() : open());
+  mastBrand.addEventListener('click', event => {
+    event.preventDefault();
+    toggleNav();
+  });
+  mastBrand.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleNav();
+    }
+  });
   nav.querySelector('.v3-global-nav__close')?.addEventListener('click', close);
   nav.addEventListener('click', event => { if (event.target.closest('a')) close(); });
   addEventListener('keydown', event => { if (event.key === 'Escape' && nav.classList.contains('is-open')) close(); });
