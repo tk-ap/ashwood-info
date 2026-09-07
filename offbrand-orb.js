@@ -53,7 +53,79 @@
     toggle.focus();
   });
 
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // --- interface awareness -------------------------------------------------
+  // interaction-state.js dispatches no events; it writes DOM state — on <html>
+  // data-ashwood-discovery-count and .ashwood-has-resolved-thread, on <body>
+  // data-ashwood-thread. The orb therefore observes that state rather than
+  // subscribing to a bus, which is what the 2026-09-05 handoff assumed existed.
+  //
+  // The point is that the orb answers what was discovered, not merely where the
+  // cursor is. Per-signal copy is deliberately not invented here: the orb
+  // exposes which signal is live and leaves the words to editorial.
+  const root = document.documentElement;
+  let pendingSurge = 0;
+  // Declared here rather than with the animation vars below: the observer and
+  // click handler can wake the loop, and a `let` further down would leave them
+  // reaching into its temporal dead zone.
+  let frame = 0;
+
+  // Reduced motion returns early below, before `tick` is ever defined, while the
+  // listeners registered above stay live. Without this guard a hotspot click
+  // would reach for a function that does not exist.
+  let animated = true;
+
+  function wake() {
+    if (animated && !frame) frame = window.requestAnimationFrame(tick);
+  }
+
+  const readInteraction = () => ({
+    count: Number(root.dataset.ashwoodDiscoveryCount || 0) || 0,
+    signal: document.body.dataset.ashwoodThread || "",
+    resolved: root.classList.contains("ashwood-has-resolved-thread"),
+  });
+
+  let seenCount = readInteraction().count;
+
+  const applyInteraction = () => {
+    const { count, signal, resolved } = readInteraction();
+    if (signal) orb.dataset.signal = signal;
+    orb.classList.toggle("is-resolved", resolved);
+    orb.style.setProperty("--ashwood-orb-discovery", String(count));
+    const label = orb.querySelector(".ashwood-orb__reveal-label");
+    if (label) label.textContent = `FIELD SIGNAL / ${String(Math.max(1, count)).padStart(2, "0")}`;
+    if (count > seenCount) {
+      // A discovery is a real event in the interface. It should not read the
+      // same as idle cursor drift.
+      orb.classList.add("is-discovering");
+      window.setTimeout(() => orb.classList.remove("is-discovering"), 1200);
+      pendingSurge = 0.85;
+      wake();
+    }
+    seenCount = count;
+  };
+
+  const interactionObserver = new MutationObserver(applyInteraction);
+  interactionObserver.observe(root, {
+    attributes: true, attributeFilter: ["data-ashwood-discovery-count", "class"] });
+  interactionObserver.observe(document.body, {
+    attributes: true, attributeFilter: ["data-ashwood-thread"] });
+
+  // Hotspot activation is the interaction the orb exists to answer. Reacting to
+  // it directly lands the response on the press, rather than a beat later once
+  // interaction-state.js has finished writing.
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest?.(".principle-hotspot")) return;
+    orb.classList.add("is-proximate");
+    pendingSurge = 1;
+    wake();
+  }, true);
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // Still interface-aware, just not animated: state lands, motion does not.
+    animated = false;
+    applyInteraction();
+    return;
+  }
 
   let targetX = 0;
   let targetY = 0;
@@ -69,7 +141,6 @@
   let currentInnerR = 0;
   let lastScrollY = window.scrollY;
   let scrollEnergy = 0;
-  let frame = 0;
 
   const move = (event) => {
     const x = event.clientX / window.innerWidth - .5;
@@ -101,6 +172,10 @@
     currentInnerX += (targetInnerX - currentInnerX) * .08;
     currentInnerY += (targetInnerY - currentInnerY) * .08;
     currentInnerR += (targetInnerR - currentInnerR) * .08;
+    if (pendingSurge) {
+      scrollEnergy = Math.max(scrollEnergy, pendingSurge);
+      pendingSurge = 0;
+    }
     scrollEnergy *= .9;
     targetY *= .985;
     targetR *= .985;
@@ -111,11 +186,17 @@
     orb.style.setProperty("--ashwood-orb-inner-y", `${currentInnerY.toFixed(2)}px`);
     orb.style.setProperty("--ashwood-orb-inner-r", `${currentInnerR.toFixed(2)}deg`);
     orb.style.setProperty("--ashwood-orb-energy", Math.abs(scrollEnergy).toFixed(3));
-    frame = (Math.abs(targetX - currentX) + Math.abs(targetY - currentY) + Math.abs(targetR - currentR) > .05)
+    frame = (Math.abs(targetX - currentX) + Math.abs(targetY - currentY) + Math.abs(targetR - currentR) > .05
+             || Math.abs(scrollEnergy) > .01)
       ? window.requestAnimationFrame(tick)
       : 0;
   };
 
   window.addEventListener("pointermove", move, { passive: true });
   window.addEventListener("scroll", scroll, { passive: true });
+
+  // Reflect whatever state already exists when the orb loads: a returning
+  // visitor's discoveries are read from localStorage before this runs, so
+  // starting blank would throw away what the interface already knows.
+  applyInteraction();
 })();
