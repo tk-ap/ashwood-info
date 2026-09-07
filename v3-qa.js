@@ -28,8 +28,8 @@
     .v3-product{overflow:hidden}
     .v3-product strong,.v3-product span{position:relative;z-index:2}
     .v3-depth__links a{grid-template-columns:minmax(0,1fr) auto}
-    /* V3's old mock Doc must never coexist with the canonical Doctor Bird guide. */
-    .v3-doc,.v3-doc-panel{display:none!important}
+    /* V3 owns one Doc entry point: the editorial FOLLOW DOC launcher. */
+    .v3-doc,.v3-doc-panel,.ashwood-doc-launcher{display:none!important}
     .ashwood-doc-editorial-panel{max-height:min(58vh,520px);overflow:auto;overscroll-behavior:contain}
     .ashwood-doc-editorial-panel__title,.ashwood-doc-editorial-panel__copy{overflow-wrap:anywhere}
     .ashwood-doc-reference-marker{max-width:min(40vw,180px);white-space:normal}
@@ -49,8 +49,6 @@
       .v3-hero__copy{padding-top:104px!important}
       .v3-wordmark--hero{margin-bottom:20px!important}
       .v3-latent,.v3-image-note,.v3-margin-note,.v3-build-note,.v3-manifesto-note,.v3-provenance{max-width:78vw}
-      /* Provenance is content on mobile, not a floating annotation. Keeping it
-         absolutely positioned lets it collide with the responsive hero title. */
       .v3-provenance{position:static!important;inset:auto!important;display:block!important;align-self:flex-start;margin:0 0 24px!important;transform:none!important}
       .v3-provenance + .v3-kicker{margin-top:0!important}
       .ashwood-doc-editorial-panel{max-height:52vh}
@@ -67,6 +65,16 @@
     @media(prefers-reduced-motion:reduce){.ashwood-doc-guide-link{display:none}}
   `;
   document.head.appendChild(style);
+
+  /* doctor-bird-trigger.js still creates a legacy .ashwood-doc-launcher.
+     In V3 that is a duplicate of the canonical editorial launcher and can
+     overlap the persistent audio player. Remove it whenever it appears. */
+  const removeLegacyDocLauncher = () => {
+    document.querySelectorAll('.ashwood-doc-launcher,.v3-doc,.v3-doc-panel').forEach(node => node.remove());
+  };
+  removeLegacyDocLauncher();
+  const legacyDocObserver = new MutationObserver(removeLegacyDocLauncher);
+  legacyDocObserver.observe(document.documentElement,{childList:true,subtree:true});
 
   const svgNS = 'http://www.w3.org/2000/svg';
   let connector = null;
