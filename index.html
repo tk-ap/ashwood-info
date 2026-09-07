@@ -1,306 +1,176 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ASHWOOD — a living creative practice across modeling, music, and builds. Out of One, Many Becomings." />
-    <link rel="canonical" href="https://ashwood-info.vercel.app/" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="ASHWOOD" />
-    <meta property="og:title" content="ASHWOOD — TK Ashwood" />
-    <meta property="og:description" content="A living creative practice across modeling, music, and builds. Out of One, Many Becomings." />
-    <meta property="og:url" content="https://ashwood-info.vercel.app/" />
-    <meta property="og:image" content="https://ashwood-info.vercel.app/assets/social/ashwood-og-1200x630.jpg" />
-    <meta property="og:image:secure_url" content="https://ashwood-info.vercel.app/assets/social/ashwood-og-1200x630.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="TK Ashwood — Out of One, Many Becomings" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ASHWOOD — TK Ashwood" />
-    <meta name="twitter:description" content="A living creative practice across modeling, music, and builds." />
-    <meta name="twitter:image" content="https://ashwood-info.vercel.app/assets/social/ashwood-og-1200x630.jpg" />
-    <meta name="twitter:image:alt" content="TK Ashwood — Out of One, Many Becomings" />
-    <meta name="theme-color" content="#f5f3ef" />
-    <title>ASHWOOD — TK Ashwood</title>
-    <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
-    <link rel="stylesheet" href="/styles.css?v=20260830-launch1" />
-    <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
-    <link rel="stylesheet" href="/home-native.css?v=20260828-utility1" />
-    <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio6" />
-    <link rel="stylesheet" href="/hotspot-immersive.css?v=20260829-touch-signals" />
-    <link rel="stylesheet" href="/home-balance.css?v=20260828-balance2" />
-    <style>
-      /* PR #3 composition pass: create a left/right conversation without turning Home into a grid. */
-      @media (min-width:761px) {
-        body.ashwood-home-native .shell { position:relative; padding-bottom:clamp(118px,15vh,180px); }
-        body.ashwood-home-native .intro { max-width:min(760px,58vw); }
-        .home-entryways {
-          width:min(62%,820px);
-          grid-template-columns:repeat(4,max-content);
-          justify-content:start;
-          gap:clamp(22px,3.2vw,58px);
-          margin-right:auto;
-          border-bottom:0;
-        }
-        .home-entryway { padding:18px 0 14px; overflow:visible; }
-        .home-entryway + .home-entryway { border-left:0; padding-left:0; }
-        .home-entryway__signal { max-width:20ch; }
-        .home-now {
-          width:min(72%,980px);
-          margin:clamp(18px,3vh,34px) auto 0;
-          justify-content:center;
-          text-align:center;
-          border-top:1px solid color-mix(in srgb,var(--ashwood-rule) 72%,transparent);
-          padding-top:14px;
-        }
-        body.ashwood-home-native .home-utility {
-          position:absolute;
-          right:0;
-          bottom:clamp(30px,5vh,64px);
-          width:min(28vw,310px);
-          display:flex;
-          flex-direction:column;
-          align-items:flex-start;
-          gap:13px;
-          margin:0;
-          padding:0;
-          opacity:.82;
-          font-size:10px;
-          line-height:1.25;
-        }
-        body.ashwood-home-native .home-utility a { width:max-content; }
-        body.ashwood-home-native .home-utility a:nth-child(2) { transform:translateX(clamp(10px,1.6vw,28px))!important; }
-        body.ashwood-home-native .home-utility a:nth-child(3) { transform:translateX(clamp(30px,4.2vw,74px))!important; }
-        body.ashwood-home-native .home-utility a:hover,
-        body.ashwood-home-native .home-utility a:focus-visible { letter-spacing:.16em!important; }
-      }
-      @media (min-width:761px) and (max-height:760px) {
-        body.ashwood-home-native .shell { padding-bottom:104px; }
-        body.ashwood-home-native .home-utility { bottom:24px; }
-        .home-now { margin-top:14px; }
-      }
-    </style>
-    <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
-    <script src="/home-native.js?v=20260831-launch1" defer></script>
-    <script src="/reference-preview.js?v=20260905-preview9" defer></script>
-    <script src="/curiosity.js?v=20260829-touch-signals" defer></script>
-    <script src="/capability-entry.js?v=20260829-mobile-entrance" defer></script>
-    <script src="/theme.js?v=20260827-1" defer></script>
-  </head>
-  <body>
-    <main class="shell" aria-labelledby="site-title">
-      <header class="masthead">
-        <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
-      </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ASHWOOD — a living creative practice across modeling, music, writing, and builds." />
+  <meta name="theme-color" content="#0d0e0b" />
+  <title>ASHWOOD — V3 Preview</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
+  <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
+  <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio6" />
+  <link rel="stylesheet" href="/v3-preview.css?v=20260907-award-edit1" />
+  <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
+  <script src="/theme.js?v=20260827-1" defer></script>
+  <script src="/v3-preview.js?v=20260907-award-edit1" defer></script>
+</head>
+<body class="v3-preview">
+  <header class="v3-mast" aria-label="ASHWOOD navigation">
+    <a href="/">ASHWOOD</a>
+    <span class="v3-mast__meta">TK ASHWOOD / CREATIVE PRACTICE / V3 PREVIEW</span>
+  </header>
 
-      <section class="intro">
-        <p class="eyebrow">TAHLIA ASHWOOD PEART / CREATIVE PRACTICE</p>
-        <h1 id="site-title">I follow ideas<br /><a class="iridescent-word" href="/portfolio/" aria-label="Feeling curious? Explore a random ASHWOOD section">wherever</a> they go.</h1>
-        <p class="home-identity" id="becomings"><span class="iridescent-word iridescent-word--jamaica">Out of One</span>, Many <span class="iridescent-word">Becomings</span>.</p>
-        <p class="home-grounding">Modeling, music, technology, and the systems emerging between them.</p>
-      </section>
+  <main>
+    <section class="v3-hero" aria-labelledby="v3-title">
+      <div class="v3-hero__copy">
+        <div class="v3-provenance">XAYMACA / JAMAICA / PROVENANCE</div>
+        <p class="v3-kicker">01 / WHO IS THIS?</p>
+        <h1 class="v3-title" id="v3-title">I follow ideas<br />wherever they go.</h1>
+        <p class="v3-identity">Out of One, Many Becomings.</p>
+        <p class="v3-grounding">TK Ashwood is a creative practice moving through modeling, music, writing, and technology — following the same instinct across different forms.</p>
+        <a class="v3-link" href="#thinking">Follow the instinct <span>↓</span></a>
+      </div>
+      <div class="v3-hero__image" aria-label="Current TK Ashwood modeling work">
+        <img src="/assets/campaigns/barelysain/hero-6729.jpg?v=20260827-fixed" alt="TK Ashwood in the BarelySain campaign" loading="eager" />
+      </div>
+    </section>
 
-      <section class="principles-field" aria-label="Latent ASHWOOD capabilities">
-        <p class="principles-field__hint">There is more here.</p>
-        <button class="principle-hotspot principle-hotspot--signal" type="button" aria-label="SIGNAL. I prioritize what matters most, anticipate risks, and help leaders move faster with better information. Useful when everything is moving at once and someone needs to identify what actually matters next."><span class="principle-hotspot__label">SIGNAL</span><span class="principle-hotspot__quote">I prioritize what matters most, anticipate risks, and help leaders move faster with better information.</span><span class="principle-hotspot__useful"><strong>Useful when</strong> everything is moving at once and someone needs to identify what actually matters next.</span></button>
-        <button class="principle-hotspot principle-hotspot--friction" type="button" aria-label="FRICTION. I notice the small things that make a process harder than it needs to be — then I usually can't leave them alone. Useful when everyone has learned to work around something that probably should not exist."><span class="principle-hotspot__label">FRICTION</span><span class="principle-hotspot__quote">I notice the small things that make a process harder than it needs to be — then I usually can't leave them alone.</span><span class="principle-hotspot__useful"><strong>Useful when</strong> everyone has learned to work around something that probably shouldn't exist.</span></button>
-        <button class="principle-hotspot principle-hotspot--translation" type="button" aria-label="TRANSLATION. I turn complexity into something people can actually understand, decide from, and act on. Useful when the problem makes sense to the people building it but not yet to everyone else."><span class="principle-hotspot__label">TRANSLATION</span><span class="principle-hotspot__quote">I turn complexity into something people can actually understand, decide from, and act on.</span><span class="principle-hotspot__useful"><strong>Useful when</strong> the problem makes sense to the people building it but not yet to everyone else.</span></button>
-        <button class="principle-hotspot principle-hotspot--systems" type="button" aria-label="SYSTEMS. I look for the structure underneath the problem. Fixing the symptom is rarely interesting enough. Useful when the same issue keeps returning in different forms and the underlying structure needs to change."><span class="principle-hotspot__label">SYSTEMS</span><span class="principle-hotspot__quote">I look for the structure underneath the problem. Fixing the symptom is rarely interesting enough.</span><span class="principle-hotspot__useful"><strong>Useful when</strong> the same issue keeps returning in different forms and the underlying structure needs to change.</span></button>
-        <button class="principle-hotspot principle-hotspot--resilience" type="button" aria-label="RESILIENCE. I think about what happens when the plan meets reality — because that's where the interesting problems usually begin. Useful when a good plan has to survive uncertainty, handoffs, edge cases, and real human behavior."><span class="principle-hotspot__label">RESILIENCE</span><span class="principle-hotspot__quote">I think about what happens when the plan meets reality — because that's where the interesting problems usually begin.</span><span class="principle-hotspot__useful"><strong>Useful when</strong> a good plan has to survive uncertainty, handoffs, edge cases, and real human behavior.</span></button>
-        <button class="principle-hotspot principle-hotspot--range" type="button" aria-label="RANGE. I don't fit neatly into one lane. That's less a branding problem than a useful advantage. Useful when the opportunity sits between disciplines and no single conventional role quite covers it."><span class="principle-hotspot__label">RANGE</span><span class="principle-hotspot__quote">I don't fit neatly into one lane. That's less a branding problem than a useful advantage.</span><span class="principle-hotspot__useful"><strong>Useful when</strong> the opportunity sits between disciplines and no single conventional role quite covers it.</span></button>
-      </section>
+    <section class="v3-chapter" id="thinking" aria-labelledby="thinking-title">
+      <div class="v3-shell v3-thinking">
+        <div class="v3-thinking__intro v3-reveal">
+          <p class="v3-kicker">02 / HOW DOES THIS PERSON THINK?</p>
+          <h2 class="v3-title" id="thinking-title">The instinct.</h2>
+          <p class="v3-deck">Different disciplines. The same recurring way of noticing what matters, finding the mismatch, and building toward something more useful.</p>
+          <p class="v3-grounding">This is the capability system once — not a second explanation hidden farther down the page.</p>
+        </div>
 
-      <section class="home-entryways" aria-label="Explore ASHWOOD">
-        <a class="home-entryway" href="/portfolio">
-          <span class="home-entryway__title">Modeling</span>
-          <span class="home-entryway__signal">BarelySain · Malibu + DTLA</span>
-        </a>
-        <a class="home-entryway" href="/music">
-          <span class="home-entryway__title">Music</span>
-          <span class="home-entryway__signal">t.kap · Listen</span>
-        </a>
-        <a class="home-entryway" href="/journal">
-          <span class="home-entryway__title">Builds</span>
-          <span class="home-entryway__signal">Context → intelligence → governed execution</span>
-        </a>
-        <a class="home-entryway" href="/connect">
-          <span class="home-entryway__title">Connect</span>
-          <span class="home-entryway__signal">Bookings · links · support</span>
-        </a>
-      </section>
+        <div class="v3-signals v3-reveal" aria-label="TK Ashwood capability signals">
+          <button class="v3-signal" type="button" aria-expanded="true">
+            <span class="v3-signal__n">01</span><span class="v3-signal__name">Signal</span><span class="v3-signal__arrow">+</span>
+            <span class="v3-signal__detail">I notice what is starting to matter. Useful when priorities are unclear and weak signals need separating from noise.</span>
+          </button>
+          <button class="v3-signal" type="button" aria-expanded="false">
+            <span class="v3-signal__n">02</span><span class="v3-signal__name">Friction</span><span class="v3-signal__arrow">+</span>
+            <span class="v3-signal__detail">I look for where intention and reality stop matching. Useful when everyone has learned to work around something that should not be there.</span>
+          </button>
+          <button class="v3-signal" type="button" aria-expanded="false">
+            <span class="v3-signal__n">03</span><span class="v3-signal__name">Translation</span><span class="v3-signal__arrow">+</span>
+            <span class="v3-signal__detail">I turn difficult ideas into forms people can understand, decide from, and use.</span>
+          </button>
+          <button class="v3-signal" type="button" aria-expanded="false">
+            <span class="v3-signal__n">04</span><span class="v3-signal__name">Systems</span><span class="v3-signal__arrow">+</span>
+            <span class="v3-signal__detail">I look for the structure underneath the thing. Recurring problems usually need durable structure, not another patch.</span>
+          </button>
+          <button class="v3-signal" type="button" aria-expanded="false">
+            <span class="v3-signal__n">05</span><span class="v3-signal__name">Adaptation</span><span class="v3-signal__arrow">+</span>
+            <span class="v3-signal__detail">I let evidence change the approach. Reality gets a vote.</span>
+          </button>
+          <button class="v3-signal" type="button" aria-expanded="false">
+            <span class="v3-signal__n">06</span><span class="v3-signal__name">Synthesis</span><span class="v3-signal__arrow">+</span>
+            <span class="v3-signal__detail">I bring separate things into one coherent idea. The opportunity often sits between disciplines rather than inside one lane.</span>
+          </button>
+        </div>
+      </div>
+    </section>
 
-      <aside class="ashwood-capability-evidence" aria-label="Professional capability throughline">
-        <span>10+ years. Different roles. The same patterns keep returning.</span>
-        <a href="/?capabilities=1&amp;from=home-evidence" data-capability-entry>View the throughline →</a>
-      </aside>
-
-      <section class="home-now home-sitrep" id="now" aria-label="Current ASHWOOD situation report">
-        <header class="home-sitrep__head">
-          <span class="home-sitrep__title">SITREP</span>
-          <time class="home-sitrep__date" datetime="2026-08">AUG 2026</time>
-        </header>
-        <dl class="home-sitrep__grid">
-          <div class="home-sitrep__row">
-            <dt>WHEN?</dt>
-            <dd>AUG 2026 · ACTIVE BUILD CYCLE</dd>
+    <section class="v3-chapter v3-evidence" id="evidence" aria-labelledby="evidence-title">
+      <div class="v3-shell">
+        <div class="v3-evidence__lead v3-reveal">
+          <div>
+            <p class="v3-kicker">03 / SHOW ME WHAT THAT PRODUCES.</p>
+            <h2 class="v3-title" id="evidence-title">The work<br />takes over.</h2>
           </div>
-          <div class="home-sitrep__row">
-            <dt>WHERE?</dt>
-            <dd>LOS ANGELES · ASHWOOD / LIVE BUILD ENVIRONMENTS</dd>
-          </div>
-          <div class="home-sitrep__row">
-            <dt>WHAT IT IS</dt>
-            <dd>MODELING · MUSIC · AI PRODUCT BUILDING</dd>
-          </div>
-          <div class="home-sitrep__row">
-            <dt>WHAT IT IS DOING?</dt>
-            <dd>BARELYSAIN — MALIBU + DTLA · ALVIRA / ailhat / LEDGATo — ACTIVE · t.kap — LISTENING</dd>
-          </div>
-          <div class="home-sitrep__row">
-            <dt>WHAT ARE YOU DOING ABOUT IT?</dt>
-            <dd>BUILDING · TESTING · DOCUMENTING · OPEN TO COLLABORATION</dd>
-          </div>
-        </dl>
-      </section>
+          <p class="v3-deck">Less explanation. More evidence — image, sound, writing, and systems given enough room to actually be experienced.</p>
+        </div>
 
-      <nav class="future-nav home-utility" aria-label="Ways to continue with TK">
-        <a href="/connect">Work Together</a>
-        <a href="/journal">Build Something</a>
-        <a href="/dive-deeper">Dive Deeper</a>
-      </nav>
-    </main>
-    <script>
-      (() => {
-        const field = document.querySelector('.principles-field');
-        if (!field) return;
-        const hotspots = [...field.querySelectorAll('.principle-hotspot')];
-        const surface = field.closest('.shell') || document.body;
-        const protectedSelectors = ['.masthead', '.intro', '.home-entryways', '.home-now', '.future-nav', '.ashwood-home-audio'];
-        const isTouchLayout = () => window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
-        const setHint = (message) => {
-          const hint = field.querySelector('.principles-field__hint');
-          if (hint) hint.textContent = message;
-        };
-        const close = () => {
-          hotspots.forEach((hotspot) => {
-            hotspot.classList.remove('is-revealed', 'is-near');
-            hotspot.setAttribute('aria-pressed', 'false');
-          });
-          field.classList.remove('is-pinned');
-          if (isTouchLayout()) setHint('Tap a signal.');
-        };
-        const overlapArea = (a, b, padding = 0) => {
-          const left = Math.max(a.left, b.left - padding);
-          const right = Math.min(a.right, b.right + padding);
-          const top = Math.max(a.top, b.top - padding);
-          const bottom = Math.min(a.bottom, b.bottom + padding);
-          return Math.max(0, right - left) * Math.max(0, bottom - top);
-        };
-        const protectedRects = () => protectedSelectors
-          .flatMap((selector) => [...surface.querySelectorAll(selector)])
-          .map((el) => el.getBoundingClientRect())
-          .filter((rect) => rect.width > 0 && rect.height > 0);
-        const randomize = () => {
-          if (isTouchLayout()) {
-            hotspots.forEach((hotspot) => {
-              hotspot.style.removeProperty('left');
-              hotspot.style.removeProperty('top');
-              hotspot.style.removeProperty('right');
-              hotspot.style.removeProperty('bottom');
-            });
-            setHint('Tap a signal.');
-            return;
-          }
-          const rect = field.getBoundingClientRect();
-          const protectedAreas = protectedRects();
-          const placed = [];
-          const compact = window.matchMedia('(max-width: 760px)').matches;
-          const gap = compact ? 12 : 30;
-          const protection = compact ? 18 : 32;
-          const edge = compact ? 6 : 10;
-          const candidates = [];
-          for (let i = 0; i < 560; i += 1) {
-            const xSeed = Math.random();
-            const x = compact
-              ? 2 + xSeed * 92
-              : 10 + Math.pow(xSeed, .68) * 82;
-            const y = (compact ? 3 : 4) + Math.random() * (compact ? 90 : 88);
-            const rightBias = compact ? 0 : (x / 100) * .24;
-            candidates.push({ x, y, score: Math.random() - rightBias });
-          }
-          hotspots.forEach((hotspot) => {
-            let best = null;
-            let lowestHotspotPenalty = Number.POSITIVE_INFINITY;
-            const ordered = [...candidates].sort((a, b) => a.score - b.score);
-            for (const pos of ordered) {
-              hotspot.style.left = pos.x + '%';
-              hotspot.style.top = pos.y + '%';
-              hotspot.style.right = 'auto';
-              hotspot.style.bottom = 'auto';
-              const candidateRect = hotspot.getBoundingClientRect();
-              const insideField = candidateRect.left >= rect.left + edge
-                && candidateRect.right <= rect.right - edge
-                && candidateRect.top >= rect.top + edge
-                && candidateRect.bottom <= rect.bottom - edge;
-              if (!insideField) continue;
-              const protectedOverlap = protectedAreas.reduce((sum, protectedRect) => sum + overlapArea(candidateRect, protectedRect, protection), 0);
-              if (protectedOverlap > 0) continue;
-              const hotspotPenalty = placed.reduce((sum, priorRect) => sum + overlapArea(candidateRect, priorRect, gap), 0);
-              if (hotspotPenalty < lowestHotspotPenalty) {
-                lowestHotspotPenalty = hotspotPenalty;
-                best = pos;
-              }
-              if (hotspotPenalty === 0) break;
-            }
-            if (best) {
-              hotspot.style.left = best.x + '%';
-              hotspot.style.top = best.y + '%';
-              placed.push(hotspot.getBoundingClientRect());
-            }
-          });
-        };
-        const reveal = (hotspot, focus = false) => {
-          hotspots.forEach((item) => {
-            if (item !== hotspot) {
-              item.classList.remove('is-revealed', 'is-near');
-              item.setAttribute('aria-pressed', 'false');
-            }
-          });
-          hotspot.classList.add('is-revealed', 'is-near');
-          hotspot.setAttribute('aria-pressed', 'true');
-          field.classList.add('is-pinned');
-          if (focus) hotspot.focus({ preventScroll: true });
-        };
-        hotspots.forEach((hotspot) => {
-          hotspot.setAttribute('aria-pressed', 'false');
-          hotspot.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const shouldClose = hotspot.classList.contains('is-revealed');
-            shouldClose ? close() : reveal(hotspot);
-          });
-          hotspot.addEventListener('focus', () => reveal(hotspot));
-          hotspot.addEventListener('mouseenter', () => {
-            if (!isTouchLayout() && !field.classList.contains('is-pinned')) hotspot.classList.add('is-near');
-          });
-          hotspot.addEventListener('mouseleave', () => {
-            if (!field.classList.contains('is-pinned')) hotspot.classList.remove('is-near');
-          });
-        });
-        field.addEventListener('click', (event) => {
-          if (event.target === field) close();
-        });
-        window.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') close();
-        });
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-          window.clearTimeout(resizeTimer);
-          resizeTimer = window.setTimeout(randomize, 140);
-        });
-        randomize();
-      })();
-    </script>
-  </body>
+        <div class="v3-photo-stage v3-reveal" aria-label="Current modeling work">
+          <figure>
+            <img src="/assets/campaigns/barelysain/IMG_5688-web-v2.jpg" alt="TK Ashwood, BarelySain campaign, Malibu and DTLA" loading="lazy" />
+            <figcaption class="v3-photo-caption">MODELING / BARELYSAIN / MALIBU + DTLA</figcaption>
+          </figure>
+          <figure>
+            <img src="/assets/campaigns/barelysain/IMG_5859-edited.jpg" alt="TK Ashwood, BarelySain campaign portrait" loading="lazy" />
+            <figcaption class="v3-photo-caption">CURRENT WORK / LOS ANGELES</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="v3-music v3-reveal" id="music-moment">
+        <div>
+          <p class="v3-kicker">MUSIC / t.kap</p>
+          <div class="v3-music__line">IN ME.</div>
+        </div>
+        <div class="v3-music__meta">
+          <p>Sound is part of the environment, not another portfolio card. The persistent ASHWOOD player remains available while this chapter gives the work its own visual pause.</p>
+          <a class="v3-link" href="/music/">Listen to the work <span>↗</span></a>
+        </div>
+      </div>
+
+      <div class="v3-builds v3-shell v3-reveal">
+        <div class="v3-builds__head">
+          <div>
+            <p class="v3-kicker">BUILDS / REAL SYSTEMS</p>
+            <h3>Context → intelligence → governed execution.</h3>
+          </div>
+          <p class="v3-deck">The products appear as actual live artifacts, not only category names.</p>
+        </div>
+
+        <div class="v3-browser-grid" aria-label="Live product previews">
+          <article class="v3-browser">
+            <div class="v3-browser__bar"><span>ALVIRA</span><span>CONTEXT INTELLIGENCE</span></div>
+            <div class="v3-browser__viewport"><iframe src="https://alviratech.vercel.app/" title="Live ALVIRA product preview" loading="lazy"></iframe></div>
+            <div class="v3-browser__caption"><strong>ALVIRA</strong><span>Reviewed human context that can remain useful across AI work.</span><a class="v3-link" href="https://alviratech.vercel.app/">Open product ↗</a></div>
+          </article>
+          <article class="v3-browser">
+            <div class="v3-browser__bar"><span>ailhat</span><span>PORTFOLIO INTELLIGENCE</span></div>
+            <div class="v3-browser__viewport"><iframe src="https://ailhat.vercel.app/" title="Live ailhat product preview" loading="lazy"></iframe></div>
+            <div class="v3-browser__caption"><strong>ailhat</strong><span>Signals, risk, drift, and work across a product portfolio.</span><a class="v3-link" href="https://ailhat.vercel.app/">Open product ↗</a></div>
+          </article>
+          <article class="v3-browser">
+            <div class="v3-browser__bar"><span>LEDGATo</span><span>ENFORCEMENT</span></div>
+            <div class="v3-browser__viewport"><iframe src="https://ledgato.vercel.app/" title="Live LEDGATo product preview" loading="lazy"></iframe></div>
+            <div class="v3-browser__caption"><strong>LEDGATo</strong><span>Execution boundaries that can stop an agent action when authority is missing.</span><a class="v3-link" href="https://ledgato.vercel.app/">Open product ↗</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="v3-chapter" id="depth" aria-labelledby="depth-title">
+      <div class="v3-shell v3-depth">
+        <div class="v3-depth__intro v3-reveal">
+          <p class="v3-kicker">04 / LET ME GO DEEPER.</p>
+          <h2 class="v3-title" id="depth-title">Follow the thread.</h2>
+          <p class="v3-deck">The homepage stops trying to contain every layer. The deeper material gets intentional doors.</p>
+        </div>
+        <nav class="v3-depth__links v3-reveal" aria-label="Explore ASHWOOD in depth">
+          <a href="/journal/"><small>01 / BUILD JOURNAL</small><span>What changed, and why?</span><b>↗</b></a>
+          <a href="/dispatch/"><small>02 / DISPATCH</small><span>What am I thinking about?</span><b>↗</b></a>
+          <a href="/ai-from-zero/"><small>03 / AI FROM ZERO</small><span>Make the complex legible.</span><b>↗</b></a>
+          <a href="/going/"><small>04 / GOING</small><span>Where is the work headed?</span><b>↗</b></a>
+          <a href="/about/"><small>05 / ABOUT</small><span>Who is behind all of this?</span><b>↗</b></a>
+        </nav>
+      </div>
+    </section>
+
+    <section class="v3-chapter v3-continuation" id="continue" aria-labelledby="continue-title">
+      <div>
+        <p class="v3-kicker">05 / LET ME CONTINUE.</p>
+        <h2 class="v3-continuation__title" id="continue-title">Come make something.</h2>
+      </div>
+      <div class="v3-continuation__actions">
+        <a class="v3-primary" href="/connect/">Work together ↗</a>
+        <a href="/music/">Listen</a>
+        <a href="/portfolio/">Modeling</a>
+        <a href="/journal/">Follow the Journal</a>
+      </div>
+    </section>
+  </main>
+
+  <button class="v3-doc" type="button" aria-expanded="false" aria-controls="doc-guide">DOC / GUIDE</button>
+  <aside class="v3-doc-panel" id="doc-guide" aria-live="polite">
+    <small>DOC / FIELD NOTE</small>
+    <p>Some things reveal themselves in reverse. Start with the work, then trace the pattern underneath it.</p>
+  </aside>
+</body>
 </html>
