@@ -14,10 +14,11 @@
     <title>Music — ASHWOOD</title>
     <link rel="stylesheet" href="/ashwood-core.css?v=20260829-qa2" />
     <link rel="stylesheet" href="/creative-shell.css?v=20260829-mobile-tap" />
-    <link rel="stylesheet" href="/music/music.css?v=20260829-qa2" />
+    <link rel="stylesheet" href="/music/music.css?v=20260907-drop-library1" />
     <link rel="stylesheet" href="/audio-player.css?v=20260828-musicdock1" />
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/theme.js?v=20260828-sharedmasthead1" defer></script>
+    <script src="/music/library.js?v=20260907-drop-library1" defer></script>
   </head>
   <body class="music-page">
     <header class="ashwood-site-header" aria-label="ASHWOOD navigation">
@@ -39,7 +40,7 @@
         <p class="eyebrow">t.kap · Recording artist</p>
         <h1 id="music-title">Listen before<br />the release.</h1>
         <p class="note lede">Released music and two separate bodies of draft work live here on their own terms. The listening room is becoming a place to hear what is forming, leave a thought, and back the songs you want to see move toward release.</p>
-        <p class="note">For now, unreleased audio remains in UNTITLED. Native playback, comments, and release-backing will come in the live listening-room layer without putting private masters into this public repository.</p>
+        <p class="note">Tracks intentionally published from ASHWOOD Workspace appear here automatically. Private masters and staged uploads remain private to Workspace until they are marked for the Music page.</p>
       </section>
 
       <section id="released" class="ashwood-section ashwood-rule music-release" aria-labelledby="released-title">
@@ -66,9 +67,20 @@
         </div>
       </section>
 
+      <section id="ashwood-drop-music" class="ashwood-section ashwood-rule drop-music" aria-labelledby="drop-music-title" hidden>
+        <div class="music-section-heading">
+          <div>
+            <p class="eyebrow">02 / From the workspace</p>
+            <h2 id="drop-music-title" class="ashwood-display">In rotation.</h2>
+          </div>
+          <p class="note" data-ashwood-drop-state>Loading tracks published from ASHWOOD Workspace…</p>
+        </div>
+        <div class="drop-music-list" data-ashwood-drop-list aria-live="polite"></div>
+      </section>
+
       <section id="body-one" class="ashwood-section ashwood-rule draft-body" aria-labelledby="body-one-title">
         <div class="draft-body__header">
-          <div><p class="eyebrow">02 / Draft body I</p><h2 id="body-one-title">singleOptions</h2></div>
+          <div><p class="eyebrow">03 / Draft body I</p><h2 id="body-one-title">singleOptions</h2></div>
           <div class="draft-body__context"><span class="draft-status">Unreleased · active drafts</span><p>Five-track body of works-in-progress. Current draft titles are visible in the private listening room while the project continues to take shape.</p><a class="source-link source-link--private" href="https://untitled.stream/library/project/J7iykV8xG1xoPO9Khntdg">Open private source in UNTITLED ↗</a></div>
         </div>
         <div class="listen-queue" aria-label="Body I listening-room placeholders">
@@ -82,7 +94,7 @@
 
       <section id="body-two" class="ashwood-section ashwood-rule draft-body" aria-labelledby="body-two-title">
         <div class="draft-body__header">
-          <div><p class="eyebrow">03 / Draft body II</p><h2 id="body-two-title">sOUNDcLoud</h2></div>
+          <div><p class="eyebrow">04 / Draft body II</p><h2 id="body-two-title">sOUNDcLoud</h2></div>
           <div class="draft-body__context"><span class="draft-status">Unreleased · active drafts</span><p>Three-track body of works-in-progress with its own identity and trajectory. It stays independent from singleOptions while both remain part of the current recording practice.</p><a class="source-link source-link--private" href="https://untitled.stream/library/project/c8oQRGbaLuxdsvX8SWgig">Open private source in UNTITLED ↗</a></div>
         </div>
         <div class="listen-queue" aria-label="Body II listening-room placeholders">
@@ -93,7 +105,7 @@
       </section>
 
       <section class="ashwood-section ashwood-rule signal-loop" aria-labelledby="signal-title">
-        <p class="eyebrow">04 / Release signal</p>
+        <p class="eyebrow">05 / Release signal</p>
         <div class="signal-loop__layout"><h2 id="signal-title">Listen → respond → decide.</h2><div><p>The eventual interaction layer is intentionally simple: listen to a track, back it once, and optionally say why. Those signals can help decide whether a song stays private, moves to SoundCloud for a public experiment, or enters the full DSP release workflow.</p><p class="signal-note">Backing a track is a signal, not an automatic release vote. The final decision remains part of the creative process.</p></div></div>
       </section>
 
