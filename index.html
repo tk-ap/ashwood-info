@@ -11,13 +11,16 @@
   <link rel="stylesheet" href="/audio-player.css?v=20260827-mobilecollapse1" />
   <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio6" />
   <link rel="stylesheet" href="/v3-preview.css?v=20260907-award-edit2" />
+  <link rel="stylesheet" href="/v3-live.css?v=20260907-live2" />
   <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
   <script src="/theme.js?v=20260907-three-theme" defer></script>
-  <script src="/v3-preview.js?v=20260907-award-edit2" defer></script>
+  <script src="/v3-live.js?v=20260907-live2" defer></script>
 </head>
-<body class="v3-preview ashwood-home-native">
+<body class="v3-preview ashwood-home-native" data-v3-mark="rest">
   <header class="v3-mast masthead" aria-label="ASHWOOD navigation">
-    <a href="/">ASHWOOD</a>
+    <a class="v3-wordmark" href="/" aria-label="ASHWOOD" data-wordmark>
+      <span class="v3-wordmark__prefix">ASHW</span><span class="v3-wordmark__glyph"><span class="v3-wordmark__o">O</span><span class="v3-wordmark__eight">8</span></span><span class="v3-wordmark__glyph"><span class="v3-wordmark__o">O</span><span class="v3-wordmark__eight">8</span></span><span class="v3-wordmark__glyph v3-wordmark__glyph--emergent" aria-hidden="true"><span class="v3-wordmark__eight">8</span></span><span class="v3-wordmark__suffix">D</span>
+    </a>
     <span class="v3-mast__meta">TK ASHWOOD / CREATIVE PRACTICE / V3 PREVIEW</span>
   </header>
 
@@ -29,11 +32,12 @@
         <h1 class="v3-title" id="v3-title">I follow ideas<br /><span class="v3-shimmer">wherever</span> they go.</h1>
         <p class="v3-identity">Out of One, Many Becomings.</p>
         <p class="v3-grounding">TK Ashwood is a creative practice moving through modeling, music, writing, and technology — following the same instinct across different forms.</p>
+        <button class="v3-manifesto-note v3-latent" type="button" data-doc-note="One identity. Infinite manifestations. ASHWOOD is not a case for choosing one lane; it is a record of what happens when a person keeps becoming.">888 / ONE IDENTITY · INFINITE MANIFESTATIONS</button>
         <a class="v3-link" href="#thinking">Follow the instinct <span>↓</span></a>
       </div>
       <div class="v3-hero__image" aria-label="Current TK Ashwood modeling work">
         <img src="/assets/digitals2026/IMG_7192-hero-web.jpg" alt="TK Ashwood current modeling portrait" loading="eager" />
-        <button class="v3-image-note v3-latent" type="button" data-doc-note="A portrait can be evidence, not decoration. V3 lets the work carry identity before the interface explains it.">CURRENT FORM / LOS ANGELES</button>
+        <button class="v3-image-note v3-latent" type="button" data-doc-note="A portrait can be evidence, not decoration. The work is one manifestation of the same person building everything else here.">CURRENT FORM / LOS ANGELES</button>
       </div>
     </section>
 
@@ -59,7 +63,7 @@
             <small>FIELD / RESOLVED</small>
             <strong></strong>
             <p></p>
-            <a href="/?capabilities=1&from=v3-field">Trace the evidence ↗</a>
+            <a href="/dive-deeper/">Trace the evidence ↗</a>
           </aside>
         </div>
       </div>
@@ -72,7 +76,7 @@
             <p class="v3-kicker">03 / SHOW ME WHAT THAT PRODUCES.</p>
             <h2 class="v3-title" id="evidence-title">The work<br />takes over.</h2>
           </div>
-          <p class="v3-deck">Image, sound, writing, and systems should be felt before they are categorized.</p>
+          <p class="v3-deck">Image, sound, writing, and systems are not competing identities. They are evidence of range.</p>
         </div>
 
         <div class="v3-photo-stage v3-reveal" aria-label="Current modeling work">
@@ -89,35 +93,19 @@
       </div>
 
       <div class="v3-music v3-reveal" id="music-moment">
-        <div>
-          <p class="v3-kicker">MUSIC / t.kap</p>
-          <div class="v3-music__line">IN ME.</div>
-        </div>
-        <div class="v3-music__meta">
-          <p>Sound remains environmental. It can follow you through ASHWOOD without turning every page into a music page.</p>
-          <a class="v3-link" href="/music/">Listen to the work <span>↗</span></a>
-        </div>
+        <div><p class="v3-kicker">MUSIC / t.kap</p><div class="v3-music__line">IN ME.</div></div>
+        <div class="v3-music__meta"><p>Sound remains environmental. It can follow you through ASHWOOD without turning every page into a music page.</p><a class="v3-link" href="/music/">Listen to the work <span>↗</span></a></div>
       </div>
 
       <div class="v3-builds v3-shell v3-reveal">
         <div class="v3-builds__head">
-          <div>
-            <p class="v3-kicker">BUILDS / REAL SYSTEMS</p>
-            <h3>Context → intelligence → governed execution.</h3>
-          </div>
-          <p class="v3-deck">Actual products stay visible, but the interface no longer asks them to behave like three identical SaaS cards.</p>
+          <div><p class="v3-kicker">BUILDS / REAL SYSTEMS</p><h3>Context → intelligence → governed execution.</h3></div>
+          <p class="v3-deck">Different products. One builder. Relationships are allowed to stay complex.</p>
         </div>
-
         <div class="v3-product-field" aria-label="ASHWOOD product evidence">
-          <a class="v3-product v3-product--alvira" href="https://alviratech.vercel.app/">
-            <small>CONTEXT INTELLIGENCE</small><strong>ALVIRA</strong><span>Useful human context that can survive the conversation.</span>
-          </a>
-          <a class="v3-product v3-product--ailhat" href="https://ailhat.vercel.app/">
-            <small>PORTFOLIO INTELLIGENCE</small><strong>ailhat</strong><span>Signals, risk, drift, and what deserves attention next.</span>
-          </a>
-          <a class="v3-product v3-product--ledgato" href="https://ledgato.vercel.app/">
-            <small>AUTHORIZATION / ENFORCEMENT</small><strong>LEDGATo</strong><span>Execution boundaries that can stop an unauthorized action.</span>
-          </a>
+          <a class="v3-product v3-product--alvira" href="https://alviratech.vercel.app/"><small>CONTEXT INTELLIGENCE</small><strong>ALVIRA</strong><span>Useful human context that can survive the conversation.</span></a>
+          <a class="v3-product v3-product--ailhat" href="https://ailhat.vercel.app/"><small>PORTFOLIO INTELLIGENCE</small><strong>ailhat</strong><span>Signals, risk, drift, and what deserves attention next.</span></a>
+          <a class="v3-product v3-product--ledgato" href="https://ledgato.vercel.app/"><small>AUTHORIZATION / ENFORCEMENT</small><strong>LEDGATo</strong><span>Execution boundaries that can stop an unauthorized action.</span></a>
           <button class="v3-build-note v3-latent" type="button" data-doc-note="Three products, one emerging systems thesis. The relationship matters more than making their cards match.">RELATIONSHIP / NOT GRID</button>
         </div>
       </div>
@@ -125,11 +113,7 @@
 
     <section class="v3-chapter" id="depth" aria-labelledby="depth-title">
       <div class="v3-shell v3-depth">
-        <div class="v3-depth__intro v3-reveal">
-          <p class="v3-kicker">04 / LET ME GO DEEPER.</p>
-          <h2 class="v3-title" id="depth-title">Follow the thread.</h2>
-          <p class="v3-deck">Home points toward the deeper material without trying to become the archive itself.</p>
-        </div>
+        <div class="v3-depth__intro v3-reveal"><p class="v3-kicker">04 / LET ME GO DEEPER.</p><h2 class="v3-title" id="depth-title">Follow the thread.</h2><p class="v3-deck">More does not disappear. It becomes discoverable in layers.</p></div>
         <nav class="v3-depth__links v3-reveal" aria-label="Explore ASHWOOD in depth">
           <a href="/journal/"><small>01 / BUILD JOURNAL</small><span>What changed, and why?</span><b>↗</b></a>
           <a href="/dispatch/"><small>02 / DISPATCH</small><span>What am I thinking about?</span><b>↗</b></a>
@@ -141,24 +125,15 @@
     </section>
 
     <section class="v3-chapter v3-continuation" id="continue" aria-labelledby="continue-title">
-      <div>
-        <p class="v3-kicker">05 / LET ME CONTINUE.</p>
-        <h2 class="v3-continuation__title" id="continue-title">Come make something.</h2>
-      </div>
-      <div class="v3-continuation__actions">
-        <a class="v3-primary" href="/connect/">Work together ↗</a>
-        <a href="/music/">Listen</a>
-        <a href="/portfolio/">Modeling</a>
-        <a href="/journal/">Follow the Journal</a>
-      </div>
+      <div><p class="v3-kicker">05 / LET ME CONTINUE.</p><h2 class="v3-continuation__title" id="continue-title">Come make something.</h2></div>
+      <div class="v3-continuation__actions"><a class="v3-primary" href="/connect/">Work together ↗</a><a href="/music/">Listen</a><a href="/portfolio/">Modeling</a><a href="/journal/">Follow the Journal</a></div>
     </section>
   </main>
 
   <button class="v3-doc" type="button" aria-expanded="false" aria-controls="doc-guide"><span class="v3-doc__pulse" aria-hidden="true"></span>DOC / GUIDE</button>
   <aside class="v3-doc-panel" id="doc-guide" aria-live="polite">
-    <small>DOC / FIELD NOTE</small>
-    <p>Some things reveal themselves in reverse. Start with the work, then trace the pattern underneath it.</p>
-    <div class="v3-doc-panel__meta">DISCOVERIES <span data-discovery-count>0</span> / 6</div>
+    <div class="v3-doc-visual" aria-hidden="true"><span class="v3-doc-visual__label">DOCTOR BIRD / FIELD GUIDE</span><span class="v3-doc-visual__orbit"></span><span class="v3-doc-visual__bird"><span class="v3-doc-visual__wing"></span></span></div>
+    <div class="v3-doc-panel__body"><small>DOC / <span data-doc-chapter>HERO</span></small><p>Some things reveal themselves in reverse. Start with the work, then trace the pattern underneath it.</p><div class="v3-doc-panel__meta">DISCOVERIES <span data-discovery-count>0</span> / 6</div></div>
   </aside>
 </body>
 </html>
