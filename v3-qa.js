@@ -28,6 +28,8 @@
     .v3-product{overflow:hidden}
     .v3-product strong,.v3-product span{position:relative;z-index:2}
     .v3-depth__links a{grid-template-columns:minmax(0,1fr) auto}
+    /* V3's old mock Doc must never coexist with the canonical Doctor Bird guide. */
+    .v3-doc,.v3-doc-panel{display:none!important}
     .ashwood-doc-editorial-panel{max-height:min(58vh,520px);overflow:auto;overscroll-behavior:contain}
     .ashwood-doc-editorial-panel__title,.ashwood-doc-editorial-panel__copy{overflow-wrap:anywhere}
     .ashwood-doc-reference-marker{max-width:min(40vw,180px);white-space:normal}
@@ -47,8 +49,16 @@
       .v3-hero__copy{padding-top:104px!important}
       .v3-wordmark--hero{margin-bottom:20px!important}
       .v3-latent,.v3-image-note,.v3-margin-note,.v3-build-note,.v3-manifesto-note,.v3-provenance{max-width:78vw}
+      /* Provenance is content on mobile, not a floating annotation. Keeping it
+         absolutely positioned lets it collide with the responsive hero title. */
+      .v3-provenance{position:static!important;inset:auto!important;display:block!important;align-self:flex-start;margin:0 0 24px!important;transform:none!important}
+      .v3-provenance + .v3-kicker{margin-top:0!important}
       .ashwood-doc-editorial-panel{max-height:52vh}
       .ashwood-doc-guide-link{display:none}
+    }
+    @media(max-width:520px){
+      .v3-provenance{max-width:100%!important;font-size:8px!important;letter-spacing:.12em!important}
+      .v3-provenance:before{width:24px!important;margin-right:9px!important}
     }
     @media(max-height:700px) and (min-width:761px){
       .ashwood-doc-editorial-panel{max-height:50vh;bottom:14px}
