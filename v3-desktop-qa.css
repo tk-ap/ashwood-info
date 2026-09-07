@@ -19,6 +19,15 @@
   margin-top: 0 !important;
 }
 
+/* Hero thesis: literary/editorial rather than generic display serif. Keep this
+   scoped to the opening statement so the rest of the V3 typographic system can
+   remain unchanged while this direction is evaluated in preview. */
+.v3-hero__copy > .v3-title {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif !important;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
 /* Give the hero copy enough breathing room under the fixed masthead without
    forcing the title or annotations into the same visual lane. */
 @media (min-width: 901px) {
