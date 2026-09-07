@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.2.0
 product_key: ashwood
 agent_os_repository: tk-ap/agent-os
 routing_source: registry/product-routing.yaml
@@ -7,6 +7,10 @@ inbound:
   - from: agent-os-workforce
     contract: contracts/outcome-event.schema.json
     purpose: receive verified outcomes that may become curated public build evidence
+  - from: agent-os-workforce
+    contract: workspace/workstream.schema.json
+    endpoint: /api/workspace-workstreams
+    purpose: receive a human-facing projection of active workstreams while AgentOS remains canonical execution truth
   - from: ecosystem-products
     contract: contracts/outcome-event.schema.json
     purpose: receive verified product-state evidence before public documentation
@@ -26,3 +30,5 @@ rules:
   cross_market_policy: policies/CROSS_MARKET_POLICY.md
   integration_claims_require_verified_implementation: true
   public-evidence-requires-verification-before-claiming-deployed-or-validated-state: true
+  workspace-workstreams-are-projections-not-task-records: true
+  canonical-execution-state-remains-with-owning-system: true
