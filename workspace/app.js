@@ -17,7 +17,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
 
   let GOALS = [];
   let goalModel = null;
-  const state = { repos: [], githubEvidence: [], persistedEvidence: [], overrides: {}, ailhat: null, filter: 'all', selectedGoal: null, lastRefresh: null, error: null };
+  const state = { repos: [], githubEvidence: [], persistedEvidence: [], overrides: {}, ailhat: null, board: [], filter: 'all', selectedGoal: null, lastRefresh: null, error: null };
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
 
@@ -91,6 +91,18 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     } catch { state.ailhat=null; }
   }
 
+  async function loadBoard() {
+    try { const data=await api('/api/workspace-board'); state.board=data.rows||[]; }
+    catch { state.board=[]; }
+  }
+
+  function boardGoal(b){const p=String(b.product||'').toLowerCase();if(p.includes('ashwood'))return 'leadership';if(p.includes('agent-os'))return 'learning';return 'ownership';}
+
+  function boardEvidence() {
+    const statusMap={done:'COMPLETED',blocked:'BLOCKED',review:'IN_PROGRESS',running:'IN_PROGRESS',ready:'PLANNED',waiting_approval:'IN_PROGRESS'};
+    return state.board.map(b=>({id:`board:${b.board_key}`,source:'board',sourceLabel:'Milchik fleet',title:b.title,date:b.updated_at,status:statusMap[b.status]||'IN_PROGRESS',goal:boardGoal(b),secondaryGoals:[],confidence:.9,notes:`${b.product||'workforce'} · ${b.assignee||'unassigned'}`,url:''}));
+  }
+
   function ailhatEvidence() {
     if(!state.ailhat?.ok) return [];
     const a=state.ailhat, items=[];
@@ -120,7 +132,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     return out;
   }
 
-  function allEvidence() { return [...state.persistedEvidence,...ailhatEvidence(),...state.githubEvidence].map(x=>({...x,goal:state.overrides[x.id]||x.goal})).sort((a,b)=>new Date(b.date)-new Date(a.date)); }
+  function allEvidence() { return [...state.persistedEvidence,...ailhatEvidence(),...boardEvidence(),...state.githubEvidence].map(x=>({...x,goal:state.overrides[x.id]||x.goal})).sort((a,b)=>new Date(b.date)-new Date(a.date)); }
   function weight(x){const age=daysSince(x.date),fresh=age<=2?1:age<=7?.82:age<=14?.58:age<=30?.32:.08,status=x.status==='COMPLETED'?1.15:x.status==='PLANNED'?.25:.8;return fresh*status*(x.confidence||1);}
   function goalStats(goal){const ev=allEvidence().filter(x=>x.goal===goal.id||x.secondaryGoals?.includes(goal.id)),recent=ev.filter(x=>daysSince(x.date)<=30),weighted=recent.reduce((s,x)=>s+weight(x)*(x.goal===goal.id?1:.35),0),momentum=Math.min(100,Math.round(weighted*22)),newest=ev[0]?.date||null;let status='IN_PROGRESS';if(!newest||daysSince(newest)>30)status='STALE';else if(daysSince(newest)>14||momentum<18)status='NEEDS_ATTENTION';return{ev,recent,momentum,newest,status};}
 
@@ -129,11 +141,11 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     $('#pulse-grid').innerHTML=[[moved,'goals with evidence · 7d'],[active,'active ecosystem repos · 14d'],[needs,'buckets needing review'],[state.persistedEvidence.length,'private evidence items']].map(([n,l])=>`<article class="pulse-card"><div class="pulse-number">${n}</div><div class="pulse-label">${l}</div></article>`).join('');
     renderOverview(GOALS, evidence, state.selectedGoal, selectGoal);
     const products=state.repos.map(r=>({name:PRODUCT_ROLES[r.name]?.label||r.name,type:PRODUCT_ROLES[r.name]?.type||'Discovered ecosystem repository',state:daysSince(r.pushed_at)<=7?'ACTIVE':daysSince(r.pushed_at)<=21?'QUIET':'STALE',pushedAt:r.pushed_at,url:r.html_url,description:r.description||''}));
-    if(state.ailhat?.product) products.unshift({name:'ailhat intelligence',type:'Portfolio Intelligence contract',state:state.ailhat.product.attention_status||state.ailhat.product.state,pushedAt:state.ailhat.scan?.observed_at,url:'https://ailhat.vercel.app/api/product-state',description:`Readiness ${state.ailhat.product.readiness_score ?? 'unknown'} · ${state.ailhat.attention?.top_next_action||'No next action supplied'}`});
+    if(state.ailhat?.product) products.unshift({name:'ailhat intelligence',type:'Portfolio Intelligence contract',state:state.ailhat.product.attention_status||state.ailhat.product.state,pushedAt:state.ailhat.scan?.observed_at,url:'https://ailhat.vercel.app/',description:`Readiness ${state.ailhat.product.readiness_score ?? 'unknown'} · ${state.ailhat.attention?.top_next_action||'No next action supplied'}`});
     $('#ecosystem-list').innerHTML=products.map(p=>`<article class="ecosystem-row"><div><a class="ecosystem-name" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.name)} ↗</a><div class="ecosystem-commit">${escapeHtml(p.description)}</div></div><div class="ecosystem-type">${escapeHtml(p.type)}</div><div><span class="status-pill">${escapeHtml(p.state)}</span><div class="ecosystem-age">${p.pushedAt?relativeDate(p.pushedAt):'source timestamp unavailable'}</div></div></article>`).join('')||'<p class="empty-state">No project details available from the current sources.</p>';
     renderEvidence(); renderAttention(); renderNext();
     $('#as-of').textContent=`Refreshed ${new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`;
-    $('#live-state').textContent=state.error?state.error:`Private state + GitHub + ${state.ailhat?.ok?'ailhat':'ailhat unavailable'}`;
+    $('#live-state').textContent=state.error?state.error:`Private state + GitHub + ${state.ailhat?.ok?'ailhat':'ailhat unavailable'} · ${state.board.length} governed tasks`;
   }
 
   function renderEvidence(){const items=allEvidence().filter(x=>(state.filter==='all'||x.source===state.filter)&&(!state.selectedGoal||x.goal===state.selectedGoal||x.secondaryGoals?.includes(state.selectedGoal))).slice(0,60);$('#evidence-list').innerHTML=items.map(x=>`<article class="evidence-row"><div class="evidence-source">${escapeHtml(x.sourceLabel||x.source)}</div><div>${x.url?`<a class="evidence-title" href="${escapeHtml(x.url)}" target="_blank" rel="noopener">${escapeHtml(x.title)}</a>`:`<span class="evidence-title">${escapeHtml(x.title)}</span>`}<div class="evidence-meta">${escapeHtml(x.status)} · ${relativeDate(x.date)} · confidence ${Math.round((x.confidence||1)*100)}%</div></div><label class="evidence-goal">Goal<select data-override-id="${escapeHtml(x.id)}">${GOALS.map(g=>`<option value="${g.id}" ${g.id===x.goal?'selected':''}>${escapeHtml(g.name)}</option>`).join('')}</select></label></article>`).join('')||'<p class="section-note">No evidence in this filter.</p>'; $$('[data-override-id]').forEach(sel=>sel.addEventListener('change',()=>saveOverride(sel.dataset.overrideId,sel.value)));}
@@ -148,7 +160,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   async function refresh(){
     $('#refresh-evidence').disabled=true;
     $('#live-state').textContent='Refreshing…';
-    const results=await Promise.allSettled([loadPersistentState(),loadGithubEvidence(),loadAilhatEvidence()]);
+    const results=await Promise.allSettled([loadPersistentState(),loadGithubEvidence(),loadAilhatEvidence(),loadBoard()]);
     state.error=results.filter(r=>r.status==='rejected').map(r=>r.reason.message).join(' · ')||null;
     state.lastRefresh=new Date(); render(); $('#refresh-evidence').disabled=false;
   }
