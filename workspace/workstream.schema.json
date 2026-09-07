@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ashwood.info/workspace/workstream.schema.json",
+  "title": "ASHWOOD Workspace Workstream Projection",
+  "type": "object",
+  "required": ["source_id", "source_system", "title", "status"],
+  "properties": {
+    "source_id": { "type": "string", "maxLength": 250 },
+    "source_system": { "type": "string", "maxLength": 80 },
+    "canonical_url": { "type": ["string", "null"], "maxLength": 1200 },
+    "title": { "type": "string", "maxLength": 500 },
+    "summary": { "type": ["string", "null"], "maxLength": 3000 },
+    "product": { "type": ["string", "null"], "maxLength": 120 },
+    "owner": { "type": ["string", "null"], "maxLength": 120 },
+    "status": { "type": "string", "maxLength": 40 },
+    "stage": { "type": ["string", "null"], "maxLength": 80 },
+    "next_gate": { "type": ["string", "null"], "maxLength": 1000 },
+    "goal_ids": {
+      "type": "array",
+      "maxItems": 12,
+      "items": { "type": "string", "maxLength": 80 }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "metadata": { "type": "object", "additionalProperties": true },
+    "observed_at": { "type": ["string", "null"], "format": "date-time" }
+  },
+  "additionalProperties": false
+}
