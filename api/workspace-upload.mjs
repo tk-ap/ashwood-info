@@ -62,8 +62,26 @@ export default async function handler(req, res) {
       return json(res, 200, { ok: true, uploads: rows.map(publicRow) });
     }
 
+    if (req.method === 'PATCH') {
+      if (!sameOrigin(req)) return json(res, 403, { error: 'Cross-origin update rejected.' });
+      const session = await requireSession(req);
+      if (!session) return json(res, 401, { error: 'Workspace is locked.' });
+      const body = parseBody(req);
+      const id = Number(body.id);
+      if (!Number.isFinite(id) || id <= 0) return json(res, 400, { error: 'A valid upload id is required.' });
+      const publish = Boolean(body.publishToMusic);
+      const rows = await sql`
+        UPDATE workspace_uploads
+        SET publish_to_music = ${publish}
+        WHERE id = ${id}
+        RETURNING *
+      `;
+      if (!rows[0]) return json(res, 404, { error: 'Upload not found.' });
+      return json(res, 200, { ok: true, upload: publicRow(rows[0]) });
+    }
+
     if (req.method !== 'POST') {
-      res.setHeader('Allow', 'GET, POST');
+      res.setHeader('Allow', 'GET, POST, PATCH');
       return json(res, 405, { error: 'Method not allowed.' });
     }
 
