@@ -21,5 +21,16 @@ html:not(.ashwood-light) .music-page .future-nav{border-top-color:rgba(243,239,2
 .drop-music-empty{margin:24px 0;color:var(--ashwood-muted);font-size:13px}
 html:not(.ashwood-light) .music-page .drop-music-track{border-color:rgba(243,239,232,.13)}
 
+.listen-track--special{align-items:flex-start;gap:18px;background:linear-gradient(90deg,color-mix(in srgb,var(--ashwood-ochre) 7%,transparent),transparent 58%)}
+.listen-track--special .listen-track__identity{align-items:flex-start}
+.listen-track__special-copy{display:grid;gap:6px}
+.listen-track__special-copy strong{display:block}
+.listen-track__special-label{display:inline-flex;width:max-content;max-width:100%;padding:4px 7px;border:1px solid color-mix(in srgb,var(--ashwood-ochre) 58%,var(--ashwood-rule));color:var(--ashwood-ochre);font-size:8px;line-height:1.2;letter-spacing:.13em;text-transform:uppercase}
+.listen-track__special-audio{width:min(420px,46vw);min-width:260px;accent-color:var(--ashwood-ochre)}
+.listen-track__special-rights{margin:8px 0 0;max-width:520px;color:var(--ashwood-muted);font-size:9px;line-height:1.45}
+.listen-track__special-source{display:inline-flex;width:max-content;max-width:100%;margin-top:7px;color:var(--ashwood-muted);font-size:9px;line-height:1.45;text-underline-offset:3px}
+.listen-track__special-source:hover,.listen-track__special-source:focus-visible{color:var(--ashwood-ochre)}
+
 @media(max-width:900px){.music-release-feature{grid-template-columns:1fr}.music-release-feature__embed,.music-release-feature__embed iframe{min-height:420px}.music-release-feature__copy{padding-top:0}.drop-music-track{grid-template-columns:1fr;gap:20px}}
+@media(max-width:760px){.listen-track--special{display:grid}.listen-track__special-audio{width:100%;min-width:0}.listen-track--special .listen-track__actions{width:100%}}
 @media(max-width:640px){.music-release-feature{margin-top:30px}.music-release-feature__embed,.music-release-feature__embed iframe{min-height:410px}.music-release-feature__links a{display:inline-flex;align-items:center;min-height:44px;padding-block:10px}.drop-music-track{padding:20px 0}.drop-music-track__identity{grid-template-columns:28px minmax(0,1fr)}}
