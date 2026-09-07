@@ -1,6 +1,16 @@
 (() => {
   "use strict";
 
+  /* Load the desktop overlap QA patch from the same global-navigation runtime so
+     the correction applies without adding another permanent header dependency. */
+  if (!document.querySelector('link[data-v3-desktop-qa]')) {
+    const qa = document.createElement('link');
+    qa.rel = 'stylesheet';
+    qa.href = '/v3-desktop-qa.css?v=20260907-desktopqa1';
+    qa.dataset.v3DesktopQa = '1';
+    document.head.appendChild(qa);
+  }
+
   if (document.querySelector('.v3-global-nav')) return;
   const mast = document.querySelector('.v3-mast');
   if (!mast) return;
@@ -74,7 +84,7 @@
         <a href="/journal/"><small>03</small><span>Build Journal</span><b>↗</b></a>
         <a href="/dispatch/"><small>04</small><span>Dispatch</span><b>↗</b></a>
         <a href="/ai-from-zero/"><small>05</small><span>AI from Zero</span><b>↗</b></a>
-        <a href="/going/"><small>06</small><span>Going</span><b>↗</b></a>
+        <a href="/going/"><small>06</small><span>Creative Direction</span><b>↗</b></a>
         <a href="/about/"><small>07</small><span>About</span><b>↗</b></a>
       </nav>
       <div class="v3-global-nav__aside">
