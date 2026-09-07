@@ -41,6 +41,30 @@
     zone.classList.toggle('has-files', Boolean(chosen.length));
   }
 
+  async function setPublished(id, publishToMusic, button) {
+    button.disabled = true;
+    const original = button.textContent;
+    button.textContent = publishToMusic ? 'Publishing…' : 'Removing…';
+    try {
+      const res = await fetch('/api/workspace-upload', {
+        method:'PATCH',
+        credentials:'same-origin',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ id, publishToMusic }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
+      status.textContent = publishToMusic
+        ? 'Published. The Music page now reads this track from ASHWOOD automatically.'
+        : 'Removed from the Music page. The file remains in your private ASHWOOD library.';
+      await loadLibrary();
+    } catch (error) {
+      status.textContent = error?.message || 'Could not update Music page state.';
+      button.disabled = false;
+      button.textContent = original;
+    }
+  }
+
   async function loadLibrary() {
     try {
       const res = await fetch('/api/workspace-upload', { credentials:'same-origin', cache:'no-store' });
@@ -55,14 +79,23 @@
           </div>
           <div class="ashwood-drop-item__meta">
             <span>${humanBytes(item.size_bytes)}</span>
-            <span>${item.publish_to_music ? 'Music page: on' : 'Music page: staged'}</span>
+            <span>${item.publish_to_music ? 'Music page: live' : 'Music page: staged'}</span>
             <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">File ↗</a>
           </div>
+          <button class="ashwood-drop-item__publish ${item.publish_to_music ? 'is-live' : ''}" type="button" data-upload-id="${Number(item.id)}" data-publish-next="${item.publish_to_music ? 'false' : 'true'}">${item.publish_to_music ? 'Remove from Music page' : 'Publish to Music page'}</button>
         </article>`).join('') : '<p class="ashwood-drop-empty">Nothing uploaded yet.</p>';
     } catch (error) {
       library.innerHTML = `<p class="ashwood-drop-empty">${escapeHtml(error.message)}</p>`;
     }
   }
+
+  library.addEventListener('click', event => {
+    const button = event.target.closest('[data-upload-id]');
+    if (!button) return;
+    const id = Number(button.dataset.uploadId);
+    const publishToMusic = button.dataset.publishNext === 'true';
+    if (Number.isFinite(id)) setPublished(id, publishToMusic, button);
+  });
 
   zone.addEventListener('click', () => input.click());
   zone.addEventListener('keydown', event => {
@@ -116,8 +149,8 @@
       }
 
       status.textContent = publishToMusic
-        ? 'Uploaded. ASHWOOD now has the source file and it is marked for the music page.'
-        : 'Uploaded. The file is safely staged in ASHWOOD and not marked public on the music page.';
+        ? 'Uploaded and published. The Music page now reads it automatically.'
+        : 'Uploaded. The file is safely staged in ASHWOOD and stays off the Music page.';
       form.reset();
       setFiles([]);
       window.setTimeout(loadLibrary, 900);
