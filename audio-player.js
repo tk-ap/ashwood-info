@@ -6,8 +6,6 @@
     title: "IN ME",
     artist: "t.kap feat. Cashden",
     dspUrl: "https://distrokid.com/hyperfollow/tkap/in-me-feat-cashden?ref=release",
-
-    // AUDIO SOURCE: keep the licensed web file isolated here for easy replacement.
     source: "/audio/in-me.mp3"
   });
 
@@ -38,6 +36,7 @@
   const isMusicPage = location.pathname.replace(/\/+$/, "") === "/music";
   document.body.classList.add("ashwood-has-audio");
   if (isMusicPage) document.body.classList.add("ashwood-has-audio-room");
+
   const player = document.createElement("aside");
   player.className = `ashwood-audio${isMusicPage ? " ashwood-audio--room" : ""}`;
   player.setAttribute("aria-label", "ASHWOOD audio player");
@@ -46,30 +45,34 @@
       <button class="ashwood-audio__toggle" type="button" ${TRACK.source ? "" : "disabled"}>${TRACK.source ? "Sound off" : "Audio pending"}</button>
       <div class="ashwood-audio__identity">
         <p class="ashwood-audio__eyebrow">${isMusicPage ? "Released / Now playing" : "ASHWOOD sound"}</p>
-        <p class="ashwood-audio__title">${TRACK.title} — ${TRACK.artist}</p>
+        <p class="ashwood-audio__title">${TRACK.title}</p>
+        <p class="ashwood-audio__artist">${TRACK.artist}</p>
       </div>
       <span class="ashwood-audio__time" aria-live="off">0:00 / --:--</span>
     </div>
     <div class="ashwood-audio__room">
-      <div class="ashwood-audio__control">
+      <div class="ashwood-audio__control ashwood-audio__control--progress">
         <label for="ashwood-audio-progress">Position</label>
         <input id="ashwood-audio-progress" type="range" min="0" max="0" step="0.1" value="0" ${TRACK.source ? "" : "disabled"} aria-label="Track position" />
       </div>
-      <div class="ashwood-audio__control">
+      <div class="ashwood-audio__control ashwood-audio__control--volume">
         <label for="ashwood-audio-volume">Volume</label>
         <input id="ashwood-audio-volume" type="range" min="0" max="1" step="0.01" value="${state.volume}" aria-label="Volume" />
       </div>
       <div class="ashwood-audio__footer">
-        <p class="ashwood-audio__source-note">${TRACK.source ? "Playback continues across ASHWOOD pages." : "Native audio is ready to connect. Add a licensed web audio source in audio-player.js to enable playback."}</p>
+        <p class="ashwood-audio__source-note">${TRACK.source ? "Playback continues across ASHWOOD pages." : "Native audio is ready to connect."}</p>
         <a class="ashwood-audio__dsp" href="${TRACK.dspUrl}" target="_blank" rel="noopener noreferrer">Listen on DSPs ↗</a>
       </div>
-    </div>`;
+    </div>
+    <button class="ashwood-audio__collapse" type="button" aria-expanded="true" aria-label="Collapse audio player">−</button>`;
   document.body.append(player);
 
   const toggle = player.querySelector(".ashwood-audio__toggle");
   const time = player.querySelector(".ashwood-audio__time");
   const progress = player.querySelector("#ashwood-audio-progress");
   const volume = player.querySelector("#ashwood-audio-volume");
+  const collapse = player.querySelector(".ashwood-audio__collapse");
+  const mobile = window.matchMedia("(max-width: 760px)");
 
   const formatTime = (seconds) => {
     if (!Number.isFinite(seconds)) return "--:--";
@@ -86,7 +89,14 @@
       wasPlaying: !audio.paused && !audio.ended,
       ...overrides
     };
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) { /* Storage may be unavailable. */ }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+  };
+
+  const setCollapsed = (collapsed) => {
+    player.classList.toggle("is-collapsed", collapsed);
+    collapse.setAttribute("aria-expanded", String(!collapsed));
+    collapse.setAttribute("aria-label", collapsed ? "Expand audio player" : "Collapse audio player");
+    collapse.textContent = collapsed ? "SOUND" : "−";
   };
 
   const render = () => {
@@ -96,6 +106,7 @@
     progress.max = String(duration);
     progress.value = String(Math.min(position, duration || position));
     if (TRACK.source) toggle.textContent = audio.paused ? (state.wasPlaying ? "Resume" : "Sound off") : "Pause";
+    player.classList.toggle("is-playing", !audio.paused && !audio.ended);
   };
 
   const play = async () => {
@@ -117,6 +128,12 @@
       saveState({ wasPlaying: false });
       render();
     }
+  });
+
+  collapse.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setCollapsed(!player.classList.contains("is-collapsed"));
   });
 
   volume.addEventListener("input", () => {
@@ -160,65 +177,12 @@
     navigator.mediaSession.setActionHandler("pause", () => { audio.pause(); saveState({ wasPlaying: false }); render(); });
   }
 
+  setCollapsed(mobile.matches);
+  const handleViewportChange = (event) => setCollapsed(event.matches);
+  if (mobile.addEventListener) mobile.addEventListener("change", handleViewportChange);
+  else mobile.addListener(handleViewportChange);
+
   render();
-})();
-
-
-/* V0 mobile collapse control */
-(() => {
-  function initAudioCollapse() {
-    const players = document.querySelectorAll(".ashwood-audio");
-    if (!players.length) return;
-
-    const mobile = window.matchMedia("(max-width: 760px)");
-
-    players.forEach((player) => {
-      if (player.querySelector(".ashwood-audio__collapse")) return;
-
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "ashwood-audio__collapse";
-      button.setAttribute("aria-expanded", "true");
-      button.setAttribute("aria-label", "Collapse audio player");
-      button.textContent = "−";
-
-      player.appendChild(button);
-
-      function setCollapsed(collapsed) {
-        player.classList.toggle("is-collapsed", collapsed);
-        button.setAttribute("aria-expanded", String(!collapsed));
-        button.setAttribute(
-          "aria-label",
-          collapsed ? "Expand audio player" : "Collapse audio player"
-        );
-        button.textContent = collapsed ? "♪" : "−";
-      }
-
-      button.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        setCollapsed(!player.classList.contains("is-collapsed"));
-      });
-
-      setCollapsed(mobile.matches);
-
-      const handleViewportChange = (event) => {
-        setCollapsed(event.matches);
-      };
-
-      if (mobile.addEventListener) {
-        mobile.addEventListener("change", handleViewportChange);
-      } else {
-        mobile.addListener(handleViewportChange);
-      }
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAudioCollapse, { once: true });
-  } else {
-    initAudioCollapse();
-  }
 })();
 
 /* Home-only editorial teaser for the inaugural ASHWOOD Dispatch. */
