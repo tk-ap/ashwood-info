@@ -30,16 +30,13 @@
     .v3-identity-origin::after{content:"";position:absolute;left:0;right:0;bottom:-.14em;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;opacity:.45;transition:transform .3s ease}
     .v3-identity-origin:hover::after,.v3-identity-origin:focus-visible::after,.v3-identity-origin[aria-expanded="true"]::after{transform:scaleX(1)}
 
-    /* The reel owns a permanently reserved viewport measured from the idle label.
-       Labels move inside it; they never change surrounding line geometry. */
-    .v3-manifestations{position:relative;display:inline-block;flex:0 0 var(--v3-reel-width,auto);width:var(--v3-reel-width,auto);height:1.08em;overflow:hidden;vertical-align:-.05em;white-space:nowrap;background:linear-gradient(105deg,var(--ashwood-ink),var(--ashwood-gold),var(--ashwood-field-green),var(--ashwood-ink));background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:v3-shimmer 9s ease-in-out infinite;contain:layout paint}
+    /* Fixed viewport: labels animate inside this box without changing sentence geometry. */
+    .v3-manifestations{position:relative;display:inline-block;flex:0 0 var(--v3-reel-width,18ch);width:var(--v3-reel-width,18ch);height:1.08em;overflow:hidden;vertical-align:-.05em;white-space:nowrap;color:inherit;contain:layout paint}
     .v3-manifestations:hover{filter:saturate(1.2) brightness(1.08)}
-    .v3-manifestations__label{position:absolute;inset:0;display:block;width:100%;white-space:nowrap;transform:translate3d(0,0,0);opacity:1;transition:transform .22s cubic-bezier(.2,.75,.25,1),opacity .18s ease;will-change:transform,opacity}
+    .v3-manifestations__label{position:absolute;inset:0;display:block;width:100%;white-space:nowrap;transform:translate3d(0,0,0);opacity:1;transition:transform .22s cubic-bezier(.2,.75,.25,1),opacity .18s ease;will-change:transform,opacity;background:linear-gradient(105deg,var(--ashwood-ink),var(--ashwood-gold),var(--ashwood-field-green),var(--ashwood-ink));background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:v3-shimmer 9s ease-in-out infinite}
     .v3-manifestations__label.is-outgoing{transform:translate3d(0,-112%,0);opacity:0}
     .v3-manifestations__label.is-incoming{transform:translate3d(0,112%,0);opacity:0;transition:none}
 
-    /* Provenance is metadata attached to identity, not part of the sentence's
-       layout. Revealing it cannot push or wrap the manifestations reel. */
     .v3-provenance-reveal{position:absolute;left:0;top:calc(100% + .55em);z-index:3;display:inline-flex;align-items:baseline;gap:.45em;max-width:min(72vw,620px);overflow:hidden;opacity:0;transform:translateY(-3px);transition:opacity .22s ease,transform .24s ease;pointer-events:none}
     .v3-provenance-reveal.is-open{opacity:1;transform:none}
     .v3-provenance-reveal__label{color:var(--ashwood-field-green);font:700 7px/1.3 Arial,Helvetica,sans-serif;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
@@ -49,17 +46,17 @@
 
     @media(max-width:760px){
       .v3-identity-statement{display:flex;flex-wrap:wrap;white-space:normal;row-gap:.04em}
-      .v3-manifestations{flex:0 0 var(--v3-reel-width,auto);width:var(--v3-reel-width,auto);max-width:100%}
+      .v3-manifestations{flex:0 0 var(--v3-reel-width,18ch);width:var(--v3-reel-width,18ch);max-width:100%}
       .v3-provenance-reveal{position:absolute;left:0;top:calc(100% + .45em);display:flex;max-width:100%;flex-wrap:wrap;gap:.28em .5em}
       .v3-provenance-reveal__throughline{white-space:normal}
     }
-    @media(prefers-reduced-motion:reduce){.v3-manifestations{animation:none}.v3-manifestations__label,.v3-provenance-reveal{transition:none}}
+    @media(prefers-reduced-motion:reduce){.v3-manifestations__label,.v3-provenance-reveal{transition:none;animation:none}}
   `;
   document.head.appendChild(style);
 
   identity.innerHTML = `
     <span class="v3-identity-statement">
-      <button class="v3-identity-origin" type="button" aria-expanded="false">1 identity</button><span aria-hidden="true">;</span>
+      <span aria-hidden="true">1 </span><button class="v3-identity-origin" type="button" aria-expanded="false">identity</button><span aria-hidden="true">;</span>
       <a class="v3-manifestations" href="/portfolio/" aria-label="Explore an ASHWOOD manifestation">
         <span class="v3-manifestations__label">${IDLE_MANIFESTATION}</span>
       </a><span aria-hidden="true">.</span>
@@ -81,11 +78,13 @@
   let swapping = false;
 
   const lockReelGeometry = () => {
-    const previous = manifestations.style.getPropertyValue('--v3-reel-width');
-    if (previous) manifestations.style.removeProperty('--v3-reel-width');
-    manifestationLabel.textContent = IDLE_MANIFESTATION;
-    manifestationLabel.className = 'v3-manifestations__label';
-    const width = Math.ceil(manifestationLabel.getBoundingClientRect().width);
+    const computed = getComputedStyle(manifestations);
+    const probe = document.createElement('span');
+    probe.textContent = IDLE_MANIFESTATION;
+    probe.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;font:${computed.font};letter-spacing:${computed.letterSpacing};text-transform:${computed.textTransform};`;
+    document.body.appendChild(probe);
+    const width = Math.ceil(probe.getBoundingClientRect().width) + 2;
+    probe.remove();
     if (width > 0) manifestations.style.setProperty('--v3-reel-width', `${width}px`);
   };
   requestAnimationFrame(() => requestAnimationFrame(lockReelGeometry));
