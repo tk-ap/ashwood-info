@@ -14,6 +14,17 @@
 
   let chosen = [];
 
+  const TRACK_PRESETS = {
+    withyou: {
+      title: 'WITH YOU',
+      artist: 't.kap',
+      producerCredit: 'prod. sumeetsznn',
+      rightsNote: "Non-commercial / demo · stream only. Beat used under the producer's stated free-for-non-profit terms; credit is required for any use; otherwise a license is required.",
+      sourceUrl: 'https://youtu.be/thcfrbTLzpw?is=AxuW_FnxLpfHDZam',
+      publishToMusic: true,
+    },
+  };
+
   const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
@@ -33,12 +44,31 @@
     .replace(/^-+|-+$/g, '')
     .slice(0, 80) || 'track';
 
+  const presetKeyForFile = file => String(file?.name || '')
+    .replace(/\.[^.]+$/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '');
+
+  function applyPresetIfKnown() {
+    if (chosen.length !== 1) return;
+    const preset = TRACK_PRESETS[presetKeyForFile(chosen[0])];
+    if (!preset) return;
+    form.elements.title.value = preset.title;
+    form.elements.artist.value = preset.artist;
+    form.elements.producerCredit.value = preset.producerCredit;
+    form.elements.rightsNote.value = preset.rightsNote;
+    form.elements.sourceUrl.value = preset.sourceUrl;
+    form.elements.publishToMusic.checked = Boolean(preset.publishToMusic);
+    status.textContent = `${preset.title} recognized. Producer, usage terms, source link, and Music-page mapping are prefilled.`;
+  }
+
   function setFiles(files) {
     chosen = [...files].filter(file => file.type.startsWith('audio/') || /\.(mp3|m4a|aac|wav|flac)$/i.test(file.name));
     queue.innerHTML = chosen.length
       ? chosen.map(file => `<li><strong>${escapeHtml(file.name)}</strong><span>${humanBytes(file.size)}</span></li>`).join('')
       : '<li class="is-empty">Drop MP3, M4A, AAC, WAV, or FLAC files here.</li>';
     zone.classList.toggle('has-files', Boolean(chosen.length));
+    applyPresetIfKnown();
   }
 
   async function setPublished(id, publishToMusic, button) {
