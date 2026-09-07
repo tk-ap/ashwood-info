@@ -18,6 +18,18 @@
     <link rel="stylesheet" href="/audio-player.css?v=20260828-musicdock1" />
     <script src="/audio-player.js?v=20260827-mobilecollapse1" defer></script>
     <script src="/theme.js?v=20260828-sharedmasthead1" defer></script>
+    <style>
+      .listen-track--special{align-items:flex-start;gap:18px;background:linear-gradient(90deg,color-mix(in srgb,var(--ashwood-ochre) 7%,transparent),transparent 58%)}
+      .listen-track--special .listen-track__identity{align-items:flex-start}
+      .listen-track__special-copy{display:grid;gap:6px}
+      .listen-track__special-copy strong{display:block}
+      .listen-track__special-label{display:inline-flex;width:max-content;max-width:100%;padding:4px 7px;border:1px solid color-mix(in srgb,var(--ashwood-ochre) 58%,var(--ashwood-rule));color:var(--ashwood-ochre);font-size:8px;line-height:1.2;letter-spacing:.13em;text-transform:uppercase}
+      .listen-track__special-credit{font-size:9px;line-height:1.45;color:var(--ashwood-muted)}
+      .listen-track__special-credit a{color:inherit;text-underline-offset:3px}
+      .listen-track__special-credit a:hover,.listen-track__special-credit a:focus-visible{color:var(--ashwood-ochre)}
+      .listen-track__special-audio{width:min(420px,46vw);min-width:260px;accent-color:var(--ashwood-ochre)}
+      @media(max-width:760px){.listen-track--special{display:grid}.listen-track__special-audio{width:100%;min-width:0}.listen-track--special .listen-track__actions{width:100%}}
+    </style>
   </head>
   <body class="music-page">
     <header class="ashwood-site-header" aria-label="ASHWOOD navigation">
@@ -87,7 +99,22 @@
         </div>
         <div class="listen-queue" aria-label="Body II listening-room placeholders">
           <article class="listen-track"><div class="listen-track__identity"><span class="listen-track__index">01</span><div><strong>PULLUP</strong><small>Draft title · Aug 21</small></div></div><div class="listen-track__actions"><button type="button" disabled>Play</button></div></article>
-          <article class="listen-track"><div class="listen-track__identity"><span class="listen-track__index">02</span><div><strong>NobodyElse</strong><small>Draft title · Aug 21</small></div></div><div class="listen-track__actions"><button type="button" disabled>Play</button></div></article>
+          <article class="listen-track listen-track--special">
+            <div class="listen-track__identity">
+              <span class="listen-track__index">02</span>
+              <div class="listen-track__special-copy">
+                <strong>SPECIAL (NON-COMMERCIAL/DEMO) - t.kap (prod. Shinigami)</strong>
+                <span class="listen-track__special-label">Non-commercial / demo · stream only</span>
+                <small class="listen-track__special-credit">Beat used under the producer's stated free-for-non-profit terms. Credit: prod. Shinigami. <a href="https://youtu.be/sYgcTyVkeyM?is=nZnV3fKFBhHqKHfS" target="_blank" rel="noopener noreferrer">Original beat / license context on YouTube ↗</a></small>
+              </div>
+            </div>
+            <div class="listen-track__actions">
+              <audio class="listen-track__special-audio" controls controlsList="nodownload noplaybackrate" preload="metadata" oncontextmenu="return false" aria-label="SPECIAL by t.kap, produced by Shinigami">
+                <source src="/audio/special-noncommercial-demo.m4a" type="audio/mp4" />
+                Your browser does not support native audio playback.
+              </audio>
+            </div>
+          </article>
           <article class="listen-track"><div class="listen-track__identity"><span class="listen-track__index">03</span><div><strong>WithYou</strong><small>Draft title · Aug 21</small></div></div><div class="listen-track__actions"><button type="button" disabled>Play</button></div></article>
         </div>
       </section>
