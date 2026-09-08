@@ -17,9 +17,13 @@ async function ensureTable(sql) {
     completed_items JSONB NOT NULL DEFAULT '[]'::jsonb,
     notes JSONB NOT NULL DEFAULT '{}'::jsonb,
     auto_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+    deployment_completed_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+    deployment_notes JSONB NOT NULL DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
   await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS auto_items JSONB NOT NULL DEFAULT '[]'::jsonb`;
+  await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS deployment_completed_items JSONB NOT NULL DEFAULT '[]'::jsonb`;
+  await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS deployment_notes JSONB NOT NULL DEFAULT '{}'::jsonb`;
 }
 
 function cleanCompleted(value) {
@@ -88,10 +92,10 @@ async function syncProductionDeployment(sql, row) {
     };
     const autoItems = [nextItem, ...existing].slice(0, 200);
     const rows = await sql`
-      INSERT INTO workspace_checklists (checklist_id, completed_items, notes, auto_items, updated_at)
-      VALUES (${CHECKLIST_ID}, '[]'::jsonb, '{}'::jsonb, ${JSON.stringify(autoItems)}::jsonb, NOW())
+      INSERT INTO workspace_checklists (checklist_id, auto_items, updated_at)
+      VALUES (${CHECKLIST_ID}, ${JSON.stringify(autoItems)}::jsonb, NOW())
       ON CONFLICT (checklist_id) DO UPDATE SET auto_items = EXCLUDED.auto_items, updated_at = NOW()
-      RETURNING checklist_id, completed_items, notes, auto_items, updated_at
+      RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at
     `;
     return rows[0] || { ...row, auto_items: autoItems };
   } catch (error) {
@@ -108,8 +112,8 @@ export default async function handler(req, res) {
     await ensureTable(sql);
 
     if (req.method === 'GET') {
-      const rows = await sql`SELECT checklist_id, completed_items, notes, auto_items, updated_at FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;
-      let row = rows[0] || { completed_items: [], notes: {}, auto_items: [], updated_at: null };
+      const rows = await sql`SELECT checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;
+      let row = rows[0] || { completed_items: [], notes: {}, auto_items: [], deployment_completed_items: [], deployment_notes: {}, updated_at: null };
       row = await syncProductionDeployment(sql, row);
       return json(res, 200, {
         ok: true,
@@ -117,6 +121,8 @@ export default async function handler(req, res) {
         completed_items: Array.isArray(row?.completed_items) ? row.completed_items : [],
         notes: row?.notes && typeof row.notes === 'object' ? row.notes : {},
         auto_items: Array.isArray(row?.auto_items) ? row.auto_items : [],
+        deployment_completed_items: Array.isArray(row?.deployment_completed_items) ? row.deployment_completed_items : [],
+        deployment_notes: row?.deployment_notes && typeof row.deployment_notes === 'object' ? row.deployment_notes : {},
         updated_at: row?.updated_at || null,
       });
     }
@@ -125,6 +131,22 @@ export default async function handler(req, res) {
     if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
 
     const body = parseBody(req);
+    const isDeploymentScope = body.scope === 'deployment';
+    if (isDeploymentScope) {
+      const completed = cleanCompleted(body.deployment_completed_items);
+      const notes = cleanNotes(body.deployment_notes);
+      const rows = await sql`
+        INSERT INTO workspace_checklists (checklist_id, deployment_completed_items, deployment_notes, updated_at)
+        VALUES (${CHECKLIST_ID}, ${JSON.stringify(completed)}::jsonb, ${JSON.stringify(notes)}::jsonb, NOW())
+        ON CONFLICT (checklist_id) DO UPDATE SET
+          deployment_completed_items = EXCLUDED.deployment_completed_items,
+          deployment_notes = EXCLUDED.deployment_notes,
+          updated_at = NOW()
+        RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at
+      `;
+      return json(res, 200, { ok: true, ...rows[0] });
+    }
+
     const completed = cleanCompleted(body.completed_items);
     const notes = cleanNotes(body.notes);
     const rows = await sql`
@@ -134,7 +156,7 @@ export default async function handler(req, res) {
         completed_items = EXCLUDED.completed_items,
         notes = EXCLUDED.notes,
         updated_at = NOW()
-      RETURNING checklist_id, completed_items, notes, auto_items, updated_at
+      RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at
     `;
     return json(res, 200, { ok: true, ...rows[0] });
   } catch (error) {
