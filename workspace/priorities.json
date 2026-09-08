@@ -1,0 +1,54 @@
+{
+  "as_of": "2026-09-08",
+  "principle": "The priority surface answers what deserves attention now. AgentOS execution labels must come from synced canonical workstreams, never from assumptions.",
+  "priorities": [
+    {
+      "rank": 1,
+      "product": "LEDGATo",
+      "tier": "NOW",
+      "outcome": "Prove the enforcement boundary well enough to earn the first design partners.",
+      "owner_next": "Review proof gates and partner-facing decisions that require founder judgment.",
+      "match": ["ledgato"]
+    },
+    {
+      "rank": 2,
+      "product": "AgentOS",
+      "tier": "NOW",
+      "outcome": "Make the agent workforce reliably execute work without creating more founder overhead.",
+      "owner_next": "Intervene only where execution is blocked, approval is required, or the system cannot reconcile itself.",
+      "match": ["agentos", "agent os", "agent-os"]
+    },
+    {
+      "rank": 3,
+      "product": "ALVIRA",
+      "tier": "NOW",
+      "outcome": "Prove that persistent context creates measurable user value, not just a better product surface.",
+      "owner_next": "Prioritize user friction, Context/Reflect usefulness, imports, and measurable context lift over new feature breadth.",
+      "match": ["alvira"]
+    },
+    {
+      "rank": 4,
+      "product": "ASHWOOD",
+      "tier": "SUPPORT",
+      "outcome": "Operate the portfolio and preserve evidence; do not turn ASHWOOD into another startup to feed.",
+      "owner_next": "Use Workspace as the operating surface and Build Journal as the public evidence trail.",
+      "match": ["ashwood"]
+    },
+    {
+      "rank": 5,
+      "product": "ailhat",
+      "tier": "HOLD",
+      "outcome": "Prove the observe → insight → recommended work → AgentOS routing → outcome loop before expanding the product.",
+      "owner_next": "Avoid broad feature expansion until the intelligence loop is repeatedly grounded in real portfolio activity.",
+      "match": ["ailhat"]
+    },
+    {
+      "rank": 6,
+      "product": "AI from Zero",
+      "tier": "DOWNSTREAM",
+      "outcome": "Turn real build lessons into practical education without competing with the builds for attention.",
+      "owner_next": "Document and teach from work that already happened; do not create curriculum work merely to keep the surface busy.",
+      "match": ["ai from zero", "ai-from-zero"]
+    }
+  ]
+}
