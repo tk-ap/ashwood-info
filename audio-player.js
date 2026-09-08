@@ -10,7 +10,9 @@
   });
 
   const STORAGE_KEY = "ashwood.audio.v1";
+  const UI_STORAGE_KEY = "ashwood.audio.ui.v1";
   const DEFAULT_STATE = { trackId: TRACK.id, position: 0, volume: 0.8, wasPlaying: false };
+  const DEFAULT_UI_STATE = { collapsed: true };
 
   const readState = () => {
     try {
@@ -23,6 +25,17 @@
       };
     } catch (_) {
       return { ...DEFAULT_STATE };
+    }
+  };
+
+  const readUiState = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(UI_STORAGE_KEY));
+      return {
+        collapsed: typeof saved?.collapsed === "boolean" ? saved.collapsed : DEFAULT_UI_STATE.collapsed
+      };
+    } catch (_) {
+      return { ...DEFAULT_UI_STATE };
     }
   };
 
@@ -90,6 +103,7 @@
   };
 
   let state = readState();
+  let uiState = readUiState();
   let lastPositionSave = 0;
   const audio = new Audio();
   audio.preload = "metadata";
@@ -156,11 +170,17 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
   };
 
-  const setCollapsed = (collapsed) => {
+  const saveUiState = (collapsed) => {
+    uiState = { collapsed: Boolean(collapsed) };
+    try { localStorage.setItem(UI_STORAGE_KEY, JSON.stringify(uiState)); } catch (_) {}
+  };
+
+  const setCollapsed = (collapsed, { persist = false } = {}) => {
     player.classList.toggle("is-collapsed", collapsed);
     collapse.setAttribute("aria-expanded", String(!collapsed));
     collapse.setAttribute("aria-label", collapsed ? "Expand audio player" : "Collapse audio player");
     collapse.textContent = collapsed ? "+" : "−";
+    if (persist) saveUiState(collapsed);
   };
 
   const render = () => {
@@ -197,7 +217,7 @@
   collapse.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    setCollapsed(!player.classList.contains("is-collapsed"));
+    setCollapsed(!player.classList.contains("is-collapsed"), { persist: true });
   });
 
   volume.addEventListener("input", () => {
@@ -241,8 +261,10 @@
     navigator.mediaSession.setActionHandler("pause", () => { audio.pause(); saveState({ wasPlaying: false }); render(); });
   }
 
-  setCollapsed(mobile.matches);
-  const handleViewportChange = (event) => setCollapsed(event.matches);
+  setCollapsed(mobile.matches ? true : uiState.collapsed);
+  const handleViewportChange = (event) => {
+    if (event.matches) setCollapsed(true);
+  };
   if (mobile.addEventListener) mobile.addEventListener("change", handleViewportChange);
   else mobile.addListener(handleViewportChange);
 
