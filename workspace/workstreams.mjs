@@ -1,5 +1,5 @@
-const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, c => ({
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+const escapeHtml = (value = '') => String(value).replace(/[&<>'\"]/g, c => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '\"': '&quot;'
 }[c]));
 
 const goalName = id => ({
@@ -20,6 +20,11 @@ function stateClass(status = '') {
   return 'is-active';
 }
 
+function setSurfaceState(target, state) {
+  target.classList.remove('is-loading', 'is-empty', 'is-error', 'is-locked');
+  if (state) target.classList.add(`is-${state}`);
+}
+
 function renderRows(rows) {
   const target = document.querySelector('#workstream-list');
   const count = document.querySelector('#workstream-count');
@@ -27,10 +32,12 @@ function renderRows(rows) {
   if (count) count.textContent = `${rows.length} active workstream${rows.length === 1 ? '' : 's'}`;
 
   if (!rows.length) {
-    target.innerHTML = `<p class="workstream-empty">No canonical workstreams have synced yet. AgentOS and other owning systems can publish projections here without moving execution truth into ASHWOOD.</p>`;
+    setSurfaceState(target, 'empty');
+    target.innerHTML = `<p class="workstream-empty"><strong>No active workstreams are synced into ASHWOOD yet.</strong><span>This is an empty data state, not a broken panel. AgentOS, ailhat, or an owning repo needs to publish a canonical projection before cards appear here.</span></p>`;
     return;
   }
 
+  setSurfaceState(target, null);
   target.innerHTML = rows.map(row => {
     const goals = Array.isArray(row.goal_ids) ? row.goal_ids : [];
     const url = row.canonical_url ? `<a class="workstream-link" href="${escapeHtml(row.canonical_url)}" target="_blank" rel="noopener">Open canonical source ↗</a>` : '';
@@ -57,11 +64,14 @@ function renderRows(rows) {
 
 async function load() {
   const target = document.querySelector('#workstream-list');
+  const count = document.querySelector('#workstream-count');
   if (!target) return;
   try {
     const response = await fetch('/api/workspace-workstreams', { credentials: 'same-origin', cache: 'no-store' });
     if (response.status === 401) {
-      target.innerHTML = '<p class="workstream-empty">Unlock the workspace to load workstreams.</p>';
+      setSurfaceState(target, 'locked');
+      if (count) count.textContent = 'Workspace locked';
+      target.innerHTML = '<p class="workstream-empty"><strong>Unlock Workspace to load active workstreams.</strong><span>Your canonical workstream projection is private owner state.</span></p>';
       return false;
     }
     if (!response.ok) throw new Error(`Workstreams ${response.status}`);
@@ -69,7 +79,9 @@ async function load() {
     renderRows(data.rows || []);
     return true;
   } catch (error) {
-    target.innerHTML = `<p class="workstream-empty">Workstreams unavailable: ${escapeHtml(error.message)}</p>`;
+    setSurfaceState(target, 'error');
+    if (count) count.textContent = 'Workstreams unavailable';
+    target.innerHTML = `<p class="workstream-empty"><strong>Active workstreams could not load.</strong><span>${escapeHtml(error.message)}. The rest of Workspace can still be used.</span></p>`;
     return false;
   }
 }
