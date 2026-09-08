@@ -23,7 +23,7 @@ Status verified on Omarchy 2026-09-08.
 
 A LocalSend transfer was attempted for 265 files and appeared to stall at **163/265**. There are actually **thousands of photos total**, so LocalSend should not be treated as the primary full-library migration mechanism.
 
-A second batch was sent on 2026-09-08 after the initial run. `~/ASHWOOD/Modeling/BarelySain/Originals` now holds **257 files (3.7G)**, of which **248 are healthy** and **9 are zero-byte placeholders** still awaiting re-send. The wider library has not been attempted.
+Three batches were sent on 2026-09-08. `~/ASHWOOD/Modeling/BarelySain/Originals` now holds **292 files (4.4G)**. A full decode pass over all 292 found **291 healthy and 1 corrupt**. There are no zero-byte placeholders left. The wider library has not been attempted.
 
 ### Where the transfer stopped
 
@@ -38,22 +38,53 @@ The whole run lasted about two minutes (11:50:42 to 11:52:43 on 2026-09-08) and 
 
 A manifest of the 165 received filenames is written to `~/ASHWOOD/Modeling/BarelySain/localsend-received-165.txt` on Omarchy, for diffing against the Mac-side source folder before re-sending. Note that inode ctimes on these files were all rewritten by a later bulk operation and are useless for ordering; use birth time (`stat %W`/`%w`) instead.
 
-### Verification: file count is not completeness
+### Verification: neither file count nor file size proves delivery
 
-Both failed transfers so far wrote **correctly named zero-byte files** rather than omitting the file. An empty placeholder passes a filename check, passes an identifier search, and is counted by `find`/`ls`, so it silently reads as present.
+Transfers in this migration failed in three distinct ways, and each one defeats a different cheap check. Only a decode pass catches all of them.
 
-A count of 253 files in the archive on 2026-09-08 was in fact 228 real images and 25 empty placeholders, in a contiguous IMG_6091-6117 block. None of the 18 BarelySain identifiers fall in that range, which is why an identifier-based check did not reveal it.
+| Failure mode | Example | Size on disk | Caught by |
+| --- | --- | --- | --- |
+| Zero-byte placeholder | 25 files across IMG_6091-6117 | 0 bytes | `find -size 0` |
+| Truncated at a round boundary | `IMG_6089-edited.jpg` | exactly 4194304 bytes (4 MiB) | decode test only |
+| Corrupt committed asset | `assets/campaigns/barelysain/IMG_6881-edited.jpg` | 5.3MB, plausible | decode test only |
 
-**Audit every batch on arrival:**
+The first mode is the dangerous one for automated checks: a correctly named empty file passes a filename check, passes an identifier search, and is counted by `find` and `ls`. An archive reporting 253 files was in fact 228 images and 25 empty placeholders, in a contiguous IMG_6091-6117 block that none of the 18 BarelySain identifiers touch.
+
+The second mode defeats the fix for the first. `IMG_6089-edited.jpg` arrived truncated to exactly 4 MiB where its neighbours run about 13MB, so it has a correct name **and** a non-zero, entirely plausible size. Nothing short of decoding it reveals the problem.
+
+**Audit every batch on arrival.** The cheap checks first:
 
 ```bash
 ARCH=~/ASHWOOD/Modeling/BarelySain/Originals
 echo "total:     $(find "$ARCH" -type f | wc -l)"
 echo "zero-byte: $(find "$ARCH" -type f -size 0 | wc -l)"
 find "$ARCH" -type f -size 0 -printf '  %f\n'
+find "$ARCH" -type f -size -6M -printf '  %10s  %f\n' | sort -n   # size outliers
 ```
 
-Never treat file count or filename presence as evidence that data arrived. Compare sizes, and byte-compare against the source where a second copy exists.
+Then the decode pass, which is slow but authoritative — budget several minutes for a few hundred stills:
+
+```bash
+for f in "$ARCH"/*; do
+  err=$(magick identify -verbose "$f" 2>&1 >/dev/null \
+        | grep -iE 'corrupt|premature|error' | head -1)
+  [ -n "$err" ] && echo "$(basename "$f"): $err"
+done
+```
+
+Never treat file count, filename presence, or a plausible file size as evidence that data arrived.
+
+### Integrity status (2026-09-08)
+
+A full decode pass over all 292 archived files returned a single failure:
+
+```text
+IMG_6089-edited.jpg   Premature end of JPEG file
+```
+
+`IMG_6089-edited.jpg` is truncated to 4194304 bytes and has no intact copy anywhere on Omarchy. It is the **only outstanding file** in the archive and must be re-sent from the Mac. It is not part of the V3 arc.
+
+The other 291 files decode cleanly, including all nine V3 masters.
 
 For bulk migration, prefer an **exFAT external SSD + rsync**. Syncthing can then maintain selected active folders across Mac and Omarchy after the initial migration.
 
@@ -171,17 +202,11 @@ Sixteen further files in the IMG_6100-6117 range were present in the archive onl
 
 ### Still outstanding
 
-Nine files remain as zero-byte placeholders with no source anywhere on Omarchy, and must be re-sent from the Mac:
+A third batch on 2026-09-08 delivered the nine files that were previously zero-byte placeholders, together with the rest of the IMG_6091-6120 range, which is now complete at 30 of 30. Forty-four files were copied in from `~/Downloads` and every one was byte-verified with `cmp` against its source.
 
-```text
-IMG_6091.jpg          IMG_6096-edited.jpg
-IMG_6092.jpg          IMG_6098.jpg
-IMG_6092-edited.jpg   IMG_6099-edited.jpg
-IMG_6093.jpg          IMG_6100-edited.jpg
-IMG_6095-edited.jpg
-```
+The only file still missing from the archive is `IMG_6089-edited.jpg`, which arrived truncated. It is not part of the V3 arc, so the TikTok edit is not blocked.
 
-None are part of the V3 arc, so the TikTok edit is not blocked.
+Sixteen files also arrived twice, as `IMG_6114.jpg` and `IMG_6114 (2).jpg`. The `-edited` twins are byte-identical. The unedited masters differ in pixel data, but both copies are Q=100 at identical dimensions with the same capture timestamp, camera and AfterShoot export software, so they are two non-deterministic exports of the same frame rather than an original and a degraded copy. The plain-named copy was archived and every `(2)` was left untouched in `~/Downloads`.
 
 ## TikTok V3 source list
 
