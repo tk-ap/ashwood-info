@@ -1,2 +1,474 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>INVALID</title></head><body></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The Build Gate — an AI, FROM ZERO decision tool. Ten plain-language questions that separate software production from value creation. A DON'T BUILD is a successful outcome." />
+  <link rel="canonical" href="https://ashwood-info.vercel.app/ai-from-zero/build-gate/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ASHWOOD" />
+  <meta property="og:title" content="The Build Gate — AI, FROM ZERO" />
+  <meta property="og:description" content="Just because you can build it, should you? Ten questions, one honest verdict: BUILD, TEST FIRST, or DON'T BUILD." />
+  <meta property="og:url" content="https://ashwood-info.vercel.app/ai-from-zero/build-gate/" />
+  <meta property="og:image" content="https://ashwood-info.vercel.app/assets/social/ashwood-og-1200x630.jpg" />
+  <meta property="og:image:alt" content="ASHWOOD — The Build Gate" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#10110f" />
+  <title>The Build Gate — AI, FROM ZERO — ASHWOOD</title>
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
+  <link rel="stylesheet" href="/ai-from-zero/ai-from-zero.css?v=20260902-1" />
+  <script src="/theme.js?v=20260827-1" defer></script>
+  <style>
+    .build-gate-page .shell{max-width:1500px}
+    .bg-back{display:inline-flex;min-height:44px;align-items:center;color:var(--ashwood-ochre);text-decoration:none;font-size:10px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid transparent}
+    .bg-back:hover,.bg-back:focus-visible{border-bottom-color:currentColor}
+    .bg-hero{padding:clamp(84px,13vh,160px) 0 clamp(60px,9vh,110px)}
+    .bg-hero .eyebrow{margin:26px 0 0}
+    .bg-hero h1{max-width:12ch;margin:18px 0 0;font-size:clamp(54px,9vw,132px);font-weight:500;line-height:.92;letter-spacing:-.055em}
+    .bg-hero .lede{max-width:62ch;margin:30px 0 0;color:var(--ashwood-muted);font-size:clamp(17px,1.8vw,24px);line-height:1.55}
+    .bg-cue{display:inline-flex;align-items:center;min-height:44px;margin-top:30px;color:var(--ashwood-ochre);font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid currentColor}
+    .bg-cue:hover,.bg-cue:focus-visible{color:var(--ashwood-oxblood)}
+    .bg-gate{margin-top:clamp(44px,6vw,80px);border:1px solid var(--ashwood-rule);background:var(--ashwood-paper);padding:clamp(26px,4vw,52px)}
+    .bg-progress-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--ashwood-muted);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+    .bg-progress-meta span:first-child{color:var(--ashwood-ochre)}
+    .bg-bar{height:2px;margin:18px 0 0;background:var(--ashwood-rule)}
+    .bg-bar i{display:block;height:100%;width:0;background:var(--ashwood-ochre)}
+    .bg-question{margin:34px 0 0;font-size:clamp(26px,3.4vw,48px);font-weight:500;line-height:1.02;letter-spacing:-.04em;max-width:22ch}
+    .bg-hint{max-width:60ch;margin:14px 0 0;color:var(--ashwood-muted);font-size:14px;line-height:1.6}
+    .bg-options{display:grid;gap:12px;margin:30px 0 0;padding:0;list-style:none}
+    .bg-options button{width:100%;min-height:56px;padding:16px 18px;border:1px solid var(--ashwood-rule);background:transparent;color:var(--ashwood-ink);cursor:pointer;font:inherit;font-size:15px;line-height:1.55;text-align:left}
+    .bg-options button:hover,.bg-options button:focus-visible,.bg-options button.is-selected{border-color:var(--ashwood-ochre);color:var(--ashwood-ochre)}
+    .bg-options button.is-selected{outline:1px solid var(--ashwood-ochre);outline-offset:2px}
+    .bg-options button small{display:block;margin-top:8px;color:var(--ashwood-muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+    .bg-options button.is-selected small{color:var(--ashwood-ochre)}
+    .bg-nav{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:30px;padding-top:24px;border-top:1px solid var(--ashwood-rule)}
+    .bg-nav button{background:none;border:0;padding:0;min-height:44px;display:inline-flex;align-items:center;color:var(--ashwood-ochre);cursor:pointer;font:inherit;font-size:10px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid transparent}
+    .bg-nav button:hover,.bg-nav button:focus-visible{border-bottom-color:currentColor}
+    .bg-nav button[disabled]{opacity:.35;cursor:default;border-bottom-color:transparent}
+    .bg-privacy{max-width:70ch;margin:22px 0 0;color:var(--ashwood-muted);font-size:12px;line-height:1.6}
+    .bg-result{margin-top:clamp(44px,6vw,80px);border:1px solid var(--ashwood-rule);border-top:3px solid var(--ashwood-ochre);padding:clamp(26px,4vw,52px)}
+    .bg-verdict{margin:16px 0 0;font-size:clamp(48px,8vw,110px);font-weight:500;line-height:.9;letter-spacing:-.055em}
+    .bg-verdict--dont{color:var(--ashwood-oxblood)}
+    .bg-verdict--test{color:var(--ashwood-ochre)}
+    .bg-reason{max-width:64ch;margin:26px 0 0;font-size:clamp(16px,1.5vw,21px);line-height:1.6}
+    .bg-qualification{max-width:70ch;margin:18px 0 0;padding-top:18px;border-top:1px solid var(--ashwood-rule);color:var(--ashwood-muted);font-size:12px;line-height:1.65}
+    .bg-rows{margin:34px 0 0;border-top:1px solid var(--ashwood-rule)}
+    .bg-row{display:grid;grid-template-columns:minmax(180px,.4fr) minmax(0,1fr);gap:10px 36px;padding:20px 0;border-bottom:1px solid var(--ashwood-rule);align-items:baseline}
+    .bg-row span{color:var(--ashwood-ochre);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+    .bg-row p{margin:0;font-size:15px;line-height:1.65}
+    .bg-row p strong{font-weight:500}
+    .bg-dims{display:flex;flex-wrap:wrap;gap:8px 22px;margin:30px 0 0;padding:0;list-style:none;color:var(--ashwood-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+    .bg-dims strong{color:var(--ashwood-ink);font-weight:500}
+    .bg-scoring{max-width:70ch;margin:30px 0 0;padding-top:22px;border-top:1px solid var(--ashwood-rule);color:var(--ashwood-muted);font-size:12px;line-height:1.65}
+    .bg-bridge{margin-top:34px;border:1px solid var(--ashwood-rule);padding:6px 22px}
+    .bg-bridge summary{min-height:48px;display:flex;align-items:center;cursor:pointer;color:var(--ashwood-ochre);font-size:10px;letter-spacing:.13em;text-transform:uppercase;list-style:none}
+    .bg-bridge summary::-webkit-details-marker{display:none}
+    .bg-bridge summary::before{content:"+";margin-right:12px;font-size:14px}
+    .bg-bridge[open] summary::before{content:"–"}
+    .bg-bridge ul{margin:6px 0 22px;padding:0;list-style:none}
+    .bg-bridge li{display:grid;grid-template-columns:minmax(180px,.4fr) minmax(0,1fr);gap:6px 28px;padding:14px 0;border-top:1px solid var(--ashwood-rule);font-size:13px;line-height:1.6;color:var(--ashwood-muted)}
+    .bg-bridge li strong{color:var(--ashwood-ink);font-weight:500;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+    .bg-bridge .bg-stub{display:inline-block;margin-left:10px;padding:2px 8px;border:1px solid var(--ashwood-rule);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ashwood-muted)}
+    .bg-why p{max-width:64ch;color:var(--ashwood-muted);font-size:clamp(16px,1.5vw,20px);line-height:1.65}
+    .bg-why p + p{margin-top:26px}
+    .bg-why strong{color:var(--ashwood-ink);font-weight:500}
+    @media(max-width:980px){
+      .bg-row{grid-template-columns:1fr;gap:8px}
+      .bg-bridge li{grid-template-columns:1fr;gap:4px}
+    }
+    @media(max-width:700px){
+      .build-gate-page .shell{padding-inline:clamp(18px,5vw,28px)}
+      .bg-hero h1{font-size:clamp(50px,15vw,78px)}
+      .bg-gate,.bg-result{padding:24px 18px}
+      .bg-options button{min-height:56px}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bg-bar i{transition:none}}
+  </style>
+</head>
+<body class="ai-zero-page build-gate-page">
+  <main class="shell" id="top">
+    <header class="masthead">
+      <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
+      <span class="section-label">AI, FROM ZERO / THE BUILD GATE</span>
+    </header>
+
+    <section class="bg-hero" aria-labelledby="gate-title">
+      <a class="bg-back" href="/ai-from-zero/">← Back to AI, FROM ZERO</a>
+      <p class="eyebrow">AI FROM ZERO · THE BUILD GATE</p>
+      <h1 id="gate-title">Just because you can build it, should you?</h1>
+      <p class="lede">AI has made software cheap to produce. The scarce things now are problem understanding, evidence, distribution, and trust. This tool separates software production from value creation: ten honest questions, one verdict — and a DON&rsquo;T BUILD or TEST FIRST counts as a successful outcome.</p>
+      <a class="bg-cue" href="#gate">Run the ten questions ↓</a>
+    </section>
+
+    <section class="zero-section" id="gate" aria-labelledby="gate-heading">
+      <div class="zero-marker"><span>01</span><span>THE ASSESSMENT / TEN QUESTIONS</span></div>
+      <div class="zero-heading">
+        <h2 id="gate-heading">Answer one question at a time. Be honest, not optimistic.</h2>
+        <p>There are no clever answers here. Each question offers three plain descriptions — pick the one that is actually true today, not the one you wish were true. You can go back, and you can start over.</p>
+      </div>
+
+      <div class="bg-gate" id="bg-quiz">
+        <div class="bg-progress-meta"><span id="bg-count">Question 1 of 10</span><span id="bg-dim">PROBLEM</span></div>
+        <div class="bg-bar" aria-hidden="true"><i id="bg-bar-fill"></i></div>
+        <h3 class="bg-question" id="bg-q" tabindex="-1">Who specifically has the problem?</h3>
+        <p class="bg-hint" id="bg-hint"></p>
+        <div class="bg-options" id="bg-options" role="group" aria-labelledby="bg-q"></div>
+        <div class="bg-nav">
+          <button type="button" id="bg-back">← Back</button>
+          <button type="button" id="bg-restart-quiz">Start over</button>
+        </div>
+        <p class="bg-privacy">This assessment does not send your answers anywhere. Going Back keeps them so you can revise them; Start over clears them.</p>
+      </div>
+
+      <div class="bg-result" id="bg-result" hidden aria-live="polite" aria-labelledby="bg-verdict-label">
+        <div class="bg-progress-meta"><span>YOUR VERDICT</span><span>TRANSPARENT SCORING / NOTHING HIDDEN</span></div>
+        <p class="bg-verdict" id="bg-verdict-label">TEST FIRST</p>
+        <p class="bg-reason" id="bg-reason"></p>
+        <p class="bg-qualification">This is a decision aid based on your self-reported evidence, not independent validation.</p>
+        <div class="bg-rows">
+          <div class="bg-row"><span>Strongest ground</span><p id="bg-strongest"></p></div>
+          <div class="bg-row"><span>Weakest ground</span><p id="bg-weakest"></p></div>
+          <div class="bg-row"><span>Largest unproven assumption</span><p id="bg-assumption"></p></div>
+          <div class="bg-row"><span>Cheapest next experiment</span><p id="bg-experiment"></p></div>
+        </div>
+        <ul class="bg-dims" id="bg-dims" aria-label="Scores by dimension"></ul>
+        <p class="bg-scoring" id="bg-scoring-note"></p>
+        <div class="bg-nav">
+          <button type="button" id="bg-restart-result">Run it again</button>
+          <button type="button" id="bg-review">Revisit my answers</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="zero-section bg-why" id="why" aria-labelledby="why-title">
+      <div class="zero-marker"><span>02</span><span>WHY THIS MATTERS</span></div>
+      <div class="zero-heading">
+        <h2 id="why-title">Building is abundant. Judgment about what deserves to exist is scarce.</h2>
+        <p>When software took months and cost a fortune, the decision to build carried its own discipline. That discipline is gone. What remains is a harder question, asked earlier.</p>
+      </div>
+      <p><strong>Enthusiasm is not evidence.</strong> It is easy to mistake your own excitement — or a few polite nods — for proof that a problem exists. Evidence is what people already do: what they pay for, work around, complain about, or ask for without being prompted. Until behavior shows up, you have a hypothesis, not a foundation.</p>
+      <p><strong>Software is often the most expensive answer.</strong> Many problems dissolve into a conversation, a document, a checklist, a service performed by hand, or a feature inside something people already use. Code adds maintenance, expectations, and trust obligations that persist long after the novelty fades. The cheapest version that proves value usually is not software at all.</p>
+      <p><strong>Distribution decides more than quality.</strong> A good tool nobody finds is indistinguishable from a tool that was never built. If you cannot name the first ten users and reach them directly, you do not have a software problem — you have a distribution problem, and building first only postpones facing it.</p>
+      <p><strong>Not building can be the strongest accomplishment.</strong> Every DON&rsquo;T BUILD verdict protects weeks of effort, preserves trust with the people you would have served poorly, and keeps your attention available for the thing that actually deserves to exist. AI can assist judgment, but the decision about what deserves to be built remains yours to own.</p>
+    </section>
+
+    <section class="zero-section" id="bridge" aria-labelledby="bridge-title">
+      <div class="zero-marker"><span>03</span><span>FUTURE SEAMS / NOT YET CONNECTED</span></div>
+      <div class="zero-heading">
+        <h2 id="bridge-title">This page stands alone.</h2>
+        <p>Nothing below is functional. These are documented stubs for where a Build Gate verdict could one day travel inside the wider ASHWOOD ecosystem — listed here so the seams stay visible, not so they imply anything exists.</p>
+      </div>
+      <details class="bg-bridge">
+        <summary>Ecosystem bridge (not yet connected)</summary>
+        <ul>
+          <li><strong>ALVIRA <span class="bg-stub">Not connected</span></strong><span>Context in — a verdict could one day carry the problem, evidence, and open questions into maintained context, instead of starting from zero.</span></li>
+          <li><strong>ailhat <span class="bg-stub">Not connected</span></strong><span>Portfolio fit — a verdict could one day sit beside other opportunities so attention goes to the strongest evidence, not the loudest idea.</span></li>
+          <li><strong>Agent OS <span class="bg-stub">Not connected · infrastructure only</span></strong><span>Execution handoff — a TEST FIRST experiment could one day become a governed task. Agent OS is infrastructure, not a product offering.</span></li>
+          <li><strong>LEDGATo <span class="bg-stub">Not connected</span></strong><span>Governance and evidence — the reasoning behind a verdict could one day be preserved as inspectable decision evidence.</span></li>
+        </ul>
+      </details>
+      <!-- Result contract for future ecosystem use (page is fully useful without it):
+           window.__BUILD_GATE__ = { verdict, dimensions, weakest, assumption, experiment }
+           verdict: "BUILD" | "TEST FIRST" | "DON'T BUILD"
+           dimensions: { PROBLEM: {earned, max}, EVIDENCE: {earned, max}, DISTRIBUTION: {earned, max},
+                         DIFFERENTIATION: {earned, max}, TRUST: {earned, max}, ACCUMULATING_ADVANTAGE: {earned, max} }
+           weakest: null when no material weak dimension exists; otherwise weakest weak dimension key
+           assumption: largest unproven assumption tied to a specific selected response when one is low-confidence
+           experiment: cheapest next experiment tied to that uncertainty -->
+    </section>
+
+    <footer class="zero-footer">
+      <span>ASHWOOD · AI, FROM ZERO</span>
+      <nav aria-label="Continue through ASHWOOD"><a href="/">Home</a><a href="/ai-from-zero/">Overview</a><a href="/ai-from-zero/continuity/">Continuity</a><a href="/ai-from-zero/reference/">Reference</a><a href="/journal/">Builds</a><a href="/about/">About</a></nav>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+      const DIMENSIONS = ["PROBLEM", "EVIDENCE", "DISTRIBUTION", "DIFFERENTIATION", "TRUST", "ACCUMULATING_ADVANTAGE"];
+      const DIM_LABEL = {
+        PROBLEM: "Problem",
+        EVIDENCE: "Evidence",
+        DISTRIBUTION: "Distribution",
+        DIFFERENTIATION: "Differentiation",
+        TRUST: "Trust",
+        ACCUMULATING_ADVANTAGE: "Accumulating advantage"
+      };
+      const QUESTIONS = [
+        { dim: "PROBLEM", q: "Who specifically has the problem?", hint: "A real person you could call by name — not a category, not “people like me.”", assumption: "You may still be projecting the problem onto a broad audience instead of hearing it from specific people.", experiment: "Talk to five people who plausibly have the problem. Ask what is difficult today and listen for the problem without pitching your idea.", options: [
+          { t: "I can name real people — and I have heard them describe this problem in their own words.", s: 2 },
+          { t: "I have a type of person in mind, but I have not heard it from them directly yet.", s: 1 },
+          { t: "Honestly I cannot name anyone specific. It is “people like me,” or everyone.", s: 0 }
+        ] },
+        { dim: "EVIDENCE", q: "What evidence shows the problem exists?", hint: "Behavior counts: money spent, workarounds built, repeated complaints. Opinions do not.", assumption: "Interest may not yet be strong enough to change behavior, spend money, or create a workaround.", experiment: "Ask for one costly signal before building: money, time, data, a manual pilot, or another commitment that is harder to give than a polite yes.", options: [
+          { t: "People have shown me — through what they have paid for, done repeatedly, or asked for unprompted.", s: 2 },
+          { t: "There are hints — complaints, workarounds, or interest — but nothing I would call proof.", s: 1 },
+          { t: "It is mostly my own belief. I have not seen anyone act on it.", s: 0 }
+        ] },
+        { dim: "PROBLEM", secondary: "DIFFERENTIATION", q: "What do people currently do instead?", hint: "Every problem already has a reigning solution, even if it is a spreadsheet and stubbornness.", assumption: "You may not yet understand the current workaround well enough to know what must actually improve.", experiment: "Observe or interview three people about their current workaround. Write down the exact steps, costs, frustrations, and what they refuse to give up.", options: [
+          { t: "I can describe their current workaround in detail — and exactly where it falls short.", s: 2 },
+          { t: "I know roughly what they use, but not what frustrates them about it.", s: 1 },
+          { t: "I do not actually know what they do today.", s: 0 }
+        ] },
+        { dim: "DIFFERENTIATION", q: "Why does this require software?", hint: "Software must earn its place. Most problems have cheaper answers.", assumption: "Software may be a convenient implementation choice rather than a necessary part of the value.", experiment: "Deliver the outcome once without new software — manually, with a document, or using existing tools — and see whether users still value the result.", options: [
+          { t: "Software is the only practical way — the value depends on computation, connection, or scale.", s: 2 },
+          { t: "Software would help, but a simpler non-software approach could cover much of it.", s: 1 },
+          { t: "It does not, really — it could be a conversation, a document, a service, or an existing tool.", s: 0 }
+        ] },
+        { dim: "EVIDENCE", q: "What becomes measurably better?", hint: "If you cannot say what “better” looks like in numbers, you cannot know whether you succeeded.", assumption: "You may not yet have a measurable outcome that can tell you whether the product created value.", experiment: "Choose one observable measure — time, money, errors, completion, or another outcome — and establish today's baseline before changing anything.", options: [
+          { t: "I can name the measure — time, money, errors, attention — and what “better” looks like in numbers.", s: 2 },
+          { t: "I can describe the improvement, but I could not measure whether it happened.", s: 1 },
+          { t: "It would just be “better” in a vague sense.", s: 0 }
+        ] },
+        { dim: "DISTRIBUTION", q: "How would the first 10 users discover it?", hint: "The first ten are found by hand, by name — never by “marketing.”", assumption: "The path to the first users may be less concrete than the product idea itself.", experiment: "Recruit three prospective users by name this week. If you cannot reach three, work on the distribution path before working on the software.", options: [
+          { t: "I know exactly where to find them and how to reach them directly this week.", s: 2 },
+          { t: "I have ideas for reaching them, but no direct access yet.", s: 1 },
+          { t: "I would be relying on strangers finding it — app stores, search, or word of mouth.", s: 0 }
+        ] },
+        { dim: "ACCUMULATING_ADVANTAGE", q: "What advantage accumulates as people use it?", hint: "The tenth user should inherit something the first user paid for: knowledge, connections, reputation.", assumption: "Use may not yet create an advantage that compounds rather than resetting with every new user.", experiment: "Simulate the accumulation with a few users. Capture what one user's use leaves behind and test whether it genuinely improves the experience for the next user.", options: [
+          { t: "Every user — or every week of use — makes it more valuable, in a way that stays with us.", s: 2 },
+          { t: "It might improve with use, but I cannot say exactly how.", s: 1 },
+          { t: "Nothing accumulates — the tenth user gets the same thing as the first.", s: 0 }
+        ] },
+        { dim: "DIFFERENTIATION", q: "What prevents easy substitution or cloning?", hint: "Being first is not protection. Being hard to copy is.", assumption: "A capable alternative may be able to reproduce the useful part without inheriting your costs.", experiment: "Name the closest substitute and ask three target users why they would choose you instead. If the answer is only faster, nicer, or newer, keep testing differentiation.", options: [
+          { t: "Something hard to copy — deep understanding of the people served, earned trust, rare access, or a genuinely hard problem.", s: 2 },
+          { t: "We would be faster or nicer, but someone capable could reproduce it.", s: 1 },
+          { t: "Nothing much — anyone who notices could rebuild it quickly.", s: 0 }
+        ] },
+        { dim: "TRUST", q: "Where is trust required — and do you have it?", hint: "Money, health, reputation, important decisions: these run on trust, and trust is slow.", assumption: "The product may require more trust than you have currently earned with the people who would need to use it.", experiment: "Do the work manually for one person or partner with someone who already holds the required trust. Learn what proof makes them comfortable before automating it.", options: [
+          { t: "I know exactly where trust matters — and I already have it with these people, or a clear path to earn it.", s: 2 },
+          { t: "Trust matters and I have some of it, but there are gaps.", s: 1 },
+          { t: "It asks for trust I have not earned — or I am not sure where trust even comes in.", s: 0 }
+        ] },
+        { dim: "EVIDENCE", q: "What is the cheapest way to test the core assumption without building?", hint: "Conversations, a paper mockup, doing it by hand once, or an existing tool all count.", assumption: "You may be treating a software build as the prerequisite for learning when a smaller test could answer the core question first.", experiment: "Run the smallest test you can complete this week without new software: a conversation, paper mockup, manual service, or existing-tool prototype.", options: [
+          { t: "I can run it this week — with conversations, a mockup, a manual version, or an existing tool.", s: 2 },
+          { t: "I have an idea for a small test, but it would take real effort to set up.", s: 1 },
+          { t: "I cannot see how to test it without building the thing first.", s: 0 }
+        ] }
+      ];
+
+      const DIM_QUESTION_INDEXES = {
+        PROBLEM: [0, 2],
+        EVIDENCE: [1, 4, 9],
+        DISTRIBUTION: [5],
+        DIFFERENTIATION: [3, 7, 2],
+        TRUST: [8],
+        ACCUMULATING_ADVANTAGE: [6]
+      };
+
+      function scoreAll(currentAnswers) {
+        const dims = {
+          PROBLEM: { earned: currentAnswers[0] + currentAnswers[2], max: 4 },
+          EVIDENCE: { earned: currentAnswers[1] + currentAnswers[4] + currentAnswers[9], max: 6 },
+          DISTRIBUTION: { earned: currentAnswers[5], max: 2 },
+          DIFFERENTIATION: { earned: currentAnswers[3] + currentAnswers[7] + (currentAnswers[2] === 2 ? 1 : 0), max: 5 },
+          TRUST: { earned: currentAnswers[8], max: 2 },
+          ACCUMULATING_ADVANTAGE: { earned: currentAnswers[6], max: 2 }
+        };
+        const total = currentAnswers.reduce((sum, value) => sum + value, 0);
+        return { dims, total };
+      }
+
+      function isWeak(dim) { return dim.earned <= dim.max / 2; }
+      function ratio(dim) { return dim.earned / dim.max; }
+
+      function computeVerdict(currentAnswers) {
+        const { dims, total } = scoreAll(currentAnswers);
+        const weakKeys = DIMENSIONS.filter((key) => isWeak(dims[key]));
+        let verdict;
+        if (isWeak(dims.PROBLEM) || isWeak(dims.EVIDENCE) || total <= 8) verdict = "DON'T BUILD";
+        else if (weakKeys.length > 0 || total <= 14) verdict = "TEST FIRST";
+        else verdict = "BUILD";
+
+        let strongest = DIMENSIONS[0];
+        DIMENSIONS.forEach((key) => {
+          if (ratio(dims[key]) > ratio(dims[strongest])) strongest = key;
+        });
+
+        let weakest = null;
+        if (weakKeys.length) {
+          const candidates = weakKeys.filter((key) => key !== strongest);
+          const pool = candidates.length ? candidates : weakKeys;
+          weakest = pool[0];
+          pool.forEach((key) => {
+            if (ratio(dims[key]) < ratio(dims[weakest])) weakest = key;
+          });
+        }
+        return { verdict, dims, total, weakKeys, strongest, weakest };
+      }
+
+      function selectedOptionText(questionIndex, currentAnswers) {
+        const score = currentAnswers[questionIndex];
+        const option = QUESTIONS[questionIndex].options.find((candidate) => candidate.s === score);
+        return option ? option.t : "No answer recorded.";
+      }
+
+      function dimensionExplanation(key, currentAnswers, dims) {
+        const parts = DIM_QUESTION_INDEXES[key].map((questionIndex) => selectedOptionText(questionIndex, currentAnswers));
+        return `<strong>${DIM_LABEL[key]} ${dims[key].earned}/${dims[key].max}.</strong> You reported: ${parts.join(" ")}`;
+      }
+
+      function lowestConfidenceQuestion(currentAnswers) {
+        const lowestScore = Math.min(...currentAnswers);
+        if (lowestScore === 2) return null;
+        let lowestIndex = 0;
+        for (let i = 1; i < currentAnswers.length; i += 1) {
+          if (currentAnswers[i] < currentAnswers[lowestIndex]) lowestIndex = i;
+        }
+        return lowestIndex;
+      }
+
+      function verdictSentence(outcome) {
+        if (outcome.verdict === "DON'T BUILD") {
+          const weakLabel = outcome.weakest ? DIM_LABEL[outcome.weakest].toLowerCase() : "the evidence";
+          return `Treat this as a successful outcome: do not produce software yet. ${weakLabel} has not cleared the gate, and building now would postpone the cheaper learning available first.`;
+        }
+        if (outcome.verdict === "TEST FIRST") {
+          return "Do not build yet. The overall picture is promising, but at least one load-bearing assumption still deserves a smaller test before software.";
+        }
+        return "Your self-reported evidence clears this gate. Treat BUILD as permission to start small, not proof that the market has been independently validated.";
+      }
+
+      const quiz = document.getElementById("bg-quiz");
+      const result = document.getElementById("bg-result");
+      const count = document.getElementById("bg-count");
+      const dimTag = document.getElementById("bg-dim");
+      const barFill = document.getElementById("bg-bar-fill");
+      const qHeading = document.getElementById("bg-q");
+      const qHint = document.getElementById("bg-hint");
+      const optionsBox = document.getElementById("bg-options");
+      const backBtn = document.getElementById("bg-back");
+      const restartQuizBtn = document.getElementById("bg-restart-quiz");
+      const restartResultBtn = document.getElementById("bg-restart-result");
+      const reviewBtn = document.getElementById("bg-review");
+
+      let index = 0;
+      let answers = [];
+
+      function renderQuestion() {
+        const item = QUESTIONS[index];
+        count.textContent = `Question ${index + 1} of ${QUESTIONS.length}`;
+        dimTag.textContent = DIM_LABEL[item.dim].toUpperCase();
+        barFill.style.width = Math.round((index / QUESTIONS.length) * 100) + "%";
+        qHeading.textContent = item.q;
+        qHint.textContent = item.hint;
+        optionsBox.innerHTML = "";
+
+        item.options.forEach((opt) => {
+          const li = document.createElement("li");
+          const btn = document.createElement("button");
+          const selected = answers[index] === opt.s;
+          btn.type = "button";
+          btn.classList.toggle("is-selected", selected);
+          btn.setAttribute("aria-pressed", String(selected));
+          btn.append(document.createTextNode(opt.t));
+          const tag = document.createElement("small");
+          const stateLabel = opt.s === 2 ? "Yes — true today" : opt.s === 1 ? "Partly true" : "Not true yet";
+          tag.textContent = selected ? `${stateLabel} · Selected` : stateLabel;
+          btn.appendChild(tag);
+          btn.addEventListener("click", () => {
+            answers[index] = opt.s;
+            if (index < QUESTIONS.length - 1) {
+              index += 1;
+              renderQuestion();
+              qHeading.focus({ preventScroll: true });
+            } else {
+              showResult();
+            }
+          });
+          li.appendChild(btn);
+          optionsBox.appendChild(li);
+        });
+        backBtn.disabled = index === 0;
+      }
+
+      function showResult() {
+        const outcome = computeVerdict(answers);
+        const verdictEl = document.getElementById("bg-verdict-label");
+        const uncertaintyIndex = lowestConfidenceQuestion(answers);
+
+        verdictEl.textContent = outcome.verdict;
+        verdictEl.className = "bg-verdict " + (outcome.verdict === "DON'T BUILD" ? "bg-verdict--dont" : outcome.verdict === "TEST FIRST" ? "bg-verdict--test" : "");
+
+        const strongestText = dimensionExplanation(outcome.strongest, answers, outcome.dims);
+        const weakestText = outcome.weakest
+          ? dimensionExplanation(outcome.weakest, answers, outcome.dims)
+          : "<strong>No material weak dimension detected from your answers.</strong> Every dimension scored above the defined weak threshold.";
+
+        document.getElementById("bg-reason").textContent = verdictSentence(outcome);
+        document.getElementById("bg-strongest").innerHTML = strongestText;
+        document.getElementById("bg-weakest").innerHTML = weakestText;
+
+        if (uncertaintyIndex === null) {
+          document.getElementById("bg-assumption").textContent = "No low-confidence response was detected in your self-report. The remaining assumption is that the evidence you reported holds up when checked with real users rather than only inside this assessment.";
+          document.getElementById("bg-experiment").textContent = "Verify one of your strongest claims with a real user before expanding scope: ask for a concrete commitment or run the smallest usable version and compare the observed result with what you reported here.";
+        } else {
+          const uncertaintyQuestion = QUESTIONS[uncertaintyIndex];
+          const uncertaintyAnswer = selectedOptionText(uncertaintyIndex, answers);
+          document.getElementById("bg-assumption").textContent = `On “${uncertaintyQuestion.q}” you selected: “${uncertaintyAnswer}” The uncertainty to test is this: ${uncertaintyQuestion.assumption}`;
+          document.getElementById("bg-experiment").textContent = uncertaintyQuestion.experiment;
+        }
+
+        const dimsList = document.getElementById("bg-dims");
+        dimsList.innerHTML = "";
+        DIMENSIONS.forEach((key) => {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${DIM_LABEL[key]} ${outcome.dims[key].earned}/${outcome.dims[key].max}</strong>${isWeak(outcome.dims[key]) ? " · needs work" : ""}`;
+          dimsList.appendChild(li);
+        });
+
+        document.getElementById("bg-scoring-note").textContent =
+          `How this was scored: ten questions, each answer worth 2 (true today), 1 (partly true), or 0 (not true yet) — ${outcome.total} of 20 overall. ` +
+          "A dimension is weak at half its maximum or below. DON'T BUILD means the problem or the evidence is unproven, or the total is 8 or below. " +
+          "TEST FIRST means some ground is weak, or the total is 14 or below. BUILD requires a high total with no weak ground — and even then, start with the smallest version.";
+
+        quiz.hidden = true;
+        result.hidden = false;
+        window.__BUILD_GATE__ = {
+          verdict: outcome.verdict,
+          dimensions: outcome.dims,
+          weakest: outcome.weakest,
+          assumption: document.getElementById("bg-assumption").textContent,
+          experiment: document.getElementById("bg-experiment").textContent
+        };
+        verdictEl.setAttribute("tabindex", "-1");
+        verdictEl.focus({ preventScroll: true });
+        result.scrollIntoView();
+      }
+
+      function restart() {
+        index = 0;
+        answers = [];
+        result.hidden = true;
+        quiz.hidden = false;
+        renderQuestion();
+        quiz.scrollIntoView();
+        qHeading.focus({ preventScroll: true });
+      }
+
+      backBtn.addEventListener("click", () => {
+        if (index > 0) {
+          index -= 1;
+          renderQuestion();
+          qHeading.focus({ preventScroll: true });
+        }
+      });
+      restartQuizBtn.addEventListener("click", restart);
+      restartResultBtn.addEventListener("click", restart);
+      reviewBtn.addEventListener("click", () => {
+        result.hidden = true;
+        quiz.hidden = false;
+        index = 0;
+        renderQuestion();
+        quiz.scrollIntoView();
+        qHeading.focus({ preventScroll: true });
+      });
+
+      renderQuestion();
+    })();
+  </script>
+  <script src="/reference-preview.js?v=20260905-preview9" defer></script>
+</body>
+</html>
