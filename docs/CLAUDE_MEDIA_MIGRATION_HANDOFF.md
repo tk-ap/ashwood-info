@@ -23,7 +23,7 @@ Status verified on Omarchy 2026-09-08.
 
 A LocalSend transfer was attempted for 265 files and appeared to stall at **163/265**. There are actually **thousands of photos total**, so LocalSend should not be treated as the primary full-library migration mechanism.
 
-The stalled transfer did land: `~/ASHWOOD/Modeling/BarelySain/Originals` currently holds **167 files (2.5G)** — 165 full-res JPG masters from the LocalSend run, plus two HEIC masters recovered on 2026-09-08 (see below). Roughly **100 files from the 265-file batch never arrived**, and the wider library has not been attempted.
+A second batch was sent on 2026-09-08 after the initial run. `~/ASHWOOD/Modeling/BarelySain/Originals` now holds **257 files (3.7G)**, of which **248 are healthy** and **9 are zero-byte placeholders** still awaiting re-send. The wider library has not been attempted.
 
 ### Where the transfer stopped
 
@@ -37,6 +37,23 @@ Filesystem birth times show LocalSend ran in two ascending passes, not one:
 The whole run lasted about two minutes (11:50:42 to 11:52:43 on 2026-09-08) and died partway through the 5xxx pass. **`IMG_5720.jpg` is the last file that arrived.** The 6xxx pass appears complete, so the missing ~100 files are almost entirely 5xxx originals above IMG_5720.
 
 A manifest of the 165 received filenames is written to `~/ASHWOOD/Modeling/BarelySain/localsend-received-165.txt` on Omarchy, for diffing against the Mac-side source folder before re-sending. Note that inode ctimes on these files were all rewritten by a later bulk operation and are useless for ordering; use birth time (`stat %W`/`%w`) instead.
+
+### Verification: file count is not completeness
+
+Both failed transfers so far wrote **correctly named zero-byte files** rather than omitting the file. An empty placeholder passes a filename check, passes an identifier search, and is counted by `find`/`ls`, so it silently reads as present.
+
+A count of 253 files in the archive on 2026-09-08 was in fact 228 real images and 25 empty placeholders, in a contiguous IMG_6091-6117 block. None of the 18 BarelySain identifiers fall in that range, which is why an identifier-based check did not reveal it.
+
+**Audit every batch on arrival:**
+
+```bash
+ARCH=~/ASHWOOD/Modeling/BarelySain/Originals
+echo "total:     $(find "$ARCH" -type f | wc -l)"
+echo "zero-byte: $(find "$ARCH" -type f -size 0 | wc -l)"
+find "$ARCH" -type f -size 0 -printf '  %f\n'
+```
+
+Never treat file count or filename presence as evidence that data arrived. Compare sizes, and byte-compare against the source where a second copy exists.
 
 For bulk migration, prefer an **exFAT external SSD + rsync**. Syncthing can then maintain selected active folders across Mac and Omarchy after the initial migration.
 
@@ -142,21 +159,56 @@ The repo versions are web assets, not necessarily the desired master originals. 
 
 ## Identifier recovery status (2026-09-08)
 
-All 18 identifiers have at least one matching file on Omarchy, but not all of them are masters.
+**All 18 identifiers now have full-resolution masters in the archive.**
 
-**In the archive as masters — 15 of 18.** The 13 originally present, plus `IMG_6759-edited.heic` (31.5MB) and `IMG_6816-edited.heic` (32.7MB), which were found in `~/Pictures/BarelySain-contact-sheets/source/BarelySain/` and copied into the canonical archive with `cp -p` — bytes and timestamps preserved, no recompression, md5 verified against source.
+Recovered across two batches plus a manual sweep of `~/Downloads`:
 
-**No master on Omarchy — 3 of 18.** These exist only as web assets committed under `assets/campaigns/barelysain/`, and their originals are still on the Mac:
+- `6759` and `6816` were found in `~/Pictures/BarelySain-contact-sheets/source/BarelySain/` and copied in as HEIC masters.
+- `5859` and `6050` arrived in the second batch as genuine 3024x4032 masters, replacing the 1350x1800 web derivatives that were previously the only copies.
+- `6716` was recovered from `~/Downloads/IMG_6716-edited.heic` (31.4MB), verified against the committed web asset as the same frame. Its RAW original `IMG_6716.DNG` was archived alongside it, together with the `IMG_6717` HEIC/DNG pair from the same setup.
 
-| Identifier | Only available copy | Dimensions | Assessment |
-| --- | --- | --- | --- |
-| 5859 | `assets/campaigns/barelysain/IMG_5859-edited.jpg` | 1350x1800, 622KB | Web derivative |
-| 6050 | `assets/campaigns/barelysain/IMG_6050-edited.jpg` | 1350x1800, 551KB | Web derivative |
-| 6716 | `assets/campaigns/barelysain/IMG_6716-edited.jpg` | 3024x4032, 5.3MB | Full pixel dimensions but recompressed; comparable masters are ~17MB |
+Sixteen further files in the IMG_6100-6117 range were present in the archive only as zero-byte placeholders and were repaired from full copies in `~/Downloads`. All twenty copies were byte-verified with `cmp` against their sources.
 
-These three are among the ~100 files the stalled LocalSend never delivered. Recover them in the bulk transfer rather than promoting the web assets to masters.
+### Still outstanding
 
-**V3 arc readiness: 8 of 9 frames have masters.** Frames 4, 5, 7, 8 and 9 (6475, 6487, 6751, 6759, 6816) are all present at full resolution. The rusted-fence and DTLA frames depend on the three identifiers above. `IMG_6716-edited.jpg` is usable at full pixel dimensions if the edit cannot wait for the SSD transfer, with the caveat that it is a recompressed copy.
+Nine files remain as zero-byte placeholders with no source anywhere on Omarchy, and must be re-sent from the Mac:
+
+```text
+IMG_6091.jpg          IMG_6096-edited.jpg
+IMG_6092.jpg          IMG_6098.jpg
+IMG_6092-edited.jpg   IMG_6099-edited.jpg
+IMG_6093.jpg          IMG_6100-edited.jpg
+IMG_6095-edited.jpg
+```
+
+None are part of the V3 arc, so the TikTok edit is not blocked.
+
+## TikTok V3 source list
+
+All nine frames have masters. The full list, with per-frame dimensions and edit caveats, is generated on Omarchy at `~/ASHWOOD/Modeling/BarelySain/tiktok-v3-source-list.md`.
+
+| # | Frame | Source file |
+| --- | --- | --- |
+| 1 | gray car detail | `IMG_6729-edited.jpg` |
+| 2 | rusted-fence full body | `IMG_5688-edited.jpg` |
+| 3 | DTLA crosswalk | `IMG_5539.jpg` |
+| 4 | close portrait | `IMG_6475-edited.jpg` |
+| 5 | car pose | `IMG_6487-edited.jpg` |
+| 6 | Malibu two-person beach/car | `IMG_6716-edited.heic` |
+| 7 | mountain pose | `IMG_6751-edited.jpg` |
+| 8 | mountain hero | `IMG_6759-edited.heic` |
+| 9 | full-body finish | `IMG_6816-edited.heic` |
+
+Frames 1, 2, 3 and 6 are described only by content in this handoff and are not labelled in the site markup, whose alt text reads "BARELYSAIN campaign frame N". They were identified visually from contact sheets built in a scratch directory; the originals were not modified.
+
+Two caveats for the edit:
+
+- **Frame 3 (`IMG_5539.jpg`)** is the only landscape original: 4011x3008 with EXIF Orientation=6. It displays portrait in EXIF-aware tools but renders sideways in anything that ignores EXIF. Bake the rotation into a working copy first.
+- **Frames 6, 8 and 9 are HEIC.** Decode to a lossless intermediate rather than re-encoding to JPEG if the NLE struggles. The six JPG sources are 3024x4032 and crop cleanly to 9:16 at 2268x4032.
+
+## Corrupt committed asset
+
+`assets/campaigns/barelysain/IMG_6881-edited.jpg`, used as site frame 7, is a corrupt JPEG: 4005 extraneous bytes before marker 0xd2 and a premature end of data segment. The archive master `IMG_6881-edited.jpg` is clean, so the committed web asset should be regenerated from it. Not part of the V3 arc.
 
 ## Guidance for Claude
 
@@ -165,5 +217,5 @@ These three are among the ~100 files the stalled LocalSend never delivered. Reco
 3. Preserve originals and metadata; avoid recompressing masters during migration.
 4. Once enough files are present on Omarchy, locate the BarelySain candidates by filename first.
 5. Help identify the exact originals corresponding to the ASHWOOD site frames.
-6. Do not delete anything from the Mac until counts/sizes and representative files are verified.
+6. Do not delete anything from the Mac until counts/sizes and representative files are verified. Counts alone are not enough: failed transfers here produce correctly named zero-byte files, so check `find -size 0` and compare sizes before treating a batch as delivered.
 7. After the originals are identified, they can be used to complete the clean 9:16 TikTok V3 edit.
