@@ -2,6 +2,12 @@
   'use strict';
   const anchor = document.querySelector('.owner-intelligence');
   if (!anchor) return;
+  if (!document.querySelector('#cycle-summary-style')) {
+    const style = document.createElement('style');
+    style.id = 'cycle-summary-style';
+    style.textContent = '.cycle-summary{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin:28px 0 52px;padding:24px 0;border-block:1px solid var(--line)}.cycle-summary h2{margin:4px 0 8px;font-size:clamp(28px,3.5vw,48px);font-weight:500;letter-spacing:-.04em}.cycle-summary p{margin:0;max-width:64ch;color:var(--muted);line-height:1.5}.cycle-summary a{flex:none;color:inherit;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;font-size:12px}@media(max-width:760px){.cycle-summary{align-items:flex-start;flex-direction:column}}';
+    document.head.append(style);
+  }
   const section = document.createElement('section');
   section.className = 'cycle-summary';
   section.id = 'cycle-summary';
