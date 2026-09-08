@@ -14,6 +14,13 @@ Core interaction principle:
 
 Motion, state changes, panes, and live updates should exist to communicate real work, not decoration for its own sake.
 
+Site-wide distinction:
+
+**Public ASHWOOD = editorial motion + evidence**  
+**Private Workspace = stateful, informational motion**
+
+They should feel related, but not identical. The public site can use responsive motion to create pace, authorship, discovery, and presence. Workspace motion should primarily communicate execution, state, attention, freshness, and owner action.
+
 ## 1. Persistent Workspace shell
 
 The private Workspace should behave as one operating environment across sub-surfaces rather than a collection of unrelated pages.
