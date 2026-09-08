@@ -1,0 +1,28 @@
+.music-rights-ledger{margin-top:28px;border-top:1px solid var(--ashwood-rule);padding-top:28px}
+.music-rights-ledger__head{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.82fr);gap:24px;align-items:end}
+.music-rights-ledger__head h3{margin:.18em 0 0;font-size:clamp(28px,4vw,48px);font-weight:500;letter-spacing:-.04em;line-height:1}
+.music-rights-ledger__head>p{margin:0;color:var(--ashwood-muted);font-size:12px;line-height:1.65}
+.music-rights-ledger__grid{display:grid;grid-template-columns:minmax(240px,.34fr) minmax(0,1fr);gap:18px;margin-top:20px}
+.music-rights-ledger__tracks,.music-rights-ledger__editor{border:1px solid var(--ashwood-rule);background:color-mix(in srgb,var(--ashwood-paper) 96%,transparent)}
+.music-rights-ledger__tracks{padding:16px}
+.music-rights-ledger__tracks-head{display:flex;justify-content:space-between;gap:12px;padding:0 0 12px;border-bottom:1px solid var(--ashwood-rule);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.music-rights-ledger__tracks-head span{color:var(--ashwood-muted)}
+.music-rights-ledger__track{display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border:0;border-bottom:1px solid var(--ashwood-rule);background:transparent;color:var(--ashwood-ink);text-align:left;cursor:pointer}
+.music-rights-ledger__track:hover,.music-rights-ledger__track:focus-visible,.music-rights-ledger__track.is-active{color:var(--ashwood-field-green)}
+.music-rights-ledger__track strong,.music-rights-ledger__track small{display:block}.music-rights-ledger__track strong{font-size:12px}.music-rights-ledger__track small{margin-top:3px;color:var(--ashwood-muted);font-size:9px}
+.music-rights-ledger__track em,.music-rights-ledger__clearance{font-style:normal;font-size:8px;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+.music-rights-ledger__track em.is-cleared,.music-rights-ledger__clearance.is-cleared{color:var(--ashwood-field-green)}
+.music-rights-ledger__track em.is-review,.music-rights-ledger__clearance.is-review{color:var(--ashwood-ochre)}
+.music-rights-ledger__track em.is-not-cleared,.music-rights-ledger__clearance.is-not-cleared{color:var(--ashwood-muted)}
+.music-rights-ledger__editor{padding:clamp(18px,2.6vw,28px)}
+.music-rights-ledger__editor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.music-rights-ledger__editor-head h4{margin:.18em 0 0;font-size:clamp(21px,2.5vw,32px);font-weight:500;letter-spacing:-.03em}.music-rights-ledger__editor-head small{display:block;margin-top:5px;color:var(--ashwood-muted)}
+.music-rights-ledger__notice{margin:18px 0;padding:12px 0;border-top:1px solid var(--ashwood-rule);border-bottom:1px solid var(--ashwood-rule);color:var(--ashwood-muted);font-size:10px;line-height:1.6}.music-rights-ledger__notice strong{color:var(--ashwood-ink)}
+.music-rights-ledger__fields{display:grid;gap:14px}.music-rights-ledger__fields.two-col{grid-template-columns:repeat(2,minmax(0,1fr))}
+.music-rights-ledger__fields label,.music-rights-ledger__notes{display:grid;gap:7px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ashwood-muted)}
+.music-rights-ledger__fields input,.music-rights-ledger__fields textarea,.music-rights-ledger__fields select,.music-rights-ledger__notes textarea{width:100%;border:1px solid var(--ashwood-rule);background:transparent;color:var(--ashwood-ink);padding:10px 11px;font:inherit;font-size:12px;line-height:1.45;text-transform:none;letter-spacing:0}
+.music-rights-ledger__fields textarea,.music-rights-ledger__notes textarea{min-height:74px;resize:vertical}
+.music-rights-ledger__edition{margin-top:22px;padding-top:20px;border-top:1px solid var(--ashwood-rule)}.music-rights-ledger__edition h5{margin:.18em 0 14px;font-size:18px;font-weight:500}.edition-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.music-rights-ledger__economics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:14px;border-top:1px solid var(--ashwood-rule);border-bottom:1px solid var(--ashwood-rule)}.music-rights-ledger__economics div{padding:12px 10px 12px 0}.music-rights-ledger__economics div+div{padding-left:10px;border-left:1px solid var(--ashwood-rule)}.music-rights-ledger__economics span,.music-rights-ledger__economics strong{display:block}.music-rights-ledger__economics span{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ashwood-muted)}.music-rights-ledger__economics strong{margin-top:5px;font-size:13px}.music-rights-ledger__economics small{grid-column:1/-1;padding:10px 0;color:var(--ashwood-muted);font-size:9px;line-height:1.5;border-top:1px solid var(--ashwood-rule)}
+.music-rights-ledger__notes{margin-top:18px}.music-rights-ledger__actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px}.music-rights-ledger__actions button{border:1px solid var(--ashwood-ink);background:var(--ashwood-ink);color:var(--ashwood-paper);padding:11px 14px;cursor:pointer}.music-rights-ledger__actions button:disabled{opacity:.5}.music-rights-ledger__actions span{color:var(--ashwood-muted);font-size:9px;line-height:1.4;text-align:right}.music-rights-ledger__empty{color:var(--ashwood-muted);font-size:11px;line-height:1.6}
+@media(max-width:900px){.music-rights-ledger__head,.music-rights-ledger__grid{grid-template-columns:1fr}.music-rights-ledger__fields.two-col,.edition-fields{grid-template-columns:1fr}.music-rights-ledger__economics{grid-template-columns:1fr}.music-rights-ledger__economics div+div{padding-left:0;border-left:0;border-top:1px solid var(--ashwood-rule)}}

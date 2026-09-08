@@ -287,3 +287,5 @@
   mountMusicIntelligence();
   loadLibrary();
 })();
+
+import('/workspace/rights-ledger.js?v=20260907-rights1').catch(() => {});
