@@ -5,14 +5,14 @@
   if (!mount) return;
 
   const esc = (value = '') => String(value).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'
   }[c]));
 
-  let snapshot = { completed_items: [], notes: {}, auto_items: [] };
+  let snapshot = { auto_items: [], deployment_completed_items: [], deployment_notes: {} };
 
   function render() {
     const items = Array.isArray(snapshot.auto_items) ? snapshot.auto_items : [];
-    const completed = new Set(snapshot.completed_items || []);
+    const completed = new Set(snapshot.deployment_completed_items || []);
     const pending = items.filter(item => !completed.has(item.id));
 
     mount.hidden = !items.length;
@@ -39,7 +39,7 @@
                   <input type="checkbox" data-deploy-review-id="${esc(item.id)}" ${done ? 'checked' : ''}/>
                   <span><strong>${esc(item.label || 'Review production deployment')}</strong><br/><small>${esc(item.detail || '')}${files.length ? `<br/>Changed: ${esc(files.slice(0,8).join(' · '))}${files.length > 8 ? ' …' : ''}` : ''}</small></span>
                 </label>
-                <textarea data-deploy-note-id="${esc(item.id)}" rows="1" placeholder="What did you notice?">${esc(snapshot.notes?.[item.id] || '')}</textarea>
+                <textarea data-deploy-note-id="${esc(item.id)}" rows="1" placeholder="What did you notice?">${esc(snapshot.deployment_notes?.[item.id] || '')}</textarea>
               </div>`;
             }).join('')}
           </div>
@@ -63,7 +63,11 @@
   async function save() {
     const res = await fetch('/api/workspace-checklist', {
       method:'PATCH', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ completed_items:snapshot.completed_items || [], notes:snapshot.notes || {} }),
+      body:JSON.stringify({
+        scope:'deployment',
+        deployment_completed_items:snapshot.deployment_completed_items || [],
+        deployment_notes:snapshot.deployment_notes || {},
+      }),
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
@@ -72,9 +76,9 @@
   mount.addEventListener('change', async event => {
     const box = event.target.closest('[data-deploy-review-id]');
     if (!box) return;
-    const completed = new Set(snapshot.completed_items || []);
+    const completed = new Set(snapshot.deployment_completed_items || []);
     if (box.checked) completed.add(box.dataset.deployReviewId); else completed.delete(box.dataset.deployReviewId);
-    snapshot.completed_items = [...completed];
+    snapshot.deployment_completed_items = [...completed];
     render();
     try { await save(); } catch { await load(); }
   });
@@ -83,10 +87,10 @@
   mount.addEventListener('input', event => {
     const field = event.target.closest('[data-deploy-note-id]');
     if (!field) return;
-    snapshot.notes = snapshot.notes || {};
+    snapshot.deployment_notes = snapshot.deployment_notes || {};
     const value = field.value.trim();
-    if (value) snapshot.notes[field.dataset.deployNoteId] = value;
-    else delete snapshot.notes[field.dataset.deployNoteId];
+    if (value) snapshot.deployment_notes[field.dataset.deployNoteId] = value;
+    else delete snapshot.deployment_notes[field.dataset.deployNoteId];
     clearTimeout(noteTimer);
     noteTimer = setTimeout(() => save().catch(() => load()), 400);
   });
