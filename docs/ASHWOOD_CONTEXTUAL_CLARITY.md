@@ -29,6 +29,14 @@ A visitor should usually encounter information in this order:
 
 Do not present every relevant concept at the same visual weight.
 
+## UI behavior rule
+
+Simplification must not flatten the experience.
+
+Preserve useful interaction, progressive learning, meaningful motion, input, choice, and contextual reveal. Reduce the cognitive load around those behaviors instead of removing them merely to shorten a page.
+
+The target is **lower reading burden with equal or better usefulness**.
+
 ## Writing rules
 
 - Prefer one strong sentence over a paragraph when the paragraph does not change the decision.
@@ -36,7 +44,7 @@ Do not present every relevant concept at the same visual weight.
 - Do not define jargon before the visitor needs it.
 - When jargon is necessary, translate it inline in plain language.
 - Use questions when a question communicates the product/problem faster than a category description.
-- Prefer evidence, artifacts, diagrams, screenshots, status, and examples over explanatory prose.
+- Prefer evidence, artifacts, diagrams, screenshots, status, examples, and interaction over explanatory prose.
 - Preserve nuance in deeper layers; do not destroy nuance merely to sound simple.
 - Progressive disclosure is preferred to long landing-page copy.
 - A section should have one primary job.
@@ -97,4 +105,4 @@ For each major page, a first-time visitor should be able to answer within roughl
 - Why might I care?
 - What should I look at or do next?
 
-If the page requires reading several paragraphs before those answers become clear, simplify it.
+If the page requires reading several paragraphs before those answers become clear, simplify it without removing useful behavior.
