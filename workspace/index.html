@@ -9,11 +9,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
   <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-frame1" />
-  <link rel="stylesheet" href="/workspace/workstreams.css?v=20260907-workstreams1" />
+  <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260907-drop1" />
   <script src="/theme.js?v=20260827-1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260906-frame1"></script>
-  <script type="module" src="/workspace/workstreams.mjs?v=20260907-workstreams1"></script>
+  <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script src="/workspace/drop.js?v=20260907-drop1" defer></script>
 </head>
 <body class="workspace-page">
@@ -25,6 +25,7 @@
       </div>
       <div class="workspace-actions">
         <span class="live-state" id="live-state" aria-live="polite">Locked</span>
+        <a class="text-button" href="/workspace/v3-playtest/">Review checklist</a>
         <button class="text-button" id="sign-out" type="button">Lock workspace</button>
         <button class="text-button" id="refresh-evidence" type="button">Refresh evidence</button>
         <button class="text-button" id="add-evidence" type="button">Add evidence</button>
@@ -72,8 +73,8 @@
         </div>
         <p class="section-note workstream-note"><span id="workstream-count">Loading workstreams…</span> · ASHWOOD shows the human-facing projection; execution truth stays in AgentOS, ailhat, and the owning repos.</p>
       </div>
-      <div class="workstream-list" id="workstream-list" aria-live="polite">
-        <p class="workstream-empty">Loading canonical workstreams…</p>
+      <div class="workstream-list is-loading" id="workstream-list" aria-live="polite">
+        <p class="workstream-empty"><strong>Loading active workstreams…</strong><span>Checking the private canonical projection.</span></p>
       </div>
     </section>
 
@@ -124,7 +125,7 @@
       </div>
     </section>
 
-    <details class="checkin disclosure" id="checkin-details">
+    <details class="checkin disclosure" id="checkin-details" open>
       <summary>Today · daily check-in</summary>
       <section class="checkin" id="checkin" aria-labelledby="checkin-title">
         <div class="section-heading-row">
@@ -149,7 +150,7 @@
       </section>
     </details>
 
-    <details class="pulse disclosure">
+    <details class="pulse disclosure" open>
       <summary>What moved · current pulse</summary>
       <section class="pulse" aria-labelledby="pulse-title">
         <div class="section-heading-row">
@@ -163,7 +164,7 @@
       </section>
     </details>
 
-    <details class="disclosure">
+    <details class="disclosure" open>
       <summary>The connections &amp; rhythm</summary>
       <div class="visual-pair">
         <section class="connections" aria-labelledby="connections-title">
@@ -221,7 +222,7 @@
     </section>
 
     <footer class="workspace-footer">
-      <span>Return anytime: <a href="/workspace/">/workspace/</a> · Bookmark this page</span>
+      <span>Return anytime: <a href="/workspace/">/workspace/</a> · <a href="/workspace/v3-playtest/">Review checklist</a> · Bookmark this page</span>
       <details><summary>About this view</summary><p id="goal-source-note"></p><p>Activity is evidence, not a measure of life completion. Sign-in lasts up to 30 days on this browser.</p></details>
     </footer>
   </main>
