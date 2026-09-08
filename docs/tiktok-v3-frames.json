@@ -1,0 +1,213 @@
+{
+ "$comment": "BarelySain TikTok frame sequence and cut timing. Durations are a recommendation; see docs/CODEX_MODELING_TIKTOK_BRIEF.md.",
+ "version": "v3-12frame-balanced",
+ "status": "proposed",
+ "generated": "2026-09-08",
+ "intent": "A book-me reel drawn only from the BarelySain shoot, balanced across its three locations.",
+ "scope": "BarelySain shots only. Runway (up-next-*) and IMG_7192 are different shoots and are excluded.",
+ "output": {
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "aspect": "9:16",
+  "total_duration_seconds": 10.6
+ },
+ "source": {
+  "repo_path": "assets/tiktok/source",
+  "repo_resolution": "1440x1920",
+  "master_archive": "~/ASHWOOD/Modeling/BarelySain/Originals",
+  "drive_folder": "~/ASHWOOD/tiktok"
+ },
+ "balance": {
+  "downtown": 4,
+  "malibu": 4,
+  "mountain": 4
+ },
+ "narrative": "downtown -> malibu -> mountain, grouped so each location reads as a distinct block",
+ "rhythm": "Open on motion, settle into each location, hold the finish.",
+ "excluded": {
+  "non_barelysain": "Runway (up-next-151/155) and IMG_7192 are different shoots. Excluded by TK: the video is BarelySain only.",
+  "agency_digitals": "IMG_7195-7209, 1400x1050 landscape, would need a 1.8x upscale for 9:16. Excluded by TK.",
+  "apartment_block": "IMG_6088-6120 kitchen/garment-bag/phone/window sequence. Excluded by TK.",
+  "rooftop": "IMG_6072/6078 are BarelySain but a different styling and read as neither downtown street, Malibu, nor mountain. Dropped to keep the three-way balance clean."
+ },
+ "frames": [
+  {
+   "position": 1,
+   "id": "IMG_5459",
+   "file": "IMG_5459.jpg",
+   "seconds": 1.1,
+   "register": "downtown",
+   "description": "walking, Metro bus",
+   "note": "Opens on motion and a full-body line. Unmistakably LA."
+  },
+  {
+   "position": 2,
+   "id": "IMG_5496",
+   "file": "IMG_5496.jpg",
+   "seconds": 0.9,
+   "register": "downtown",
+   "description": "close portrait, sunglasses",
+   "note": "The face beat."
+  },
+  {
+   "position": 3,
+   "id": "IMG_5538",
+   "file": "IMG_5538.jpg",
+   "seconds": 0.8,
+   "register": "downtown",
+   "description": "crosswalk, toward camera",
+   "note": "Subject sits small and low against the billboards. Crop needs checking."
+  },
+  {
+   "position": 4,
+   "id": "IMG_5724",
+   "file": "IMG_5724.jpg",
+   "seconds": 0.8,
+   "register": "downtown",
+   "description": "graffiti wall",
+   "note": "Full body against texture."
+  },
+  {
+   "position": 5,
+   "id": "IMG_6487",
+   "file": "IMG_6487.jpg",
+   "seconds": 0.8,
+   "register": "malibu",
+   "description": "car pose"
+  },
+  {
+   "position": 6,
+   "id": "IMG_6475",
+   "file": "IMG_6475.jpg",
+   "seconds": 0.7,
+   "register": "malibu",
+   "description": "close portrait on the car"
+  },
+  {
+   "position": 7,
+   "id": "IMG_6501",
+   "file": "IMG_6501.jpg",
+   "seconds": 0.8,
+   "register": "malibu",
+   "description": "beach, full body",
+   "note": "Standing full body, keeps Malibu from being all car frames."
+  },
+  {
+   "position": 8,
+   "id": "IMG_6716",
+   "file": "IMG_6716.jpg",
+   "seconds": 0.9,
+   "register": "malibu",
+   "description": "two-person, beach and car"
+  },
+  {
+   "position": 9,
+   "id": "IMG_6902",
+   "file": "IMG_6902.jpg",
+   "seconds": 0.6,
+   "register": "mountain",
+   "description": "garment graphic detail",
+   "note": "Shortest cut. A punctuation beat entering the mountain block."
+  },
+  {
+   "position": 10,
+   "id": "IMG_6751",
+   "file": "IMG_6751.jpg",
+   "seconds": 0.8,
+   "register": "mountain",
+   "description": "mountain pose, on the rock"
+  },
+  {
+   "position": 11,
+   "id": "IMG_6759",
+   "file": "IMG_6759.jpg",
+   "seconds": 0.9,
+   "register": "mountain",
+   "description": "mountain hero",
+   "note": "Deceleration begins."
+  },
+  {
+   "position": 12,
+   "id": "IMG_6816",
+   "file": "IMG_6816.jpg",
+   "seconds": 1.5,
+   "register": "mountain",
+   "description": "full-body finish",
+   "note": "Hold. Still on screen as the caption lands."
+  }
+ ],
+ "alternates": [
+  {
+   "id": "IMG_5487",
+   "register": "downtown",
+   "reason": "Low angle against glass towers"
+  },
+  {
+   "id": "IMG_5525",
+   "register": "downtown",
+   "reason": "FURIOUS billboard against the red car"
+  },
+  {
+   "id": "IMG_5688",
+   "register": "downtown",
+   "reason": "Rusted fence, full body. Was frame 2 of the original nine."
+  },
+  {
+   "id": "IMG_5720",
+   "register": "downtown",
+   "reason": "Graffiti wall, wider alternative to 5724"
+  },
+  {
+   "id": "IMG_6238",
+   "register": "malibu",
+   "reason": "Bluff, full body"
+  },
+  {
+   "id": "IMG_6247",
+   "register": "malibu",
+   "reason": "Coastal path, walking toward camera"
+  },
+  {
+   "id": "IMG_6420",
+   "register": "malibu",
+   "reason": "Beach, hood up"
+  },
+  {
+   "id": "IMG_6580",
+   "register": "malibu",
+   "reason": "Seated in the sand"
+  },
+  {
+   "id": "IMG_6729",
+   "register": "malibu",
+   "reason": "Gray car detail. Was the opener in an earlier cut."
+  },
+  {
+   "id": "IMG_6818",
+   "register": "mountain",
+   "reason": "Mountain full body in the black tracksuit. More wardrobe-consistent finisher than 6816."
+  },
+  {
+   "id": "IMG_6862",
+   "register": "mountain",
+   "reason": "Guardrail and foliage"
+  },
+  {
+   "id": "IMG_5539",
+   "register": "downtown",
+   "reason": "Original crosswalk frame, landscape. For the modeling page, not the video."
+  }
+ ],
+ "text": {
+  "on_screen": "apparently this app hasn't seen me model yet",
+  "caption": "another tab",
+  "baked_in": false,
+  "note": "Add both natively in TikTok. Never burn text into the render."
+ },
+ "human_gates": [
+  "Final frame selection and order",
+  "Per-frame crop position within the 9:16 window",
+  "Audio choice, which overrides all durations"
+ ]
+}
