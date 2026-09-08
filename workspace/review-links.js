@@ -24,10 +24,10 @@
       link.className = 'v3-checklist__open';
       link.dataset.reviewOpen = id;
       link.href = `/api/workspace-review-visit?item=${encodeURIComponent(id)}`;
-      link.textContent = AUTO.has(id) ? 'Open · auto-checks visit ↗' : 'Open surface ↗';
+      link.textContent = AUTO.has(id) ? 'Open · auto-checks visit ↗' : 'Review live ↗';
       link.title = AUTO.has(id)
         ? 'Reaching this destination is enough to complete this objective visit check.'
-        : 'Opens the relevant surface. This check stays manual because it requires judgment or behavior verification.';
+        : 'Records review started and opens the relevant surface. Only your explicit checkmark approves this judgment or behavior check.';
       label.append(link);
     });
   }
