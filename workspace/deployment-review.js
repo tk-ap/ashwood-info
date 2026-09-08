@@ -5,7 +5,7 @@
   if (!mount) return;
 
   const esc = (value = '') => String(value).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
 
   let snapshot = { auto_items: [], deployment_completed_items: [], deployment_notes: {} };
