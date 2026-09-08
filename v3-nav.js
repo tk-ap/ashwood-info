@@ -41,6 +41,8 @@
     .v3-global-nav__aside p{margin:0;max-width:26ch;font-size:13px;line-height:1.55;color:var(--ashwood-muted)}
     .v3-global-nav__secondary{display:flex;gap:18px;flex-wrap:wrap}
     .v3-global-nav__secondary a{font-size:9px;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:4px}
+    .v3-global-nav__private{margin-top:auto;align-self:flex-end;opacity:.32;font-size:8px!important;letter-spacing:.18em!important;border-bottom-color:transparent!important}
+    .v3-global-nav__private:hover,.v3-global-nav__private:focus-visible{opacity:1;border-bottom-color:currentColor!important}
     body.v3-global-nav-open{overflow:hidden}
     @media(max-width:900px){
       .v3-global-nav__body{grid-template-columns:1fr}
@@ -49,6 +51,7 @@
       .v3-global-nav__links a{grid-template-columns:34px minmax(0,1fr) auto;gap:14px}
       .v3-global-nav__links span{font-size:clamp(28px,8vw,42px)}
       .v3-global-nav__aside p{display:none}
+      .v3-global-nav__private{align-self:flex-start}
     }
     @media(prefers-reduced-motion:reduce){.v3-global-nav{transition:none!important}}
   `;
@@ -80,6 +83,7 @@
           <a href="/#thinking">The instinct</a>
           <a href="/#evidence">Current work</a>
         </div>
+        <a class="v3-global-nav__private" href="/workspace/" rel="nofollow" aria-label="Private ASHWOOD workspace">workspace ↗</a>
       </div>
     </div>`;
   document.body.appendChild(nav);
