@@ -247,11 +247,21 @@
     hotspots.forEach((hotspot,index)=>{const left=parseFloat(hotspot.style.left||"0"),rect=hotspot.getBoundingClientRect(),suppressed=left<-100||rect.right<fieldRect.left||rect.left>fieldRect.right;if(!suppressed)return;let placed=false;for(const [sx,sy] of slots){hotspot.style.left=`${sx}%`;hotspot.style.top=`${sy}%`;hotspot.style.right="auto";hotspot.style.bottom="auto";const c=hotspot.getBoundingClientRect();const inside=c.left>=fieldRect.left+4&&c.right<=fieldRect.right-4&&c.top>=fieldRect.top+4&&c.bottom<=fieldRect.bottom-4;const blocked=protectedRects.some(a=>overlaps(c,a,compact?8:16));const collides=visibleRects.some(a=>overlaps(c,a,compact?6:14));if(inside&&!blocked&&!collides){visibleRects.push(c);placed=true;break}}if(!placed){hotspot.style.left=`${compact?8+(index%2)*48:48+(index%3)*16}%`;hotspot.style.top=`${compact?36+Math.floor(index/2)*13:30+Math.floor(index/3)*25}%`;hotspot.style.right="auto";hotspot.style.bottom="auto"}});
   };
 
+  const installLivingMark = () => {
+    if (document.querySelector('script[data-ashwood-living-mark]')) return;
+    const script = document.createElement('script');
+    script.src = '/ashwood-living-mark.js?v=20260907-global1';
+    script.defer = true;
+    script.dataset.ashwoodLivingMark = '1';
+    document.head.appendChild(script);
+  };
+
   installThemeStyles();
   applyTheme(currentTheme, false);
   ensureSharedHeaderStyles();
   buildSharedHeader();
   mountSwitchers();
+  installLivingMark();
   installAmbientField();
 
   if (normalizedPath === "/journal") import("/journal/alvira-current.js").catch(()=>{});

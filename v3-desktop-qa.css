@@ -1,0 +1,57 @@
+/* V3 desktop overlap QA
+   Keep semantic annotations in document flow when they sit inside the hero copy.
+   Floating provenance collided with the responsive headline at desktop widths just
+   as it did on mobile. The provenance is content, not chrome. */
+
+.v3-provenance {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  align-self: flex-start;
+  margin: 0 0 clamp(22px, 2.2vw, 34px) !important;
+  transform: none !important;
+  max-width: min(100%, 38ch) !important;
+  white-space: normal;
+  line-height: 1.35;
+}
+
+.v3-provenance + .v3-kicker {
+  margin-top: 0 !important;
+}
+
+/* Hero thesis: literary/editorial rather than generic display serif. Keep this
+   scoped to the opening statement so the rest of the V3 typographic system can
+   remain unchanged while this direction is evaluated in preview. */
+.v3-hero__copy > .v3-title {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif !important;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+/* Give the hero copy enough breathing room under the fixed masthead without
+   forcing the title or annotations into the same visual lane. */
+@media (min-width: 901px) {
+  .v3-hero__copy {
+    padding-top: clamp(128px, 11vw, 178px) !important;
+  }
+
+  .v3-hero__copy > .v3-title {
+    max-width: 9.4ch;
+  }
+
+  .v3-manifesto-note {
+    position: static !important;
+    inset: auto !important;
+    align-self: flex-start;
+    margin-top: clamp(18px, 2vw, 28px) !important;
+    max-width: min(100%, 42ch) !important;
+  }
+}
+
+/* At compact desktop widths, remove secondary masthead copy rather than
+   compressing the navigation, wordmark, and metadata into one crowded row. */
+@media (max-width: 1180px) and (min-width: 901px) {
+  .v3-mast__meta {
+    display: none !important;
+  }
+}
