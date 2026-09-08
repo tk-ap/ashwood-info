@@ -1,3 +1,4 @@
+import { deploymentReviewTarget } from './_review-targets.mjs';
 import { getSql, json, requireSession } from './_workspace.mjs';
 
 const CHECKLIST_ID = 'v3-playtest-2026-09-08';
@@ -68,6 +69,7 @@ async function ensureTable(sql) {
     deployment_notes JSONB NOT NULL DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
+  await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS review_started JSONB NOT NULL DEFAULT '{}'::jsonb`;
 }
 
 function redirect(res, location) {
@@ -83,24 +85,31 @@ export default async function handler(req, res) {
     const session = await requireSession(req);
     const rawUrl = new URL(req.url, 'https://ashwood.local');
     const itemId = String(rawUrl.searchParams.get('item') || '').trim();
-    const target = TARGETS[itemId] || '/workspace/v3-playtest/';
     if (!session) return redirect(res, `/workspace/?review_return=${encodeURIComponent(itemId)}`);
-    if (!TARGETS[itemId]) return redirect(res, '/workspace/v3-playtest/');
-
-    if (AUTO_COMPLETE_ON_VISIT.has(itemId)) {
-      const sql = getSql();
-      await ensureTable(sql);
-      const rows = await sql`SELECT completed_items FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;
-      const completed = Array.isArray(rows[0]?.completed_items) ? rows[0].completed_items : [];
-      if (!completed.includes(itemId)) {
-        const next = [...completed, itemId].slice(0, 1000);
-        await sql`
-          INSERT INTO workspace_checklists (checklist_id, completed_items, updated_at)
-          VALUES (${CHECKLIST_ID}, ${JSON.stringify(next)}::jsonb, NOW())
-          ON CONFLICT (checklist_id) DO UPDATE SET completed_items = EXCLUDED.completed_items, updated_at = NOW()
-        `;
-      }
+    const sql = getSql();
+    await ensureTable(sql);
+    let target = Object.hasOwn(TARGETS, itemId) ? TARGETS[itemId] : null;
+    if (!target) {
+      const rows = await sql`SELECT auto_items FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;
+      const items = Array.isArray(rows[0]?.auto_items) ? rows[0].auto_items : [];
+      target = deploymentReviewTarget(items.find(item => item.id === itemId));
     }
+    if (!target) return redirect(res, '/workspace/v3-playtest/');
+
+    // Record arrival separately from approval. Merge in SQL to preserve concurrent visits.
+    const started = JSON.stringify({ [itemId]: new Date().toISOString() });
+    const completed = JSON.stringify(AUTO_COMPLETE_ON_VISIT.has(itemId) ? [itemId] : []);
+    await sql`
+      INSERT INTO workspace_checklists (checklist_id, review_started, completed_items, updated_at)
+      VALUES (${CHECKLIST_ID}, ${started}::jsonb, ${completed}::jsonb, NOW())
+      ON CONFLICT (checklist_id) DO UPDATE SET
+        review_started = EXCLUDED.review_started || workspace_checklists.review_started,
+        completed_items = CASE WHEN ${AUTO_COMPLETE_ON_VISIT.has(itemId)}
+          AND NOT workspace_checklists.completed_items @> ${completed}::jsonb
+          THEN workspace_checklists.completed_items || ${completed}::jsonb
+          ELSE workspace_checklists.completed_items END,
+        updated_at = NOW()
+    `;
 
     return redirect(res, target);
   } catch (error) {

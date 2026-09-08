@@ -11,6 +11,10 @@ It has two distinct but connected responsibilities:
 
 Do not collapse those into one generic project feed. Public presentation should feel editorial and authored rather than like an internal operations dashboard.
 
+## Living Experience Direction
+
+ASHWOOD's UI and private Workspace should feel alive: a living, breathing working copy of everything currently relevant about TK for its intended audience to consume. Keep the experience current, personal, and useful. Activity and interaction should reveal meaningful context, work, or change; preserve the distinction between public presentation and private owner state. This direction does not authorize publishing private material or adding motion for its own sake.
+
 ## Evidence and Public-Claim Rules
 
 - ASHWOOD may curate verified evidence from the broader product ecosystem, but it does not become the canonical operating source for another product.

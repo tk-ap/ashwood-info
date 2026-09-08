@@ -35,10 +35,14 @@
               const done = completed.has(item.id);
               const files = Array.isArray(item.files) ? item.files : [];
               return `<div class="v3-checklist__item ${done ? 'is-done' : ''}">
+                <div>
                 <label>
                   <input type="checkbox" data-deploy-review-id="${esc(item.id)}" ${done ? 'checked' : ''}/>
                   <span><strong>${esc(item.label || 'Review production deployment')}</strong><br/><small>${esc(item.detail || '')}${files.length ? `<br/>Changed: ${esc(files.slice(0,8).join(' · '))}${files.length > 8 ? ' …' : ''}` : ''}</small></span>
                 </label>
+                ${item.review_target === 'ai-from-zero' ? `<a class="v3-checklist__open" href="/api/workspace-review-visit?item=${encodeURIComponent(item.id)}">Review live ↗</a>` : ''}
+                <p class="v3-checklist__note">${done ? 'Approved by owner' : snapshot.review_started?.[item.id] ? 'Review started · awaiting your approval' : 'Awaiting owner review'}</p>
+                </div>
                 <textarea data-deploy-note-id="${esc(item.id)}" rows="1" placeholder="What did you notice?">${esc(snapshot.deployment_notes?.[item.id] || '')}</textarea>
               </div>`;
             }).join('')}
@@ -95,5 +99,6 @@
     noteTimer = setTimeout(() => save().catch(() => load()), 400);
   });
 
+  window.addEventListener('pageshow', event => { if (event.persisted) load(); });
   load();
 })();

@@ -80,6 +80,7 @@
   const allItems = sections.flatMap(([, items]) => items);
   let completed = new Set();
   let notes = {};
+  let reviewStarted = {};
   let saveTimer = 0;
 
   const esc = (value='') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -98,7 +99,7 @@
         ${sections.map(([title, items]) => `<details class="v3-checklist__section" ${items.some(([id]) => !completed.has(id)) ? 'open' : ''}>
           <summary><span>${esc(title)}</span><small>${items.filter(([id]) => completed.has(id)).length}/${items.length}</small></summary>
           <div class="v3-checklist__items">${items.map(([id,label]) => `<div class="v3-checklist__item ${completed.has(id)?'is-done':''}">
-            <label><input type="checkbox" data-check-id="${esc(id)}" ${completed.has(id)?'checked':''}/><span>${esc(label)}</span></label>
+            <label><input type="checkbox" data-check-id="${esc(id)}" ${completed.has(id)?'checked':''}/><span>${esc(label)}${reviewStarted[id] && !completed.has(id) ? '<br/><small>Review started · awaiting your approval</small>' : ''}</span></label>
             <textarea data-note-id="${esc(id)}" rows="1" placeholder="Optional note / bug / thought…">${esc(notes[id] || '')}</textarea>
           </div>`).join('')}</div>
         </details>`).join('')}
@@ -155,6 +156,7 @@
       const res = await fetch('/api/workspace-checklist', {credentials:'same-origin',cache:'no-store'});
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
+      reviewStarted = body.review_started || {};
       completed = new Set(Array.isArray(body.completed_items) ? body.completed_items : []);
       notes = body.notes && typeof body.notes === 'object' ? body.notes : {};
       render();
@@ -163,5 +165,6 @@
     }
   }
 
+  window.addEventListener('pageshow', event => { if (event.persisted) load(); });
   load();
 })();

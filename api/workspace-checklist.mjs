@@ -1,9 +1,14 @@
+import { aiZeroReviewItems } from './_review-targets.mjs';
 import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
 
 const CHECKLIST_ID = 'v3-playtest-2026-09-08';
 const REPO = 'tk-ap/ashwood-info';
 const REVIEW_SYSTEM_PATHS = [
   'api/workspace-checklist.mjs',
+  'api/workspace-review-visit.mjs',
+  'api/_review-targets.mjs',
+  'workspace/review-links.js',
+  'workspace/deployment-review.js',
   'workspace/v3-playtest.js',
   'workspace/v3-playtest.css',
   'workspace/v3-playtest/index.html',
@@ -21,6 +26,7 @@ async function ensureTable(sql) {
     deployment_notes JSONB NOT NULL DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
+  await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS review_started JSONB NOT NULL DEFAULT '{}'::jsonb`;
   await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS auto_items JSONB NOT NULL DEFAULT '[]'::jsonb`;
   await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS deployment_completed_items JSONB NOT NULL DEFAULT '[]'::jsonb`;
   await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS deployment_notes JSONB NOT NULL DEFAULT '{}'::jsonb`;
@@ -68,7 +74,8 @@ async function syncProductionDeployment(sql, row) {
 
   const existing = Array.isArray(row?.auto_items) ? row.auto_items : [];
   const itemId = `deploy:${sha}`;
-  if (existing.some(item => item?.id === itemId)) return row;
+  const recorded = existing.find(item => item?.id === itemId);
+  if (recorded && aiZeroReviewItems(recorded).every(check => existing.some(item => item.id === check.id))) return row;
 
   try {
     const response = await fetch(`https://api.github.com/repos/${REPO}/commits/${sha}`, {
@@ -90,12 +97,13 @@ async function syncProductionDeployment(sql, row) {
       areas,
       files: files.slice(0, 40),
     };
-    const autoItems = [nextItem, ...existing].slice(0, 200);
+    const checks = aiZeroReviewItems(nextItem).filter(check => !existing.some(item => item.id === check.id));
+    const autoItems = [...checks, ...(recorded ? [] : [nextItem]), ...existing].slice(0, 200);
     const rows = await sql`
       INSERT INTO workspace_checklists (checklist_id, auto_items, updated_at)
       VALUES (${CHECKLIST_ID}, ${JSON.stringify(autoItems)}::jsonb, NOW())
       ON CONFLICT (checklist_id) DO UPDATE SET auto_items = EXCLUDED.auto_items, updated_at = NOW()
-      RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at
+      RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, review_started, updated_at
     `;
     return rows[0] || { ...row, auto_items: autoItems };
   } catch (error) {
@@ -112,7 +120,7 @@ export default async function handler(req, res) {
     await ensureTable(sql);
 
     if (req.method === 'GET') {
-      const rows = await sql`SELECT checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;
+      const rows = await sql`SELECT checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, review_started, updated_at FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;
       let row = rows[0] || { completed_items: [], notes: {}, auto_items: [], deployment_completed_items: [], deployment_notes: {}, updated_at: null };
       row = await syncProductionDeployment(sql, row);
       return json(res, 200, {
@@ -123,6 +131,7 @@ export default async function handler(req, res) {
         auto_items: Array.isArray(row?.auto_items) ? row.auto_items : [],
         deployment_completed_items: Array.isArray(row?.deployment_completed_items) ? row.deployment_completed_items : [],
         deployment_notes: row?.deployment_notes && typeof row.deployment_notes === 'object' ? row.deployment_notes : {},
+        review_started: row?.review_started || {},
         updated_at: row?.updated_at || null,
       });
     }
@@ -142,7 +151,7 @@ export default async function handler(req, res) {
           deployment_completed_items = EXCLUDED.deployment_completed_items,
           deployment_notes = EXCLUDED.deployment_notes,
           updated_at = NOW()
-        RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at
+        RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, review_started, updated_at
       `;
       return json(res, 200, { ok: true, ...rows[0] });
     }
@@ -156,7 +165,7 @@ export default async function handler(req, res) {
         completed_items = EXCLUDED.completed_items,
         notes = EXCLUDED.notes,
         updated_at = NOW()
-      RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, updated_at
+      RETURNING checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, review_started, updated_at
     `;
     return json(res, 200, { ok: true, ...rows[0] });
   } catch (error) {
