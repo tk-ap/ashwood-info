@@ -174,7 +174,7 @@
            dimensions: { PROBLEM: {earned, max}, EVIDENCE: {earned, max}, DISTRIBUTION: {earned, max},
                          DIFFERENTIATION: {earned, max}, TRUST: {earned, max}, ACCUMULATING_ADVANTAGE: {earned, max} }
            weakest: null when no material weak dimension exists; otherwise weakest weak dimension key
-           assumption: largest unproven assumption tied to a specific selected response
+           assumption: largest unproven assumption tied to a specific selected response when one is low-confidence
            experiment: cheapest next experiment tied to that uncertainty -->
     </section>
 
@@ -311,6 +311,8 @@
       }
 
       function lowestConfidenceQuestion(currentAnswers) {
+        const lowestScore = Math.min(...currentAnswers);
+        if (lowestScore === 2) return null;
         let lowestIndex = 0;
         for (let i = 1; i < currentAnswers.length; i += 1) {
           if (currentAnswers[i] < currentAnswers[lowestIndex]) lowestIndex = i;
@@ -386,8 +388,6 @@
         const outcome = computeVerdict(answers);
         const verdictEl = document.getElementById("bg-verdict-label");
         const uncertaintyIndex = lowestConfidenceQuestion(answers);
-        const uncertaintyQuestion = QUESTIONS[uncertaintyIndex];
-        const uncertaintyAnswer = selectedOptionText(uncertaintyIndex, answers);
 
         verdictEl.textContent = outcome.verdict;
         verdictEl.className = "bg-verdict " + (outcome.verdict === "DON'T BUILD" ? "bg-verdict--dont" : outcome.verdict === "TEST FIRST" ? "bg-verdict--test" : "");
@@ -400,8 +400,16 @@
         document.getElementById("bg-reason").textContent = verdictSentence(outcome);
         document.getElementById("bg-strongest").innerHTML = strongestText;
         document.getElementById("bg-weakest").innerHTML = weakestText;
-        document.getElementById("bg-assumption").textContent = `On “${uncertaintyQuestion.q}” you selected: “${uncertaintyAnswer}” The uncertainty to test is this: ${uncertaintyQuestion.assumption}`;
-        document.getElementById("bg-experiment").textContent = uncertaintyQuestion.experiment;
+
+        if (uncertaintyIndex === null) {
+          document.getElementById("bg-assumption").textContent = "No low-confidence response was detected in your self-report. The remaining assumption is that the evidence you reported holds up when checked with real users rather than only inside this assessment.";
+          document.getElementById("bg-experiment").textContent = "Verify one of your strongest claims with a real user before expanding scope: ask for a concrete commitment or run the smallest usable version and compare the observed result with what you reported here.";
+        } else {
+          const uncertaintyQuestion = QUESTIONS[uncertaintyIndex];
+          const uncertaintyAnswer = selectedOptionText(uncertaintyIndex, answers);
+          document.getElementById("bg-assumption").textContent = `On “${uncertaintyQuestion.q}” you selected: “${uncertaintyAnswer}” The uncertainty to test is this: ${uncertaintyQuestion.assumption}`;
+          document.getElementById("bg-experiment").textContent = uncertaintyQuestion.experiment;
+        }
 
         const dimsList = document.getElementById("bg-dims");
         dimsList.innerHTML = "";
