@@ -12,6 +12,8 @@ A visitor should understand within roughly ten seconds:
 - the journal preserves reasoning, not only launches;
 - entries show how a question moved through build, evidence, decision, and outcome.
 
+Site-wide editorial rule: **Complexity underneath. Clarity at the surface.** The Journal should reveal one clear idea at a time and let artifacts carry more of the meaning than explanatory prose.
+
 ## Landing-page hierarchy
 
 ### 1. Opening
@@ -44,6 +46,10 @@ Prefer one visual sequence over explanatory prose:
 
 **QUESTION → BUILD → EVIDENCE → DECISION → WHAT CHANGED**
 
+For the landing and entry-preview pattern, prefer:
+
+**question → artifact/evidence → short context → deeper entry**
+
 Deeper methodology belongs behind progressive disclosure or within entries.
 
 ### 4. Recent evidence
@@ -71,6 +77,7 @@ CTA: **Explore AI from Zero →**
 
 - Reduce repeated ecosystem explanation.
 - Prefer visuals, artifacts, statuses, screenshots, diagrams, tests, and timestamps over prose where they can carry the meaning.
+- Prefer one dominant idea per visual moment rather than multiple equal-weight explanations.
 - Use progressive disclosure for depth.
 - Clearly distinguish concept, prototype, preview, owner-only, and production capability states.
 - Mobile must use normal document flow and must not rely on hidden-discovery interactions for essential navigation.
