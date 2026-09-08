@@ -11,14 +11,14 @@ masters, that is called out and routed to a folder TK uploads to Drive.
 
 | Path | What it is |
 | --- | --- |
-| `assets/tiktok/source/` | 21 frames, 1440x1920, quality 80. Enough to render a 1080x1920 video. |
+| `assets/tiktok/source/` | 24 frames: the 14 in the cut plus 10 alternates. 1440x1920 quality 80, except the two runway frames which are 1080x1920 native and copied unresampled. |
 | `docs/tiktok-v3-frames.json` | Frame sequence, per-frame durations, alternates, copy. **The source of truth for timing.** |
-| `tools/build-tiktok.sh` | Renders the cut from the manifest. Tested; produces a 10.300s 1080x1920 h264 file. |
+| `tools/build-tiktok.sh` | Renders the cut from the manifest. Tested; produces a 10.800s 1080x1920 h264 file. |
 | `docs/CLAUDE_MEDIA_MIGRATION_HANDOFF.md` | Where the masters live and how the archive was verified. |
 
 Full-resolution masters are **not** in this repo, deliberately — they are 4.4GB. They live at
-`~/ASHWOOD/Modeling/BarelySain/Originals` on TK's machine, and the twelve recommended frames
-plus nine alternates are copied to `~/ASHWOOD/tiktok/` for upload to Google Drive.
+`~/ASHWOOD/Modeling/BarelySain/Originals` on TK's machine, and the fourteen frames in the cut
+plus ten alternates are copied to `~/ASHWOOD/tiktok/` for upload to Google Drive.
 
 ## Task 1 — Render the TikTok cut
 
@@ -30,59 +30,81 @@ tools/build-tiktok.sh out.mp4 /path/to/tiktok   # renders from the Drive folder 
 The script resolves frames by identifier, so it works against either the repo derivatives or
 the `NN_IMG_xxxx_slug.jpg` names in the Drive folder.
 
+### What this reel is
+
+A **book-me reel**. The goal is to demonstrate modeling competence to someone deciding
+whether to hire, not to tell a story. That decides the selection: it opens on runway rather
+than setup, and favours full-body, posed and walking frames over mood, because those show
+control.
+
+An earlier draft opened on an apartment sequence — a garment in its delivery bag — on the
+argument that the hook reads as a reveal rather than a flex. That was the right call for a
+narrative piece and the wrong one here; casual apartment frames read as content creator
+rather than model. TK excluded that block.
+
 ### Cut timing
 
 Durations live in `docs/tiktok-v3-frames.json`. Edit the manifest, never the script.
 
 | # | Frame | Seconds | Register |
 | --- | --- | --- | --- |
-| 1 | `IMG_6105` garment in plastic | 1.3 | before |
-| 2 | `IMG_6902` hoodie graphic detail | 1.1 | before |
-| 3 | `IMG_6059` close portrait, direct | 1.0 | person |
-| 4 | `IMG_6078` rooftop, DTLA skyline | 0.7 | city |
-| 5 | `IMG_5538` crosswalk, toward camera | 0.7 | city |
-| 6 | `IMG_6729` gray car detail | 0.6 | campaign |
-| 7 | `IMG_5688` rusted fence, full body | 0.6 | campaign |
-| 8 | `IMG_6475` close portrait | 0.6 | campaign |
-| 9 | `IMG_6487` car pose | 0.6 | campaign |
-| 10 | `IMG_6716` Malibu two-person | 0.7 | coast |
-| 11 | `IMG_6759` mountain hero | 0.8 | coast |
-| 12 | `IMG_6816` full-body finish | 1.6 | payoff |
-| | **Total** | **10.3** | |
+| 1 | `up-next-155` runway walk, mid-stride | 1.2 | runway |
+| 2 | `up-next-151` runway walk, second angle | 1.0 | runway |
+| 3 | `IMG_5496` close portrait, sunglasses | 0.9 | face |
+| 4 | `IMG_5459` walking, Metro bus | 0.7 | dtla |
+| 5 | `IMG_5538` crosswalk, toward camera | 0.7 | dtla |
+| 6 | `IMG_5487` low angle, glass towers | 0.6 | dtla |
+| 7 | `IMG_5724` graffiti wall | 0.6 | dtla |
+| 8 | `IMG_6078` rooftop, DTLA skyline | 0.6 | dtla |
+| 9 | `IMG_6902` garment graphic detail | 0.5 | campaign |
+| 10 | `IMG_5688` rusted fence, full body | 0.6 | campaign |
+| 11 | `IMG_6487` car pose | 0.6 | campaign |
+| 12 | `IMG_7192` gas station, orange McLaren | 0.6 | campaign |
+| 13 | `IMG_6716` Malibu two-person | 0.7 | coast |
+| 14 | `IMG_6816` full-body finish | 1.5 | payoff |
+| | **Total** | **10.8** | |
 
 **The shape matters more than the numbers.** Three things are deliberate:
 
-1. **The open is slow.** Frames 1 and 2 total 2.4 seconds because the on-screen line
-   ("apparently this app hasn't seen me model yet") is eight words and needs roughly that
-   long to read. Cutting the open faster makes the hook unreadable, which is the single
-   most likely way this video fails.
-2. **The middle accelerates.** The four campaign frames run 0.6s each. This is the fastest
-   run in the piece and it is what makes the sequence feel like a reveal rather than a
-   slideshow.
-3. **The end holds.** 1.6 seconds on the final frame, more than double the campaign cuts,
-   so the last image is still on screen as the caption lands.
+1. **Runway opens it.** Two real runway frames from different angles settle the competence
+   question inside two seconds, before a viewer decides whether to keep watching. The second
+   angle is not redundant — it shows a real show rather than one lucky frame.
+2. **The middle accelerates.** Five DTLA frames then four campaign frames at 0.5-0.7s. This
+   is the range argument, made fast.
+3. **The end holds.** 1.5 seconds on the finish, more than double the fastest cuts, so the
+   image is still on screen as the caption lands.
 
-If TK picks a track, **the audio wins**. Snap cuts to the beat and preserve the shape:
-long-long-long, then a fast four, then a held finish. At 120bpm (0.5s per beat) that is
-roughly 3/2/2 beats on the open, 1 beat each through the campaign, 3 beats on the finish.
+The on-screen line does the setup work, which is why the images do not have to, and why the
+reel can open on its strongest frame instead of an establishing one.
+
+If TK picks a track, **the audio wins**. Snap cuts to the beat and preserve the shape: a
+slower opening three, a fast run, a held finish.
 
 ### Hard constraints
 
 - **Render silent.** Audio is chosen in TikTok.
-- **Never burn in text.** The on-screen line and the caption are added natively in TikTok.
-  This is a standing instruction from the original handoff, not a preference.
+- **Never burn in text.** The on-screen line and caption are added natively in TikTok. This
+  is a standing instruction from the original handoff, not a preference.
 - Output 1080x1920, 9:16, 30fps.
+
+### Deliberate exclusions — do not reintroduce these
+
+- **Agency digitals** (`IMG_7195`-`7209`) are 1400x1050 landscape. A 9:16 crop needs roughly
+  a 1.8x upscale and no higher-resolution copies exist anywhere on the machine. Excluded by
+  TK. `IMG_7192` is in the same folder but is an editorial location frame, not a digital,
+  which is why it stays.
+- **The apartment block** (`IMG_6088`-`6120`) is excluded by TK. Frame 8 (`IMG_6078`) is from
+  the same shoot day but a distinct location and register, and stays.
 
 ### Crop is not automatic
 
-Every frame is portrait 3:4. Cropping to 9:16 keeps full height and takes width — each
-frame **loses 25% of its width**. The script centre-crops, which is a default, not a
+Frames 1 and 2 are already 1080x1920 and need no crop. Every other frame is 3:4, so cropping
+to 9:16 **loses 25% of its width**. The script centre-crops, which is a default, not a
 judgement.
 
 Frame 5 (`IMG_5538`) is the known problem: the subject stands small and low against the
-billboards, and a centre crop weakens the composition. Check it before accepting the
-render. Per-frame crop offsets are a human decision — surface a concern, do not silently
-pick a crop and call it done.
+billboards. Check it before accepting the render. Per-frame crop offsets are a human
+decision — surface a concern, do not silently pick a crop and call it done.
 
 ## Task 2 — Modeling page
 
@@ -123,21 +145,23 @@ may need no change at all; confirm it renders correctly rather than assuming.
 
 ## Status of the selection
 
-The twelve-frame arc, the durations, and the `5539 → 5538` swap are **proposals**. They have
-not been approved by TK.
+The fourteen-frame cut and the per-frame durations are **proposals**. They have not been
+approved by TK, and rendering them is not approval of them.
 
-The nine-frame arc in `docs/CLAUDE_MEDIA_MIGRATION_HANDOFF.md` is the previously agreed set.
-The twelve-frame version adds an apartment prologue — the garment in its delivery bag, then
-the graphic up close — on the argument that the hook reads as a flex if the video opens on
-polished campaign work, and as an actual reveal if it opens on something that looks like
-anyone's apartment.
+What TK has decided, and what you should not relitigate:
 
-That is a creative judgement, and it is TK's to make. Render the proposal so it can be
-looked at; do not treat rendering it as approval of it.
+- The reel is a **book-me piece**, not a narrative one. It needs to read as competent
+  modeling to someone deciding whether to hire.
+- **More DTLA.** The city section grew from two frames to five, because street frames read
+  as active practice rather than campaign output.
+- **No agency digitals** and **no apartment block**. Both excluded explicitly.
+- **`IMG_5539` is out of the video** and belongs on the modeling page instead.
+
+Still open, and reserved to TK: final frame order, per-frame crop, and audio.
 
 ## Verification you can do here
 
-- `tools/build-tiktok.sh` runs clean and reports 10.300s
+- `tools/build-tiktok.sh` runs clean and reports 10.800s
 - `ffprobe` on the output confirms 1080x1920, 30fps, no audio stream
 - Every `frames[].file` in the manifest resolves in `assets/tiktok/source/`
-- Every referenced image in `portfolio/index.html` exists and decodes
+- Every image referenced by `portfolio/index.html` exists and decodes

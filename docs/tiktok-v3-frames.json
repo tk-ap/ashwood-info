@@ -1,57 +1,205 @@
 {
-  "$comment": "BarelySain TikTok V3 frame sequence and cut timing. Durations are a starting recommendation, not an approved cut; see docs/CODEX_MODELING_TIKTOK_BRIEF.md.",
-  "version": "v3-proposed-12frame",
-  "status": "proposed",
-  "generated": "2026-09-08",
-  "output": {
-    "width": 1080,
-    "height": 1920,
-    "fps": 30,
-    "aspect": "9:16",
-    "total_duration_seconds": 10.3
+ "$comment": "BarelySain TikTok V3 frame sequence and cut timing. Durations are a recommendation; see docs/CODEX_MODELING_TIKTOK_BRIEF.md.",
+ "version": "v3-14frame-runway-open",
+ "status": "proposed",
+ "generated": "2026-09-08",
+ "intent": "A book-me reel. The goal is to demonstrate modeling competence to someone deciding whether to hire, not to tell a story.",
+ "output": {
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "aspect": "9:16",
+  "total_duration_seconds": 10.8
+ },
+ "source": {
+  "repo_path": "assets/tiktok/source",
+  "repo_resolution": "1440x1920 (runway frames are 1080x1920 native, copied unresampled)",
+  "master_archive": "~/ASHWOOD/Modeling/BarelySain/Originals",
+  "drive_folder": "~/ASHWOOD/tiktok"
+ },
+ "narrative": "proof -> face -> city -> campaign -> coast -> payoff",
+ "rhythm": "Open on runway so competence is settled in the first two seconds. Accelerate through DTLA and campaign. Hold the finish.",
+ "excluded": {
+  "agency_digitals": "IMG_7195-7209 are 1400x1050 landscape; a 9:16 crop needs a 1.8x upscale and no higher-resolution copies exist anywhere. Excluded by TK.",
+  "apartment_block": "IMG_6088-6120 (kitchen, garment bag, phone, window reflections). Reads as content creator rather than model. Excluded by TK."
+ },
+ "frames": [
+  {
+   "position": 1,
+   "id": "up-next-155",
+   "file": "up-next-155.jpg",
+   "seconds": 1.2,
+   "register": "runway",
+   "description": "runway walk, mid-stride",
+   "note": "Opens on undeniable proof. Held long enough for the on-screen line to start reading."
   },
-  "source": {
-    "repo_path": "assets/tiktok/source",
-    "repo_resolution": "1440x1920",
-    "master_archive": "~/ASHWOOD/Modeling/BarelySain/Originals",
-    "drive_folder": "~/ASHWOOD/tiktok",
-    "note": "Repo copies are 1440x1920 derivatives, sufficient for a 1080x1920 render. Full-resolution masters live in the archive and in the Drive folder."
+  {
+   "position": 2,
+   "id": "up-next-151",
+   "file": "up-next-151.jpg",
+   "seconds": 1.0,
+   "register": "runway",
+   "description": "runway walk, second angle",
+   "note": "Second angle confirms it is a real show, not one lucky frame."
   },
-  "narrative": "before -> person -> city -> campaign -> coast -> payoff",
-  "rhythm": "Slow open so the on-screen text can be read, accelerate through the campaign run, decelerate and hold the final frame.",
-  "frames": [
-    { "position": 1,  "id": "IMG_6105", "file": "IMG_6105.jpg", "seconds": 1.3, "register": "before",   "description": "garment in plastic",          "note": "Hook frame. Held long enough for the on-screen line to be read." },
-    { "position": 2,  "id": "IMG_6902", "file": "IMG_6902.jpg", "seconds": 1.1, "register": "before",   "description": "hoodie graphic detail",       "note": "Second half of the text read." },
-    { "position": 3,  "id": "IMG_6059", "file": "IMG_6059.jpg", "seconds": 1.0, "register": "person",   "description": "close portrait, direct",      "note": "The reveal beat. Do not rush this one." },
-    { "position": 4,  "id": "IMG_6078", "file": "IMG_6078.jpg", "seconds": 0.7, "register": "city",     "description": "rooftop, DTLA skyline" },
-    { "position": 5,  "id": "IMG_5538", "file": "IMG_5538.jpg", "seconds": 0.7, "register": "city",     "description": "crosswalk, toward camera",    "note": "Subject sits small and low in frame. Crop needs checking; a centre crop weakens it." },
-    { "position": 6,  "id": "IMG_6729", "file": "IMG_6729.jpg", "seconds": 0.6, "register": "campaign", "description": "gray car detail",             "note": "Acceleration starts here." },
-    { "position": 7,  "id": "IMG_5688", "file": "IMG_5688.jpg", "seconds": 0.6, "register": "campaign", "description": "rusted fence, full body" },
-    { "position": 8,  "id": "IMG_6475", "file": "IMG_6475.jpg", "seconds": 0.6, "register": "campaign", "description": "close portrait" },
-    { "position": 9,  "id": "IMG_6487", "file": "IMG_6487.jpg", "seconds": 0.6, "register": "campaign", "description": "car pose" },
-    { "position": 10, "id": "IMG_6716", "file": "IMG_6716.jpg", "seconds": 0.7, "register": "coast",    "description": "Malibu two-person, beach and car" },
-    { "position": 11, "id": "IMG_6759", "file": "IMG_6759.jpg", "seconds": 0.8, "register": "coast",    "description": "mountain hero",               "note": "Deceleration begins." },
-    { "position": 12, "id": "IMG_6816", "file": "IMG_6816.jpg", "seconds": 1.6, "register": "payoff",   "description": "full-body finish",            "note": "Hold. The last frame carries the caption landing." }
-  ],
-  "alternates": [
-    { "id": "IMG_5539", "reason": "Original crosswalk frame, landscape 4011x3008 EXIF Orientation 6. Intended for the modeling page, not the video." },
-    { "id": "IMG_6119", "reason": "Window reflection over downtown towers, second city option" },
-    { "id": "IMG_6120", "reason": "Window reflection, alternate exposure" },
-    { "id": "IMG_6072", "reason": "Rooftop skyline alternate" },
-    { "id": "IMG_6117", "reason": "Phone in hand, apartment. A more casual opener." },
-    { "id": "IMG_5951", "reason": "Neon sign, full body. Different interior register." },
-    { "id": "IMG_6918", "reason": "Red Ferrari against the green shoe" },
-    { "id": "IMG_6703", "reason": "Cropped waist and garment detail by the car" }
-  ],
-  "text": {
-    "on_screen": "apparently this app hasn't seen me model yet",
-    "caption": "another tab",
-    "baked_in": false,
-    "note": "Add both natively in TikTok. Never burn text into the rendered video."
+  {
+   "position": 3,
+   "id": "IMG_5496",
+   "file": "IMG_5496.jpg",
+   "seconds": 0.9,
+   "register": "face",
+   "description": "close portrait, sunglasses",
+   "note": "The face beat. Attitude, direct."
   },
-  "human_gates": [
-    "Final frame selection and order",
-    "Per-frame crop position within the 9:16 window",
-    "Audio choice, which overrides all durations below"
-  ]
+  {
+   "position": 4,
+   "id": "IMG_5459",
+   "file": "IMG_5459.jpg",
+   "seconds": 0.7,
+   "register": "dtla",
+   "description": "walking, Metro bus",
+   "note": "Motion. Unmistakably LA."
+  },
+  {
+   "position": 5,
+   "id": "IMG_5538",
+   "file": "IMG_5538.jpg",
+   "seconds": 0.7,
+   "register": "dtla",
+   "description": "crosswalk, toward camera",
+   "note": "Subject sits small and low against the billboards. Crop needs checking."
+  },
+  {
+   "position": 6,
+   "id": "IMG_5487",
+   "file": "IMG_5487.jpg",
+   "seconds": 0.6,
+   "register": "dtla",
+   "description": "low angle, glass towers",
+   "note": "Architectural, hero angle."
+  },
+  {
+   "position": 7,
+   "id": "IMG_5724",
+   "file": "IMG_5724.jpg",
+   "seconds": 0.6,
+   "register": "dtla",
+   "description": "graffiti wall",
+   "note": "Texture and street."
+  },
+  {
+   "position": 8,
+   "id": "IMG_6078",
+   "file": "IMG_6078.jpg",
+   "seconds": 0.6,
+   "register": "dtla",
+   "description": "rooftop, DTLA skyline",
+   "note": "Elevated city. Same shoot day as the apartment block but a distinct location and register."
+  },
+  {
+   "position": 9,
+   "id": "IMG_6902",
+   "file": "IMG_6902.jpg",
+   "seconds": 0.5,
+   "register": "campaign",
+   "description": "garment graphic detail",
+   "note": "Shortest cut in the piece. A punctuation beat, not a held frame."
+  },
+  {
+   "position": 10,
+   "id": "IMG_5688",
+   "file": "IMG_5688.jpg",
+   "seconds": 0.6,
+   "register": "campaign",
+   "description": "rusted fence, full body",
+   "note": "Full-body line."
+  },
+  {
+   "position": 11,
+   "id": "IMG_6487",
+   "file": "IMG_6487.jpg",
+   "seconds": 0.6,
+   "register": "campaign",
+   "description": "car pose"
+  },
+  {
+   "position": 12,
+   "id": "IMG_7192",
+   "file": "IMG_7192.jpg",
+   "seconds": 0.6,
+   "register": "campaign",
+   "description": "gas station, orange McLaren",
+   "note": "Lives in assets/digitals2026 but is an editorial location frame, not an agency digital."
+  },
+  {
+   "position": 13,
+   "id": "IMG_6716",
+   "file": "IMG_6716.jpg",
+   "seconds": 0.7,
+   "register": "coast",
+   "description": "Malibu two-person, beach and car"
+  },
+  {
+   "position": 14,
+   "id": "IMG_6816",
+   "file": "IMG_6816.jpg",
+   "seconds": 1.5,
+   "register": "payoff",
+   "description": "full-body finish",
+   "note": "Hold. Still on screen as the caption lands."
+  }
+ ],
+ "alternates": [
+  {
+   "id": "IMG_6729",
+   "reason": "Gray car detail. Was the opener in the previous cut."
+  },
+  {
+   "id": "IMG_6475",
+   "reason": "Close portrait. 5496 now does this job, in the city."
+  },
+  {
+   "id": "IMG_6751",
+   "reason": "Mountain pose"
+  },
+  {
+   "id": "IMG_6759",
+   "reason": "Mountain hero. Dropped when the coast section shrank."
+  },
+  {
+   "id": "IMG_5525",
+   "reason": "FURIOUS billboard against the red car"
+  },
+  {
+   "id": "IMG_5591",
+   "reason": "MAMBA INVITATIONAL banner"
+  },
+  {
+   "id": "IMG_5788",
+   "reason": "Shell station, palms, red flags"
+  },
+  {
+   "id": "IMG_5951",
+   "reason": "Neon sign, full body"
+  },
+  {
+   "id": "IMG_6072",
+   "reason": "Rooftop skyline alternate"
+  },
+  {
+   "id": "IMG_5539",
+   "reason": "Original crosswalk frame, landscape. For the modeling page, not the video."
+  }
+ ],
+ "text": {
+  "on_screen": "apparently this app hasn't seen me model yet",
+  "caption": "another tab",
+  "baked_in": false,
+  "note": "Add both natively in TikTok. Never burn text into the render."
+ },
+ "human_gates": [
+  "Final frame selection and order",
+  "Per-frame crop position within the 9:16 window",
+  "Audio choice, which overrides all durations"
+ ]
 }
