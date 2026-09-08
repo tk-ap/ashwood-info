@@ -1,0 +1,57 @@
+{
+  "$comment": "BarelySain TikTok V3 frame sequence and cut timing. Durations are a starting recommendation, not an approved cut; see docs/CODEX_MODELING_TIKTOK_BRIEF.md.",
+  "version": "v3-proposed-12frame",
+  "status": "proposed",
+  "generated": "2026-09-08",
+  "output": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "aspect": "9:16",
+    "total_duration_seconds": 10.3
+  },
+  "source": {
+    "repo_path": "assets/tiktok/source",
+    "repo_resolution": "1440x1920",
+    "master_archive": "~/ASHWOOD/Modeling/BarelySain/Originals",
+    "drive_folder": "~/ASHWOOD/tiktok",
+    "note": "Repo copies are 1440x1920 derivatives, sufficient for a 1080x1920 render. Full-resolution masters live in the archive and in the Drive folder."
+  },
+  "narrative": "before -> person -> city -> campaign -> coast -> payoff",
+  "rhythm": "Slow open so the on-screen text can be read, accelerate through the campaign run, decelerate and hold the final frame.",
+  "frames": [
+    { "position": 1,  "id": "IMG_6105", "file": "IMG_6105.jpg", "seconds": 1.3, "register": "before",   "description": "garment in plastic",          "note": "Hook frame. Held long enough for the on-screen line to be read." },
+    { "position": 2,  "id": "IMG_6902", "file": "IMG_6902.jpg", "seconds": 1.1, "register": "before",   "description": "hoodie graphic detail",       "note": "Second half of the text read." },
+    { "position": 3,  "id": "IMG_6059", "file": "IMG_6059.jpg", "seconds": 1.0, "register": "person",   "description": "close portrait, direct",      "note": "The reveal beat. Do not rush this one." },
+    { "position": 4,  "id": "IMG_6078", "file": "IMG_6078.jpg", "seconds": 0.7, "register": "city",     "description": "rooftop, DTLA skyline" },
+    { "position": 5,  "id": "IMG_5538", "file": "IMG_5538.jpg", "seconds": 0.7, "register": "city",     "description": "crosswalk, toward camera",    "note": "Subject sits small and low in frame. Crop needs checking; a centre crop weakens it." },
+    { "position": 6,  "id": "IMG_6729", "file": "IMG_6729.jpg", "seconds": 0.6, "register": "campaign", "description": "gray car detail",             "note": "Acceleration starts here." },
+    { "position": 7,  "id": "IMG_5688", "file": "IMG_5688.jpg", "seconds": 0.6, "register": "campaign", "description": "rusted fence, full body" },
+    { "position": 8,  "id": "IMG_6475", "file": "IMG_6475.jpg", "seconds": 0.6, "register": "campaign", "description": "close portrait" },
+    { "position": 9,  "id": "IMG_6487", "file": "IMG_6487.jpg", "seconds": 0.6, "register": "campaign", "description": "car pose" },
+    { "position": 10, "id": "IMG_6716", "file": "IMG_6716.jpg", "seconds": 0.7, "register": "coast",    "description": "Malibu two-person, beach and car" },
+    { "position": 11, "id": "IMG_6759", "file": "IMG_6759.jpg", "seconds": 0.8, "register": "coast",    "description": "mountain hero",               "note": "Deceleration begins." },
+    { "position": 12, "id": "IMG_6816", "file": "IMG_6816.jpg", "seconds": 1.6, "register": "payoff",   "description": "full-body finish",            "note": "Hold. The last frame carries the caption landing." }
+  ],
+  "alternates": [
+    { "id": "IMG_5539", "reason": "Original crosswalk frame, landscape 4011x3008 EXIF Orientation 6. Intended for the modeling page, not the video." },
+    { "id": "IMG_6119", "reason": "Window reflection over downtown towers, second city option" },
+    { "id": "IMG_6120", "reason": "Window reflection, alternate exposure" },
+    { "id": "IMG_6072", "reason": "Rooftop skyline alternate" },
+    { "id": "IMG_6117", "reason": "Phone in hand, apartment. A more casual opener." },
+    { "id": "IMG_5951", "reason": "Neon sign, full body. Different interior register." },
+    { "id": "IMG_6918", "reason": "Red Ferrari against the green shoe" },
+    { "id": "IMG_6703", "reason": "Cropped waist and garment detail by the car" }
+  ],
+  "text": {
+    "on_screen": "apparently this app hasn't seen me model yet",
+    "caption": "another tab",
+    "baked_in": false,
+    "note": "Add both natively in TikTok. Never burn text into the rendered video."
+  },
+  "human_gates": [
+    "Final frame selection and order",
+    "Per-frame crop position within the 9:16 window",
+    "Audio choice, which overrides all durations below"
+  ]
+}
