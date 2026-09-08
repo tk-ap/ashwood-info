@@ -1,6 +1,20 @@
 {
   "as_of": "2026-09-08",
   "principle": "The priority surface answers what deserves attention now. AgentOS execution labels must come from synced canonical workstreams, never from assumptions.",
+  "portfolio_constraint": "Do not start a new standalone product until at least one of the current top three priorities reaches its current proof milestone. Capture new ideas to backlog only by default.",
+  "workspace_first_screen": [
+    "WHAT MATTERS",
+    "WHAT AGENTS ARE DOING",
+    "WHAT NEEDS YOU",
+    "WHAT CHANGED"
+  ],
+  "owner_queue_max": 5,
+  "staleness_policy": {
+    "current_under_hours": 24,
+    "watch_after_hours": 24,
+    "stale_after_hours": 48,
+    "rule": "A stale synced workstream must not continue to present as confidently underway unless an explicit waiting/external-dependency state explains the gap."
+  },
   "priorities": [
     {
       "rank": 1,
@@ -8,6 +22,12 @@
       "tier": "NOW",
       "outcome": "Prove the enforcement boundary well enough to earn the first design partners.",
       "owner_next": "Review proof gates and partner-facing decisions that require founder judgment.",
+      "phase_done_when": [
+        "Remaining enforcement proof gates are completed or explicitly dispositioned.",
+        "The product can make a narrow evidence-supported enforcement claim.",
+        "10 qualified prospects are researched and ranked.",
+        "At least 3 design-partner conversations or outreach attempts are initiated with owner approval."
+      ],
       "match": ["ledgato"]
     },
     {
@@ -16,6 +36,12 @@
       "tier": "NOW",
       "outcome": "Make the agent workforce reliably execute work without creating more founder overhead.",
       "owner_next": "Intervene only where execution is blocked, approval is required, or the system cannot reconcile itself.",
+      "phase_done_when": [
+        "Bounded work can be handed off without creating equivalent coordination work.",
+        "Deterministic failures reconcile without founder interruption where safe.",
+        "Workspace receives trustworthy execution projection from AgentOS.",
+        "Blocked, approval-required, underway, stale, and complete states surface clearly."
+      ],
       "match": ["agentos", "agent os", "agent-os"]
     },
     {
@@ -24,6 +50,12 @@
       "tier": "NOW",
       "outcome": "Prove that persistent context creates measurable user value, not just a better product surface.",
       "owner_next": "Prioritize user friction, Context/Reflect usefulness, imports, and measurable context lift over new feature breadth.",
+      "phase_done_when": [
+        "The Context + Reflect journey is materially frictionless for intended beta users.",
+        "Import/seed flows reduce repeated setup.",
+        "At least one measurable context-value signal is captured, such as Re-explanation Rate or Context Lift.",
+        "Progress is judged by user value rather than feature count."
+      ],
       "match": ["alvira"]
     },
     {
@@ -32,6 +64,11 @@
       "tier": "SUPPORT",
       "outcome": "Operate the portfolio and preserve evidence; do not turn ASHWOOD into another startup to feed.",
       "owner_next": "Use Workspace as the operating surface and Build Journal as the public evidence trail.",
+      "phase_done_when": [
+        "Workspace reliably answers what matters, what agents are doing, and what needs the owner.",
+        "Build Journal preserves a clear evidence trail without becoming copy-heavy.",
+        "ASHWOOD remains an operating/evidence surface rather than a new startup obligation."
+      ],
       "match": ["ashwood"]
     },
     {
@@ -40,6 +77,12 @@
       "tier": "HOLD",
       "outcome": "Prove the observe → insight → recommended work → AgentOS routing → outcome loop before expanding the product.",
       "owner_next": "Avoid broad feature expansion until the intelligence loop is repeatedly grounded in real portfolio activity.",
+      "phase_done_when": [
+        "Real portfolio activity is observed.",
+        "A grounded opportunity, risk, drift, or work item is identified and explained.",
+        "Recommended work routes into AgentOS or an owning system.",
+        "The outcome of the intervention can be tracked."
+      ],
       "match": ["ailhat"]
     },
     {
@@ -48,6 +91,10 @@
       "tier": "DOWNSTREAM",
       "outcome": "Turn real build lessons into practical education without competing with the builds for attention.",
       "owner_next": "Document and teach from work that already happened; do not create curriculum work merely to keep the surface busy.",
+      "phase_done_when": [
+        "Real lessons from completed or active builds are captured as practical learning material.",
+        "The education layer remains downstream of execution rather than creating independent delivery pressure."
+      ],
       "match": ["ai from zero", "ai-from-zero"]
     }
   ]
