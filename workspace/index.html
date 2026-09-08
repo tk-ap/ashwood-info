@@ -10,9 +10,11 @@
   <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
   <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-frame1" />
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260907-workstreams1" />
+  <link rel="stylesheet" href="/workspace/drop.css?v=20260907-drop1" />
   <script src="/theme.js?v=20260827-1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260906-frame1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260907-workstreams1"></script>
+  <script src="/workspace/drop.js?v=20260907-drop1" defer></script>
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -72,6 +74,53 @@
       </div>
       <div class="workstream-list" id="workstream-list" aria-live="polite">
         <p class="workstream-empty">Loading canonical workstreams…</p>
+      </div>
+    </section>
+
+    <section class="ashwood-drop" id="ashwood-drop" aria-labelledby="ashwood-drop-title">
+      <div class="ashwood-drop__head">
+        <div>
+          <p class="section-kicker">ASHWOOD intake</p>
+          <h2 id="ashwood-drop-title">Drop it here.</h2>
+        </div>
+        <p>Audio lands in ASHWOOD storage directly. No GitHub file wrangling, no terminal, no remembering which folder I meant.</p>
+      </div>
+
+      <div class="ashwood-drop__grid">
+        <form class="ashwood-drop__panel" id="ashwood-drop-form">
+          <input id="ashwood-drop-files" type="file" accept="audio/mpeg,audio/mp4,audio/x-m4a,audio/aac,audio/wav,audio/x-wav,audio/flac,.mp3,.m4a,.aac,.wav,.flac" multiple />
+          <div class="ashwood-drop-zone" role="button" tabindex="0" aria-controls="ashwood-drop-files">
+            <div>
+              <strong>Drop song files</strong>
+              <span>MP3 · M4A · AAC · WAV · FLAC<br />Click here if dragging is annoying.</span>
+            </div>
+          </div>
+          <ul class="ashwood-drop-queue" id="ashwood-drop-queue" aria-live="polite">
+            <li class="is-empty">Drop MP3, M4A, AAC, WAV, or FLAC files here.</li>
+          </ul>
+
+          <div class="ashwood-drop-fields">
+            <label>Track title<input name="title" type="text" required placeholder="SPECIAL" /></label>
+            <label>Artist<input name="artist" type="text" value="t.kap" /></label>
+            <label>Producer / credit<input name="producerCredit" type="text" placeholder="prod. Shinigami" /></label>
+            <label>Rights / usage note<textarea name="rightsNote" placeholder="Original / unreleased / non-commercial demo / license note"></textarea></label>
+            <label>Source / license URL<input name="sourceUrl" type="url" placeholder="Optional" /></label>
+            <label class="ashwood-drop-check"><input name="publishToMusic" type="checkbox" /> Mark this file for the public Music page after upload.</label>
+          </div>
+
+          <div class="ashwood-drop-actions">
+            <button type="submit">Upload to ASHWOOD</button>
+            <p class="ashwood-drop-status" id="ashwood-drop-status" aria-live="polite"></p>
+          </div>
+          <p class="ashwood-drop__note">Files use direct browser → ASHWOOD Blob storage, so large masters do not have to pass through GitHub or a Vercel function body.</p>
+        </form>
+
+        <aside class="ashwood-drop__panel">
+          <div class="ashwood-drop-library-head"><h3>ASHWOOD library</h3><span>Private control view</span></div>
+          <div class="ashwood-drop-library" id="ashwood-drop-library" aria-live="polite">
+            <p class="ashwood-drop-empty">Loading uploads…</p>
+          </div>
+        </aside>
       </div>
     </section>
 
