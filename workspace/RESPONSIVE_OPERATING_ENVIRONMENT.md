@@ -161,6 +161,75 @@ Future interaction goal: the owner should be able to ask for work from ASHWOOD w
 
 ASHWOOD should be the human interface; AgentOS remains the orchestration layer; model/harness providers remain execution resources.
 
+### Agent communication interaction pattern
+
+Use the visual reference of a **Chat / Agents split** as inspiration, but adapt it to ASHWOOD rather than copying a generic multi-agent dashboard.
+
+The important pattern is:
+
+**request → delegation → visible work → interruption only when needed → result**
+
+The owner should be able to move between two complementary views:
+
+- **Chat** — natural-language conversation and requests
+- **Agents** — visible execution state, delegation, progress, blockers, tool use, and pending owner decisions
+
+A future desktop composition may use three coordinated regions:
+
+1. **Conversation / request rail** — the owner request, clarifying exchange, and concise synthesis.
+2. **Active orchestration field** — which tasks AgentOS created, which harness owns each one, current progress, and next gate.
+3. **Specialist detail pane** — deeper state for one selected resource or task, including subtasks, evidence, tools, blockers, and outputs.
+
+Example state:
+
+**YOU**  
+Review LEDGATo #21 and tell me if it should merge.
+
+**AgentOS**  
+Routes Claude → code/security review  
+Routes Hermes → execution evidence  
+ChatGPT → owner-facing synthesis
+
+**Claude**  
+Review PR #21  
+● Inspect authorization boundary  
+● Check bypass paths  
+○ Final recommendation
+
+**Hermes**  
+Stress evidence  
+✓ Workflow replay  
+✓ Failure path  
+● Fresh external test
+
+**ChatGPT**  
+Owner synthesis  
+Waiting on Claude + Hermes
+
+### Truth and architecture boundary
+
+Do not imply that ASHWOOD itself is the runtime or that agents are executing merely because a card is visible.
+
+The intended architecture remains:
+
+- **ASHWOOD** = human-facing operating interface
+- **AgentOS** = router / orchestrator / canonical execution coordination layer
+- **ChatGPT / Claude / Hermes / other harnesses** = execution resources
+- **LEDGATo** = authority / enforcement layer where applicable
+
+Every visible agent status should have provenance and freshness. Unknown or disconnected state should render as unavailable/unknown rather than simulated activity.
+
+### Design constraints for `/workspace/agents/`
+
+- Do not turn the surface into Slack or a generic team chat.
+- Persistent conversation history is secondary to current task state and delegation clarity.
+- Avoid equal-weight agent cards; emphasize the active request and the work actually moving.
+- Show progress through meaningful state, not decorative percentages unless backed by a real task contract.
+- Make blockers and **needs you** moments visually obvious.
+- Keep deep logs available on demand, not in the default view.
+- Preserve the broader ASHWOOD editorial language and responsiveness principles.
+- Mobile should collapse gracefully into one selected conversation/task context at a time rather than shrinking a desktop multi-column board.
+
 ## Immediate implementation order
 
 1. Persistent Workspace navigation shell across current private sub-surfaces.
