@@ -38,8 +38,10 @@
     .bg-hint{max-width:60ch;margin:14px 0 0;color:var(--ashwood-muted);font-size:14px;line-height:1.6}
     .bg-options{display:grid;gap:12px;margin:30px 0 0;padding:0;list-style:none}
     .bg-options button{width:100%;min-height:56px;padding:16px 18px;border:1px solid var(--ashwood-rule);background:transparent;color:var(--ashwood-ink);cursor:pointer;font:inherit;font-size:15px;line-height:1.55;text-align:left}
-    .bg-options button:hover,.bg-options button:focus-visible{border-color:var(--ashwood-ochre);color:var(--ashwood-ochre)}
+    .bg-options button:hover,.bg-options button:focus-visible,.bg-options button.is-selected{border-color:var(--ashwood-ochre);color:var(--ashwood-ochre)}
+    .bg-options button.is-selected{outline:1px solid var(--ashwood-ochre);outline-offset:2px}
     .bg-options button small{display:block;margin-top:8px;color:var(--ashwood-muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+    .bg-options button.is-selected small{color:var(--ashwood-ochre)}
     .bg-nav{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:30px;padding-top:24px;border-top:1px solid var(--ashwood-rule)}
     .bg-nav button{background:none;border:0;padding:0;min-height:44px;display:inline-flex;align-items:center;color:var(--ashwood-ochre);cursor:pointer;font:inherit;font-size:10px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid transparent}
     .bg-nav button:hover,.bg-nav button:focus-visible{border-bottom-color:currentColor}
@@ -50,6 +52,7 @@
     .bg-verdict--dont{color:var(--ashwood-oxblood)}
     .bg-verdict--test{color:var(--ashwood-ochre)}
     .bg-reason{max-width:64ch;margin:26px 0 0;font-size:clamp(16px,1.5vw,21px);line-height:1.6}
+    .bg-qualification{max-width:70ch;margin:18px 0 0;padding-top:18px;border-top:1px solid var(--ashwood-rule);color:var(--ashwood-muted);font-size:12px;line-height:1.65}
     .bg-rows{margin:34px 0 0;border-top:1px solid var(--ashwood-rule)}
     .bg-row{display:grid;grid-template-columns:minmax(180px,.4fr) minmax(0,1fr);gap:10px 36px;padding:20px 0;border-bottom:1px solid var(--ashwood-rule);align-items:baseline}
     .bg-row span{color:var(--ashwood-ochre);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
@@ -115,13 +118,14 @@
           <button type="button" id="bg-back">← Back</button>
           <button type="button" id="bg-restart-quiz">Start over</button>
         </div>
-        <p class="bg-privacy">Your answers never leave this page. There is no account, no tracking, nothing sent anywhere — going back or starting over erases everything.</p>
+        <p class="bg-privacy">This assessment does not send your answers anywhere. Going Back keeps them so you can revise them; Start over clears them.</p>
       </div>
 
       <div class="bg-result" id="bg-result" hidden aria-live="polite" aria-labelledby="bg-verdict-label">
         <div class="bg-progress-meta"><span>YOUR VERDICT</span><span>TRANSPARENT SCORING / NOTHING HIDDEN</span></div>
         <p class="bg-verdict" id="bg-verdict-label">TEST FIRST</p>
         <p class="bg-reason" id="bg-reason"></p>
+        <p class="bg-qualification">This is a decision aid based on your self-reported evidence, not independent validation.</p>
         <div class="bg-rows">
           <div class="bg-row"><span>Strongest ground</span><p id="bg-strongest"></p></div>
           <div class="bg-row"><span>Weakest ground</span><p id="bg-weakest"></p></div>
@@ -132,7 +136,7 @@
         <p class="bg-scoring" id="bg-scoring-note"></p>
         <div class="bg-nav">
           <button type="button" id="bg-restart-result">Run it again</button>
-          <button type="button" id="bg-review">Review my answers</button>
+          <button type="button" id="bg-review">Revisit my answers</button>
         </div>
       </div>
     </section>
@@ -146,7 +150,7 @@
       <p><strong>Enthusiasm is not evidence.</strong> It is easy to mistake your own excitement — or a few polite nods — for proof that a problem exists. Evidence is what people already do: what they pay for, work around, complain about, or ask for without being prompted. Until behavior shows up, you have a hypothesis, not a foundation.</p>
       <p><strong>Software is often the most expensive answer.</strong> Many problems dissolve into a conversation, a document, a checklist, a service performed by hand, or a feature inside something people already use. Code adds maintenance, expectations, and trust obligations that persist long after the novelty fades. The cheapest version that proves value usually is not software at all.</p>
       <p><strong>Distribution decides more than quality.</strong> A good tool nobody finds is indistinguishable from a tool that was never built. If you cannot name the first ten users and reach them directly, you do not have a software problem — you have a distribution problem, and building first only postpones facing it.</p>
-      <p><strong>Not building can be the strongest accomplishment.</strong> Every DON&rsquo;T BUILD verdict protects weeks of effort, preserves trust with the people you would have served poorly, and keeps your attention available for the thing that actually deserves to exist. Deciding against software, with reasons you can state plainly, is building judgment — the one asset AI cannot produce for you.</p>
+      <p><strong>Not building can be the strongest accomplishment.</strong> Every DON&rsquo;T BUILD verdict protects weeks of effort, preserves trust with the people you would have served poorly, and keeps your attention available for the thing that actually deserves to exist. AI can assist judgment, but the decision about what deserves to be built remains yours to own.</p>
     </section>
 
     <section class="zero-section" id="bridge" aria-labelledby="bridge-title">
@@ -169,9 +173,9 @@
            verdict: "BUILD" | "TEST FIRST" | "DON'T BUILD"
            dimensions: { PROBLEM: {earned, max}, EVIDENCE: {earned, max}, DISTRIBUTION: {earned, max},
                          DIFFERENTIATION: {earned, max}, TRUST: {earned, max}, ACCUMULATING_ADVANTAGE: {earned, max} }
-           weakest: dimension key with the lowest score ratio (ties resolve toward PROBLEM, then EVIDENCE)
-           assumption: largest unproven-assumption sentence for the weakest dimension
-           experiment: cheapest next-experiment sentence for the weakest dimension (includes the Q10 answer text) -->
+           weakest: null when no material weak dimension exists; otherwise weakest weak dimension key
+           assumption: largest unproven assumption tied to a specific selected response
+           experiment: cheapest next experiment tied to that uncertainty -->
     </section>
 
     <footer class="zero-footer">
@@ -192,152 +196,137 @@
         TRUST: "Trust",
         ACCUMULATING_ADVANTAGE: "Accumulating advantage"
       };
-      // Each question: plain-language text, primary dimension, optional hint, 3 answers (strong=2 / mixed=1 / weak=0).
       const QUESTIONS = [
-        { dim: "PROBLEM", q: "Who specifically has the problem?",
-          hint: "A real person you could call by name — not a category, not “people like me.”",
-          options: [
-            { t: "I can name real people — and I have heard them describe this problem in their own words.", s: 2 },
-            { t: "I have a type of person in mind, but I have not heard it from them directly yet.", s: 1 },
-            { t: "Honestly I cannot name anyone specific. It is “people like me,” or everyone.", s: 0 }
-          ] },
-        { dim: "EVIDENCE", q: "What evidence shows the problem exists?",
-          hint: "Behavior counts: money spent, workarounds built, repeated complaints. Opinions do not.",
-          options: [
-            { t: "People have shown me — through what they have paid for, done repeatedly, or asked for unprompted.", s: 2 },
-            { t: "There are hints — complaints, workarounds, or interest — but nothing I would call proof.", s: 1 },
-            { t: "It is mostly my own belief. I have not seen anyone act on it.", s: 0 }
-          ] },
-        { dim: "PROBLEM", secondary: "DIFFERENTIATION", q: "What do people currently do instead?",
-          hint: "Every problem already has a reigning solution, even if it is a spreadsheet and stubbornness.",
-          options: [
-            { t: "I can describe their current workaround in detail — and exactly where it falls short.", s: 2 },
-            { t: "I know roughly what they use, but not what frustrates them about it.", s: 1 },
-            { t: "I do not actually know what they do today.", s: 0 }
-          ] },
-        { dim: "DIFFERENTIATION", q: "Why does this require software?",
-          hint: "Software must earn its place. Most problems have cheaper answers.",
-          options: [
-            { t: "Software is the only practical way — the value depends on computation, connection, or scale.", s: 2 },
-            { t: "Software would help, but a simpler non-software approach could cover much of it.", s: 1 },
-            { t: "It does not, really — it could be a conversation, a document, a service, or an existing tool.", s: 0 }
-          ] },
-        { dim: "EVIDENCE", q: "What becomes measurably better?",
-          hint: "If you cannot say what “better” looks like in numbers, you cannot know whether you succeeded.",
-          options: [
-            { t: "I can name the measure — time, money, errors, attention — and what “better” looks like in numbers.", s: 2 },
-            { t: "I can describe the improvement, but I could not measure whether it happened.", s: 1 },
-            { t: "It would just be “better” in a vague sense.", s: 0 }
-          ] },
-        { dim: "DISTRIBUTION", q: "How would the first 10 users discover it?",
-          hint: "The first ten are found by hand, by name — never by “marketing.”",
-          options: [
-            { t: "I know exactly where to find them and how to reach them directly this week.", s: 2 },
-            { t: "I have ideas for reaching them, but no direct access yet.", s: 1 },
-            { t: "I would be relying on strangers finding it — app stores, search, or word of mouth.", s: 0 }
-          ] },
-        { dim: "ACCUMULATING_ADVANTAGE", q: "What advantage accumulates as people use it?",
-          hint: "The tenth user should inherit something the first user paid for: knowledge, connections, reputation.",
-          options: [
-            { t: "Every user — or every week of use — makes it more valuable, in a way that stays with us.", s: 2 },
-            { t: "It might improve with use, but I cannot say exactly how.", s: 1 },
-            { t: "Nothing accumulates — the tenth user gets the same thing as the first.", s: 0 }
-          ] },
-        { dim: "DIFFERENTIATION", q: "What prevents easy substitution or cloning?",
-          hint: "Being first is not protection. Being hard to copy is.",
-          options: [
-            { t: "Something hard to copy — deep understanding of the people served, earned trust, rare access, or a genuinely hard problem.", s: 2 },
-            { t: "We would be faster or nicer, but someone capable could reproduce it.", s: 1 },
-            { t: "Nothing much — anyone who notices could rebuild it quickly.", s: 0 }
-          ] },
-        { dim: "TRUST", q: "Where is trust required — and do you have it?",
-          hint: "Money, health, reputation, important decisions: these run on trust, and trust is slow.",
-          options: [
-            { t: "I know exactly where trust matters — and I already have it with these people, or a clear path to earn it.", s: 2 },
-            { t: "Trust matters and I have some of it, but there are gaps.", s: 1 },
-            { t: "It asks for trust I have not earned — or I am not sure where trust even comes in.", s: 0 }
-          ] },
-        { dim: "EVIDENCE", q: "What is the cheapest way to test the core assumption without building?",
-          hint: "Conversations, a paper mockup, doing it by hand once, or an existing tool all count.",
-          options: [
-            { t: "I can run it this week — with conversations, a mockup, a manual version, or an existing tool.", s: 2 },
-            { t: "I have an idea for a small test, but it would take real effort to set up.", s: 1 },
-            { t: "I cannot see how to test it without building the thing first.", s: 0 }
-          ] }
+        { dim: "PROBLEM", q: "Who specifically has the problem?", hint: "A real person you could call by name — not a category, not “people like me.”", assumption: "You may still be projecting the problem onto a broad audience instead of hearing it from specific people.", experiment: "Talk to five people who plausibly have the problem. Ask what is difficult today and listen for the problem without pitching your idea.", options: [
+          { t: "I can name real people — and I have heard them describe this problem in their own words.", s: 2 },
+          { t: "I have a type of person in mind, but I have not heard it from them directly yet.", s: 1 },
+          { t: "Honestly I cannot name anyone specific. It is “people like me,” or everyone.", s: 0 }
+        ] },
+        { dim: "EVIDENCE", q: "What evidence shows the problem exists?", hint: "Behavior counts: money spent, workarounds built, repeated complaints. Opinions do not.", assumption: "Interest may not yet be strong enough to change behavior, spend money, or create a workaround.", experiment: "Ask for one costly signal before building: money, time, data, a manual pilot, or another commitment that is harder to give than a polite yes.", options: [
+          { t: "People have shown me — through what they have paid for, done repeatedly, or asked for unprompted.", s: 2 },
+          { t: "There are hints — complaints, workarounds, or interest — but nothing I would call proof.", s: 1 },
+          { t: "It is mostly my own belief. I have not seen anyone act on it.", s: 0 }
+        ] },
+        { dim: "PROBLEM", secondary: "DIFFERENTIATION", q: "What do people currently do instead?", hint: "Every problem already has a reigning solution, even if it is a spreadsheet and stubbornness.", assumption: "You may not yet understand the current workaround well enough to know what must actually improve.", experiment: "Observe or interview three people about their current workaround. Write down the exact steps, costs, frustrations, and what they refuse to give up.", options: [
+          { t: "I can describe their current workaround in detail — and exactly where it falls short.", s: 2 },
+          { t: "I know roughly what they use, but not what frustrates them about it.", s: 1 },
+          { t: "I do not actually know what they do today.", s: 0 }
+        ] },
+        { dim: "DIFFERENTIATION", q: "Why does this require software?", hint: "Software must earn its place. Most problems have cheaper answers.", assumption: "Software may be a convenient implementation choice rather than a necessary part of the value.", experiment: "Deliver the outcome once without new software — manually, with a document, or using existing tools — and see whether users still value the result.", options: [
+          { t: "Software is the only practical way — the value depends on computation, connection, or scale.", s: 2 },
+          { t: "Software would help, but a simpler non-software approach could cover much of it.", s: 1 },
+          { t: "It does not, really — it could be a conversation, a document, a service, or an existing tool.", s: 0 }
+        ] },
+        { dim: "EVIDENCE", q: "What becomes measurably better?", hint: "If you cannot say what “better” looks like in numbers, you cannot know whether you succeeded.", assumption: "You may not yet have a measurable outcome that can tell you whether the product created value.", experiment: "Choose one observable measure — time, money, errors, completion, or another outcome — and establish today's baseline before changing anything.", options: [
+          { t: "I can name the measure — time, money, errors, attention — and what “better” looks like in numbers.", s: 2 },
+          { t: "I can describe the improvement, but I could not measure whether it happened.", s: 1 },
+          { t: "It would just be “better” in a vague sense.", s: 0 }
+        ] },
+        { dim: "DISTRIBUTION", q: "How would the first 10 users discover it?", hint: "The first ten are found by hand, by name — never by “marketing.”", assumption: "The path to the first users may be less concrete than the product idea itself.", experiment: "Recruit three prospective users by name this week. If you cannot reach three, work on the distribution path before working on the software.", options: [
+          { t: "I know exactly where to find them and how to reach them directly this week.", s: 2 },
+          { t: "I have ideas for reaching them, but no direct access yet.", s: 1 },
+          { t: "I would be relying on strangers finding it — app stores, search, or word of mouth.", s: 0 }
+        ] },
+        { dim: "ACCUMULATING_ADVANTAGE", q: "What advantage accumulates as people use it?", hint: "The tenth user should inherit something the first user paid for: knowledge, connections, reputation.", assumption: "Use may not yet create an advantage that compounds rather than resetting with every new user.", experiment: "Simulate the accumulation with a few users. Capture what one user's use leaves behind and test whether it genuinely improves the experience for the next user.", options: [
+          { t: "Every user — or every week of use — makes it more valuable, in a way that stays with us.", s: 2 },
+          { t: "It might improve with use, but I cannot say exactly how.", s: 1 },
+          { t: "Nothing accumulates — the tenth user gets the same thing as the first.", s: 0 }
+        ] },
+        { dim: "DIFFERENTIATION", q: "What prevents easy substitution or cloning?", hint: "Being first is not protection. Being hard to copy is.", assumption: "A capable alternative may be able to reproduce the useful part without inheriting your costs.", experiment: "Name the closest substitute and ask three target users why they would choose you instead. If the answer is only faster, nicer, or newer, keep testing differentiation.", options: [
+          { t: "Something hard to copy — deep understanding of the people served, earned trust, rare access, or a genuinely hard problem.", s: 2 },
+          { t: "We would be faster or nicer, but someone capable could reproduce it.", s: 1 },
+          { t: "Nothing much — anyone who notices could rebuild it quickly.", s: 0 }
+        ] },
+        { dim: "TRUST", q: "Where is trust required — and do you have it?", hint: "Money, health, reputation, important decisions: these run on trust, and trust is slow.", assumption: "The product may require more trust than you have currently earned with the people who would need to use it.", experiment: "Do the work manually for one person or partner with someone who already holds the required trust. Learn what proof makes them comfortable before automating it.", options: [
+          { t: "I know exactly where trust matters — and I already have it with these people, or a clear path to earn it.", s: 2 },
+          { t: "Trust matters and I have some of it, but there are gaps.", s: 1 },
+          { t: "It asks for trust I have not earned — or I am not sure where trust even comes in.", s: 0 }
+        ] },
+        { dim: "EVIDENCE", q: "What is the cheapest way to test the core assumption without building?", hint: "Conversations, a paper mockup, doing it by hand once, or an existing tool all count.", assumption: "You may be treating a software build as the prerequisite for learning when a smaller test could answer the core question first.", experiment: "Run the smallest test you can complete this week without new software: a conversation, paper mockup, manual service, or existing-tool prototype.", options: [
+          { t: "I can run it this week — with conversations, a mockup, a manual version, or an existing tool.", s: 2 },
+          { t: "I have an idea for a small test, but it would take real effort to set up.", s: 1 },
+          { t: "I cannot see how to test it without building the thing first.", s: 0 }
+        ] }
       ];
-      const DIM_COPY = {
-        PROBLEM: {
-          strong: "you can point to specific people and the workaround they live with today.",
-          weak: "the problem itself is still blurry — no named person, no observed workaround.",
-          assumption: "That the problem, as specific people experience it, is real and urgent — rather than your own projection onto them.",
-          experiment: "Have five honest conversations with people who might have the problem. Ask what they do today; do not pitch anything. If none of them describe it unprompted, stop."
-        },
-        EVIDENCE: {
-          strong: "behavior already backs you — spending, repetition, unprompted requests, or a test you could run this week.",
-          weak: "belief is doing all the work — nobody has acted as though this matters yet.",
-          assumption: "That anyone besides you acts as though this problem matters. Enthusiasm is not evidence; behavior is.",
-          experiment: "Ask for a costly signal before building: a deposit, a signed note of intent, a week of their records, or an hour of their time. Polite interest does not count."
-        },
-        DISTRIBUTION: {
-          strong: "you know where the first users are and how to reach them by name this week.",
-          weak: "reach is unproven — the first users are hypothetical and the path to them is hope.",
-          assumption: "That the first users will actually find this. Unreached value is indistinguishable from no value.",
-          experiment: "Recruit three of the first ten users by hand this week — by name, in person or by direct message. If you cannot, distribution is the project, not the software."
-        },
-        DIFFERENTIATION: {
-          strong: "software is genuinely required and something about your answer resists copying.",
-          weak: "software has not earned its place — a simpler answer, or a capable copier, is waiting nearby.",
-          assumption: "That this deserves to exist as its own software — rather than as a conversation, a document, a service, or a feature of something people already use.",
-          experiment: "Deliver the outcome once without software — by hand, with existing tools, as a personal service. If that works, software was never the point; if it fails, you will know exactly why."
-        },
-        TRUST: {
-          strong: "you know where trust matters and you already hold it, or can see the path to earning it.",
-          weak: "the work needs trust you have not earned — and trust cannot be built after launch.",
-          assumption: "That the people you need will trust you with what this work actually requires — their money, time, reputation, or judgment calls.",
-          experiment: "Earn or borrow the trust first: do the work manually for one person until they would vouch for you, or partner with someone who already holds it."
-        },
-        ACCUMULATING_ADVANTAGE: {
-          strong: "use compounds — each user or week leaves something behind that the next one inherits.",
-          weak: "nothing compounds — every user costs you as much as the last, forever.",
-          assumption: "That use compounds into an advantage — rather than each user costing as much to serve as the one before.",
-          experiment: "Simulate the accumulation by hand: collect the knowledge, content, or connections from a few users and check whether the next user genuinely benefits from the earlier ones."
-        }
+
+      const DIM_QUESTION_INDEXES = {
+        PROBLEM: [0, 2],
+        EVIDENCE: [1, 4, 9],
+        DISTRIBUTION: [5],
+        DIFFERENTIATION: [3, 7, 2],
+        TRUST: [8],
+        ACCUMULATING_ADVANTAGE: [6]
       };
-      // Transparent, conservative scoring. Answers score 2/1/0. Dimension maxes:
-      // PROBLEM 4 (Q1+Q3) · EVIDENCE 6 (Q2+Q5+Q10) · DISTRIBUTION 2 (Q6) ·
-      // DIFFERENTIATION 5 (Q4+Q8, +1 when Q3 is strong) · TRUST 2 (Q9) · ACCUMULATING_ADVANTAGE 2 (Q7).
-      // A dimension is weak at half its max or below. Total is out of 20 (the Q3 bonus only lifts DIFFERENTIATION).
-      function scoreAll(answers) {
+
+      function scoreAll(currentAnswers) {
         const dims = {
-          PROBLEM: { earned: answers[0] + answers[2], max: 4 },
-          EVIDENCE: { earned: answers[1] + answers[4] + answers[9], max: 6 },
-          DISTRIBUTION: { earned: answers[5], max: 2 },
-          DIFFERENTIATION: { earned: answers[3] + answers[7] + (answers[2] === 2 ? 1 : 0), max: 5 },
-          TRUST: { earned: answers[8], max: 2 },
-          ACCUMULATING_ADVANTAGE: { earned: answers[6], max: 2 }
+          PROBLEM: { earned: currentAnswers[0] + currentAnswers[2], max: 4 },
+          EVIDENCE: { earned: currentAnswers[1] + currentAnswers[4] + currentAnswers[9], max: 6 },
+          DISTRIBUTION: { earned: currentAnswers[5], max: 2 },
+          DIFFERENTIATION: { earned: currentAnswers[3] + currentAnswers[7] + (currentAnswers[2] === 2 ? 1 : 0), max: 5 },
+          TRUST: { earned: currentAnswers[8], max: 2 },
+          ACCUMULATING_ADVANTAGE: { earned: currentAnswers[6], max: 2 }
         };
-        const total = answers.reduce((sum, value) => sum + value, 0);
+        const total = currentAnswers.reduce((sum, value) => sum + value, 0);
         return { dims, total };
       }
+
       function isWeak(dim) { return dim.earned <= dim.max / 2; }
-      function computeVerdict(answers) {
-        const { dims, total } = scoreAll(answers);
+      function ratio(dim) { return dim.earned / dim.max; }
+
+      function computeVerdict(currentAnswers) {
+        const { dims, total } = scoreAll(currentAnswers);
         const weakKeys = DIMENSIONS.filter((key) => isWeak(dims[key]));
         let verdict;
-        if (isWeak(dims.PROBLEM) || isWeak(dims.EVIDENCE) || total <= 8) {
-          verdict = "DON'T BUILD";
-        } else if (weakKeys.length > 0 || total <= 14) {
-          verdict = "TEST FIRST";
-        } else {
-          verdict = "BUILD";
-        }
-        const ratio = (key) => dims[key].earned / dims[key].max;
-        let strongest = DIMENSIONS[0], weakest = DIMENSIONS[0];
+        if (isWeak(dims.PROBLEM) || isWeak(dims.EVIDENCE) || total <= 8) verdict = "DON'T BUILD";
+        else if (weakKeys.length > 0 || total <= 14) verdict = "TEST FIRST";
+        else verdict = "BUILD";
+
+        let strongest = DIMENSIONS[0];
         DIMENSIONS.forEach((key) => {
-          if (ratio(key) > ratio(strongest)) strongest = key;
-          if (ratio(key) < ratio(weakest)) weakest = key;
+          if (ratio(dims[key]) > ratio(dims[strongest])) strongest = key;
         });
+
+        let weakest = null;
+        if (weakKeys.length) {
+          const candidates = weakKeys.filter((key) => key !== strongest);
+          const pool = candidates.length ? candidates : weakKeys;
+          weakest = pool[0];
+          pool.forEach((key) => {
+            if (ratio(dims[key]) < ratio(dims[weakest])) weakest = key;
+          });
+        }
         return { verdict, dims, total, weakKeys, strongest, weakest };
+      }
+
+      function selectedOptionText(questionIndex, currentAnswers) {
+        const score = currentAnswers[questionIndex];
+        const option = QUESTIONS[questionIndex].options.find((candidate) => candidate.s === score);
+        return option ? option.t : "No answer recorded.";
+      }
+
+      function dimensionExplanation(key, currentAnswers, dims) {
+        const parts = DIM_QUESTION_INDEXES[key].map((questionIndex) => selectedOptionText(questionIndex, currentAnswers));
+        return `<strong>${DIM_LABEL[key]} ${dims[key].earned}/${dims[key].max}.</strong> You reported: ${parts.join(" ")}`;
+      }
+
+      function lowestConfidenceQuestion(currentAnswers) {
+        let lowestIndex = 0;
+        for (let i = 1; i < currentAnswers.length; i += 1) {
+          if (currentAnswers[i] < currentAnswers[lowestIndex]) lowestIndex = i;
+        }
+        return lowestIndex;
+      }
+
+      function verdictSentence(outcome) {
+        if (outcome.verdict === "DON'T BUILD") {
+          const weakLabel = outcome.weakest ? DIM_LABEL[outcome.weakest].toLowerCase() : "the evidence";
+          return `Treat this as a successful outcome: do not produce software yet. ${weakLabel} has not cleared the gate, and building now would postpone the cheaper learning available first.`;
+        }
+        if (outcome.verdict === "TEST FIRST") {
+          return "Do not build yet. The overall picture is promising, but at least one load-bearing assumption still deserves a smaller test before software.";
+        }
+        return "Your self-reported evidence clears this gate. Treat BUILD as permission to start small, not proof that the market has been independently validated.";
       }
 
       const quiz = document.getElementById("bg-quiz");
@@ -358,19 +347,24 @@
 
       function renderQuestion() {
         const item = QUESTIONS[index];
-        count.textContent = "Question " + (index + 1) + " of " + QUESTIONS.length;
+        count.textContent = `Question ${index + 1} of ${QUESTIONS.length}`;
         dimTag.textContent = DIM_LABEL[item.dim].toUpperCase();
         barFill.style.width = Math.round((index / QUESTIONS.length) * 100) + "%";
         qHeading.textContent = item.q;
         qHint.textContent = item.hint;
         optionsBox.innerHTML = "";
+
         item.options.forEach((opt) => {
           const li = document.createElement("li");
           const btn = document.createElement("button");
+          const selected = answers[index] === opt.s;
           btn.type = "button";
-          btn.textContent = opt.t;
+          btn.classList.toggle("is-selected", selected);
+          btn.setAttribute("aria-pressed", String(selected));
+          btn.append(document.createTextNode(opt.t));
           const tag = document.createElement("small");
-          tag.textContent = opt.s === 2 ? "Yes — true today" : opt.s === 1 ? "Partly true" : "Not true yet";
+          const stateLabel = opt.s === 2 ? "Yes — true today" : opt.s === 1 ? "Partly true" : "Not true yet";
+          tag.textContent = selected ? `${stateLabel} · Selected` : stateLabel;
           btn.appendChild(tag);
           btn.addEventListener("click", () => {
             answers[index] = opt.s;
@@ -388,56 +382,47 @@
         backBtn.disabled = index === 0;
       }
 
-      function verdictSentence(verdict, weakestKey) {
-        if (verdict === "DON'T BUILD") {
-          return "Treat this as a successful outcome: the strongest accomplishment available right now would be not producing software. " +
-            "The gate held for a reason — " + DIM_LABEL[weakestKey].toLowerCase() + " is unproven, and building would only postpone facing that.";
-        }
-        if (verdict === "TEST FIRST") {
-          return "Do not build yet. Something load-bearing is unproven, and the cheapest way to learn is smaller than software. " +
-            "Run the experiment below; let what you learn decide what happens next.";
-        }
-        return "The evidence clears this gate — but take it as permission to start small, not to build big. " +
-          "Begin with the smallest version that proves value with real users, and keep asking these questions as you go.";
-      }
-
       function showResult() {
         const outcome = computeVerdict(answers);
-        const strongCopy = DIM_COPY[outcome.strongest];
-        const weakCopy = DIM_COPY[outcome.weakest];
         const verdictEl = document.getElementById("bg-verdict-label");
+        const uncertaintyIndex = lowestConfidenceQuestion(answers);
+        const uncertaintyQuestion = QUESTIONS[uncertaintyIndex];
+        const uncertaintyAnswer = selectedOptionText(uncertaintyIndex, answers);
+
         verdictEl.textContent = outcome.verdict;
         verdictEl.className = "bg-verdict " + (outcome.verdict === "DON'T BUILD" ? "bg-verdict--dont" : outcome.verdict === "TEST FIRST" ? "bg-verdict--test" : "");
-        document.getElementById("bg-reason").textContent =
-          "Your strongest ground is " + DIM_LABEL[outcome.strongest].toLowerCase() + " — " + strongCopy.strong +
-          " Your weakest is " + DIM_LABEL[outcome.weakest].toLowerCase() + " — " + weakCopy.weak + " " +
-          verdictSentence(outcome.verdict, outcome.weakest);
-        document.getElementById("bg-strongest").innerHTML = "<strong>" + DIM_LABEL[outcome.strongest] + ".</strong> " + strongCopy.strong.charAt(0).toUpperCase() + strongCopy.strong.slice(1);
-        document.getElementById("bg-weakest").innerHTML = "<strong>" + DIM_LABEL[outcome.weakest] + ".</strong> " + weakCopy.weak.charAt(0).toUpperCase() + weakCopy.weak.slice(1);
-        document.getElementById("bg-assumption").textContent = weakCopy.assumption;
-        const q10Text = QUESTIONS[9].options[answers[9] === 2 ? 0 : answers[9] === 1 ? 1 : 2].t;
-        document.getElementById("bg-experiment").textContent =
-          weakCopy.experiment + " Your own cheapest test, in your words: \u201C" + q10Text + "\u201D — run that first, before anything else.";
+
+        const strongestText = dimensionExplanation(outcome.strongest, answers, outcome.dims);
+        const weakestText = outcome.weakest
+          ? dimensionExplanation(outcome.weakest, answers, outcome.dims)
+          : "<strong>No material weak dimension detected from your answers.</strong> Every dimension scored above the defined weak threshold.";
+
+        document.getElementById("bg-reason").textContent = verdictSentence(outcome);
+        document.getElementById("bg-strongest").innerHTML = strongestText;
+        document.getElementById("bg-weakest").innerHTML = weakestText;
+        document.getElementById("bg-assumption").textContent = `On “${uncertaintyQuestion.q}” you selected: “${uncertaintyAnswer}” The uncertainty to test is this: ${uncertaintyQuestion.assumption}`;
+        document.getElementById("bg-experiment").textContent = uncertaintyQuestion.experiment;
+
         const dimsList = document.getElementById("bg-dims");
         dimsList.innerHTML = "";
         DIMENSIONS.forEach((key) => {
           const li = document.createElement("li");
-          li.innerHTML = "<strong>" + DIM_LABEL[key] + " " + outcome.dims[key].earned + "/" + outcome.dims[key].max + "</strong>" + (isWeak(outcome.dims[key]) ? " · needs work" : "");
+          li.innerHTML = `<strong>${DIM_LABEL[key]} ${outcome.dims[key].earned}/${outcome.dims[key].max}</strong>${isWeak(outcome.dims[key]) ? " · needs work" : ""}`;
           dimsList.appendChild(li);
         });
+
         document.getElementById("bg-scoring-note").textContent =
-          "How this was scored: ten questions, each answer worth 2 (true today), 1 (partly true), or 0 (not true yet) — " +
-          outcome.total + " of 20 overall. A dimension is weak at half its maximum or below. " +
-          "DON\u2019T BUILD means the problem or the evidence is unproven, or the total is 8 or below. " +
+          `How this was scored: ten questions, each answer worth 2 (true today), 1 (partly true), or 0 (not true yet) — ${outcome.total} of 20 overall. ` +
+          "A dimension is weak at half its maximum or below. DON'T BUILD means the problem or the evidence is unproven, or the total is 8 or below. " +
           "TEST FIRST means some ground is weak, or the total is 14 or below. BUILD requires a high total with no weak ground — and even then, start with the smallest version.";
+
         quiz.hidden = true;
         result.hidden = false;
-        // Result contract for future ecosystem use (page is fully useful without it).
         window.__BUILD_GATE__ = {
           verdict: outcome.verdict,
           dimensions: outcome.dims,
           weakest: outcome.weakest,
-          assumption: weakCopy.assumption,
+          assumption: document.getElementById("bg-assumption").textContent,
           experiment: document.getElementById("bg-experiment").textContent
         };
         verdictEl.setAttribute("tabindex", "-1");
@@ -470,6 +455,7 @@
         index = 0;
         renderQuestion();
         quiz.scrollIntoView();
+        qHeading.focus({ preventScroll: true });
       });
 
       renderQuestion();
