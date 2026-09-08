@@ -1,3 +1,5 @@
+import { renderPriorities } from './priorities.mjs';
+
 const escapeHtml = (value = '') => String(value).replace(/[&<>'\"]/g, c => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '\"': '&quot;'
 }[c]));
@@ -72,16 +74,20 @@ async function load() {
       setSurfaceState(target, 'locked');
       if (count) count.textContent = 'Workspace locked';
       target.innerHTML = '<p class="workstream-empty"><strong>Unlock Workspace to load active workstreams.</strong><span>Your canonical workstream projection is private owner state.</span></p>';
+      await renderPriorities([]);
       return false;
     }
     if (!response.ok) throw new Error(`Workstreams ${response.status}`);
     const data = await response.json();
-    renderRows(data.rows || []);
+    const rows = data.rows || [];
+    renderRows(rows);
+    await renderPriorities(rows);
     return true;
   } catch (error) {
     setSurfaceState(target, 'error');
     if (count) count.textContent = 'Workstreams unavailable';
     target.innerHTML = `<p class="workstream-empty"><strong>Active workstreams could not load.</strong><span>${escapeHtml(error.message)}. The rest of Workspace can still be used.</span></p>`;
+    await renderPriorities([]);
     return false;
   }
 }
