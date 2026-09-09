@@ -14,6 +14,7 @@
 
   let chosen = [];
   let reviewTrackId = null;
+  const UPLOAD_STALL_TIMEOUT_MS = 25000;
 
   const TRACK_PRESETS = {
     withyou: {
@@ -204,6 +205,50 @@
     }
   }
 
+  async function uploadWithStallRecovery(upload, pathname, file, baseOptions, label) {
+    const runAttempt = async (multipart, retrying = false) => {
+      const controller = new AbortController();
+      let stallTimer = null;
+      let hasTransferredBytes = false;
+
+      const armStallTimer = () => {
+        window.clearTimeout(stallTimer);
+        stallTimer = window.setTimeout(() => controller.abort(), UPLOAD_STALL_TIMEOUT_MS);
+      };
+
+      armStallTimer();
+      try {
+        return await upload(pathname, file, {
+          ...baseOptions,
+          multipart,
+          abortSignal: controller.signal,
+          onUploadProgress: progress => {
+            armStallTimer();
+            const loaded = Number(progress.loaded || 0);
+            const pct = Math.round(Number(progress.percentage || 0));
+            if (loaded > 0 || pct > 0) hasTransferredBytes = true;
+            status.textContent = hasTransferredBytes
+              ? `${label}: ${pct}%`
+              : retrying
+                ? `${label}: reconnecting to storage…`
+                : `${label}: connecting to storage…`;
+          },
+        });
+      } finally {
+        window.clearTimeout(stallTimer);
+      }
+    };
+
+    try {
+      return await runAttempt(Boolean(baseOptions.multipart));
+    } catch (error) {
+      const aborted = error?.name === 'AbortError' || /abort|stalled/i.test(String(error?.message || ''));
+      if (!aborted || baseOptions.multipart) throw error;
+      status.textContent = `${label}: connection stalled. Retrying with resilient upload…`;
+      return runAttempt(true, true);
+    }
+  }
+
   library.addEventListener('click', event => {
     const reviewButton = event.target.closest('[data-review-id]');
     if (reviewButton) {
@@ -256,19 +301,16 @@
         const title = chosen.length === 1 ? titleBase : `${titleBase} ${index + 1}`;
         const ext = (file.name.match(/\.[a-z0-9]+$/i)?.[0] || '').toLowerCase();
         const pathname = `ashwood/music/${slugify(title)}${ext}`;
-        status.textContent = `Uploading ${index + 1} of ${chosen.length}: ${file.name}`;
+        const label = `Uploading ${index + 1} of ${chosen.length}`;
+        status.textContent = `${label}: preparing…`;
 
-        await upload(pathname, file, {
+        await uploadWithStallRecovery(upload, pathname, file, {
           access: 'public',
           handleUploadUrl: '/api/workspace-upload',
           multipart: file.size > 8 * 1024 * 1024,
           contentType: file.type || undefined,
           clientPayload: JSON.stringify({ title, artist, producerCredit, rightsNote, sourceUrl, publishToMusic }),
-          onUploadProgress: progress => {
-            const pct = Math.round(Number(progress.percentage || 0));
-            status.textContent = `Uploading ${index + 1} of ${chosen.length}: ${pct}%`;
-          },
-        });
+        }, label);
       }
 
       status.textContent = publishToMusic
@@ -278,7 +320,10 @@
       setFiles([]);
       window.setTimeout(loadLibrary, 900);
     } catch (error) {
-      status.textContent = error?.message || 'Upload failed.';
+      const message = error?.message || 'Upload failed.';
+      status.textContent = /abort/i.test(message)
+        ? 'Upload stalled twice and was stopped. Your metadata is still here; retry when the connection is stable.'
+        : message;
     } finally {
       submit.disabled = false;
     }
