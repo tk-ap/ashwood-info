@@ -1,5 +1,5 @@
-.workspace-page{--paper:#181b19;--ink:#f0f1e9;--muted:#acb4a9;--line:#3a423b;--panel:#212621;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif;margin:0}
-html[data-ashwood-theme="paper-light"] .workspace-page{--paper:#f5f3ef;--ink:#19221b;--muted:#556052;--line:#bec6b9;--panel:#e7ebe2}
+.workspace-page{--paper:#181b19;--ink:#f0f1e9;--muted:#acb4a9;--line:#3a423b;--panel:#212621;--alert:#e8a49a;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif;margin:0}
+html[data-ashwood-theme="paper-light"] .workspace-page{--paper:#f5f3ef;--ink:#19221b;--muted:#556052;--line:#bec6b9;--panel:#e7ebe2;--alert:#8b2d23}
 .workspace-page *{box-sizing:border-box}
 .workspace-page a{color:inherit}
 .workspace-shell{width:min(1440px,calc(100% - 64px));margin:auto;padding:24px 0 48px}
@@ -99,6 +99,9 @@ summary{cursor:pointer}
 .evidence-dialog label{display:block;font-size:14px;margin-top:20px}
 .evidence-dialog input,.evidence-dialog textarea,.evidence-dialog select{display:block;width:100%;margin-top:8px;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:12px;border-radius:4px}
 .dialog-actions{justify-content:flex-end;margin-top:24px}
+.dialog-lede{font-size:14px;line-height:1.6;color:var(--muted);margin:16px 0 0}
+.passphrase-note{font-size:13px;line-height:1.5;color:var(--muted);margin:20px 0 0}
+.auth-error{color:var(--alert);font-size:14px;line-height:1.5;margin:10px 0 0;min-height:1.4em}
 .empty-state{color:var(--muted);font-size:16px;padding:20px 0}
 button:disabled{opacity:.5;cursor:wait}
 
