@@ -41,23 +41,58 @@
       const cols = Math.max(2, Math.ceil(Math.sqrt(frames.length)));
       const rows = Math.ceil(frames.length / cols);
       const jitter = (n) => { const v = Math.sin(n * 12.9898) * 43758.5453; return v - Math.floor(v); };
-      frames.forEach((item, index) => {
-        item.setAttribute("data-index", String(index + 1).padStart(2, "0"));
-        const col = index % cols;
-        const row = Math.floor(index / cols);
-        item.style.setProperty("--spatial-left", `${((col + .12 + jitter(index + 1) * .58) / cols * 82).toFixed(2)}%`);
-        item.style.setProperty("--spatial-top", `${((row + .1 + jitter(index + 7) * .58) / rows * 78).toFixed(2)}%`);
-        item.style.setProperty("--spatial-r", `${(jitter(index + 13) * 9 - 4.5).toFixed(2)}deg`);
-      });
+      // Seeded rather than random so a reload is stable; Explore's shuffle advances the
+      // seed instead, which keeps the board reproducible within a visit.
+      let seed = 0;
+      const layout = () => {
+        frames.forEach((item, index) => {
+          item.setAttribute("data-index", String(index + 1).padStart(2, "0"));
+          const col = index % cols;
+          const row = Math.floor(index / cols);
+          const s = seed * 101;
+          item.style.setProperty("--spatial-left", `${((col + .12 + jitter(index + 1 + s) * .58) / cols * 82).toFixed(2)}%`);
+          item.style.setProperty("--spatial-top", `${((row + .1 + jitter(index + 7 + s) * .58) / rows * 78).toFixed(2)}%`);
+          item.style.setProperty("--spatial-r", `${(jitter(index + 13 + s) * 9 - 4.5).toFixed(2)}deg`);
+        });
+      };
+      layout();
       const controls = document.createElement("div");
       controls.className = "ashwood-archive-controls";
-      controls.innerHTML = '<button type="button" data-archive-mode="visual" aria-pressed="true">Visual</button><button type="button" data-archive-mode="index" aria-pressed="false">Index</button><button type="button" data-archive-mode="spatial" aria-pressed="false">Explore</button><span class="ashwood-archive-controls__hint">Same archive, three ways in.</span>';
+      controls.innerHTML = '<button type="button" data-archive-mode="visual" aria-pressed="true">Visual</button><button type="button" data-archive-mode="index" aria-pressed="false">Index</button><button type="button" data-archive-mode="spatial" aria-pressed="false">Explore</button><button type="button" data-archive-shuffle hidden>Shuffle</button><span class="ashwood-archive-controls__hint">Same archive, three ways in.</span>';
       grid.before(controls);
+
+      // Filter row. Built from the groups actually present so adding a frame with a new
+      // data-group needs no change here, and omitted entirely if nothing is tagged.
+      const tagged = frames.filter((item) => item.dataset.group);
+      if (tagged.length) {
+        const names = [...new Set(tagged.map((item) => item.dataset.group))].sort();
+        const filters = document.createElement("div");
+        filters.className = "ashwood-archive-filters";
+        filters.setAttribute("role", "group");
+        filters.setAttribute("aria-label", "Filter selected work");
+        filters.innerHTML = ['All', ...names]
+          .map((name, i) => `<button type="button" data-archive-filter="${name}" aria-pressed="${i === 0}">${name}</button>`)
+          .join("");
+        controls.after(filters);
+        filters.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-archive-filter]");
+          if (!button) return;
+          const wanted = button.dataset.archiveFilter;
+          filters.querySelectorAll("[data-archive-filter]").forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+          frames.forEach((item) => {
+            const shown = wanted === "All" || item.dataset.group === wanted;
+            item.hidden = !shown;
+          });
+        });
+      }
       const setMode = (mode) => {
         document.body.classList.toggle("ashwood-index-mode", mode === "index");
         document.body.classList.toggle("ashwood-spatial-mode", mode === "spatial");
         controls.querySelectorAll("[data-archive-mode]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.archiveMode === mode)));
+        shuffle.hidden = mode !== "spatial";
       };
+      const shuffle = controls.querySelector("[data-archive-shuffle]");
+      shuffle.addEventListener("click", () => { seed += 1; layout(); });
       controls.addEventListener("click", (event) => {
         const button = event.target.closest("[data-archive-mode]");
         if (button) setMode(button.dataset.archiveMode);

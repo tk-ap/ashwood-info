@@ -44,3 +44,13 @@ body.ashwood-preview-panel-active .ashwood-preview-panel__title { opacity: calc(
   .ashwood-archive-controls button,
   .portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame { transition: none; }
 }
+
+/* Filter row. Sits under the mode controls and matches their visual language --
+   same oxblood active state and 44px touch target rather than a second style.
+   The hidden rule needs !important: index and spatial modes set an explicit
+   display on .asset-frame, which otherwise wins over the [hidden] attribute
+   and leaves filtered-out frames visible. */
+.ashwood-archive-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 20px; }
+.ashwood-archive-filters button { min-height: 44px; border: 1px solid var(--ashwood-rule); padding: 10px 14px; background: transparent; color: inherit; cursor: pointer; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.ashwood-archive-filters button:hover,.ashwood-archive-filters button:focus-visible,.ashwood-archive-filters button[aria-pressed="true"] { border-color: var(--ashwood-oxblood); color: var(--ashwood-oxblood); }
+.archive-grid .asset-frame[hidden] { display: none !important; }
