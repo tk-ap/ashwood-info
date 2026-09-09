@@ -17,15 +17,22 @@ const REVIEW_SYSTEM_PATHS = [
 ];
 
 async function ensureTable(sql) {
-  await sql`CREATE TABLE IF NOT EXISTS workspace_checklists (
-    checklist_id TEXT PRIMARY KEY,
-    completed_items JSONB NOT NULL DEFAULT '[]'::jsonb,
-    notes JSONB NOT NULL DEFAULT '{}'::jsonb,
-    auto_items JSONB NOT NULL DEFAULT '[]'::jsonb,
-    deployment_completed_items JSONB NOT NULL DEFAULT '[]'::jsonb,
-    deployment_notes JSONB NOT NULL DEFAULT '{}'::jsonb,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-  )`;
+  try {
+    await sql`CREATE TABLE IF NOT EXISTS workspace_checklists (
+      checklist_id TEXT PRIMARY KEY,
+      completed_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+      notes JSONB NOT NULL DEFAULT '{}'::jsonb,
+      auto_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+      deployment_completed_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+      deployment_notes JSONB NOT NULL DEFAULT '{}'::jsonb,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+  } catch (error) {
+    // Postgres can still raise a duplicate pg_type error when two cold-start
+    // functions execute CREATE TABLE IF NOT EXISTS concurrently. In that race,
+    // another request has already created the table, so continuing is safe.
+    if (error?.code !== '23505' && error?.code !== '42P07') throw error;
+  }
   await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS review_started JSONB NOT NULL DEFAULT '{}'::jsonb`;
   await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS auto_items JSONB NOT NULL DEFAULT '[]'::jsonb`;
   await sql`ALTER TABLE workspace_checklists ADD COLUMN IF NOT EXISTS deployment_completed_items JSONB NOT NULL DEFAULT '[]'::jsonb`;
