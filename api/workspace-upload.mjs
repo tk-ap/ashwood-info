@@ -16,7 +16,7 @@ const CLEARANCE = new Set(['not-cleared', 'review', 'cleared']);
 const AGREEMENT = new Set(['unknown', 'discussion', 'draft', 'signed']);
 const REGISTRATION = new Set(['not-recorded', 'not-applicable', 'pending', 'registered']);
 
-async function ensureTable(sql) {
+export async function ensureUploadsTable(sql) {
   await sql`
     CREATE TABLE IF NOT EXISTS workspace_uploads (
       id BIGSERIAL PRIMARY KEY,
@@ -103,7 +103,7 @@ function publicRow(row) {
 export default async function handler(req, res) {
   try {
     const sql = getSql();
-    await ensureTable(sql);
+    await ensureUploadsTable(sql);
 
     if (req.method === 'GET') {
       const session = await requireSession(req);
