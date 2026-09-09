@@ -18,6 +18,25 @@ Manual logging should be optional. The primary model should be automatic discove
 
 ---
 
+## Founder / career context as interpretation input
+
+`/workspace` should understand the user's current work against the shape of the path that produced it, rather than evaluating progress as though it began with the current founder/product phase.
+
+Relevant context includes:
+
+- entered college at age 16
+- could not afford to continue and left college
+- joined the U.S. Army Reserve at age 17
+- did not return to college afterward, despite later feeling that returning may have been the better choice
+- moved into a professional career rather than following a conventional degree-first path
+- later career evidence spans operational strategy and risk leadership, controls/readiness/process advisory, and knowledge systems with leverage
+
+This context should help Workspace interpret learning, credentials, career transitions, technical self-education, founder work, and creative work without treating a nontraditional education path as missing context or a deficit to be inferred away.
+
+It is context for reasoning, not automatically public biography copy. Do not expose these details on the public ASHWOOD site unless explicitly chosen for publication.
+
+---
+
 ## Saturn Return goals as the top-level frame
 
 The Saturn Return breakdown should act as the durable goal/purpose model for `/workspace`.
