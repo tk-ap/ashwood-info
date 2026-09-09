@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#f5f3ef" />
+  <title>Operating Cycle — ASHWOOD Workspace</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-frame1" />
+  <link rel="stylesheet" href="/workspace/cycle/cycle.css?v=20260908-cycle1" />
+  <script src="/theme.js?v=20260827-1" defer></script>
+  <script type="module" src="/workspace/cycle/cycle.mjs?v=20260908-cycle1"></script>
+</head>
+<body class="workspace-page">
+  <main class="workspace-shell">
+    <header class="workspace-masthead">
+      <div><a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a><span class="workspace-label">Workspace / Operating cycle</span></div>
+      <div class="workspace-actions"><a class="text-button" href="/workspace/">Back to workspace</a><a class="text-button" href="/workspace/v3-playtest/">Review checklist</a></div>
+    </header>
+
+    <section class="cycle-hero" aria-labelledby="cycle-title">
+      <p class="eyebrow">BUILD → VERIFY → USE → OBSERVE → DECIDE → SHARE → CREATE/LIVE</p>
+      <h1 id="cycle-title">Don’t just ship. Complete the loop.</h1>
+      <p id="cycle-recommendation" class="cycle-recommendation">Reading current Workspace evidence…</p>
+    </section>
+
+    <section class="cycle-meter" aria-labelledby="meter-title">
+      <div class="section-heading-row"><div><p class="section-kicker">Rolling balance · 14 days</p><h2 id="meter-title">What is overfed? What is neglected?</h2></div><p class="section-note">Not an equal-time score. This is a pressure signal derived from available evidence.</p></div>
+      <div id="cycle-buckets" class="cycle-buckets" aria-live="polite"></div>
+    </section>
+
+    <section class="cycle-debt" aria-labelledby="debt-title">
+      <div class="section-heading-row"><div><p class="section-kicker">Unfinished cycle debt</p><h2 id="debt-title">What shipped but still needs proof?</h2></div></div>
+      <div id="cycle-debt-list" class="cycle-list"></div>
+    </section>
+
+    <section class="cycle-products" aria-labelledby="products-title">
+      <div class="section-heading-row"><div><p class="section-kicker">Current workstreams</p><h2 id="products-title">Where each build sits in the loop</h2></div></div>
+      <div id="cycle-products-list" class="cycle-list"></div>
+    </section>
+
+    <section class="cycle-evidence" aria-labelledby="evidence-title">
+      <div class="section-heading-row"><div><p class="section-kicker">Why this recommendation</p><h2 id="evidence-title">Evidence used</h2></div></div>
+      <div id="cycle-evidence-list" class="cycle-evidence-list"></div>
+    </section>
+
+    <footer class="workspace-footer"><span>Issue #67 · state-driven operating loop, not a rigid calendar.</span><span><a href="/workspace/">Workspace</a> · <a href="/workspace/v3-playtest/">Review checklist</a></span></footer>
+  </main>
+</body>
+</html>
