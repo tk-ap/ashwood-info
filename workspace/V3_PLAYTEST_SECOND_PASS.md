@@ -134,6 +134,60 @@ interacts with `home-provenance` and `home-manifestations` — both of which are
 failures of horizontal fit in a left-anchored column, and neither of which should be
 fixed twice.
 
+### Where the bias comes from
+
+The shell is centered. The content inside it is not. That is the whole mechanism.
+
+```css
+.v3-shell   { max-width: var(--v3-max); margin: 0 auto }   /* --v3-max: 1440px */
+.v3-chapter { padding: clamp(96px,10vw,150px) var(--v3-pad) } /* --v3-pad: clamp(20px,3vw,48px) */
+```
+
+`.v3-shell` centers a 1440px column, so the page frame is symmetrical. Every text
+block within it then anchors to that column's left edge and stops well short of its
+right edge:
+
+| Block | Constraint | Share of the content width | Empty to its right |
+| --- | --- | --- | --- |
+| `.v3-deck` | `max-width:620px` | 46% | 734px |
+| `.v3-grounding` | `max-width:560px; margin:16px 0 0` | 41% | 794px |
+| `.v3-manifesto-note` | `text-align:left` | — | explicit |
+
+Measured against a 1440px viewport, where `--v3-pad` resolves to 43px and the content
+width inside `.v3-chapter` is ~1354px. These are computed from the stylesheets rather
+than from a render — no browser was available in this session — so treat the pixel
+figures as arithmetic on the declared values, not as observed layout.
+
+The section grids lean the same way:
+
+| Section | Columns | Split |
+| --- | --- | --- |
+| `.v3-hero` | `minmax(0,1.03fr) minmax(360px,.97fr)` | 51.5 / 48.5 |
+| `.v3-music` | `1.12fr .88fr` | 56 / 44 |
+| `.v3-depth` | `.7fr 1.3fr` | 35 / 65 |
+
+`.v3-depth` is the one that weights right, but its *heading* sits in the narrow left
+column, so the heading rail still begins at the far left and is the most cramped of
+the three.
+
+The net effect is that the optical center of the page sits far left of its geometric
+center, and the right 45–60% of every chapter is permanent void. Four sections stack
+this identically — hero, thinking, evidence, depth, continuation — which is what
+produces a single unbroken left rail down the full scroll.
+
+### The direction chosen
+
+Alternate the anchor rather than centering the measure or widening the column.
+Sections keep the max-widths they have and alternate which edge they attach to, so
+the existing typographic measure is preserved and only the rail is broken. In
+practice that is `margin-left:auto` on alternating chapters, plus swapping the column
+order in the two-column sections, rather than any change to the type scale.
+
+Scope is not yet decided: this diagnosis is the input to that decision. The homepage
+alone is four sections; carrying the same rhythm across about, music, portfolio,
+journal, dispatch and ai-from-zero would make the site read as one system but cannot
+be visually verified from here.
+
 ## Owner questions — answers, not patches
 
 - `depth-cta`: "what does this actually mean? make what? what am i soliciting here?"
