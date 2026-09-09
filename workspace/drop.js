@@ -100,6 +100,9 @@
       </div>
       <p class="music-intelligence__foot">Market comparisons should use relevant cohorts and permitted chart/catalog data. Protected streaming audio is not assumed available for ingestion or AI analysis.</p>`;
     root.append(section);
+    if (window.location.hash === '#music-intelligence') {
+      requestAnimationFrame(() => section.scrollIntoView());
+    }
   }
 
   function showReviewShell(item) {
@@ -333,4 +336,4 @@
   loadLibrary();
 })();
 
-import('/workspace/rights-ledger.js?v=20260907-rights1').catch(() => {});
+import('/workspace/rights-ledger.js?v=20260908-review-target1').catch(() => {});

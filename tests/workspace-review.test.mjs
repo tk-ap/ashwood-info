@@ -74,18 +74,43 @@ test('production generates eight distinct checks, visits stay pending, approval 
 
 test('all six legacy objective visits auto-complete; judgments and unknown targets do not', async t => {
   const f = await fixture('preview'); t.after(() => f.db.close());
-  const ids = ['ws-workstreams','ws-drop','ws-review','ws-rights','music-runtime','gate-open'];
-  await Promise.all(ids.map(id => f.call(f.visit, { url: `/?item=${id}` })));
+  const targets = {
+    'ws-workstreams': '/workspace/#workstreams-title',
+    'ws-drop': '/workspace/#ashwood-drop',
+    'ws-review': '/workspace/#music-intelligence',
+    'ws-rights': '/workspace/#music-rights-ledger',
+    'music-runtime': '/music/#ashwood-drop-music',
+    'gate-open': '/ai-from-zero/build-gate/',
+  };
+  const ids = Object.keys(targets);
+  for (const [id, target] of Object.entries(targets)) {
+    assert.equal((await f.call(f.visit, { url: `/?item=${id}` })).headers.Location, target);
+  }
   await f.call(f.visit, { url: '/?item=gate-open' });
-  await f.call(f.visit, { url: '/?item=home-motion' });
-  for (const id of ['unknown', 'toString', 'https://example.com']) {
+  for (const id of ['home-motion', 'ws-meta', 'music-mobile', 'unknown', 'toString', 'https://example.com']) {
     assert.equal((await f.call(f.visit, { url: `/?item=${id}` })).headers.Location, '/workspace/v3-playtest/');
   }
   const state = (await f.get()).body;
   assert.deepEqual(state.completed_items.sort(), ids.sort());
-  assert.equal(Object.keys(state.review_started).length, 7);
-  assert.ok(state.review_started['home-motion']);
+  assert.equal(Object.keys(state.review_started).length, 6);
   assert.deepEqual(state.auto_items, []);
+});
+
+test('checklist UI links only objective visits; subjective checks remain manual', async () => {
+  const source = await readFile(new URL('../workspace/review-links.js', import.meta.url), 'utf8');
+  for (const id of ['ws-workstreams','ws-drop','ws-review','ws-rights','music-runtime','gate-open']) {
+    assert.match(source, new RegExp(`['"]${id}['"]`));
+  }
+  for (const id of ['home-motion','ws-meta','ws-modes','music-mobile']) {
+    assert.doesNotMatch(source, new RegExp(`['"]${id}['"]`));
+  }
+});
+
+test('dynamic Workspace review anchors scroll into view after mounting', async () => {
+  const drop = await readFile(new URL('../workspace/drop.js', import.meta.url), 'utf8');
+  const rights = await readFile(new URL('../workspace/rights-ledger.js', import.meta.url), 'utf8');
+  assert.match(drop, /location\.hash === '#music-intelligence'[\s\S]*section\.scrollIntoView\(\)/);
+  assert.match(rights, /location\.hash === '#music-rights-ledger'[\s\S]*section\.scrollIntoView\(\)/);
 });
 
 test('unauthenticated visits and foreign approval requests cannot write owner progress', async t => {
