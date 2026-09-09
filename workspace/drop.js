@@ -200,6 +200,7 @@
           <div class="ashwood-drop-item__actions">
             <button class="ashwood-drop-item__review" type="button" data-review-id="${Number(item.id)}">Review track</button>
             <button class="ashwood-drop-item__publish ${item.publish_to_music ? 'is-live' : ''}" type="button" data-upload-id="${Number(item.id)}" data-publish-next="${item.publish_to_music ? 'false' : 'true'}">${item.publish_to_music ? 'Remove from Music page' : 'Publish to Music page'}</button>
+            <button class="ashwood-drop-item__delete" type="button" data-delete-id="${Number(item.id)}" data-delete-title="${escapeHtml(item.title || 'this upload')}" data-delete-live="${item.publish_to_music ? 'true' : 'false'}">Delete</button>
           </div>
         </article>`).join('') : '<p class="ashwood-drop-empty">Nothing uploaded yet.</p>';
       library.dataset.uploads = JSON.stringify(uploads.map(item => ({
@@ -286,7 +287,46 @@
     }
   }
 
+  async function deleteUpload(id, button) {
+    const previous = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Deleting…';
+    try {
+      const res = await fetch('/api/workspace-upload', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || `Delete failed (${res.status})`);
+      if (reviewTrackId === id) reviewTrackId = null;
+      status.textContent = body.blob_removed === false
+        ? 'Record deleted. The stored file was already gone.'
+        : 'Deleted from ASHWOOD storage.';
+      await loadLibrary();
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = previous;
+      status.textContent = error?.message || 'Delete failed.';
+    }
+  }
+
   library.addEventListener('click', event => {
+    const deleteButton = event.target.closest('[data-delete-id]');
+    if (deleteButton) {
+      const id = Number(deleteButton.dataset.deleteId);
+      const title = deleteButton.dataset.deleteTitle || 'this upload';
+      const live = deleteButton.dataset.deleteLive === 'true';
+      const warning = live
+        ? `\n\nIt is currently live on the public Music page, and will disappear from it.`
+        : '';
+      if (!Number.isFinite(id)) return;
+      if (!confirm(`Delete "${title}" from ASHWOOD storage?${warning}\n\nThis removes the file and its record permanently and cannot be undone.`)) return;
+      deleteUpload(id, deleteButton);
+      return;
+    }
+
     const reviewButton = event.target.closest('[data-review-id]');
     if (reviewButton) {
       const uploads = JSON.parse(library.dataset.uploads || '[]');
