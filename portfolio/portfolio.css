@@ -263,7 +263,23 @@ img { max-width: 100%; display: block; }
   }
  .site-header { align-items: flex-start; } .site-nav { gap: 10px 16px; } .hero { min-height: calc(100svh - 61px); padding-top: 0; padding-bottom: 20px; } .hero-copy { width: 100%; padding: 110px 0 34px; } .hero h1 { font-size: clamp(54px, 15vw, 92px); } .hero-deck { margin-top: 28px; } .hero-media { min-height: 0; } .statement p { font-size: clamp(48px, 16vw, 78px); } .outline-title { font-size: clamp(66px, 23vw, 108px); -webkit-text-stroke-width: 1px; } .campaign-grid,.archive-grid,.runway-strip,.digitals-grid { grid-template-columns: 1fr; } .campaign-grid > *,.archive-grid > *,.runway-strip > * { grid-column: auto !important; margin: 0 !important; width: 100% !important; } .asset-frame-portrait { min-height: 0; } .detail-list div,.experience-list div { grid-template-columns: 1fr; } .experience-list small { grid-column: auto; } .portfolio-footer { grid-template-columns: 1fr; } .footer-mark { grid-column: auto; } }
 
-.portfolio-lightbox{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:5vw;background:rgba(0,0,0,.9);opacity:0;pointer-events:none;transition:opacity .25s ease}.portfolio-lightbox.is-open{opacity:1;pointer-events:auto}.portfolio-lightbox img{max-width:90vw;max-height:88vh;width:auto;height:auto;object-fit:contain}.portfolio-lightbox button{position:absolute;top:20px;right:28px;border:0;background:none;color:#fff;font-size:36px;line-height:1;cursor:pointer}.lightbox-open{overflow:hidden}
+.portfolio-lightbox{position:fixed;inset:0;z-index:200;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:clamp(6px,2vw,24px);padding:clamp(16px,5vw,64px);background:rgba(0,0,0,.92);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.portfolio-lightbox[hidden]{display:none}
+.portfolio-lightbox.is-open{opacity:1;pointer-events:auto}
+.portfolio-lightbox__figure{grid-column:2;margin:0;display:grid;place-items:center;gap:14px;min-width:0}
+.portfolio-lightbox img{max-width:min(92vw,1400px);max-height:82vh;width:auto;height:auto;object-fit:contain}
+.portfolio-lightbox__caption{max-width:60ch;color:rgba(255,255,255,.72);font-size:13px;line-height:1.5;text-align:center;text-wrap:balance}
+.portfolio-lightbox__close{position:absolute;top:clamp(12px,2vw,24px);right:clamp(12px,2vw,32px);border:0;background:none;color:#fff;font-size:36px;line-height:1;cursor:pointer;padding:4px 10px;border-radius:6px}
+.portfolio-lightbox__nav{border:0;background:rgba(255,255,255,.08);color:#fff;font-size:clamp(28px,4vw,42px);line-height:1;cursor:pointer;padding:clamp(8px,1.4vw,18px) clamp(10px,1.2vw,16px);border-radius:8px;transition:background .18s ease}
+.portfolio-lightbox__nav:hover{background:rgba(255,255,255,.18)}
+.portfolio-lightbox__nav--prev{grid-column:1}
+.portfolio-lightbox__nav--next{grid-column:3}
+.portfolio-lightbox__counter{position:absolute;left:0;right:0;bottom:clamp(12px,2.5vw,28px);margin:0;color:rgba(255,255,255,.6);font-size:12px;letter-spacing:.12em;text-align:center}
+.portfolio-lightbox :is(button):focus-visible{outline:2px solid #fff;outline-offset:3px}
+main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c8862a);outline-offset:3px}
+.lightbox-open{overflow:hidden}
+@media (max-width:640px){.portfolio-lightbox{grid-template-columns:1fr;gap:10px}.portfolio-lightbox__figure{grid-column:1}.portfolio-lightbox__nav{position:absolute;bottom:clamp(38px,9vw,64px)}.portfolio-lightbox__nav--prev{left:clamp(12px,4vw,28px)}.portfolio-lightbox__nav--next{right:clamp(12px,4vw,28px)}}
+@media (prefers-reduced-motion:reduce){.portfolio-lightbox,.portfolio-lightbox__nav{transition:none}}
 /* BARELYSAIN gallery: one dependable editorial system, scoped away from the core UI. */
 #barelysain .outline-title {
   display: block;
@@ -362,3 +378,37 @@ img { max-width: 100%; display: block; }
 }
 
 @media(max-width:640px){.site-nav a,.text-link,.contact-grid a,.portfolio-footer nav a{display:inline-flex;align-items:center;min-height:44px;padding-block:12px}.floating-book-link,.contact-button{min-height:44px;display:inline-flex;align-items:center;justify-content:center}}
+
+
+/* Archive display modes and group filters for the Selected work grid.
+   Promoted from reference-preview.css, which only loads with ?ashwood-preview=1.
+   The [hidden] rule needs !important: index and spatial modes set an explicit
+   display on .asset-frame, which otherwise wins over the attribute. */
+.ashwood-archive-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 24px 0; }
+.ashwood-archive-controls button { min-height: 44px; border: 1px solid var(--ashwood-rule); padding: 10px 14px; background: transparent; color: inherit; cursor: pointer; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.ashwood-archive-controls button:hover,.ashwood-archive-controls button:focus-visible,.ashwood-archive-controls button[aria-pressed="true"] { border-color: var(--ashwood-oxblood); color: var(--ashwood-oxblood); }
+.ashwood-archive-controls__hint { color: var(--ashwood-muted); font-size: 11px; }
+.portfolio-page.ashwood-index-mode .archive-grid { grid-template-columns: 1fr; gap: 0; }
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame { display: grid; grid-template-columns: 3.5rem minmax(0,1fr); align-items: center; min-height: 56px; aspect-ratio: auto; border: 0; border-top: 1px solid var(--ashwood-rule); background: transparent; }
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame:last-child { border-bottom: 1px solid var(--ashwood-rule); }
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame::before { content: attr(data-index); color: var(--ashwood-ochre); font-size: 11px; letter-spacing: .12em; }
+/* The image is hidden in index mode, so the row needs its label back; the alt text
+   already describes the frame. Without this the list is a column of bare numbers. */
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame::after { content: attr(data-label); color: inherit; font-size: 13px; line-height: 1.4; padding: 10px 0; text-wrap: balance; }
+/* asset-frame-landscape carries grid-column: 1 / -1 for the visual grid. Index mode is a
+   single column, where that span leaves the row narrower and indented. */
+/* Also force full width: the landscape frame does not stretch to the single index
+   column on its own, leaving one row narrower and indented from the rest. */
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame { grid-column: auto !important; width: 100%; }
+.portfolio-page.ashwood-index-mode .archive-grid img { display: none; }
+.portfolio-page.ashwood-spatial-mode .archive-grid { position: relative; display: block; min-height: min(78vh, 760px); overflow: hidden; cursor: grab; background: color-mix(in srgb, var(--ashwood-paper) 88%, var(--ashwood-ochre) 12%); }
+.portfolio-page.ashwood-spatial-mode .archive-grid:active { cursor: grabbing; }
+.portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame { position: absolute; left: var(--spatial-left, 10%); top: var(--spatial-top, 10%); width: clamp(130px, 20vw, 260px); margin: 0; transform: translate3d(calc(var(--spatial-x, 0px) + var(--spatial-pan-x, 0px)), calc(var(--spatial-y, 0px) + var(--spatial-pan-y, 0px)), 0) rotate(var(--spatial-r, 0deg)) scale(var(--spatial-s, 1)); transition: transform .18s ease; }
+.portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame:hover { --spatial-s: 1.04; z-index: 2; }
+@media (max-width: 640px) { .portfolio-page.ashwood-spatial-mode .archive-grid { min-height: 560px; } .portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame { width: 44vw; } }
+  .ashwood-archive-controls button,
+  .portfolio-page.ashwood-spatial-mode .archive-grid .asset-frame { transition: none; }
+.ashwood-archive-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 20px; }
+.ashwood-archive-filters button { min-height: 44px; border: 1px solid var(--ashwood-rule); padding: 10px 14px; background: transparent; color: inherit; cursor: pointer; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.ashwood-archive-filters button:hover,.ashwood-archive-filters button:focus-visible,.ashwood-archive-filters button[aria-pressed="true"] { border-color: var(--ashwood-oxblood); color: var(--ashwood-oxblood); }
+.archive-grid .asset-frame[hidden] { display: none !important; }

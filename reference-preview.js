@@ -31,63 +31,6 @@
     }
   }
 
-  if (path === "/portfolio" || path === "/portfolio/index.html") {
-    const grid = document.querySelector(".archive-grid");
-    const work = document.querySelector("#work");
-    if (grid && work) {
-      // Positions are computed, not hardcoded per nth-child: the archive grows, and a
-      // fixed set of rules leaves later frames stacked at the container origin.
-      const frames = [...grid.children];
-      const cols = Math.max(2, Math.ceil(Math.sqrt(frames.length)));
-      const rows = Math.ceil(frames.length / cols);
-      const jitter = (n) => { const v = Math.sin(n * 12.9898) * 43758.5453; return v - Math.floor(v); };
-      frames.forEach((item, index) => {
-        item.setAttribute("data-index", String(index + 1).padStart(2, "0"));
-        const col = index % cols;
-        const row = Math.floor(index / cols);
-        item.style.setProperty("--spatial-left", `${((col + .12 + jitter(index + 1) * .58) / cols * 82).toFixed(2)}%`);
-        item.style.setProperty("--spatial-top", `${((row + .1 + jitter(index + 7) * .58) / rows * 78).toFixed(2)}%`);
-        item.style.setProperty("--spatial-r", `${(jitter(index + 13) * 9 - 4.5).toFixed(2)}deg`);
-      });
-      const controls = document.createElement("div");
-      controls.className = "ashwood-archive-controls";
-      controls.innerHTML = '<button type="button" data-archive-mode="visual" aria-pressed="true">Visual</button><button type="button" data-archive-mode="index" aria-pressed="false">Index</button><button type="button" data-archive-mode="spatial" aria-pressed="false">Explore</button><span class="ashwood-archive-controls__hint">Same archive, three ways in.</span>';
-      grid.before(controls);
-      const setMode = (mode) => {
-        document.body.classList.toggle("ashwood-index-mode", mode === "index");
-        document.body.classList.toggle("ashwood-spatial-mode", mode === "spatial");
-        controls.querySelectorAll("[data-archive-mode]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.archiveMode === mode)));
-      };
-      controls.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-archive-mode]");
-        if (button) setMode(button.dataset.archiveMode);
-      });
-      // Pan is cumulative: each drag resumes from where the last one stopped, rather
-      // than snapping the board back to origin.
-      const pan = { x: 0, y: 0 };
-      let drag = null;
-      grid.addEventListener("pointerdown", (event) => {
-        if (!document.body.classList.contains("ashwood-spatial-mode")) return;
-        drag = { x: event.clientX - pan.x, y: event.clientY - pan.y, pointerId: event.pointerId };
-        grid.setPointerCapture(event.pointerId);
-      });
-      grid.addEventListener("pointermove", (event) => {
-        if (!drag || event.pointerId !== drag.pointerId) return;
-        pan.x = event.clientX - drag.x;
-        pan.y = event.clientY - drag.y;
-        grid.style.setProperty("--spatial-pan-x", `${pan.x}px`);
-        grid.style.setProperty("--spatial-pan-y", `${pan.y}px`);
-      });
-      const endDrag = (event) => {
-        if (!drag || (event && event.pointerId !== drag.pointerId)) return;
-        if (grid.hasPointerCapture(drag.pointerId)) grid.releasePointerCapture(drag.pointerId);
-        drag = null;
-      };
-      grid.addEventListener("pointerup", endDrag);
-      grid.addEventListener("pointercancel", endDrag);
-      grid.addEventListener("lostpointercapture", endDrag);
-    }
-  }
 
   if (path === "/ai-from-zero" || path === "/ai-from-zero/index.html") {
     const hero = document.querySelector(".ai-zero-hero");
