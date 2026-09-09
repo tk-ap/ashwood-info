@@ -392,6 +392,14 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
 .portfolio-page.ashwood-index-mode .archive-grid .asset-frame { display: grid; grid-template-columns: 3.5rem minmax(0,1fr); align-items: center; min-height: 56px; aspect-ratio: auto; border: 0; border-top: 1px solid var(--ashwood-rule); background: transparent; }
 .portfolio-page.ashwood-index-mode .archive-grid .asset-frame:last-child { border-bottom: 1px solid var(--ashwood-rule); }
 .portfolio-page.ashwood-index-mode .archive-grid .asset-frame::before { content: attr(data-index); color: var(--ashwood-ochre); font-size: 11px; letter-spacing: .12em; }
+/* The image is hidden in index mode, so the row needs its label back; the alt text
+   already describes the frame. Without this the list is a column of bare numbers. */
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame::after { content: attr(data-label); color: inherit; font-size: 13px; line-height: 1.4; padding: 10px 0; text-wrap: balance; }
+/* asset-frame-landscape carries grid-column: 1 / -1 for the visual grid. Index mode is a
+   single column, where that span leaves the row narrower and indented. */
+/* Also force full width: the landscape frame does not stretch to the single index
+   column on its own, leaving one row narrower and indented from the rest. */
+.portfolio-page.ashwood-index-mode .archive-grid .asset-frame { grid-column: auto !important; width: 100%; }
 .portfolio-page.ashwood-index-mode .archive-grid img { display: none; }
 .portfolio-page.ashwood-spatial-mode .archive-grid { position: relative; display: block; min-height: min(78vh, 760px); overflow: hidden; cursor: grab; background: color-mix(in srgb, var(--ashwood-paper) 88%, var(--ashwood-ochre) 12%); }
 .portfolio-page.ashwood-spatial-mode .archive-grid:active { cursor: grabbing; }

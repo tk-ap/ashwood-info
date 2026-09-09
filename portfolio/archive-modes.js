@@ -26,6 +26,10 @@
     const layout = () => {
       frames.forEach((item, index) => {
         item.setAttribute("data-index", String(index + 1).padStart(2, "0"));
+        // Index mode hides the image, so without a label the row is a bare number.
+        // The alt text already describes the frame, so reuse it.
+        const alt = item.querySelector("img")?.alt;
+        if (alt) item.setAttribute("data-label", alt);
         const col = index % cols;
         const row = Math.floor(index / cols);
         const s = seed * 101;
