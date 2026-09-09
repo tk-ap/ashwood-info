@@ -203,3 +203,35 @@ html[data-ashwood-theme="paper-light"] .checkin-warning{color:#8b3d1f;border-lef
 
 
 html[data-ashwood-theme="phosphor-cyber"] .workspace-page{--paper:#07130d;--ink:#d8ffe9;--muted:#a0c3ad;--line:#365443;--panel:#0f2117}
+
+/* Left-alignment rebalance (workspace scope).
+
+   .workspace-shell centers a 1440px column, but every constrained block inside it
+   anchored to that column's left edge and stopped well short of its right — .as-of
+   and the section notes at 430px, .frame-north-star at 16ch, .frame-chapter at 62ch,
+   .next-card at 820px. Stacked down the page that reads as one hard left rail with a
+   permanently empty right half.
+
+   Alternate full-width sections now anchor their constrained blocks to the right edge
+   instead. No measure changes: only the edge a block attaches to. Long paragraphs keep
+   left-aligned text inside a right-anchored block, because right-aligned ragged text
+   at 62ch is harder to read; only short display lines flip their own alignment.
+
+   Applied to .frame and .next-action — the full-width sections whose direct children
+   are constrained text. Grid sections (.goals, .workstreams, .ashwood-drop) already
+   fill the width, and .connections/.activity are already a side-by-side pair, so
+   flipping either would fight a layout that is not part of the rail. */
+.anchor-right>.frame-chapter,.anchor-right>.frame-decision,.anchor-right .frame-decision-line,
+.anchor-right .frame-decision-note,.anchor-right>.next-card,.anchor-right>#next-action-card,
+.anchor-right>#opportunity-list{margin-left:auto;margin-right:0}
+.anchor-right>.section-kicker,.anchor-right>.frame-north-star,.anchor-right>.frame-year,
+.anchor-right>h2{text-align:right;margin-left:auto}
+.anchor-right .frame-decision-line,.anchor-right .frame-decision-note{text-align:left}
+
+/* Below the two-column breakpoint the shell is narrow enough that the constrained
+   blocks fill it anyway, so the alternation has nothing left to express and the
+   flipped display lines would only read as inconsistent. */
+@media(max-width:900px){
+  .anchor-right>.section-kicker,.anchor-right>.frame-north-star,.anchor-right>.frame-year,
+  .anchor-right>h2{text-align:left}
+}

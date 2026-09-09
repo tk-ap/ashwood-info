@@ -219,10 +219,28 @@ the existing typographic measure is preserved and only the rail is broken. In
 practice that is `margin-left:auto` on alternating chapters, plus swapping the column
 order in the two-column sections, rather than any change to the type scale.
 
-Scope is not yet decided: this diagnosis is the input to that decision. The homepage
-alone is four sections; carrying the same rhythm across about, music, portfolio,
-journal, dispatch and ai-from-zero would make the site read as one system but cannot
-be visually verified from here.
+### Scope and what was applied
+
+Scope was set to the **workspace surface only**. The same mechanism is present there:
+`.workspace-shell` centers a 1440px column while `.as-of` and the section notes sit at
+430px, `.frame-north-star` at 16ch, `.frame-chapter` at 62ch and `.next-card` at 820px,
+each anchored to the column's left edge.
+
+An `.anchor-right` utility now flips the constrained blocks of alternate full-width
+sections to the right edge. It is applied to `.frame` and `.next-action` — the
+full-width sections whose direct children are constrained text. It is deliberately not
+applied to `.goals`, `.workstreams` or `.ashwood-drop`, whose grids already fill the
+width, nor to `.connections` and `.activity`, which are already a side-by-side pair;
+flipping either would fight a layout that is not part of the rail.
+
+No measure changes — only the edge each block attaches to. Long paragraphs keep
+left-aligned text inside a right-anchored block, since right-aligned ragged text at
+62ch is harder to read; only short display lines flip their own alignment, and they
+revert to left below the 900px breakpoint where the shell is narrow enough that the
+alternation has nothing left to express.
+
+The public homepage is untouched. Its diagnosis above stands as the record if the same
+rhythm is later carried there.
 
 ## Owner questions — answers, not patches
 
