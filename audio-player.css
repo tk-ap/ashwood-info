@@ -453,3 +453,11 @@ body.ashwood-has-audio:not(.ashwood-has-audio-room):not(.ashwood-home-native) .a
     overflow: auto;
   }
 }
+
+/* Track stepping appears only once the library has given the player more than the one
+   canonical song, so a single-track player looks exactly as it did before. */
+.ashwood-audio__step{border:1px solid color-mix(in srgb,currentColor 28%,transparent);background:transparent;color:inherit;width:26px;height:26px;flex:0 0 26px;border-radius:50%;font-size:14px;line-height:1;cursor:pointer;opacity:.7;transition:opacity .2s ease,border-color .2s ease}
+.ashwood-audio__step:hover:not([disabled]),.ashwood-audio__step:focus-visible:not([disabled]){opacity:1;border-color:currentColor}
+.ashwood-audio__step[disabled]{opacity:.25;cursor:default}
+.ashwood-audio.is-collapsed .ashwood-audio__step{display:none}
+@media(prefers-reduced-motion:reduce){.ashwood-audio__step{transition:none}}

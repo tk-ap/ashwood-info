@@ -86,26 +86,45 @@
 
   const esc = (value='') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+  const itemHtml = (id, label, origin='') => `<div class="v3-checklist__item ${completed.has(id)?'is-done':''}">
+            <label><input type="checkbox" data-check-id="${esc(id)}" ${completed.has(id)?'checked':''}/><span>${esc(label)}${origin ? `<br/><small>${esc(origin)}</small>` : ''}${reviewStarted[id] && !completed.has(id) ? '<br/><small>Review started · awaiting your approval</small>' : ''}</span></label>
+            <textarea data-note-id="${esc(id)}" rows="1" placeholder="Optional note / bug / thought…">${esc(notes[id] || '')}</textarea>
+          </div>`;
+
   function render() {
     const done = completed.size;
     const total = allItems.length;
+    /* Checked items sink out of the working list into one Completed group at the
+       bottom, so what is left on screen is only what still needs playing. They keep
+       their checkbox and note, so unchecking one returns it to its own section. */
+    const doneItems = sections.flatMap(([title, items]) =>
+      items.filter(([id]) => completed.has(id)).map(([id, label]) => [id, label, title]));
+    const state = mount.querySelector('#v3-checklist-save-state');
+    const saveLabel = state ? state.textContent : 'Saved';
+    const saveError = state ? state.classList.contains('is-error') : false;
+
     mount.innerHTML = `
       <div class="v3-checklist__head">
         <div><p class="section-kicker">V3 playtest · 08 Sep 2026</p><h2>Things to check today</h2></div>
         <div class="v3-checklist__progress"><strong>${done}/${total}</strong><span>${Math.round((done/total)*100)}% checked</span></div>
       </div>
       <div class="v3-checklist__bar"><span style="width:${(done/total)*100}%"></span></div>
-      <p class="v3-checklist__note">Private, persistent Workspace state. Check items off as you play; progress and notes save automatically.</p>
+      <p class="v3-checklist__note">Private, persistent Workspace state. Check items off as you play; progress and notes save automatically and refresh on their own.</p>
       <div class="v3-checklist__sections">
-        ${sections.map(([title, items]) => `<details class="v3-checklist__section" ${items.some(([id]) => !completed.has(id)) ? 'open' : ''}>
-          <summary><span>${esc(title)}</span><small>${items.filter(([id]) => completed.has(id)).length}/${items.length}</small></summary>
-          <div class="v3-checklist__items">${items.map(([id,label]) => `<div class="v3-checklist__item ${completed.has(id)?'is-done':''}">
-            <label><input type="checkbox" data-check-id="${esc(id)}" ${completed.has(id)?'checked':''}/><span>${esc(label)}${reviewStarted[id] && !completed.has(id) ? '<br/><small>Review started · awaiting your approval</small>' : ''}</span></label>
-            <textarea data-note-id="${esc(id)}" rows="1" placeholder="Optional note / bug / thought…">${esc(notes[id] || '')}</textarea>
-          </div>`).join('')}</div>
-        </details>`).join('')}
+        ${sections.map(([title, items]) => {
+          const outstanding = items.filter(([id]) => !completed.has(id));
+          if (!outstanding.length) return '';
+          return `<details class="v3-checklist__section" open>
+          <summary><span>${esc(title)}</span><small>${items.length - outstanding.length}/${items.length}</small></summary>
+          <div class="v3-checklist__items">${outstanding.map(([id,label]) => itemHtml(id,label)).join('')}</div>
+        </details>`;
+        }).join('')}
+        ${doneItems.length ? `<details class="v3-checklist__section v3-checklist__section--done">
+          <summary><span>Completed</span><small>${doneItems.length}/${total}</small></summary>
+          <div class="v3-checklist__items">${doneItems.map(([id,label,title]) => itemHtml(id,label,title)).join('')}</div>
+        </details>` : ''}
       </div>
-      <div class="v3-checklist__footer"><span id="v3-checklist-save-state">Saved</span><button type="button" id="v3-checklist-clear">Reset checklist</button></div>`;
+      <div class="v3-checklist__footer"><span id="v3-checklist-save-state" class="${saveError?'is-error':''}">${esc(saveLabel)}</span><button type="button" id="v3-checklist-clear">Reset checklist</button></div>`;
   }
 
   async function save() {
@@ -177,8 +196,43 @@
     }
   }
 
+  /* The checklist is played across two surfaces at once — this page and the live site
+     in another tab — and the deployment review queue writes new items server-side. Poll
+     while visible so the list reflects that without a manual reload, and refresh the
+     moment the tab is looked at again, which is when returning from the live site. */
+  const POLL_MS = 15000;
+  const fingerprint = () => JSON.stringify([[...completed].sort(), notes, reviewStarted]);
+
+  function editing() {
+    const active = document.activeElement;
+    return Boolean(active && mount.contains(active) && active.matches('textarea, input'));
+  }
+
+  async function poll() {
+    // Never let a server copy overwrite an edit that has not been written back yet,
+    // and never rebuild the DOM under a cursor that is mid-note.
+    if (document.visibilityState !== 'visible' || unsaved || editing()) return;
+    try {
+      const res = await fetch('/api/workspace-checklist', {credentials:'same-origin',cache:'no-store'});
+      if (!res.ok) return;
+      const body = await res.json();
+      const before = fingerprint();
+      const nextCompleted = new Set(Array.isArray(body.completed_items) ? body.completed_items : []);
+      const nextNotes = body.notes && typeof body.notes === 'object' ? body.notes : {};
+      const nextStarted = body.review_started || {};
+      const after = JSON.stringify([[...nextCompleted].sort(), nextNotes, nextStarted]);
+      if (before === after) return;
+      completed = nextCompleted; notes = nextNotes; reviewStarted = nextStarted;
+      render();
+    } catch (_) { /* a failed poll is not worth reporting; the next one retries */ }
+  }
+
+  setInterval(poll, POLL_MS);
+
   window.addEventListener('pagehide', () => { flush(); });
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flush(); else poll();
+  });
   window.addEventListener('pageshow', async event => { if (event.persisted) { await flush(); if (!unsaved) load(); } });
   load();
 })();

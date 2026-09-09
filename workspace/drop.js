@@ -15,6 +15,9 @@
   let chosen = [];
   let reviewTrackId = null;
   const UPLOAD_STALL_TIMEOUT_MS = 25000;
+  /* A serverless function body is capped around 4.5MB, so only files comfortably under
+     that can be posted through our own API. Anything larger has to go browser-to-Blob. */
+  const DIRECT_UPLOAD_MAX = 4 * 1024 * 1024;
 
   const TRACK_PRESETS = {
     withyou: {
@@ -197,6 +200,7 @@
           <div class="ashwood-drop-item__actions">
             <button class="ashwood-drop-item__review" type="button" data-review-id="${Number(item.id)}">Review track</button>
             <button class="ashwood-drop-item__publish ${item.publish_to_music ? 'is-live' : ''}" type="button" data-upload-id="${Number(item.id)}" data-publish-next="${item.publish_to_music ? 'false' : 'true'}">${item.publish_to_music ? 'Remove from Music page' : 'Publish to Music page'}</button>
+            <button class="ashwood-drop-item__delete" type="button" data-delete-id="${Number(item.id)}" data-delete-title="${escapeHtml(item.title || 'this upload')}" data-delete-live="${item.publish_to_music ? 'true' : 'false'}">Delete</button>
           </div>
         </article>`).join('') : '<p class="ashwood-drop-empty">Nothing uploaded yet.</p>';
       library.dataset.uploads = JSON.stringify(uploads.map(item => ({
@@ -205,6 +209,37 @@
       if (reviewTrackId && !uploads.some(item => Number(item.id) === reviewTrackId)) reviewTrackId = null;
     } catch (error) {
       library.innerHTML = `<p class="ashwood-drop-empty">${escapeHtml(error.message)}</p>`;
+    }
+  }
+
+  /* Post the bytes to our own API, which writes them to Blob server-side. This avoids
+     the browser's direct transfer to Blob storage entirely. Returns false rather than
+     throwing when it cannot be used, so the caller falls back to the standard path. */
+  async function uploadDirect(pathname, file, meta, label) {
+    status.textContent = `${label}: uploading…`;
+    const params = new URLSearchParams({
+      pathname,
+      contentType: file.type || '',
+      title: meta.title,
+      artist: meta.artist,
+      producerCredit: meta.producerCredit,
+      rightsNote: meta.rightsNote,
+      sourceUrl: meta.sourceUrl,
+      publishToMusic: String(meta.publishToMusic),
+    });
+    try {
+      const res = await fetch(`/api/workspace-upload-direct?${params}`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: file,
+      });
+      if (res.ok) return true;
+      // 413 means the file is over the function body cap after all; anything else is a
+      // real failure of this route. Either way the standard uploader is worth a try.
+      return false;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -252,7 +287,46 @@
     }
   }
 
+  async function deleteUpload(id, button) {
+    const previous = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Deleting…';
+    try {
+      const res = await fetch('/api/workspace-upload', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || `Delete failed (${res.status})`);
+      if (reviewTrackId === id) reviewTrackId = null;
+      status.textContent = body.blob_removed === false
+        ? 'Record deleted. The stored file was already gone.'
+        : 'Deleted from ASHWOOD storage.';
+      await loadLibrary();
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = previous;
+      status.textContent = error?.message || 'Delete failed.';
+    }
+  }
+
   library.addEventListener('click', event => {
+    const deleteButton = event.target.closest('[data-delete-id]');
+    if (deleteButton) {
+      const id = Number(deleteButton.dataset.deleteId);
+      const title = deleteButton.dataset.deleteTitle || 'this upload';
+      const live = deleteButton.dataset.deleteLive === 'true';
+      const warning = live
+        ? `\n\nIt is currently live on the public Music page, and will disappear from it.`
+        : '';
+      if (!Number.isFinite(id)) return;
+      if (!confirm(`Delete "${title}" from ASHWOOD storage?${warning}\n\nThis removes the file and its record permanently and cannot be undone.`)) return;
+      deleteUpload(id, deleteButton);
+      return;
+    }
+
     const reviewButton = event.target.closest('[data-review-id]');
     if (reviewButton) {
       const uploads = JSON.parse(library.dataset.uploads || '[]');
@@ -307,13 +381,17 @@
         const label = `Uploading ${index + 1} of ${chosen.length}`;
         status.textContent = `${label}: preparing…`;
 
-        await uploadWithStallRecovery(upload, pathname, file, {
-          access: 'public',
-          handleUploadUrl: '/api/workspace-upload',
-          multipart: file.size > 8 * 1024 * 1024,
-          contentType: file.type || undefined,
-          clientPayload: JSON.stringify({ title, artist, producerCredit, rightsNote, sourceUrl, publishToMusic }),
-        }, label);
+        const meta = { title, artist, producerCredit, rightsNote, sourceUrl, publishToMusic };
+        const direct = file.size <= DIRECT_UPLOAD_MAX && await uploadDirect(pathname, file, meta, label);
+        if (!direct) {
+          await uploadWithStallRecovery(upload, pathname, file, {
+            access: 'public',
+            handleUploadUrl: '/api/workspace-upload',
+            multipart: file.size > 8 * 1024 * 1024,
+            contentType: file.type || undefined,
+            clientPayload: JSON.stringify(meta),
+          }, label);
+        }
       }
 
       status.textContent = publishToMusic

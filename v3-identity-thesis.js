@@ -22,7 +22,11 @@
   const style = document.createElement('style');
   style.id = 'v3-identity-thesis-style';
   style.textContent = `
-    .v3-identity{position:relative;margin-top:28px}
+    .v3-identity{position:relative;margin-top:28px;transition:margin-bottom .24s ease}
+    /* The reveal is absolutely positioned so it can animate, which means it reserves
+       no space and lands on top of .v3-grounding directly below. Opening it pushes
+       that paragraph down by the reveal's own height instead of covering it. */
+    .v3-identity.is-provenance-open{margin-bottom:calc(.55em + 22px)}
     .v3-identity-statement{display:inline-flex;align-items:baseline;gap:.18em;max-width:100%;white-space:nowrap}
     .v3-identity-origin,.v3-manifestations{border:0;padding:0;background:none;color:inherit;font:inherit;line-height:inherit;letter-spacing:inherit;text-decoration:none;cursor:pointer}
     .v3-identity-origin{position:relative;flex:0 0 auto}
@@ -48,6 +52,7 @@
       .v3-manifestations{flex:0 0 var(--v3-reel-width,18ch);width:var(--v3-reel-width,18ch);max-width:100%}
       .v3-provenance-reveal{position:absolute;left:0;top:calc(100% + .45em);display:flex;max-width:100%;flex-wrap:wrap;gap:.28em .5em}
       .v3-provenance-reveal__throughline{white-space:normal}
+      .v3-identity.is-provenance-open{margin-bottom:calc(.45em + 44px)}
     }
     @media(prefers-reduced-motion:reduce){.v3-manifestations__label,.v3-provenance-reveal{transition:none;animation:none}}
   `;
@@ -87,19 +92,26 @@
   };
 
   const lockReelGeometry = () => {
-    const computed = getComputedStyle(manifestations);
+    /* Measure inside the real reel, as a real label, rather than in a detached span
+       carrying hand-copied font properties. Copying `font`, `letter-spacing` and
+       `text-transform` one by one only reproduces the properties someone remembered;
+       anything else affecting advance width — weight, variant, stretch, word-spacing,
+       or an inherited transform — silently measures wrong and the widest label loses
+       its last glyph. A clone inside the container inherits all of it by construction. */
     const probe = document.createElement('span');
-    probe.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;font:${computed.font};letter-spacing:${computed.letterSpacing};text-transform:${computed.textTransform};`;
-    document.body.appendChild(probe);
+    probe.className = 'v3-manifestations__label';
+    probe.style.cssText = 'position:absolute;visibility:hidden;inset:auto;left:0;top:0;width:auto;white-space:nowrap;transform:none;animation:none;transition:none;';
+    manifestations.appendChild(probe);
 
-    probe.textContent = IDLE_MANIFESTATION;
-    const width = Math.ceil(probe.getBoundingClientRect().width) + 2;
+    const measure = text => { probe.textContent = text; return probe.getBoundingClientRect().width; };
+    const width = Math.ceil(measure(IDLE_MANIFESTATION)) + 2;
 
     labelScales.clear();
     for (const item of manifestationsList) {
-      probe.textContent = item.label;
-      const labelWidth = probe.getBoundingClientRect().width;
-      labelScales.set(item.label, labelWidth > width ? width / labelWidth : 1);
+      const labelWidth = measure(item.label);
+      /* Scale to one pixel inside the box. An exact fit leaves no room for sub-pixel
+         rounding, which is how a label that mathematically fits still clips a glyph. */
+      labelScales.set(item.label, labelWidth > width ? (width - 1) / labelWidth : 1);
     }
     probe.remove();
 
@@ -108,9 +120,17 @@
   };
   requestAnimationFrame(() => requestAnimationFrame(lockReelGeometry));
   if (document.fonts?.ready) document.fonts.ready.then(lockReelGeometry).catch(()=>{});
+  /* The reel font is clamp()-based, so every measurement above is viewport-dependent
+     and goes stale the moment the window is resized. */
+  let relockTimer = null;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(relockTimer);
+    relockTimer = window.setTimeout(lockReelGeometry, 150);
+  });
 
   const setReveal = open => {
     reveal.classList.toggle('is-open', open);
+    identity.classList.toggle('is-provenance-open', open);
     origin.setAttribute('aria-expanded', String(open));
   };
 

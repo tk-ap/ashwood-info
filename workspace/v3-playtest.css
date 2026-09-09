@@ -16,3 +16,12 @@
 .v3-checklist__footer span.is-error{color:#d28a7e}.v3-checklist__footer button{border:0;border-bottom:1px solid currentColor;background:none;color:var(--ashwood-muted);padding:3px 0;font:inherit;font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
 @media(max-width:760px){.v3-checklist__head{align-items:flex-start}.v3-checklist__item{grid-template-columns:1fr}.v3-checklist__progress{min-width:76px}.v3-checklist__item textarea{min-height:44px}}
 @media(prefers-reduced-motion:reduce){.v3-checklist__bar span{transition:none}}
+
+/* Completed work is kept, but kept out of the way: closed by default, muted, and
+   last in the list, so the open sections above are only what still needs playing. */
+.v3-checklist__section--done{opacity:.72}
+.v3-checklist__section--done summary span{color:var(--muted)}
+.v3-checklist__section--done .v3-checklist__item{padding-top:8px;padding-bottom:8px}
+.v3-checklist__section--done .v3-checklist__item label span{text-decoration:line-through;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent)}
+.v3-checklist__section--done .v3-checklist__item label span small{text-decoration:none;color:var(--muted)}
+.v3-checklist__section--done:hover,.v3-checklist__section--done[open]{opacity:1}

@@ -185,9 +185,30 @@
   }
 
   const saveDiscovery = () => { try { localStorage.setItem(storageKey, JSON.stringify([...found])); } catch (_) {} };
+
+  /* Discovery persists to localStorage, so once the field has been found it stays
+     found on every later visit and the section can never be replayed. Offer the way
+     back out, but only once there is something to reset. */
+  const resetButton = document.createElement('button');
+  resetButton.type = 'button';
+  resetButton.className = 'v3-field__reset';
+  resetButton.textContent = 'Reset discovery';
+  resetButton.hidden = true;
+  field?.appendChild(resetButton);
+
   const updateDiscoveryUI = () => {
     if (fieldHint) fieldHint.textContent = !found.size ? 'There is more here.' : found.size === hotspots.length ? 'You found the field.' : `${found.size} / ${hotspots.length} signals found.`;
+    resetButton.hidden = !found.size;
   };
+
+  resetButton.addEventListener('click', () => {
+    found.clear();
+    hotspots.forEach(hotspot => hotspot.classList.remove('is-found'));
+    field?.classList.remove('is-awake');
+    if (signalCard) { signalCard.classList.remove('is-open'); signalCard.setAttribute('aria-hidden','true'); }
+    try { localStorage.removeItem(storageKey); } catch (_) {}
+    updateDiscoveryUI();
+  });
   const resolveSignal = (hotspot) => {
     const name = hotspot.dataset.signal || '';
     hotspot.classList.add('is-found');

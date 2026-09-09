@@ -7,16 +7,16 @@
   <meta name="theme-color" content="#f5f3ef" />
   <title>Workspace — ASHWOOD</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/ashwood-core.css?v=20260830-launch1" />
-  <link rel="stylesheet" href="/workspace/workspace.css?v=20260906-frame1" />
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20260909-rebalance1" />
   <link rel="stylesheet" href="/workspace/intelligence-hero.css?v=20260908-intel1" />
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
-  <link rel="stylesheet" href="/workspace/drop.css?v=20260907-drop1" />
-  <script src="/theme.js?v=20260827-1" defer></script>
-  <script type="module" src="/workspace/app.js?v=20260906-frame1"></script>
+  <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
+  <script src="/theme.js?v=20260909-cache1" defer></script>
+  <script type="module" src="/workspace/app.js?v=20260909-rotate1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
-  <script src="/workspace/drop.js?v=20260908-review-target1" defer></script>
+  <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -28,6 +28,7 @@
       <div class="workspace-actions">
         <span class="live-state" id="live-state" aria-live="polite">Locked</span>
         <a class="text-button" href="/workspace/v3-playtest/">Review checklist</a>
+        <button class="text-button" id="change-passphrase" type="button">Change passphrase</button>
         <button class="text-button" id="sign-out" type="button">Lock workspace</button>
         <button class="text-button" id="refresh-evidence" type="button">Refresh evidence</button>
         <button class="text-button" id="add-evidence" type="button">Add evidence</button>
@@ -43,7 +44,7 @@
       <p class="section-kicker">Owner signal · live</p>
     </section>
 
-    <section class="frame" id="frame" aria-labelledby="frame-north-star">
+    <section class="frame anchor-right" id="frame" aria-labelledby="frame-north-star">
       <p class="section-kicker">The frame</p>
       <h2 class="frame-north-star" id="frame-north-star"></h2>
       <p class="frame-chapter" id="frame-chapter"></p>
@@ -219,7 +220,7 @@
       <div class="attention-list" id="attention-list"></div>
     </details>
 
-    <section class="next-action" aria-labelledby="next-title">
+    <section class="next-action anchor-right" aria-labelledby="next-title">
       <p class="section-kicker">Actionable opportunities</p>
       <h2 id="next-title">What deserves attention next?</h2>
       <div id="opportunity-list"></div>
@@ -247,6 +248,24 @@
       <label>Evidence date<input id="evidence-date-input" type="date" required /></label>
       <label>Source / note<input id="evidence-source-input" type="text" placeholder="Optional collaborator, release, booking, source note, etc." /></label>
       <div class="dialog-actions"><button type="button" data-close-dialog class="secondary-button">Cancel</button><button type="submit" class="primary-button">Save evidence</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="passphrase-dialog" class="evidence-dialog">
+    <form method="dialog" id="passphrase-form">
+      <div class="dialog-heading">
+        <div>
+          <p class="section-kicker">Private access</p>
+          <h2>Change passphrase</h2>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button>
+      </div>
+      <p class="dialog-lede">Choose a new passphrase for this workspace. It is stored only as a one-way hash, and there is still no way to recover a forgotten one — so change it from here rather than losing access.</p>
+      <label>New passphrase<input id="passphrase-new" type="password" autocomplete="new-password" minlength="12" required /></label>
+      <label>Confirm new passphrase<input id="passphrase-confirm" type="password" autocomplete="new-password" minlength="12" required /></label>
+      <p class="passphrase-note">Every other signed-in browser is locked out. This one stays signed in.</p>
+      <p class="auth-error" id="passphrase-error" aria-live="polite"></p>
+      <div class="dialog-actions"><button type="button" data-close-dialog class="secondary-button">Cancel</button><button type="submit" class="primary-button">Change passphrase</button></div>
     </form>
   </dialog>
 </body>

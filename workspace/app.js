@@ -174,10 +174,24 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   }
 
 
+  async function changePassphrase(e){
+    e.preventDefault();
+    const error=$('#passphrase-error'); error.textContent='';
+    const next=$('#passphrase-new').value, confirmed=$('#passphrase-confirm').value;
+    if(next!==confirmed){error.textContent='The two entries do not match.';return;}
+    try{
+      await api('/api/workspace-auth',{method:'POST',body:JSON.stringify({action:'rotate',passphrase:next})});
+      $('#passphrase-form').reset(); $('#passphrase-dialog').close();
+      $('#live-state').textContent='Passphrase changed · other browsers locked out';
+    }catch(err){error.textContent=err.message;}
+  }
+
   async function init(){await ensureAuth();
     $('#sign-out').addEventListener('click',async()=>{try{await api('/api/workspace-auth',{method:'POST',body:JSON.stringify({action:'logout'})});location.reload();}catch(e){$('#live-state').textContent=e.message;}});
+    $('#change-passphrase').addEventListener('click',()=>{$('#passphrase-form').reset();$('#passphrase-error').textContent='';$('#passphrase-dialog').showModal();});
+    $('#passphrase-form').addEventListener('submit',changePassphrase);
     $('#clear-goal').addEventListener('click',()=>selectGoal(null));
-    $$('[data-close-dialog]').forEach(b=>b.addEventListener('click',()=>$('#evidence-dialog').close()));
+    $$('[data-close-dialog]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 await loadGoalModel();fillGoalSelect();$('#evidence-date-input').value=new Date().toISOString().slice(0,10);$('#refresh-evidence').addEventListener('click',refresh);$('#add-evidence').addEventListener('click',()=>$('#evidence-dialog').showModal());$('#evidence-form').addEventListener('submit',addEvidence);$$('.filter').forEach(b=>b.addEventListener('click',()=>{$$('.filter').forEach(x=>{x.classList.remove('is-active');x.setAttribute('aria-pressed','false');});b.classList.add('is-active');b.setAttribute('aria-pressed','true');state.filter=b.dataset.filter;renderEvidence();}));await refresh();}
   init().catch(e=>{console.error(e);$('#live-state').textContent=e.message||'Workspace failed to load';});
 })();

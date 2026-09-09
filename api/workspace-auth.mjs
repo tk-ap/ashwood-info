@@ -37,6 +37,31 @@ export default async function handler(req, res) {
       return json(res, 200, { ok: true, authenticated: true });
     }
 
+    // Rotation is authorized by the live session alone, not by re-entering the
+    // current passphrase. The lockout this exists to end is a forgotten
+    // passphrase with a session still valid; demanding the passphrase you have
+    // forgotten would leave direct database access as the only recovery, which
+    // is the situation being removed. The session cookie already authorizes
+    // every private read and write on this surface, so it is the right proof of
+    // ownership here too. Rotating clears every other session, so a rotation
+    // the owner did not perform locks the impostor's siblings out and shows up
+    // immediately as an unexpected sign-out.
+    if (action === 'rotate') {
+      const session = await requireSession(req);
+      if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
+      if (!auth.pass_hash) return json(res, 409, { ok: false, error: 'Workspace setup is not complete' });
+      const passphrase = String(body.passphrase || '');
+      if (passphrase.length < 12) return json(res, 400, { ok: false, error: 'Passphrase must be at least 12 characters' });
+      if (verifyPassphrase(passphrase, auth.pass_salt, auth.pass_hash)) {
+        return json(res, 400, { ok: false, error: 'New passphrase must differ from the current one' });
+      }
+      const { salt, hash } = hashPassphrase(passphrase);
+      await sql`UPDATE workspace_auth SET pass_salt = ${salt}, pass_hash = ${hash}, updated_at = NOW() WHERE id = 'owner'`;
+      await sql`DELETE FROM workspace_sessions`;
+      await issueSession(res);
+      return json(res, 200, { ok: true, authenticated: true, rotated: true });
+    }
+
     if (action === 'login') {
       const passphrase = String(body.passphrase || '');
       if (!verifyPassphrase(passphrase, auth.pass_salt, auth.pass_hash)) return json(res, 403, { ok: false, error: 'Invalid passphrase' });

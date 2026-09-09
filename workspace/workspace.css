@@ -1,5 +1,5 @@
-.workspace-page{--paper:#181b19;--ink:#f0f1e9;--muted:#acb4a9;--line:#3a423b;--panel:#212621;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif;margin:0}
-html[data-ashwood-theme="paper-light"] .workspace-page{--paper:#f5f3ef;--ink:#19221b;--muted:#556052;--line:#bec6b9;--panel:#e7ebe2}
+.workspace-page{--paper:#181b19;--ink:#f0f1e9;--muted:#acb4a9;--line:#3a423b;--panel:#212621;--alert:#e8a49a;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif;margin:0}
+html[data-ashwood-theme="paper-light"] .workspace-page{--paper:#f5f3ef;--ink:#19221b;--muted:#556052;--line:#bec6b9;--panel:#e7ebe2;--alert:#8b2d23}
 .workspace-page *{box-sizing:border-box}
 .workspace-page a{color:inherit}
 .workspace-shell{width:min(1440px,calc(100% - 64px));margin:auto;padding:24px 0 48px}
@@ -99,6 +99,9 @@ summary{cursor:pointer}
 .evidence-dialog label{display:block;font-size:14px;margin-top:20px}
 .evidence-dialog input,.evidence-dialog textarea,.evidence-dialog select{display:block;width:100%;margin-top:8px;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:12px;border-radius:4px}
 .dialog-actions{justify-content:flex-end;margin-top:24px}
+.dialog-lede{font-size:14px;line-height:1.6;color:var(--muted);margin:16px 0 0}
+.passphrase-note{font-size:13px;line-height:1.5;color:var(--muted);margin:20px 0 0}
+.auth-error{color:var(--alert);font-size:14px;line-height:1.5;margin:10px 0 0;min-height:1.4em}
 .empty-state{color:var(--muted);font-size:16px;padding:20px 0}
 button:disabled{opacity:.5;cursor:wait}
 
@@ -200,3 +203,35 @@ html[data-ashwood-theme="paper-light"] .checkin-warning{color:#8b3d1f;border-lef
 
 
 html[data-ashwood-theme="phosphor-cyber"] .workspace-page{--paper:#07130d;--ink:#d8ffe9;--muted:#a0c3ad;--line:#365443;--panel:#0f2117}
+
+/* Left-alignment rebalance (workspace scope).
+
+   .workspace-shell centers a 1440px column, but every constrained block inside it
+   anchored to that column's left edge and stopped well short of its right — .as-of
+   and the section notes at 430px, .frame-north-star at 16ch, .frame-chapter at 62ch,
+   .next-card at 820px. Stacked down the page that reads as one hard left rail with a
+   permanently empty right half.
+
+   Alternate full-width sections now anchor their constrained blocks to the right edge
+   instead. No measure changes: only the edge a block attaches to. Long paragraphs keep
+   left-aligned text inside a right-anchored block, because right-aligned ragged text
+   at 62ch is harder to read; only short display lines flip their own alignment.
+
+   Applied to .frame and .next-action — the full-width sections whose direct children
+   are constrained text. Grid sections (.goals, .workstreams, .ashwood-drop) already
+   fill the width, and .connections/.activity are already a side-by-side pair, so
+   flipping either would fight a layout that is not part of the rail. */
+.anchor-right>.frame-chapter,.anchor-right>.frame-decision,.anchor-right .frame-decision-line,
+.anchor-right .frame-decision-note,.anchor-right>.next-card,.anchor-right>#next-action-card,
+.anchor-right>#opportunity-list{margin-left:auto;margin-right:0}
+.anchor-right>.section-kicker,.anchor-right>.frame-north-star,.anchor-right>.frame-year,
+.anchor-right>h2{text-align:right;margin-left:auto}
+.anchor-right .frame-decision-line,.anchor-right .frame-decision-note{text-align:left}
+
+/* Below the two-column breakpoint the shell is narrow enough that the constrained
+   blocks fill it anyway, so the alternation has nothing left to express and the
+   flipped display lines would only read as inconsistent. */
+@media(max-width:900px){
+  .anchor-right>.section-kicker,.anchor-right>.frame-north-star,.anchor-right>.frame-year,
+  .anchor-right>h2{text-align:left}
+}

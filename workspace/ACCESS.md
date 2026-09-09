@@ -4,7 +4,15 @@ Open https://ashwood-info.vercel.app/workspace/ directly, or use **Workspace** i
 
 Use the passphrase chosen during initial setup. The one-time setup token is not used again. A session lasts up to 30 days in the same browser; a different browser, cleared cookies, or an expired session requires the passphrase again. **Lock workspace** ends the current session through the existing logout endpoint.
 
-The entrance is discoverable; access to private state still requires server authentication. Search indexing remains disabled for the workspace. There is no self-service passphrase recovery in the existing implementation.
+The entrance is discoverable; access to private state still requires server authentication. Search indexing remains disabled for the workspace.
+
+## Changing the passphrase
+
+**Change passphrase** in the workspace header rotates it from inside an authenticated session. It asks only for the new passphrase, not the current one — the case it exists for is a passphrase you no longer remember but a session that is still valid, and requiring the forgotten value would leave direct database access as the only way out. The live session cookie already authorizes every private read and write here, so it is the proof of ownership the rotation accepts.
+
+Rotating ends every other signed-in browser and keeps the one that performed it. That is also the alarm: a rotation you did not perform shows up as an unexpected sign-out everywhere else.
+
+There is still no recovery from a **forgotten passphrase with no valid session anywhere** — a different browser, cleared cookies, or a session past its 30 days. Recovering from that requires updating `workspace_auth` directly in the database. Rotate before the session lapses, not after.
 
 ## Visual overview
 

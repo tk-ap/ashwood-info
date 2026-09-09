@@ -9,6 +9,14 @@
     source: "/audio/in-me.mp3"
   });
 
+  /* IN ME stays the canonical first entry, so if the library never loads the player
+     behaves exactly as it always has. Anything published from ASHWOOD Drop is appended
+     after it, which makes the mini player one continuous playlist across the site
+     rather than a single hard-coded song. */
+  let playlist = [TRACK];
+  let trackIndex = 0;
+  const current = () => playlist[trackIndex] || TRACK;
+
   const STORAGE_KEY = "ashwood.audio.v1";
   const UI_STORAGE_KEY = "ashwood.audio.ui.v1";
   const DEFAULT_STATE = { trackId: TRACK.id, position: 0, volume: 0.8, wasPlaying: false };
@@ -123,7 +131,9 @@
   player.setAttribute("aria-label", "ASHWOOD audio player");
   player.innerHTML = `
     <div class="ashwood-audio__bar">
+      <button class="ashwood-audio__step ashwood-audio__step--prev" type="button" aria-label="Previous track" hidden>‹</button>
       <button class="ashwood-audio__toggle" type="button" ${TRACK.source ? "" : "disabled"}>${TRACK.source ? "Sound off" : "Audio pending"}</button>
+      <button class="ashwood-audio__step ashwood-audio__step--next" type="button" aria-label="Next track" hidden>›</button>
       <div class="ashwood-audio__identity">
         <p class="ashwood-audio__eyebrow">${isMusicPage ? "Released / Now playing" : "ASHWOOD sound"}</p>
         <p class="ashwood-audio__title">${TRACK.title}</p>
@@ -153,6 +163,11 @@
   const progress = player.querySelector("#ashwood-audio-progress");
   const volume = player.querySelector("#ashwood-audio-volume");
   const collapse = player.querySelector(".ashwood-audio__collapse");
+  const prevButton = player.querySelector(".ashwood-audio__step--prev");
+  const nextButton = player.querySelector(".ashwood-audio__step--next");
+  const titleNode = player.querySelector(".ashwood-audio__title");
+  const artistNode = player.querySelector(".ashwood-audio__artist");
+  const dspLink = player.querySelector(".ashwood-audio__dsp");
   const mobile = window.matchMedia("(max-width: 760px)");
 
   const formatTime = (seconds) => {
@@ -164,7 +179,7 @@
   const saveState = (overrides = {}) => {
     state = {
       ...state,
-      trackId: TRACK.id,
+      trackId: current().id,
       position: Number.isFinite(audio.currentTime) ? audio.currentTime : state.position,
       volume: audio.volume,
       wasPlaying: !audio.paused && !audio.ended,
@@ -192,12 +207,12 @@
     time.textContent = `${formatTime(position)} / ${formatTime(duration || NaN)}`;
     progress.max = String(duration);
     progress.value = String(Math.min(position, duration || position));
-    if (TRACK.source) toggle.textContent = audio.paused ? (state.wasPlaying ? "Resume" : "Sound off") : "Pause";
+    if (current().source) toggle.textContent = audio.paused ? (state.wasPlaying ? "Resume" : "Sound off") : "Pause";
     player.classList.toggle("is-playing", !audio.paused && !audio.ended);
   };
 
   const play = async () => {
-    if (!TRACK.source) return;
+    if (!current().source) return;
     try {
       await audio.play();
       saveState({ wasPlaying: true });
@@ -206,6 +221,77 @@
       toggle.textContent = "Resume";
     }
     render();
+  };
+
+  const renderIdentity = () => {
+    const track = current();
+    titleNode.textContent = track.title;
+    artistNode.textContent = track.artist;
+    if (track.dspUrl) { dspLink.href = track.dspUrl; dspLink.hidden = false; }
+    else dspLink.hidden = true;
+    // The stepper is meaningless with a single track, so it stays out of the way
+    // entirely until the library actually adds something to step through.
+    const many = playlist.length > 1;
+    prevButton.hidden = !many;
+    nextButton.hidden = !many;
+    prevButton.disabled = trackIndex === 0;
+    nextButton.disabled = trackIndex >= playlist.length - 1;
+    loadPlaylist();
+
+  if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist });
+    }
+  };
+
+  const setTrack = (index, { autoplay = false } = {}) => {
+    if (index < 0 || index >= playlist.length) return;
+    trackIndex = index;
+    const track = current();
+    state = { ...state, position: 0 };
+    lastPositionSave = 0;
+    audio.src = track.source;
+    renderIdentity();
+    saveState({ position: 0, wasPlaying: autoplay });
+    if (autoplay) play();
+    render();
+  };
+
+  prevButton.addEventListener("click", () => setTrack(trackIndex - 1, { autoplay: !audio.paused }));
+  nextButton.addEventListener("click", () => setTrack(trackIndex + 1, { autoplay: !audio.paused }));
+
+  /* Published ASHWOOD Drop uploads become the rest of the playlist. This runs on every
+     page because the player is rebuilt per page; a failure leaves the single canonical
+     track in place rather than breaking playback. */
+  const loadPlaylist = async () => {
+    try {
+      const res = await fetch("/api/music-library", { cache: "no-store" });
+      if (!res.ok) return;
+      const body = await res.json();
+      const seen = new Set([String(TRACK.title).toLowerCase().replace(/[^a-z0-9]+/g, "")]);
+      const added = (Array.isArray(body.tracks) ? body.tracks : []).reduce((list, row) => {
+        const key = String(row.title || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+        if (!row.url || !key || seen.has(key)) return list;
+        seen.add(key);
+        list.push({
+          id: `upload-${row.id}`,
+          title: row.title,
+          artist: row.artist || "t.kap",
+          dspUrl: row.source_url || "",
+          source: row.url
+        });
+        return list;
+      }, []);
+      if (!added.length) return;
+      playlist = [TRACK, ...added];
+      // Resume whatever was playing before navigation, now that its track exists again.
+      const savedIndex = playlist.findIndex(track => track.id === state.trackId);
+      if (savedIndex > 0) {
+        trackIndex = savedIndex;
+        audio.src = playlist[savedIndex].source;
+      }
+      renderIdentity();
+      render();
+    } catch (_) { /* the canonical track is already playing; nothing to recover */ }
   };
 
   toggle.addEventListener("click", () => {
@@ -249,7 +335,11 @@
     }
   });
   audio.addEventListener("volumechange", () => { volume.value = String(audio.volume); });
-  audio.addEventListener("ended", () => { saveState({ position: 0, wasPlaying: false }); render(); });
+  audio.addEventListener("ended", () => {
+    if (trackIndex < playlist.length - 1) { setTrack(trackIndex + 1, { autoplay: true }); return; }
+    saveState({ position: 0, wasPlaying: false });
+    render();
+  });
 
   document.addEventListener("click", (event) => {
     const link = event.target.closest("a[href]");

@@ -1,4 +1,5 @@
 import { handleUpload } from '@vercel/blob/client';
+import { del } from '@vercel/blob';
 import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
 
 const AUDIO_TYPES = [
@@ -16,7 +17,7 @@ const CLEARANCE = new Set(['not-cleared', 'review', 'cleared']);
 const AGREEMENT = new Set(['unknown', 'discussion', 'draft', 'signed']);
 const REGISTRATION = new Set(['not-recorded', 'not-applicable', 'pending', 'registered']);
 
-async function ensureTable(sql) {
+export async function ensureUploadsTable(sql) {
   await sql`
     CREATE TABLE IF NOT EXISTS workspace_uploads (
       id BIGSERIAL PRIMARY KEY,
@@ -103,7 +104,7 @@ function publicRow(row) {
 export default async function handler(req, res) {
   try {
     const sql = getSql();
-    await ensureTable(sql);
+    await ensureUploadsTable(sql);
 
     if (req.method === 'GET') {
       const session = await requireSession(req);
@@ -146,8 +147,35 @@ export default async function handler(req, res) {
       return json(res, 200, { ok: true, upload: publicRow(rows[0]) });
     }
 
+    if (req.method === 'DELETE') {
+      if (!sameOrigin(req)) return json(res, 403, { error: 'Cross-origin delete rejected.' });
+      const session = await requireSession(req);
+      if (!session) return json(res, 401, { error: 'Workspace is locked.' });
+      const body = parseBody(req);
+      const id = Number(body.id);
+      if (!Number.isFinite(id) || id <= 0) return json(res, 400, { error: 'A valid upload id is required.' });
+
+      const rows = await sql`SELECT id, url, title, publish_to_music FROM workspace_uploads WHERE id = ${id} LIMIT 1`;
+      const row = rows[0];
+      if (!row) return json(res, 404, { error: 'Upload not found.' });
+
+      // Remove the stored file first. If it is already gone the record should still be
+      // cleared, so a failure here is logged and does not block the row deletion —
+      // otherwise a half-deleted upload would be permanently undeletable from the UI.
+      let blobRemoved = true;
+      try {
+        await del(row.url);
+      } catch (error) {
+        blobRemoved = false;
+        console.warn('blob delete failed, removing record anyway', error?.message || error);
+      }
+
+      await sql`DELETE FROM workspace_uploads WHERE id = ${id}`;
+      return json(res, 200, { ok: true, deleted: id, title: row.title, blob_removed: blobRemoved });
+    }
+
     if (req.method !== 'POST') {
-      res.setHeader('Allow', 'GET, POST, PATCH');
+      res.setHeader('Allow', 'GET, POST, PATCH, DELETE');
       return json(res, 405, { error: 'Method not allowed.' });
     }
 
