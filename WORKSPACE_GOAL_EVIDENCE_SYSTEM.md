@@ -123,6 +123,88 @@ This should be generated from evidence, not maintained as a hand-authored status
 
 ---
 
+## Build-in-public as evidence distribution, not content production
+
+ASHWOOD should treat building in public as the distribution of real work already performed, not as a separate obligation to manufacture content.
+
+The preferred loop is:
+
+**work → evidence → interpretation → public artifact → owned archive**
+
+Avoid optimizing for:
+
+**work → content idea → post → views → repeat**
+
+Social platforms are distribution surfaces. ASHWOOD, the Build Journal / Founder Build Archive, owned contact channels, product records, creative archives, and durable relationship evidence are the compounding assets.
+
+A high-view post that does not strengthen reputation, evidence, relationships, owned distribution, IP, users, customers, or collaborators should not automatically be treated as more valuable than a lower-view post that materially advances one of those outcomes.
+
+### Public-evidence evaluation
+
+When `/workspace` identifies work that may be worth sharing, evaluate it against:
+
+1. **What actually happened?** — What did the user build, decide, learn, publish, perform, ship, test, or complete?
+2. **What changed?** — What is meaningfully different because of that work?
+3. **What does it prove?** — Which skill, judgment, creative practice, product thesis, or operating capability does it evidence?
+4. **Who should care?** — Which audience, collaborator, customer, employer, investor, peer, fan, or community is naturally relevant?
+5. **Where should the durable version live?** — Build Journal, portfolio, product documentation, music archive, mailing list, or another owned surface.
+6. **Which distribution surface fits best?** — Threads, LinkedIn, TikTok, Instagram, email, or another channel.
+7. **What future opportunity could this create?** — Relationships, design partners, customers, users, bookings, collaborators, ownership, learning, or reputation.
+
+The system should not recommend posting merely because an activity occurred.
+
+### Workspace experience
+
+Instead of generic content prompts, surface evidence-grounded moments such as:
+
+> **You have something worth sharing.**
+>
+> LEDGATo crossed a meaningful verification threshold today.
+>
+> Supports: technical credibility · founder judgment · LEDGATo evidence
+>
+> Best distribution surface: LinkedIn
+>
+> Durable record: Build Journal
+>
+> Optional adaptation: Threads
+
+Recommendations should be generated from actual work and current evidence, not generic creator-marketing prompts.
+
+### Post-publication monitoring
+
+The loop should continue after publishing:
+
+**evidence → recommendation → publication → distribution monitoring → meaningful outcome → goal/evidence update**
+
+Track platform performance where available, but distinguish attention metrics from durable outcomes.
+
+Views, likes, followers, and posting streaks are diagnostic signals, not the primary success measure.
+
+More important outcomes include:
+
+- relevant inbound conversations
+- collaborators or relationships created
+- design-partner/customer/user interest
+- portfolio or reputation evidence strengthened
+- email/owned-audience growth
+- traffic to owned artifacts
+- bookings, auditions, sales, or opportunities
+- useful feedback or learning
+- work that becomes reusable IP or documentation
+
+### Public Evidence Accumulation
+
+A future higher-order workspace metric may be **Public Evidence Accumulation**: the degree to which real work is becoming durable, inspectable evidence of the user's skills, judgment, creative practice, products, relationships, and ownership.
+
+This should not collapse into a vanity score. It should remain decomposable into the evidence that produced it.
+
+Core principle:
+
+> **Social attention is rented. Evidence, relationships, IP, and owned distribution are accumulated.**
+
+---
+
 ## Contradiction and neglect detection
 
 `/workspace` should not be a celebratory tracker only.
@@ -142,6 +224,8 @@ Useful signals include:
 - recurring blocked work
 - abandoned commitments
 - strong progress in one area that creates downside elsewhere
+- high social-output volume with little durable evidence accumulation
+- repeated platform attention that does not convert into relevant relationships, owned audience, product interest, or portfolio strength
 
 Conflict detection must remain evidence-backed and should present reasoning rather than opaque judgments.
 
@@ -159,7 +243,7 @@ Keep the product scopes distinct.
 
 > Is what I am doing actually moving the life, company, creative, and professional direction I said I wanted?
 
-ailhat can provide product-level evidence and portfolio intelligence to `/workspace`, but ASHWOOD owns the human-level synthesis across work, creativity, professional development, relationships, and stated purpose.
+ailhat can provide product-level evidence and portfolio intelligence to `/workspace`, but ASHWOOD owns the human-level synthesis across work, creativity, professional development, relationships, public evidence, and stated purpose.
 
 `/workspace` should not recreate ailhat's product-health, launch-readiness, or portfolio-intelligence systems when those can be consumed as upstream evidence.
 
@@ -169,13 +253,17 @@ ailhat can provide product-level evidence and portfolio intelligence to `/worksp
 
 The long-term loop should be:
 
-**Purpose / goals → discover current reality → ingest evidence → classify against goal buckets → update progress → detect neglect/conflict → recommend highest-value next action → ingest new evidence**
+**Purpose / goals → discover current reality → ingest evidence → classify against goal buckets → update progress → detect neglect/conflict → recommend highest-value next action → identify publishable evidence → route to durable archive + appropriate distribution surface → observe meaningful outcomes → ingest new evidence**
 
-The recommendation layer should optimize for stated purpose, not merely task completion.
+The recommendation layer should optimize for stated purpose, not merely task completion, posting frequency, or views.
 
 A useful question for every recommended next action is:
 
 > Which goal does this materially advance, and what evidence makes it the highest-value next move now?
+
+For public-facing recommendations, also ask:
+
+> If this is shared publicly, what durable asset or opportunity should remain after the feed attention disappears?
 
 ---
 
@@ -183,7 +271,7 @@ A useful question for every recommended next action is:
 
 Treat the following as a core `/workspace` requirement:
 
-> **ASHWOOD `/workspace` is a self-updating goal-to-evidence system. It should automatically discover and consider live ecosystem offerings, projects, creative work, professional activity, and meaningful outcomes against the purpose/goals defined in the Saturn Return framework. It should classify evidence into the appropriate goal buckets, update progress and accomplishments, surface neglected or contradictory areas, and recommend the highest-value next action. Manual logging should be optional, not the primary operating model.**
+> **ASHWOOD `/workspace` is a self-updating goal-to-evidence system. It should automatically discover and consider live ecosystem offerings, projects, creative work, professional activity, and meaningful outcomes against the purpose/goals defined in the Saturn Return framework. It should classify evidence into the appropriate goal buckets, update progress and accomplishments, surface neglected or contradictory areas, and recommend the highest-value next action. When real work creates something worth sharing, Workspace should convert that evidence into an appropriate durable artifact and platform-specific distribution opportunity, then monitor whether attention produces meaningful outcomes. Manual logging and generic content ideation should be secondary, not the primary operating model.**
 
 This is a product-direction/design constraint. It does not imply that all integrations or automatic evidence sources currently exist.
 
@@ -203,5 +291,9 @@ Before implementation:
 8. keep manual entry available as a supplement for evidence that cannot be automatically discovered
 9. do not expose private or sensitive source material on the public ASHWOOD surface
 10. separate internal workspace state from public portfolio/journal presentation
+11. never fabricate public-post suggestions unsupported by actual work evidence
+12. distinguish attention metrics from durable outcomes in all social monitoring
+13. prefer owned archives and owned audience capture where appropriate rather than treating third-party feeds as the system of record
+14. preserve a traceable relationship from public post → underlying evidence → durable artifact → resulting outcome where integrations allow it
 
 The system should become more accurate as evidence accumulates, but should remain inspectable and correctable by the user.
