@@ -69,8 +69,11 @@
         body.ashwood-home-native .ashwood-audio__time{display:block!important;font-size:9px!important;letter-spacing:.06em!important}
         body.ashwood-home-native .ashwood-audio__room{display:block!important;padding:0 16px 15px!important;border-top:0!important}
         body.ashwood-home-native .ashwood-audio__control--progress{display:grid!important;grid-template-columns:54px minmax(0,1fr)!important;gap:10px!important;margin:0!important}
-        body.ashwood-home-native .ashwood-audio__control--volume,
         body.ashwood-home-native .ashwood-audio__footer{display:none!important}
+        body.ashwood-home-native .ashwood-audio__control--volume{
+          display:grid!important;grid-template-columns:54px minmax(0,1fr)!important;
+          gap:10px!important;margin:11px 0 0!important;
+        }
         body.ashwood-home-native .ashwood-audio__collapse{
           display:inline-flex!important;position:absolute!important;top:14px!important;right:14px!important;
           width:30px!important;height:30px!important;align-items:center!important;justify-content:center!important;

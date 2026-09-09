@@ -7,7 +7,6 @@
     "/journal/",
     "/dispatch/",
     "/ai-from-zero/",
-    "/going/",
     "/about/",
     "/dive-deeper/"
   ];

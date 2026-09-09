@@ -9,6 +9,14 @@
   }[c]));
 
   let snapshot = { auto_items: [], deployment_completed_items: [], deployment_notes: {} };
+  let unsaved = false;
+
+  function setSaveState(text, failed) {
+    const node = mount.querySelector('#deploy-review-save-state');
+    if (!node) return;
+    node.textContent = text;
+    node.classList.toggle('is-error', Boolean(failed));
+  }
 
   function render() {
     const items = Array.isArray(snapshot.auto_items) ? snapshot.auto_items : [];
@@ -48,10 +56,12 @@
             }).join('')}
           </div>
         </details>
-      </div>`;
+      </div>
+      <div class="v3-checklist__footer"><span id="deploy-review-save-state">${unsaved ? 'Unsaved changes' : 'Saved'}</span></div>`;
   }
 
   async function load() {
+    if (unsaved) return;
     try {
       const res = await fetch('/api/workspace-checklist', { credentials:'same-origin', cache:'no-store' });
       const body = await res.json().catch(() => ({}));
@@ -66,7 +76,7 @@
 
   async function save() {
     const res = await fetch('/api/workspace-checklist', {
-      method:'PATCH', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+      method:'PATCH', credentials:'same-origin', keepalive:true, headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         scope:'deployment',
         deployment_completed_items:snapshot.deployment_completed_items || [],
@@ -83,8 +93,18 @@
     const completed = new Set(snapshot.deployment_completed_items || []);
     if (box.checked) completed.add(box.dataset.deployReviewId); else completed.delete(box.dataset.deployReviewId);
     snapshot.deployment_completed_items = [...completed];
+    unsaved = true;
     render();
-    try { await save(); } catch { await load(); }
+    setSaveState('Saving…');
+    try {
+      await save();
+      unsaved = false;
+      setSaveState(`Saved ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`);
+    } catch (error) {
+      /* Keep the unsaved edit on screen. Reloading here used to discard the owner's
+         review silently, which is worse than an unsaved item they can retry. */
+      setSaveState(`Not saved — ${error?.message || 'try again'}`, true);
+    }
   });
 
   let noteTimer = 0;
@@ -95,10 +115,37 @@
     const value = field.value.trim();
     if (value) snapshot.deployment_notes[field.dataset.deployNoteId] = value;
     else delete snapshot.deployment_notes[field.dataset.deployNoteId];
+    unsaved = true;
     clearTimeout(noteTimer);
-    noteTimer = setTimeout(() => save().catch(() => load()), 400);
+    noteTimer = setTimeout(async () => {
+      setSaveState('Saving…');
+      try {
+        await save();
+        unsaved = false;
+        setSaveState(`Saved ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`);
+      } catch (error) {
+        setSaveState(`Not saved — ${error?.message || 'try again'}`, true);
+      }
+    }, 400);
   });
 
-  window.addEventListener('pageshow', event => { if (event.persisted) load(); });
+  async function flush() {
+    if (!unsaved) return;
+    clearTimeout(noteTimer);
+    try {
+      await save();
+      unsaved = false;
+      setSaveState(`Saved ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`);
+    } catch (error) {
+      setSaveState(`Not saved — ${error?.message || 'try again'}`, true);
+    }
+  }
+
+  /* The checklist is used by navigating out to the live surface and back, so a pending
+     edit has to reach the server before the page is hidden — otherwise the Back-navigation
+     refresh reads stale state over an edit that never left the browser. */
+  window.addEventListener('pagehide', () => { flush(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  window.addEventListener('pageshow', async event => { if (event.persisted) { await flush(); load(); } });
   load();
 })();
