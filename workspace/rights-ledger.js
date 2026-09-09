@@ -37,6 +37,9 @@
   const intelligence = document.querySelector('#music-intelligence');
   if (intelligence) intelligence.after(section);
   else drop.appendChild(section);
+  if (window.location.hash === '#music-rights-ledger') {
+    requestAnimationFrame(() => section.scrollIntoView());
+  }
 
   const list = section.querySelector('#rights-track-list');
   const count = section.querySelector('#rights-track-count');

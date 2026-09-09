@@ -3,61 +3,18 @@ import { getSql, json, requireSession } from './_workspace.mjs';
 
 const CHECKLIST_ID = 'v3-playtest-2026-09-08';
 const TARGETS = {
-  'home-wordmark': '/',
-  'home-nav': '/',
-  'home-workspace-link': '/',
-  'home-provenance': '/',
-  'home-manifestations': '/',
-  'home-wherever': '/',
-  'home-in-me': '/',
-  'home-audio': '/',
-  'home-themes': '/',
-  'home-motion': '/',
-  'instinct-six': '/',
-  'instinct-explain': '/',
-  'instinct-progress': '/',
-  'instinct-persist': '/',
-  'instinct-doc': '/',
-  'instinct-instrument': '/',
-  'work-modeling': '/',
-  'work-music': '/',
-  'work-products': '/',
-  'work-thesis': '/',
-  'work-notes': '/',
-  'depth-thread': '/',
-  'depth-direct': '/',
-  'depth-cta': '/',
   'ws-workstreams': '/workspace/#workstreams-title',
   'ws-drop': '/workspace/#ashwood-drop',
-  'ws-meta': '/workspace/#ashwood-drop',
-  'ws-review': '/workspace/',
-  'ws-modes': '/workspace/',
-  'ws-judgments': '/workspace/',
-  'ws-no-fake': '/workspace/',
-  'ws-catalog': '/workspace/',
-  'ws-rights': '/workspace/',
-  'ws-rights-fields': '/workspace/',
-  'ws-edition': '/workspace/',
-  'ws-legal-copy': '/workspace/',
-  'music-runtime': '/music/',
-  'music-rotation': '/music/',
-  'music-special': '/music/',
-  'music-private': '/music/',
-  'music-mobile': '/music/',
+  'ws-review': '/workspace/#music-intelligence',
+  'ws-rights': '/workspace/#music-rights-ledger',
+  'music-runtime': '/music/#ashwood-drop-music',
   'gate-open': '/ai-from-zero/build-gate/',
 };
 
 // These are the only checklist entries where reaching the destination itself is
 // sufficient evidence. Other entries remain manual because they require a
 // judgment, a multi-step action, or verification of behavior.
-const AUTO_COMPLETE_ON_VISIT = new Set([
-  'ws-workstreams',
-  'ws-drop',
-  'ws-review',
-  'ws-rights',
-  'music-runtime',
-  'gate-open',
-]);
+const AUTO_COMPLETE_ON_VISIT = new Set(Object.keys(TARGETS));
 
 async function ensureTable(sql) {
   await sql`CREATE TABLE IF NOT EXISTS workspace_checklists (
