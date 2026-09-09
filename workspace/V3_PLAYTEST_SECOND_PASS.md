@@ -98,12 +98,45 @@ change to make **after** the network entry confirms the mechanism, not before.
 
 ## Concrete regressions
 
-| Item | Note | Status |
-| --- | --- | --- |
-| `home-provenance` | "doesn't work, overlaps w 'TK Ashwood is a creative practice moving through modeling, music, writing, and technology…'" | Unresolved. Two elements occupying the same space; needs a rendered check. |
-| `home-manifestations` | "build journal doesnt fit fully missing L" | Unresolved. PR #88 added a per-label horizontal fit factor for exactly this and the widest label is still clipping. `BUILD JOURNAL` is the label closest in width to the idle string, so it is the one that fails by a single character — consistent with the fit factor being computed but not applied, or applied against a stale measurement. Needs a rendered measurement to distinguish. |
-| `instinct-persist` | "how can i refresh? the capability map and refresh button no longer exist" | Unresolved. UI referenced by the checklist is absent; either the controls regressed out or the checklist item is stale. |
-| `home-themes` | "hero pic on home shouldn't be the same as the modeling landing, hard to tell where you are" | Unresolved. Same asset used in two places that need to read as distinct. |
+All four are fixed on `fix/checklist-second-pass`. None could be visually verified —
+no browser was available in this session — so each fix is recorded with the mechanism
+it addresses, and the rendered result still needs an eye.
+
+**`home-provenance` — fixed.** `.v3-provenance-reveal` is `position:absolute` with
+`top:calc(100% + .55em)` on `.v3-identity`. Absolute positioning reserves no space, so
+the reveal opened directly on top of `.v3-grounding`, the paragraph immediately below
+it in normal flow. Opening the reveal now also adds `.is-provenance-open` to
+`.v3-identity`, which transitions in a matching `margin-bottom` and pushes the
+paragraph down instead of being covered by it. The closed layout is unchanged.
+
+**`home-manifestations` — fixed.** PR #88 measured each label with a detached `<span>`
+in `document.body` carrying font properties copied across by hand — `font`,
+`letter-spacing`, `text-transform`. That reproduces only the properties someone
+remembered; anything else affecting advance width measures wrong, and the label
+closest to the box width is the one that loses a single glyph, which is exactly
+`BUILD JOURNAL`. The probe is now a real `.v3-manifestations__label` inside the real
+reel, so it inherits every relevant property by construction rather than by
+enumeration. Two further causes are closed at the same time: labels are scaled to one
+pixel inside the box rather than to an exact fit that sub-pixel rounding can clip, and
+the measurement is re-taken on resize, which it never was despite the reel font being
+`clamp()`-based and therefore viewport-dependent.
+
+**`instinct-persist` — fixed.** The note asks how to refresh. There was no answer:
+discovery writes to `localStorage` and nothing ever cleared it, so once the field was
+found it stayed found on every later visit and the section could not be replayed. A
+**Reset discovery** control now appears in the field once at least one signal has been
+found, clearing the stored progress, the found state, and the open signal card.
+
+**`home-themes` — fixed, with a caveat.** Home and the modeling landing did not merely
+share a hero: they opened with the same three images in the same order. The homepage
+now leads with `barelysain-01.jpg`, and the modeling landing keeps
+`IMG_7192-hero-web.jpg`, which is the asset named for that role. `barelysain-01.jpg`
+was the only unused portrait asset in the repository at hero resolution (1350×1800) —
+every other candidate was either already on the portfolio page or landscape, and a
+landscape image would crop badly in a `100svh` portrait column. The caveat is that
+the choice was made from dimensions and filenames, not from looking at the photograph.
+It is the structurally correct slot; whether it is the right picture is the owner's
+call.
 
 `home-manifestations` also carries two content corrections, which are content edits
 rather than defects: the trailing period after the reel may be unnecessary, and
@@ -116,6 +149,9 @@ rather than defects: the trailing period after the reel may be unnecessary, and
 - `ws-workstreams`: "would be cool if the related text was integrated into the existing
   visual structure on click/hover."
 - `instinct-doc`: "works, but maybe the cards could be less fixed to bottom right corner."
+- "What is pulling on what" graphic: the concept is right and the execution is not —
+  raised as an aesthetic upgrade, not a defect. Worth treating as its own piece of
+  design work rather than a tweak, since the concept is the part already working.
 - `instinct-progress`: "works but not the same discovery-first UI we originally agreed
   on." Needs the original agreement retrieved before anything is rebuilt against a guess.
 - `home-audio`: "no cross navigation continuity after play initiated on home. not sure
@@ -199,3 +235,20 @@ be visually verified from here.
 These four Build Gate items are one question asked four times: the gate states a
 verdict, an assumption and an experiment without showing its reasoning. That is a
 single coherent piece of work — make the gate show why — rather than four copy edits.
+
+
+## Checklist surface changes
+
+Requested by the owner while this pass was running, and shipped with it:
+
+- The checklist refreshes itself. It polls `/api/workspace-checklist` every 15 seconds
+  while the tab is visible, and immediately when the tab is looked at again — which is
+  the moment that matters, since playing the checklist means leaving for the live site
+  and coming back. A poll never runs while an edit is unsaved or while the cursor is in
+  a note, so a server copy cannot overwrite work in progress or rebuild the DOM under a
+  caret, and a poll that finds no change does not re-render.
+- Checked items sink into a single **Completed** group at the bottom, closed by default
+  and struck through, each labelled with the section it came from. Sections above show
+  only what is still outstanding, and a section with nothing left disappears from the
+  working list rather than sitting there fully checked. Unchecking an item in the
+  Completed group returns it to its own section.
