@@ -33,7 +33,7 @@
       ['work-notes','Try marginal / latent notes and confirm they connect coherently to the Doc layer.'],
     ]],
     ['Depth + navigation', [
-      ['depth-thread','Use Follow the thread to open Build Journal, Dispatch, AI from Zero, Creative Direction, and About.'],
+      ['depth-thread','Use Follow the thread to open Build Journal, Dispatch, AI from Zero, and About.'],
       ['depth-direct','Confirm those destinations are also reachable directly from global navigation.'],
       ['depth-cta','Reach “Come make something.” and judge whether the page earns the CTA.'],
     ]],
@@ -82,6 +82,7 @@
   let notes = {};
   let reviewStarted = {};
   let saveTimer = 0;
+  let unsaved = false;
 
   const esc = (value='') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -112,20 +113,31 @@
     if (state) state.textContent = 'Saving…';
     try {
       const res = await fetch('/api/workspace-checklist', {
-        method:'PATCH', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+        method:'PATCH', credentials:'same-origin', keepalive:true, headers:{'Content-Type':'application/json'},
         body:JSON.stringify({completed_items:[...completed],notes})
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
-      if (state) state.textContent = `Saved ${new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`;
+      unsaved = false;
+      if (state) { state.textContent = `Saved ${new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`; state.classList.remove('is-error'); }
     } catch (error) {
-      if (state) state.textContent = error?.message || 'Could not save';
+      if (state) { state.textContent = error?.message || 'Could not save'; state.classList.add('is-error'); }
     }
   }
 
   function queueSave() {
+    unsaved = true;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(save, 350);
+  }
+
+  /* Playing the checklist means leaving for the live site and coming back, so a debounced
+     edit has to be flushed before the page is hidden. Otherwise the pageshow reload below
+     replaces a just-checked item with the older server copy. */
+  async function flush() {
+    if (!unsaved) return;
+    clearTimeout(saveTimer);
+    await save();
   }
 
   mount.addEventListener('change', event => {
@@ -165,6 +177,8 @@
     }
   }
 
-  window.addEventListener('pageshow', event => { if (event.persisted) load(); });
+  window.addEventListener('pagehide', () => { flush(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  window.addEventListener('pageshow', async event => { if (event.persisted) { await flush(); if (!unsaved) load(); } });
   load();
 })();

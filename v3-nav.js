@@ -73,8 +73,7 @@
         <a href="/journal/"><small>03</small><span>Build Journal</span><b>↗</b></a>
         <a href="/dispatch/"><small>04</small><span>Dispatch</span><b>↗</b></a>
         <a href="/ai-from-zero/"><small>05</small><span>AI from Zero</span><b>↗</b></a>
-        <a href="/going/"><small>06</small><span>Creative Direction</span><b>↗</b></a>
-        <a href="/about/"><small>07</small><span>About</span><b>↗</b></a>
+        <a href="/about/"><small>06</small><span>About</span><b>↗</b></a>
       </nav>
       <div class="v3-global-nav__aside">
         <p>The homepage is one path through ASHWOOD, not the only path. Jump directly into any manifestation without having to follow the scroll.</p>

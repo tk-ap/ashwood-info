@@ -77,7 +77,6 @@
     'BUILD JOURNAL': () => [document.querySelector('.v3-builds'), document.querySelector('.v3-depth__links a[href="/journal/"]')],
     DISPATCH: () => [document.querySelector('.v3-depth__links a[href="/dispatch/"]')],
     'AI FROM ZERO': () => [document.querySelector('.v3-depth__links a[href="/ai-from-zero/"]')],
-    'CREATIVE DIRECTION': () => [document.querySelector('.v3-depth__links a[href="/going/"]')],
     ABOUT: () => [document.querySelector('.v3-depth__links a[href="/about/"]')],
     'THE INSTINCT': () => [document.querySelector('#thinking')]
   };
@@ -134,14 +133,14 @@
   });
 
   document.addEventListener('pointerover', event => {
-    const creative = event.target.closest('.v3-depth__links a[href="/going/"]');
-    if (creative) {
-      activate(creative, document.querySelector('#depth'));
-      setMode('trajectory', creative);
+    const thread = event.target.closest('.v3-depth__links a');
+    if (thread) {
+      activate(thread, document.querySelector('#depth'));
+      setMode('trajectory', thread);
     }
   });
   document.addEventListener('pointerout', event => {
-    if (event.target.closest?.('.v3-depth__links a[href="/going/"]')) {
+    if (event.target.closest?.('.v3-depth__links a')) {
       clearTargets();
       setMode('rest');
     }
@@ -175,9 +174,8 @@
           activate(entry.target);
           setMode('evidence', entry.target);
         } else if (entry.target.matches('#depth')) {
-          const creative = entry.target.querySelector('.v3-depth__links a[href="/going/"]');
-          activate(creative || entry.target);
-          setMode('trajectory', creative || entry.target);
+          activate(entry.target);
+          setMode('trajectory', entry.target);
         }
       });
     }, { threshold:[.42,.58] });

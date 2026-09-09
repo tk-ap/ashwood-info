@@ -10,7 +10,6 @@
     { label:'BUILD JOURNAL', href:'/journal/' },
     { label:'DISPATCH', href:'/dispatch/' },
     { label:'AI FROM ZERO', href:'/ai-from-zero/' },
-    { label:'CREATIVE DIRECTION', href:'/going/' },
     { label:'ABOUT', href:'/about/' },
     { label:'THE INSTINCT', href:'/dive-deeper/' }
   ];
@@ -33,9 +32,9 @@
     /* Fixed viewport: labels animate inside this box without changing sentence geometry. */
     .v3-manifestations{position:relative;display:inline-block;flex:0 0 var(--v3-reel-width,18ch);width:var(--v3-reel-width,18ch);height:1.08em;overflow:hidden;vertical-align:-.05em;white-space:nowrap;color:inherit;contain:layout paint}
     .v3-manifestations:hover{filter:saturate(1.2) brightness(1.08)}
-    .v3-manifestations__label{position:absolute;inset:0;display:block;width:100%;white-space:nowrap;transform:translate3d(0,0,0);opacity:1;transition:transform .22s cubic-bezier(.2,.75,.25,1),opacity .18s ease;will-change:transform,opacity;background:linear-gradient(105deg,var(--ashwood-ink),var(--ashwood-gold),var(--ashwood-field-green),var(--ashwood-ink));background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:v3-shimmer 9s ease-in-out infinite}
-    .v3-manifestations__label.is-outgoing{transform:translate3d(0,-112%,0);opacity:0}
-    .v3-manifestations__label.is-incoming{transform:translate3d(0,112%,0);opacity:0;transition:none}
+    .v3-manifestations__label{position:absolute;inset:0;display:block;width:100%;white-space:nowrap;transform:translate3d(0,0,0) scaleX(var(--v3-label-scale,1));transform-origin:left center;opacity:1;transition:transform .22s cubic-bezier(.2,.75,.25,1),opacity .18s ease;will-change:transform,opacity;background:linear-gradient(105deg,var(--ashwood-ink),var(--ashwood-gold),var(--ashwood-field-green),var(--ashwood-ink));background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:v3-shimmer 9s ease-in-out infinite}
+    .v3-manifestations__label.is-outgoing{transform:translate3d(0,-112%,0) scaleX(var(--v3-label-scale,1));opacity:0}
+    .v3-manifestations__label.is-incoming{transform:translate3d(0,112%,0) scaleX(var(--v3-label-scale,1));opacity:0;transition:none}
 
     .v3-provenance-reveal{position:absolute;left:0;top:calc(100% + .55em);z-index:3;display:inline-flex;align-items:baseline;gap:.45em;max-width:min(72vw,620px);overflow:hidden;opacity:0;transform:translateY(-3px);transition:opacity .22s ease,transform .24s ease;pointer-events:none}
     .v3-provenance-reveal.is-open{opacity:1;transform:none}
@@ -77,15 +76,35 @@
   let transitionTimer = 0;
   let swapping = false;
 
+  /* The reel box is overflow:hidden and locked to the idle string so the sentence never
+     reflows. Uppercase destinations are wider than that box, so each one carries its own
+     horizontal fit factor instead of being clipped. */
+  const labelScales = new Map();
+
+  const applyLabelScale = node => {
+    if (!node) return;
+    node.style.setProperty('--v3-label-scale', String(labelScales.get(node.textContent.trim()) ?? 1));
+  };
+
   const lockReelGeometry = () => {
     const computed = getComputedStyle(manifestations);
     const probe = document.createElement('span');
-    probe.textContent = IDLE_MANIFESTATION;
     probe.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;font:${computed.font};letter-spacing:${computed.letterSpacing};text-transform:${computed.textTransform};`;
     document.body.appendChild(probe);
+
+    probe.textContent = IDLE_MANIFESTATION;
     const width = Math.ceil(probe.getBoundingClientRect().width) + 2;
+
+    labelScales.clear();
+    for (const item of manifestationsList) {
+      probe.textContent = item.label;
+      const labelWidth = probe.getBoundingClientRect().width;
+      labelScales.set(item.label, labelWidth > width ? width / labelWidth : 1);
+    }
     probe.remove();
+
     if (width > 0) manifestations.style.setProperty('--v3-reel-width', `${width}px`);
+    manifestations.querySelectorAll('.v3-manifestations__label').forEach(applyLabelScale);
   };
   requestAnimationFrame(() => requestAnimationFrame(lockReelGeometry));
   if (document.fonts?.ready) document.fonts.ready.then(lockReelGeometry).catch(()=>{});
@@ -117,6 +136,7 @@
     const incoming = document.createElement('span');
     incoming.className = 'v3-manifestations__label is-incoming';
     incoming.textContent = item.label;
+    applyLabelScale(incoming);
     manifestations.appendChild(incoming);
 
     requestAnimationFrame(() => requestAnimationFrame(() => {
