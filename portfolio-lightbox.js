@@ -10,6 +10,35 @@
 // a tab stop, and Enter/Space handling; without that the entire archive is
 // unreachable for anyone not using a mouse.
 document.addEventListener("DOMContentLoaded", () => {
+  // Owner-approved additions to the current BarelySain campaign set. Keep these
+  // campaign-specific: they are not homepage imagery.
+  const campaignGrid = document.querySelector("#barelysain .campaign-grid");
+  if (campaignGrid && !campaignGrid.querySelector('[data-approved-barelysain="20260911"]')) {
+    const approvedFrames = [
+      {
+        src: "/assets/campaigns/barelysain/barelysain-alley.webp",
+        alt: "TK Ashwood in BarelySain, walking outdoors in sunglasses",
+      },
+      {
+        src: "/assets/campaigns/barelysain/barelysain-seated.webp",
+        alt: "TK Ashwood in BarelySain, seated beside a glass storefront in sunglasses",
+      },
+    ];
+
+    approvedFrames.forEach(({ src, alt }) => {
+      const frame = document.createElement("div");
+      frame.className = "asset-frame asset-frame-tall";
+      frame.dataset.approvedBarelysain = "20260911";
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = alt;
+      img.loading = "lazy";
+      frame.append(img);
+      campaignGrid.append(frame);
+    });
+  }
+
   const images = [...document.querySelectorAll("main img")];
   if (!images.length) return;
 
