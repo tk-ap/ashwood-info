@@ -51,6 +51,40 @@ ASHWOOD's UI and private Workspace should feel alive: a living, breathing workin
 - Keep merge and production promotion human-gated unless the owner explicitly authorizes a narrower task-specific action.
 - A READY preview is evidence that a deployment built; it is not proof that the experience passed human/visual verification.
 
+### Canonical Deployment Topology
+
+- Read `.agent-os/deployment.yaml` before any release, deployment diagnosis, or claim about live state.
+- The canonical source is `tk-ap/ashwood-info` on `main`.
+- Production is the Vercel project `ashwood` at `https://ashwood-info.vercel.app`.
+- Do not use repository homepage metadata, an old repository name, or a previously used host as deployment truth when it conflicts with `.agent-os/deployment.yaml`.
+
+### Mandatory Release Preflight
+
+Before editing or deploying:
+
+1. Confirm the repository, production branch, hosting provider, project, and production URL against `.agent-os/deployment.yaml`.
+2. Fetch current `main` and record its full commit SHA.
+3. Confirm the hosting project is linked to the canonical repository.
+4. Inspect the latest production deployment and its commit SHA.
+5. If the first deployment assumption is wrong, stop and re-resolve the topology from the canonical file and hosting provider before further troubleshooting.
+
+### Production Completion Gate
+
+Never report a change as live based only on a local commit, pushed branch, merged commit, preview, or READY build. Completion requires evidence that:
+
+1. `main` contains the intended commit.
+2. Vercel production deployed that exact full commit SHA.
+3. The canonical production URL and every changed route return successfully.
+4. Expected live HTML references are present.
+5. Every newly published asset URL returns the expected content type and non-empty body.
+6. Relevant automated checks pass and production runtime errors are reviewed.
+
+### Local Upload Handling
+
+- Treat a temporary upload path as transient input, not durable project storage.
+- After approval and privacy review, copy each required local attachment into its final tracked repository path immediately.
+- Validate that the copied asset decodes, has the intended dimensions/format, is referenced by the relevant route, and remains present before commit and production verification.
+
 ## Agent OS Control-Plane Integration
 
 This repository participates in `tk-ap/agent-os` as the canonical shared workforce/control-plane layer.

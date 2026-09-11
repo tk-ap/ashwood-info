@@ -11,7 +11,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     ledgato: { label: 'LEDGATo', type: 'Execution Intelligence', goal: 'ownership' },
     'agent-os': { label: 'agent-os', type: 'Workforce infrastructure', goal: 'learning' },
     'ashwood-info': { label: 'ASHWOOD', type: 'Creative practice & build archive', goal: 'leadership' },
-    'tk-ap.github.io': { label: 'ASHWOOD', type: 'Human / creative operating layer', goal: 'leadership' },
+    'ashwood-info': { label: 'ASHWOOD', type: 'Human / creative operating layer', goal: 'leadership' },
     'alvira-bridge': { label: 'ALVIRA Bridge', type: 'ALVIRA feature infrastructure', goal: 'ownership' }
   };
 

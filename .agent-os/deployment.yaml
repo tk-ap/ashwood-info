@@ -1,0 +1,20 @@
+version: 1
+product_key: ashwood
+
+source:
+  repository: tk-ap/ashwood-info
+  production_branch: main
+
+hosting:
+  provider: vercel
+  team: alvira2
+  project: ashwood
+  production_url: https://ashwood-info.vercel.app
+
+release_rules:
+  - treat-this-file-as-the-canonical-deployment-topology
+  - verify-the-current-main-sha-before-making-release-changes
+  - require-the-production-deployment-to-reference-the-intended-main-sha
+  - require-the-production-url-and-changed-routes-to-return-successfully
+  - verify-live-content-and-new-asset-content-types-before-reporting-live
+  - never-infer-production-from-a-commit-push-preview-or-stale-repository-homepage

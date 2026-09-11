@@ -20,7 +20,7 @@
       name: 'Visible Leadership',
       description: 'Become known for a valuable point of view and capability by making the thinking, evidence, and work legible in public.',
       priority: 1.3,
-      repoHints: ['tk-ap.github.io', 'ashwood', 'ai-from-zero', 'alvira', 'ailhat']
+      repoHints: ['ashwood-info', 'ashwood', 'ai-from-zero', 'alvira', 'ailhat']
     },
     {
       id: 'relationships',
@@ -34,21 +34,21 @@
       name: 'Modeling & Presence',
       description: 'Re-establish modeling as an active creative and professional practice with current work, visibility, and collaboration.',
       priority: 1.05,
-      repoHints: ['tk-ap.github.io', 'ashwood']
+      repoHints: ['ashwood-info', 'ashwood']
     },
     {
       id: 'music',
       name: 'Music & Creative Return',
       description: 'Keep writing, recording, releasing, and returning to singing and performance as a real creative practice.',
       priority: 1.05,
-      repoHints: ['tk-ap.github.io', 'ashwood']
+      repoHints: ['ashwood-info', 'ashwood']
     },
     {
       id: 'writing',
       name: 'Writing & Art',
       description: 'Make essays, poetry, visual work, and field notes visible as part of the broader creative practice.',
       priority: .95,
-      repoHints: ['tk-ap.github.io', 'ashwood']
+      repoHints: ['ashwood-info', 'ashwood']
     },
     {
       id: 'learning',
@@ -64,7 +64,7 @@
     'ailhat': { label: 'ailhat', type: 'Portfolio Intelligence', goal: 'ownership' },
     'ledgato': { label: 'LEDGATo', type: 'Execution Intelligence', goal: 'ownership' },
     'agent-os': { label: 'agent-os', type: 'Workforce infrastructure', goal: 'learning' },
-    'tk-ap.github.io': { label: 'ASHWOOD', type: 'Human / creative operating layer', goal: 'leadership' },
+    'ashwood-info': { label: 'ASHWOOD', type: 'Human / creative operating layer', goal: 'leadership' },
     'alvira-bridge': { label: 'ALVIRA Bridge', type: 'ALVIRA feature infrastructure', goal: 'ownership' }
   };
 
