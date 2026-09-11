@@ -33,6 +33,16 @@ ASHWOOD's UI and private Workspace should feel alive: a living, breathing workin
 - Preserve reduced-motion/accessibility behavior where interaction or motion is involved.
 - Do not replace established art assets with lower-fidelity approximations without explicit approval.
 
+## Public Media Privacy Boundary
+
+- Never publish or restore media that reveals or strongly implies the owner's residence, home block, building entrance, habitual route, or another sensitive personal location.
+- Outdoor imagery from an owner-designated residential-proximity exclusion area is private by default and must not appear on public ASHWOOD surfaces.
+- Indoor imagery from that area may be used only when the frame does not reveal an address, building identity, entrance, window/street view, geotag, or other practical location clue.
+- If a photo's location provenance is uncertain, do not ship it. Prefer studio, runway, event-venue, campaign, or clearly non-residential imagery that has been visually reviewed.
+- Before public release, visually inspect candidate media for street signs, addresses, building numbers, recognizable residential frontage, navigation/map data, license plates when materially identifying, and embedded or rendered location metadata.
+- Do not put the exact private exclusion-area boundary into this public repository. That detail belongs in private owner/runtime context.
+- `assets/digitals2026/barelysain-01.jpg` is a confirmed location-sensitive asset. It must not be restored to the public repository or referenced by a public route.
+
 ## Repository and Release Safety
 
 - Start material work from current `main` on a task branch.
