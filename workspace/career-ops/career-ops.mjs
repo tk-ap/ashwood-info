@@ -13,13 +13,36 @@ const fmtDateTime = value => {
   return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
 };
 
-const state = { applications: [], events: [], selectedId: null };
+const state = {
+  applications: [],
+  events: [],
+  selectedId: null,
+  opportunities: [],
+  opportunityCursor: 0,
+  opportunityMeta: null
+};
 
 async function api(options={}) {
   const response = await fetch('/api/workspace-career-ops', {
     credentials:'same-origin',
     headers:{ 'Content-Type':'application/json', ...(options.headers || {}) },
     ...options
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(body.error || `Request failed (${response.status})`);
+    error.status = response.status;
+    throw error;
+  }
+  return body;
+}
+
+async function opportunityApi({ cursor=0, refresh=false }={}) {
+  const query = new URLSearchParams({ cursor:String(cursor) });
+  if (refresh) query.set('refresh', '1');
+  const response = await fetch(`/api/workspace-career-opportunities?${query.toString()}`, {
+    credentials:'same-origin',
+    headers:{ 'Accept':'application/json' }
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -156,6 +179,99 @@ function renderSyncState() {
   }
 }
 
+function renderOpportunities() {
+  const root = $('#career-opportunity-grid');
+  const meta = $('#career-opportunity-meta');
+  const data = state.opportunityMeta || {};
+
+  if (!state.opportunities.length) {
+    root.innerHTML = `<div class="career-opportunity-empty"><strong>No strong new matches in the current feed.</strong><span>Refresh again later; Career Ops only surfaces roles that overlap the current business execution, risk, controls, compliance, PMO, operations, process, and finance lanes.</span></div>`;
+  } else {
+    root.innerHTML = state.opportunities.map(opportunity => `
+      <article class="career-opportunity-card">
+        <div class="career-opportunity-topline">
+          <span>${escapeHtml(opportunity.company)}</span>
+          <time>${escapeHtml(fmtDate(opportunity.published_at))}</time>
+        </div>
+        <h3>${escapeHtml(opportunity.role)}</h3>
+        <p class="career-opportunity-location">${escapeHtml([opportunity.location || 'Remote', opportunity.job_type].filter(Boolean).join(' · '))}</p>
+        ${opportunity.salary ? `<p class="career-opportunity-salary">${escapeHtml(opportunity.salary)}</p>` : ''}
+        ${opportunity.matches?.length ? `<div class="career-opportunity-tags">${opportunity.matches.map(match => `<span>${escapeHtml(match)}</span>`).join('')}</div>` : ''}
+        <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
+        <div class="career-opportunity-actions">
+          <a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Open role ↗</a>
+          <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
+        </div>
+        <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
+      </article>`).join('');
+
+    root.querySelectorAll('[data-track-opportunity]').forEach(button => button.addEventListener('click', async () => {
+      const opportunity = state.opportunities.find(item => String(item.id) === button.dataset.trackOpportunity);
+      if (!opportunity) return;
+      await trackOpportunity(opportunity, button);
+    }));
+  }
+
+  const sourceStamp = data.source_fetched_at ? `source checked ${fmtDateTime(data.source_fetched_at)}` : 'source time unavailable';
+  const pool = Number(data.pool_count || 0);
+  const warning = data.warning ? ` · ${data.warning}` : '';
+  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool · ${sourceStamp}${warning}`;
+}
+
+async function loadOpportunities({ refresh=false }={}) {
+  const button = $('#career-opportunity-refresh');
+  button.disabled = true;
+  button.textContent = refresh ? 'Finding more…' : 'Loading…';
+  try {
+    if (refresh) state.opportunityCursor += 1;
+    const data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
+    state.opportunities = data.opportunities || [];
+    state.opportunityMeta = data;
+    renderOpportunities();
+  } catch (error) {
+    $('#career-opportunity-grid').innerHTML = `<div class="career-opportunity-empty"><strong>New options could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
+    $('#career-opportunity-meta').textContent = 'Opportunity feed unavailable';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Refresh options';
+  }
+}
+
+async function trackOpportunity(opportunity, button) {
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Adding…';
+  try {
+    const result = await api({
+      method:'POST',
+      body:JSON.stringify({
+        action:'upsert_application',
+        id:`career:remotive:${opportunity.id}`,
+        company:opportunity.company,
+        role:opportunity.role,
+        job_id:String(opportunity.id),
+        posting_url:opportunity.url,
+        location:opportunity.location,
+        work_arrangement:'Remote',
+        status:'TARGET',
+        next_action:'Review the full employer posting and decide whether to apply.',
+        posting_snapshot:{ summary:opportunity.summary || '', responsibilities:[], requirements:[], preferred:[] },
+        materials:{},
+        source:'remotive',
+        notes:`Discovered through ASHWOOD Career Ops. Source: Remotive. Published ${opportunity.published_at || 'date unavailable'}.`
+      })
+    });
+    state.selectedId = result.id;
+    await load();
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = 'Try again';
+    button.title = error.message;
+    return;
+  }
+  button.textContent = original;
+}
+
 function render() {
   renderHeader();
   renderApplications();
@@ -173,11 +289,14 @@ async function load() {
     if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
     $('#career-state').textContent = 'Private workspace';
     render();
+    await loadOpportunities();
   } catch (error) {
     if (error.status === 401) {
       $('#career-state').textContent = 'Locked';
       $('#career-applications').innerHTML = `<div class="career-empty"><strong>Workspace is locked.</strong><p>Unlock the main ASHWOOD workspace first, then return here.</p><a class="career-primary-link" href="/workspace/">Unlock workspace</a></div>`;
       $('#career-detail').innerHTML = '';
+      $('#career-opportunity-grid').innerHTML = '';
+      $('#career-opportunity-meta').textContent = 'Unlock the workspace to load private recommendations.';
       return;
     }
     $('#career-state').textContent = 'Unavailable';
@@ -274,6 +393,7 @@ async function saveApplication(event) {
 
 $('#career-add').addEventListener('click', () => openApplicationDialog());
 $('#career-refresh').addEventListener('click', load);
+$('#career-opportunity-refresh').addEventListener('click', () => loadOpportunities({ refresh:true }));
 $('#career-form').addEventListener('submit', saveApplication);
 document.querySelectorAll('[data-career-close]').forEach(button => button.addEventListener('click', () => $('#career-dialog').close()));
 
