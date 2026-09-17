@@ -27,6 +27,24 @@ Application records live in the private ASHWOOD workspace database. The public r
 
 The UI route is `/workspace/career-ops/`. It uses the same 30-day private workspace session as `/workspace/`.
 
+## Fresh opportunity discovery
+
+Career Ops also includes a private `What should I apply to next?` section. It should surface 5–10 current options that overlap the owner's demonstrated lanes: business execution, operational risk and controls, compliance, business analysis, PMO/program operations, process improvement, resiliency, financial operations, and adjacent governance work.
+
+The first live source is the Remotive public jobs API. Its listings are remote and the source requires attribution and a link back to Remotive. The endpoint is cached for six hours so repeated presses of `Refresh options` rotate through additional ranked matches without hammering the upstream feed. A source refresh can happen after the cache expires; the UI always reports when the source was last checked.
+
+Discovery rules:
+
+1. exclude applications already tracked by exact posting URL or company/title pair;
+2. exclude clearly non-US-only location restrictions and obviously unrelated technical, clinical, sales, or creative roles;
+3. rank by title match first, then relevant posting language and recency;
+4. show eight options at a time, while permitting a 5–10 result range when the pool is smaller;
+5. never auto-apply or silently add a job to the pipeline;
+6. `Track target` creates a private `TARGET` application record with the source URL and a posting summary so the owner can review it before applying;
+7. keep source attribution visible on every surfaced role.
+
+The discovery feed is a sourcing aid, not a claim that every surfaced job is a fit. Final eligibility and application decisions remain owner-controlled.
+
 ## Inbox continuity
 
 The data model supports Gmail-originated events through `workspace_career_events`:
