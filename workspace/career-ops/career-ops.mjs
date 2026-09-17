@@ -1,0 +1,280 @@
+import { normaliseStatus, requestedSalaryLabel, salaryLabel, sortApplications, summaryCounts, needsAttention } from './model.mjs';
+
+const $ = selector => document.querySelector(selector);
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const fmtDate = value => {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+};
+const fmtDateTime = value => {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+};
+
+const state = { applications: [], events: [], selectedId: null };
+
+async function api(options={}) {
+  const response = await fetch('/api/workspace-career-ops', {
+    credentials:'same-origin',
+    headers:{ 'Content-Type':'application/json', ...(options.headers || {}) },
+    ...options
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(body.error || `Request failed (${response.status})`);
+    error.status = response.status;
+    throw error;
+  }
+  return body;
+}
+
+function statusClass(status) {
+  return normaliseStatus(status).toLowerCase();
+}
+
+function eventsFor(applicationId) {
+  return state.events.filter(event => event.application_id === applicationId);
+}
+
+function snapshotList(snapshot, key) {
+  const values = Array.isArray(snapshot?.[key]) ? snapshot[key] : [];
+  if (!values.length) return '';
+  return `<div class="career-detail-block"><h4>${escapeHtml(key.replaceAll('_',' '))}</h4><ul>${values.map(value => `<li>${escapeHtml(value)}</li>`).join('')}</ul></div>`;
+}
+
+function materialChips(materials={}) {
+  const items = [];
+  if (materials.resume) items.push(`Résumé: ${materials.resume}`);
+  if (materials.projects) items.push(`Projects: ${Array.isArray(materials.projects) ? materials.projects.join(', ') : materials.projects}`);
+  if (materials.work_sample) items.push(`Work sample: ${materials.work_sample}`);
+  if (materials.self_intro) items.push('Self-introduction submitted');
+  return items;
+}
+
+function renderHeader() {
+  const counts = summaryCounts(state.applications);
+  $('#career-summary').innerHTML = [
+    [counts.active, 'active pipeline'],
+    [counts.submitted, 'submitted / screening'],
+    [counts.conversations, 'recruiter / assessment / interview'],
+    [counts.needsAction, 'need action']
+  ].map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
+}
+
+function renderApplications() {
+  const root = $('#career-applications');
+  const apps = sortApplications(state.applications);
+  if (!apps.length) {
+    root.innerHTML = `<div class="career-empty"><strong>No applications recorded yet.</strong><p>Add the first one here. Career data is stored in the private workspace database, not in this public repository.</p></div>`;
+    return;
+  }
+
+  root.innerHTML = apps.map(app => {
+    const attention = needsAttention(app);
+    const requested = requestedSalaryLabel(app);
+    const eventCount = eventsFor(app.id).length;
+    return `<button class="career-row ${state.selectedId === app.id ? 'is-selected' : ''}" type="button" data-app-id="${escapeHtml(app.id)}">
+      <span class="career-row-main">
+        <span class="career-company">${escapeHtml(app.company)}</span>
+        <strong>${escapeHtml(app.role)}</strong>
+        <span>${[app.job_id ? `Req ${app.job_id}` : null, app.location, app.work_arrangement].filter(Boolean).map(escapeHtml).join(' · ')}</span>
+      </span>
+      <span class="career-row-comp">${escapeHtml(salaryLabel(app))}${requested ? `<small>asked ${escapeHtml(requested)}</small>` : ''}</span>
+      <span class="career-status ${statusClass(app.status)}">${escapeHtml(normaliseStatus(app.status))}</span>
+      <span class="career-row-meta">${attention ? '<b>action due</b>' : `${eventCount} event${eventCount === 1 ? '' : 's'}`}</span>
+    </button>`;
+  }).join('');
+
+  root.querySelectorAll('[data-app-id]').forEach(button => button.addEventListener('click', () => {
+    state.selectedId = button.dataset.appId;
+    renderApplications();
+    renderDetail();
+  }));
+}
+
+function renderDetail() {
+  const root = $('#career-detail');
+  const app = state.applications.find(item => item.id === state.selectedId);
+  if (!app) {
+    root.innerHTML = `<div class="career-detail-empty"><p>Select an application to see the preserved posting, submitted materials, next action, and message history.</p></div>`;
+    return;
+  }
+
+  const snapshot = app.posting_snapshot || {};
+  const materials = app.materials || {};
+  const chips = materialChips(materials);
+  const events = eventsFor(app.id);
+
+  root.innerHTML = `
+    <div class="career-detail-head">
+      <div>
+        <p class="section-kicker">Application record</p>
+        <h2>${escapeHtml(app.company)} · ${escapeHtml(app.role)}</h2>
+        <p>${[app.job_id ? `Req ${app.job_id}` : null, app.location, app.work_arrangement].filter(Boolean).map(escapeHtml).join(' · ')}</p>
+      </div>
+      <div class="career-detail-actions">
+        ${app.posting_url ? `<a href="${escapeHtml(app.posting_url)}" target="_blank" rel="noopener">Open posting ↗</a>` : ''}
+        <button type="button" id="career-edit">Edit</button>
+      </div>
+    </div>
+    <div class="career-detail-grid">
+      <article><span>Status</span><strong>${escapeHtml(normaliseStatus(app.status))}</strong></article>
+      <article><span>Posted compensation</span><strong>${escapeHtml(salaryLabel(app))}</strong></article>
+      <article><span>Requested salary</span><strong>${escapeHtml(requestedSalaryLabel(app) || '—')}</strong></article>
+      <article><span>Submitted</span><strong>${escapeHtml(fmtDate(app.submitted_at))}</strong></article>
+    </div>
+    ${app.next_action ? `<div class="career-next"><span>Next action</span><strong>${escapeHtml(app.next_action)}</strong><small>${app.next_action_at ? `Due ${escapeHtml(fmtDateTime(app.next_action_at))}` : 'No due date set'}</small></div>` : ''}
+    ${app.fit_decision ? `<div class="career-note"><span>Fit decision</span><p>${escapeHtml(app.fit_decision)}</p></div>` : ''}
+    ${chips.length ? `<div class="career-materials"><span>Submitted materials</span><div>${chips.map(chip => `<b>${escapeHtml(chip)}</b>`).join('')}</div></div>` : ''}
+    <div class="career-snapshot">
+      <div class="career-section-title"><span>Posting snapshot</span><small>Preserved for interview prep even if the listing disappears.</small></div>
+      ${snapshot.summary ? `<p>${escapeHtml(snapshot.summary)}</p>` : ''}
+      ${snapshotList(snapshot, 'responsibilities')}
+      ${snapshotList(snapshot, 'requirements')}
+      ${snapshotList(snapshot, 'preferred')}
+      ${snapshot.interview_notes ? `<div class="career-detail-block"><h4>Interview notes</h4><p>${escapeHtml(snapshot.interview_notes)}</p></div>` : ''}
+      ${!snapshot.summary && !snapshot.responsibilities?.length && !snapshot.requirements?.length && !snapshot.preferred?.length ? '<p class="career-muted">No posting details have been captured yet.</p>' : ''}
+    </div>
+    <div class="career-timeline">
+      <div class="career-section-title"><span>Timeline</span><small>Email-driven status events will appear here once Gmail monitoring is connected.</small></div>
+      ${events.length ? events.map(event => `<article><time>${escapeHtml(fmtDateTime(event.occurred_at))}</time><div><strong>${escapeHtml(event.summary)}</strong><span>${escapeHtml(event.source || 'manual')} · ${escapeHtml(event.event_type || 'NOTE')}</span></div></article>`).join('') : '<p class="career-muted">No events yet.</p>'}
+    </div>`;
+
+  $('#career-edit')?.addEventListener('click', () => openApplicationDialog(app));
+}
+
+function renderSyncState() {
+  const gmailEvents = state.events.filter(event => event.source === 'gmail');
+  const node = $('#career-sync-state');
+  if (gmailEvents.length) {
+    const latest = gmailEvents[0];
+    node.innerHTML = `<strong>Gmail activity detected</strong><span>${gmailEvents.length} tracked message event${gmailEvents.length === 1 ? '' : 's'} · latest ${escapeHtml(fmtDateTime(latest.occurred_at))}</span>`;
+  } else {
+    node.innerHTML = `<strong>Inbox sync ready, not connected</strong><span>Connect the dedicated job-search Gmail account in ChatGPT; application emails can then be matched to these records and written into the timeline without exposing credentials to ASHWOOD.</span>`;
+  }
+}
+
+function render() {
+  renderHeader();
+  renderApplications();
+  renderDetail();
+  renderSyncState();
+  $('#career-refreshed').textContent = `Refreshed ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
+}
+
+async function load() {
+  try {
+    $('#career-state').textContent = 'Loading…';
+    const data = await api();
+    state.applications = data.applications || [];
+    state.events = data.events || [];
+    if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
+    $('#career-state').textContent = 'Private workspace';
+    render();
+  } catch (error) {
+    if (error.status === 401) {
+      $('#career-state').textContent = 'Locked';
+      $('#career-applications').innerHTML = `<div class="career-empty"><strong>Workspace is locked.</strong><p>Unlock the main ASHWOOD workspace first, then return here.</p><a class="career-primary-link" href="/workspace/">Unlock workspace</a></div>`;
+      $('#career-detail').innerHTML = '';
+      return;
+    }
+    $('#career-state').textContent = 'Unavailable';
+    $('#career-applications').innerHTML = `<div class="career-empty"><strong>Career Ops could not load.</strong><p>${escapeHtml(error.message)}</p></div>`;
+  }
+}
+
+function parseLines(value='') {
+  return String(value).split('\n').map(line => line.trim()).filter(Boolean);
+}
+
+function openApplicationDialog(application=null) {
+  const dialog = $('#career-dialog');
+  const form = $('#career-form');
+  form.reset();
+  $('#career-form-error').textContent = '';
+  $('#career-form-id').value = application?.id || '';
+  $('#career-company').value = application?.company || '';
+  $('#career-role').value = application?.role || '';
+  $('#career-job-id').value = application?.job_id || '';
+  $('#career-posting-url').value = application?.posting_url || '';
+  $('#career-location').value = application?.location || '';
+  $('#career-work-arrangement').value = application?.work_arrangement || '';
+  $('#career-salary-min').value = application?.salary_min || '';
+  $('#career-salary-max').value = application?.salary_max || '';
+  $('#career-requested-salary').value = application?.requested_salary || '';
+  $('#career-status-input').value = normaliseStatus(application?.status || 'TARGET');
+  $('#career-submitted-at').value = application?.submitted_at ? new Date(application.submitted_at).toISOString().slice(0,10) : '';
+  $('#career-next-action').value = application?.next_action || '';
+  $('#career-next-action-at').value = application?.next_action_at ? new Date(application.next_action_at).toISOString().slice(0,16) : '';
+  $('#career-fit-decision').value = application?.fit_decision || '';
+  $('#career-summary-input').value = application?.posting_snapshot?.summary || '';
+  $('#career-responsibilities').value = (application?.posting_snapshot?.responsibilities || []).join('\n');
+  $('#career-requirements').value = (application?.posting_snapshot?.requirements || []).join('\n');
+  $('#career-preferred').value = (application?.posting_snapshot?.preferred || []).join('\n');
+  $('#career-interview-notes').value = application?.posting_snapshot?.interview_notes || '';
+  $('#career-resume').value = application?.materials?.resume || '';
+  $('#career-projects').value = Array.isArray(application?.materials?.projects) ? application.materials.projects.join(', ') : application?.materials?.projects || '';
+  $('#career-work-sample').value = application?.materials?.work_sample || '';
+  $('#career-notes').value = application?.notes || '';
+  $('#career-dialog-title').textContent = application ? 'Edit application' : 'Add application';
+  dialog.showModal();
+}
+
+async function saveApplication(event) {
+  event.preventDefault();
+  const button = $('#career-save');
+  button.disabled = true;
+  button.textContent = 'Saving…';
+  try {
+    const payload = {
+      action:'upsert_application',
+      id: $('#career-form-id').value || undefined,
+      company: $('#career-company').value,
+      role: $('#career-role').value,
+      job_id: $('#career-job-id').value,
+      posting_url: $('#career-posting-url').value,
+      location: $('#career-location').value,
+      work_arrangement: $('#career-work-arrangement').value,
+      salary_min: $('#career-salary-min').value,
+      salary_max: $('#career-salary-max').value,
+      requested_salary: $('#career-requested-salary').value,
+      status: $('#career-status-input').value,
+      submitted_at: $('#career-submitted-at').value,
+      next_action: $('#career-next-action').value,
+      next_action_at: $('#career-next-action-at').value,
+      fit_decision: $('#career-fit-decision').value,
+      posting_snapshot: {
+        summary: $('#career-summary-input').value.trim(),
+        responsibilities: parseLines($('#career-responsibilities').value),
+        requirements: parseLines($('#career-requirements').value),
+        preferred: parseLines($('#career-preferred').value),
+        interview_notes: $('#career-interview-notes').value.trim()
+      },
+      materials: {
+        resume: $('#career-resume').value.trim(),
+        projects: $('#career-projects').value.split(',').map(value => value.trim()).filter(Boolean),
+        work_sample: $('#career-work-sample').value.trim()
+      },
+      notes: $('#career-notes').value,
+      source:'workspace'
+    };
+    const result = await api({ method:'POST', body:JSON.stringify(payload) });
+    state.selectedId = result.id;
+    $('#career-dialog').close();
+    await load();
+  } catch (error) {
+    $('#career-form-error').textContent = error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Save application';
+  }
+}
+
+$('#career-add').addEventListener('click', () => openApplicationDialog());
+$('#career-refresh').addEventListener('click', load);
+$('#career-form').addEventListener('submit', saveApplication);
+document.querySelectorAll('[data-career-close]').forEach(button => button.addEventListener('click', () => $('#career-dialog').close()));
+
+load();
