@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#f5f3ef" />
+  <title>Career Ops — ASHWOOD</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/ashwood-core.css" />
+  <link rel="stylesheet" href="/workspace/workspace.css" />
+  <link rel="stylesheet" href="/workspace/career-ops/career-ops.css" />
+  <script type="module" src="/workspace/career-ops/career-ops.mjs"></script>
+</head>
+<body class="workspace-page career-ops-page">
+  <main class="career-shell">
+    <header class="career-masthead">
+      <div>
+        <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
+        <span>Career Ops</span>
+      </div>
+      <nav>
+        <span id="career-state">Locked</span>
+        <a href="/workspace/">Workspace</a>
+        <button type="button" id="career-refresh">Refresh</button>
+      </nav>
+    </header>
+
+    <section class="career-hero">
+      <div>
+        <p class="section-kicker">Income &amp; opportunity</p>
+        <h1>Applications, without losing the thread.</h1>
+      </div>
+      <p>Preserve the exact posting, what was submitted, compensation, status changes, interview context, and the next action in one private record.</p>
+    </section>
+
+    <section class="career-summary" id="career-summary" aria-live="polite"></section>
+
+    <section class="career-sync">
+      <div>
+        <p class="section-kicker">Inbox continuity</p>
+        <h2>Application email monitor</h2>
+      </div>
+      <div id="career-sync-state" class="career-sync-state"></div>
+    </section>
+
+    <section class="career-opportunities" aria-labelledby="career-opportunities-title">
+      <div class="career-opportunities-head">
+        <div>
+          <p class="section-kicker">Fresh targets</p>
+          <h2 id="career-opportunities-title">What should I apply to next?</h2>
+          <p id="career-opportunity-meta">Loading new options…</p>
+        </div>
+        <button class="career-primary" type="button" id="career-opportunity-refresh">Refresh options</button>
+      </div>
+      <div class="career-opportunity-grid" id="career-opportunity-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="career-board">
+      <div class="career-board-head">
+        <div>
+          <p class="section-kicker">Pipeline</p>
+          <h2>Application tracker</h2>
+          <span id="career-refreshed"></span>
+        </div>
+        <button class="career-primary" type="button" id="career-add">Add application</button>
+      </div>
+      <div class="career-layout">
+        <div class="career-applications" id="career-applications" aria-live="polite"></div>
+        <aside class="career-detail" id="career-detail" aria-live="polite"></aside>
+      </div>
+    </section>
+
+    <footer class="career-footer">
+      <a href="/workspace/">← Back to ASHWOOD Workspace</a>
+      <span>Private career records live in the workspace database. Public repository code contains no application records.</span>
+    </footer>
+  </main>
+
+  <dialog id="career-dialog" class="career-dialog">
+    <form id="career-form">
+      <div class="career-dialog-head">
+        <div>
+          <p class="section-kicker">Private application record</p>
+          <h2 id="career-dialog-title">Add application</h2>
+        </div>
+        <button type="button" data-career-close aria-label="Close">×</button>
+      </div>
+      <input type="hidden" id="career-form-id" />
+
+      <div class="career-form-grid">
+        <label>Company<input id="career-company" required /></label>
+        <label>Role<input id="career-role" required /></label>
+        <label>Job / requisition ID<input id="career-job-id" /></label>
+        <label>Posting URL<input id="career-posting-url" type="url" /></label>
+        <label>Location<input id="career-location" /></label>
+        <label>Work arrangement<input id="career-work-arrangement" placeholder="Remote / Hybrid / On-site" /></label>
+        <label>Salary minimum<input id="career-salary-min" type="number" min="0" step="1000" /></label>
+        <label>Salary maximum<input id="career-salary-max" type="number" min="0" step="1000" /></label>
+        <label>Requested salary<input id="career-requested-salary" type="number" min="0" step="1000" /></label>
+        <label>Status<select id="career-status-input">
+          <option>TARGET</option><option>APPLIED</option><option>SCREENING</option><option>RECRUITER</option>
+          <option>ASSESSMENT</option><option>INTERVIEW</option><option>OFFER</option><option>DEFERRED</option>
+          <option>REJECTED</option><option>DECLINED</option><option>CLOSED</option>
+        </select></label>
+        <label>Submitted date<input id="career-submitted-at" type="date" /></label>
+        <label>Next action due<input id="career-next-action-at" type="datetime-local" /></label>
+      </div>
+
+      <label>Next action<textarea id="career-next-action" rows="2"></textarea></label>
+      <label>Fit decision / why this role<textarea id="career-fit-decision" rows="2"></textarea></label>
+
+      <fieldset>
+        <legend>Posting snapshot</legend>
+        <label>Summary<textarea id="career-summary-input" rows="3"></textarea></label>
+        <label>Responsibilities — one per line<textarea id="career-responsibilities" rows="5"></textarea></label>
+        <label>Requirements — one per line<textarea id="career-requirements" rows="5"></textarea></label>
+        <label>Preferred — one per line<textarea id="career-preferred" rows="4"></textarea></label>
+        <label>Interview notes<textarea id="career-interview-notes" rows="3"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Submitted materials</legend>
+        <label>Résumé version<input id="career-resume" placeholder="TK_Ashwood_Resume_2026.pdf" /></label>
+        <label>Projects used<input id="career-projects" placeholder="LEDGATo, AgentOS" /></label>
+        <label>Work sample<input id="career-work-sample" placeholder="ALVIRA" /></label>
+      </fieldset>
+
+      <label>Private notes<textarea id="career-notes" rows="4"></textarea></label>
+      <p class="career-form-error" id="career-form-error" aria-live="polite"></p>
+      <div class="career-dialog-actions">
+        <button type="button" data-career-close>Cancel</button>
+        <button class="career-primary" type="submit" id="career-save">Save application</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
