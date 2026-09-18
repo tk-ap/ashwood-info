@@ -19,6 +19,7 @@ function viewModel(data) {
         ['Assigned specialist', projection.specialist || 'not assigned yet'],
         ['Harness', projection.harness || 'not selected yet'],
         ['Evidence', `${projection.event_count || 0} lifecycle events`],
+        ['Last observed', data.observed_at ? new Date(data.observed_at).toLocaleString() : 'not reported'],
         ['Next gate', projection.next_gate || 'waiting for runtime state'],
         ['Production authority', 'none'],
       ],
