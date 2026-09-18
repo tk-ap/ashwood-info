@@ -113,6 +113,10 @@ export default async function handler(req, res) {
       const session = await requireSession(req);
       if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
       if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
+      const prior = await sql`SELECT * FROM workspace_agentos_commands
+        WHERE kind = 'long_weekend_001' AND status <> 'failed'
+        ORDER BY created_at DESC LIMIT 1`;
+      if (prior[0]) return json(res, 200, { ok: true, created: false, command: publicCommand(prior[0]) });
       const id = `ashwood:${crypto.randomUUID()}`;
       const inserted = await sql`INSERT INTO workspace_agentos_commands (command_id, kind)
         VALUES (${id}, 'long_weekend_001')
