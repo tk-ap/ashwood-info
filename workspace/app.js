@@ -161,6 +161,8 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   function contentDrafts(x){
     const a=contentAngle(x), source=x.url?' The receipt is in the linked build evidence.':'';
     return {
+      TikTok:`On-screen / spoken hook: ${a.hook}.\n\nShow: the actual build evidence or before/after state when it is safe to display.\n\nBeat: what I expected → what actually happened → what I changed → what I’m testing next.\n\nCaption: Building this in public, but keeping the receipts attached to the claim.`,
+      Instagram:`Carousel / Reel angle: ${a.hook}.\n\nSlide 1: the tension or discovery.\nSlide 2: the actual evidence.\nSlide 3: what changed in the build.\nSlide 4: the next test.\n\nCaption: ${a.hook}. The useful part is what the evidence changed, not the status update.`,
       Threads:`${a.hook}. Still figuring out what it means beyond this specific build, but this is the part I want to keep watching.`,
       LinkedIn:`${a.hook}. What matters to me is the evidence behind the change, not the status update itself.${source} The next test is whether the change holds up in actual use.`,
       'Build Journal':`What I was trying to do: [add the goal].\n\nWhat actually happened: ${x.title}.\n\nWhat I learned: [owner interpretation].\n\nWhat changed because of it: [next decision/test].`
