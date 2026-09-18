@@ -1,3 +1,5 @@
+> **Direction update — 2026-09-18:** Do not hunt for sponsorship asks simply because a project exists. Use `CAPITAL_PROOF_GAPS.md` first. The priority is identifying where the zero-dollar operating constraint actually prevents the next viability experiment, then turning that demonstrated constraint into a bounded investor/sponsor use of funds.
+
 # Sponsorship Cost Ledger — 2026-09-18
 
 Purpose: turn existing ASHWOOD work into honest sponsorship asks by recording **incremental cash cost**, not assigning arbitrary package prices.
