@@ -61,7 +61,7 @@
     .journal-inspiration{border-top:1px solid var(--journal-rule)}
     .inspiration-proof{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(0,1.1fr);gap:clamp(34px,7vw,110px);align-items:center}
     .inspiration-proof__artifact{margin:0;transform:rotate(-.35deg)}
-    .inspiration-proof__artifact img{display:block;width:100%;max-height:680px;object-fit:contain;filter:grayscale(1) contrast(.96);border:1px solid var(--journal-rule);background:#e7e2d5}
+    .ibm-accountability-card{aspect-ratio:1.05/1;display:flex;flex-direction:column;border:1px solid var(--journal-rule);background:#ded9ca;color:#171713;overflow:hidden;box-shadow:0 22px 70px rgba(0,0,0,.22)}.ibm-accountability-card>span{padding:14px 18px;background:#090909;color:#eee;font-size:clamp(15px,2vw,26px);letter-spacing:.01em}.ibm-accountability-card blockquote{flex:1;display:flex;align-items:center;justify-content:center;margin:0;padding:8% 7%;font-family:"Courier New",monospace;font-size:clamp(13px,1.55vw,23px);font-weight:400;line-height:1.55;text-align:center;letter-spacing:.08em}.ibm-accountability-card blockquote strong{font-weight:400}
     .inspiration-proof__artifact figcaption{margin-top:10px;font:600 9px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--journal-muted)}
     .inspiration-proof__note h2{max-width:12ch;margin:0;font-size:clamp(42px,6vw,88px);font-weight:500;line-height:.91;letter-spacing:-.055em}
     .inspiration-proof__note>p:not(.journal-kicker,.journal-note){max-width:640px;margin:28px 0 0;color:var(--journal-muted);font-size:15px;line-height:1.65}
@@ -109,7 +109,7 @@
       <div class="section-marker"><span>02</span><span>INSPIRATION / PRIOR ART</span></div>
       <div class="inspiration-proof">
         <figure class="inspiration-proof__artifact">
-          <img src="/assets/build-journal/ibm-accountability-1979.png" alt="Screenshot of a page labeled IBM Training Manual from 1979 stating that a computer can never be held accountable and therefore must never make a management decision." loading="lazy">
+          <div class="ibm-accountability-card" role="img" aria-label="User-saved screenshot labeled IBM Training Manual from 1979: A computer can never be held accountable. Therefore a computer must never make a management decision."><span>IBM Training Manual from 1979.</span><blockquote>A COMPUTER<br><br>CAN NEVER BE HELD ACCOUNTABLE<br><br><br><strong>THEREFORE A COMPUTER MUST NEVER<br><br>MAKE A MANAGEMENT DECISION</strong></blockquote></div>
           <figcaption>Screenshot saved Sep 2026 · historical reference, not product proof</figcaption>
         </figure>
         <div class="inspiration-proof__note">
