@@ -57,6 +57,18 @@
     @media(min-width:760px){.question-grid{grid-template-columns:repeat(2,1fr)}.evidence-strip{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:759px){.method-line{grid-template-columns:1fr}.method-line span{justify-content:flex-start;min-height:auto}.journal-hero--simple{min-height:auto}.journal-index--simple{overflow:auto;white-space:nowrap}}
   </style>
+<style>
+    .journal-inspiration{border-top:1px solid var(--journal-rule)}
+    .inspiration-proof{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(0,1.1fr);gap:clamp(34px,7vw,110px);align-items:center}
+    .inspiration-proof__artifact{margin:0;transform:rotate(-.35deg)}
+    .ibm-accountability-card{aspect-ratio:1.05/1;display:flex;flex-direction:column;border:1px solid var(--journal-rule);background:#ded9ca;color:#171713;overflow:hidden;box-shadow:0 22px 70px rgba(0,0,0,.22)}.ibm-accountability-card>span{padding:14px 18px;background:#090909;color:#eee;font-size:clamp(15px,2vw,26px);letter-spacing:.01em}.ibm-accountability-card blockquote{flex:1;display:flex;align-items:center;justify-content:center;margin:0;padding:8% 7%;font-family:"Courier New",monospace;font-size:clamp(13px,1.55vw,23px);font-weight:400;line-height:1.55;text-align:center;letter-spacing:.08em}.ibm-accountability-card blockquote strong{font-weight:400}
+    .inspiration-proof__artifact figcaption{margin-top:10px;font:600 9px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--journal-muted)}
+    .inspiration-proof__note h2{max-width:12ch;margin:0;font-size:clamp(42px,6vw,88px);font-weight:500;line-height:.91;letter-spacing:-.055em}
+    .inspiration-proof__note>p:not(.journal-kicker,.journal-note){max-width:640px;margin:28px 0 0;color:var(--journal-muted);font-size:15px;line-height:1.65}
+    .proof-path{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:38px 0 0;padding-block:18px;border-block:1px solid var(--journal-rule);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}
+    .proof-path span{padding:8px 10px;border:1px solid var(--journal-rule)}.proof-path b{color:var(--journal-acid)}
+    @media(max-width:760px){.inspiration-proof{grid-template-columns:1fr}.inspiration-proof__artifact{transform:none}}
+  </style>
 </head>
 <body class="journal-page journal-page--archive journal-lab-page">
   <a class="skip-link" href="#journal-content">Skip to journal</a>
@@ -81,7 +93,7 @@
       <div class="journal-hero__body">
         <p class="journal-kicker">A WORKING RECORD, NOT A HIGHLIGHT REEL.</p>
         <h1 id="journal-title" style="font-family:Arial,Helvetica,sans-serif!important;font-weight:300!important;letter-spacing:-.055em!important"><span>BUILD.</span><span>LEARN.</span><span>SHOW THE RECEIPTS.</span></h1>
-        <p class="journal-deck">I’m testing what changes when AI stops being only a tool I use and starts doing meaningful work on my behalf. This is the record of what I build, what breaks, what I learn, and what changes my mind.</p>
+        <p class="journal-deck">Questions. Builds. Evidence. What changed.</p>
         <a class="opening-cue" href="#now">See what I’m testing now <span aria-hidden="true">↓</span></a>
       </div>
       <div class="journal-hero__rule" aria-hidden="true"></div>
@@ -89,13 +101,30 @@
 
     <section id="now" class="journal-section">
       <div class="section-marker"><span>01</span><span>NOW / ACTIVE PROOF</span></div>
-      <div class="journal-heading"><h2>What am I trying to prove now?</h2><p>The current work is less about whether agents can be assigned tasks and more about whether autonomous work can be observed, reconstructed, and trusted while it is happening.</p></div>
+      <div class="journal-heading"><h2>What am I trying to prove now?</h2></div>
       <div class="learning-callout"><small>AgentOS · CURRENT TEST</small><h2>Assignment isn’t execution.</h2><p>A governed fleet can say work is moving without proving what was attempted. The next proof is a complete objective trail: request → routing → execution → evidence → independent verification → report.</p><a href="/journal/agentos/">Follow the AgentOS evidence →</a></div>
+    </section>
+
+    <section class="journal-section journal-inspiration" aria-labelledby="inspiration-title">
+      <div class="section-marker"><span>02</span><span>INSPIRATION / PRIOR ART</span></div>
+      <div class="inspiration-proof">
+        <figure class="inspiration-proof__artifact">
+          <div class="ibm-accountability-card" role="img" aria-label="User-saved screenshot labeled IBM Training Manual from 1979: A computer can never be held accountable. Therefore a computer must never make a management decision."><span>IBM Training Manual from 1979.</span><blockquote>A COMPUTER<br><br>CAN NEVER BE HELD ACCOUNTABLE<br><br><br><strong>THEREFORE A COMPUTER MUST NEVER<br><br>MAKE A MANAGEMENT DECISION</strong></blockquote></div>
+          <figcaption>Screenshot saved Sep 2026 · historical reference, not product proof</figcaption>
+        </figure>
+        <div class="inspiration-proof__note">
+          <p class="journal-kicker">A QUESTION THAT DIDN’T GO AWAY.</p>
+          <h2 id="inspiration-title">If the computer can’t be accountable, where does accountability live?</h2>
+          <div class="proof-path" aria-label="Current build response"><span>AGENT</span><b>→</b><span>AUTHORITY</span><b>→</b><span>BOUNDARY</span><b>→</b><span>EVIDENCE</span><b>→</b><span>HUMAN</span></div>
+          <p>That is increasingly the through-line behind LEDGATo and Khrystal: not making the model “responsible,” but making delegated authority explicit, enforceable, observable, and attributable to people.</p>
+          <p class="journal-note">This is inspiration, not validation. A historical warning can sharpen the question; the build still has to supply the proof.</p>
+        </div>
+      </div>
     </section>
 
     <section id="discoveries" class="journal-section">
       <div class="section-marker"><span>02</span><span>RECENT DISCOVERIES</span></div>
-      <div class="journal-heading"><h2>What changed my mind?</h2><p>Not every commit belongs here. These are the failures, proofs, decisions, and reversals that changed what I build next.</p></div>
+      <div class="journal-heading"><h2>What changed my mind?</h2></div>
       <div class="evidence-strip">
         <article class="evidence-item"><small>AgentOS · OBSERVABILITY GAP</small><h3>A status saying work is underway is not evidence that meaningful execution occurred.</h3><p>That makes attempted executions, timestamps, produced evidence, and verifier state first-class parts of the system.</p></article>
         <article class="evidence-item"><small>LEDGATo · VERIFIED BOUNDARY</small><h3>One GitHub lab boundary has independent denial and provider readback evidence.</h3><p>Useful proof, deliberately bounded: it does not establish universal bypass resistance.</p></article>
@@ -105,10 +134,7 @@
 
     <section id="questions" class="journal-section ecosystem-brief" aria-labelledby="questions-title">
       <div class="section-marker"><span>03</span><span>OPEN QUESTIONS</span></div>
-      <div class="journal-heading">
-        <h2 id="questions-title">What am I trying to prove?</h2>
-        <p>ALVIRA carries context. ailhat reads the portfolio. AgentOS routes governed work. LEDGATo tests whether authority can hold at the boundary. Each thread asks a different version of the same question: can AI become more useful without becoming less accountable?</p>
-      </div>
+      <div class="journal-heading"><h2 id="questions-title">What am I trying to prove?</h2></div>
       <div class="question-grid">
         <a class="question-card" href="/journal/ledgato/">
           <small>LEDGATo · Enforcement</small>
@@ -135,10 +161,7 @@
 
     <section id="builds" class="journal-section current-bets" aria-labelledby="evidence-title">
       <div class="section-marker"><span>04</span><span>BUILDS / EVIDENCE</span></div>
-      <div class="journal-heading">
-        <h2 id="evidence-title">The builds behind the questions.</h2>
-        <p>Each product thread keeps the deeper evidence, decisions, reversals, and technical boundaries behind the public observations.</p>
-      </div>
+      <div class="journal-heading"><h2 id="evidence-title">The builds behind the questions.</h2></div>
       <div class="evidence-strip">
         <article class="evidence-item">
           <small>LEDGATo · VERIFIED BOUNDARY</small>
@@ -168,7 +191,7 @@
 
     <section id="constraints" class="journal-section">
       <div class="section-marker"><span>05</span><span>CONSTRAINTS / NEXT PROOF</span></div>
-      <div class="journal-heading"><h2>What is stopping the next proof?</h2><p>Constraints belong in the record when removing them would materially change what can be tested. The point is not to dramatize scarcity; it is to make the gap between a claim and its next credible proof visible.</p></div>
+      <div class="journal-heading"><h2>What is stopping the next proof?</h2></div>
       <div class="question-grid">
         <article class="question-card"><small>CAPITAL / INFRASTRUCTURE</small><h3>Some product proofs now require paid infrastructure, external testing, or sustained runtime that a zero-dollar build cannot simulate indefinitely.</h3><span>Tracked against specific milestones</span></article>
         <article class="question-card"><small>PEOPLE / EXTERNAL EVIDENCE</small><h3>Several claims need evidence from people other than me: real users, adversarial testers, design partners, or collaborators.</h3><span>Participation opens only where a real test exists</span></article>
