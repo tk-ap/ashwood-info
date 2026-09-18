@@ -69,7 +69,55 @@
     .proof-path span{padding:8px 10px;border:1px solid var(--journal-rule)}.proof-path b{color:var(--journal-acid)}
     @media(max-width:760px){.inspiration-proof{grid-template-columns:1fr}.inspiration-proof__artifact{transform:none}}
   </style>
-</head>
+<style id="build-journal-visual-redesign">
+  :root{--bj-gold:#d6c24a;--bj-ox:#6f1d2c;--bj-paper:#ded9ca;--bj-ink:#11110f;--bj-line:rgba(241,238,230,.16)}
+  .journal-page--archive{background:
+    radial-gradient(circle at 82% 14%,rgba(214,194,74,.07),transparent 28%),
+    radial-gradient(circle at 18% 58%,rgba(111,29,44,.08),transparent 30%),
+    #11110f}
+  .journal-section{position:relative}
+  .journal-section:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:1px;background:linear-gradient(90deg,var(--bj-gold),transparent 42%)}
+  .journal-hero--simple{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:clamp(30px,6vw,90px);align-items:end;min-height:min(790px,90vh)}
+  .journal-hero__visual{align-self:center;min-height:420px;display:grid;place-items:center;position:relative}
+  .evidence-orbit{width:min(42vw,430px);aspect-ratio:1;border:1px solid var(--bj-line);border-radius:50%;position:relative;display:grid;place-items:center}
+  .evidence-orbit:before,.evidence-orbit:after{content:"";position:absolute;border:1px solid var(--bj-line);border-radius:50%}
+  .evidence-orbit:before{inset:16%}.evidence-orbit:after{inset:32%}
+  .orbit-core{width:31%;aspect-ratio:1;border-radius:50%;border:1px solid var(--bj-gold);display:grid;place-items:center;text-align:center;font:600 10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;color:var(--bj-gold);z-index:2}
+  .orbit-node{position:absolute;padding:8px 10px;border:1px solid var(--bj-line);background:#11110f;font:600 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}
+  .orbit-node:before{content:"";display:inline-block;width:6px;height:6px;margin-right:7px;border-radius:50%;background:var(--bj-gold)}
+  .orbit-node--a{top:8%;left:50%;transform:translateX(-50%)}.orbit-node--b{right:-2%;top:46%}.orbit-node--c{bottom:8%;left:50%;transform:translateX(-50%)}.orbit-node--d{left:-2%;top:46%}
+  .proof-rail{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border:1px solid var(--bj-line);overflow:hidden}
+  .proof-step{position:relative;min-height:150px;padding:22px 18px;border-right:1px solid var(--bj-line);display:flex;flex-direction:column;justify-content:space-between;background:rgba(255,255,255,.012)}
+  .proof-step:last-child{border-right:0}.proof-step:after{content:"→";position:absolute;right:-8px;top:47%;z-index:2;color:var(--bj-gold);background:#11110f;padding:2px}.proof-step:last-child:after{display:none}
+  .proof-step small{font:600 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;opacity:.55}
+  .proof-step b{font-size:clamp(16px,2vw,24px);font-weight:500}.proof-state{width:max-content;padding:6px 8px;border:1px solid var(--bj-line);font:600 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}
+  .proof-state--known{border-color:rgba(214,194,74,.65);color:var(--bj-gold)}.proof-state--blocked{border-color:rgba(192,72,91,.7);color:#d16a7c}
+  .journal-inspiration{overflow:hidden}.inspiration-proof{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+  .ibm-accountability-card{position:relative;transform:rotate(-1.2deg);box-shadow:0 35px 100px rgba(0,0,0,.35)}
+  .ibm-accountability-card:after{content:"SAVED / SEP 2026";position:absolute;right:14px;bottom:12px;background:#11110f;color:#eee;padding:6px 8px;font:700 8px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em}
+  .proof-path{position:relative;gap:0;border:0;margin-top:32px}.proof-path span{position:relative;border:1px solid var(--bj-line);min-width:110px;text-align:center}.proof-path b{padding:0 9px}
+  .discovery-ledger{border-left:1px solid var(--bj-line);margin-left:10px}
+  .discovery-row{display:grid;grid-template-columns:100px 22px minmax(0,1fr) minmax(170px,.35fr);gap:20px;align-items:start;padding:28px 0;border-bottom:1px solid var(--bj-line)}
+  .discovery-date{font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;color:var(--journal-muted)}
+  .discovery-dot{width:11px;height:11px;border-radius:50%;margin-left:-26px;margin-top:2px;background:var(--bj-gold);box-shadow:0 0 0 6px #11110f}
+  .discovery-row h3{margin:0;max-width:32ch;font-size:clamp(22px,3vw,34px);line-height:1.04;letter-spacing:-.025em}
+  .discovery-row p{margin:0;color:var(--journal-muted);line-height:1.55}
+  .system-map{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--bj-line);border:1px solid var(--bj-line)}
+  .system-map:before,.system-map:after{content:"";position:absolute;background:var(--bj-gold);z-index:3}.system-map:before{width:1px;height:46%;left:50%;top:27%}.system-map:after{height:1px;width:46%;left:27%;top:50%}
+  .system-node{position:relative;z-index:2;min-height:260px;padding:30px;background:#11110f;color:inherit;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between}
+  .system-node small{font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;opacity:.55}.system-node h3{margin:0;max-width:15ch;font-size:clamp(28px,4vw,46px);line-height:.98;letter-spacing:-.04em}
+  .system-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;width:124px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;background:#11110f;border:1px solid var(--bj-gold);color:var(--bj-gold);font:700 9px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.11em}
+  .proof-matrix{border:1px solid var(--bj-line)}.proof-matrix__row{display:grid;grid-template-columns:170px 1fr 1fr;min-height:150px;border-bottom:1px solid var(--bj-line)}.proof-matrix__row:last-child{border-bottom:0}
+  .proof-matrix__cell{padding:24px;border-right:1px solid var(--bj-line);display:flex;flex-direction:column;justify-content:center;gap:9px}.proof-matrix__cell:last-child{border-right:0}
+  .proof-matrix__product{font-size:clamp(22px,3vw,34px);font-weight:500;letter-spacing:-.03em}.proof-matrix__label{font:600 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;opacity:.5}
+  .proof-matrix__bar{height:5px;background:rgba(241,238,230,.08);overflow:hidden;margin-top:7px}.proof-matrix__bar>span{display:block;height:100%;background:var(--bj-gold)}.proof-matrix__bar .w1{width:38%}.proof-matrix__bar .w2{width:24%}.proof-matrix__bar .w3{width:42%}.proof-matrix__bar .w4{width:20%}
+  .proof-matrix__note{font-size:14px;line-height:1.5;color:var(--journal-muted)}
+  .constraint-map{display:grid;grid-template-columns:1fr 160px 1fr;gap:20px;align-items:stretch}.constraint-block,.constraint-target{padding:28px;border:1px solid var(--bj-line);min-height:230px}.constraint-block{border-color:rgba(192,72,91,.55)}.constraint-target{border-color:rgba(214,194,74,.45)}
+  .constraint-bridge{display:grid;place-items:center;font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-align:center;color:var(--journal-muted)}.constraint-bridge:before{content:"";width:100%;height:1px;background:repeating-linear-gradient(90deg,var(--bj-line) 0 8px,transparent 8px 16px);display:block;margin-bottom:12px}
+  .method-line{position:relative}.method-line span{position:relative}.method-line span:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--bj-gold);margin-right:10px}
+  @media(max-width:900px){.journal-hero--simple{grid-template-columns:1fr}.journal-hero__visual{min-height:300px}.evidence-orbit{width:min(78vw,390px)}.proof-rail{grid-template-columns:repeat(2,1fr)}.proof-step:nth-child(2n){border-right:0}.discovery-row{grid-template-columns:78px 20px 1fr}.discovery-row p{grid-column:3}.proof-matrix__row{grid-template-columns:1fr}.proof-matrix__cell{border-right:0;border-bottom:1px solid var(--bj-line)}.proof-matrix__cell:last-child{border-bottom:0}.constraint-map{grid-template-columns:1fr}.constraint-bridge{min-height:80px}.constraint-bridge:before{width:1px;height:54px;background:repeating-linear-gradient(180deg,var(--bj-line) 0 8px,transparent 8px 16px);margin:0 0 8px}}
+  @media(max-width:680px){.system-map{grid-template-columns:1fr}.system-map:before,.system-map:after,.system-core{display:none}.proof-rail{grid-template-columns:1fr}.proof-step{border-right:0;border-bottom:1px solid var(--bj-line)}.proof-step:after{display:none}.discovery-row{grid-template-columns:1fr;gap:10px;padding-left:20px}.discovery-dot{display:none}.discovery-row p{grid-column:auto}}
+</style></head>
 <body class="journal-page journal-page--archive journal-lab-page">
   <a class="skip-link" href="#journal-content">Skip to journal</a>
   <header class="journal-masthead">
@@ -96,13 +144,30 @@
         <p class="journal-deck">Questions. Builds. Evidence. What changed.</p>
         <a class="opening-cue" href="#now">See what I’m testing now <span aria-hidden="true">↓</span></a>
       </div>
+      <div class="journal-hero__visual" aria-label="Ecosystem evidence map">
+        <div class="evidence-orbit">
+          <div class="orbit-core">ACCOUNTABLE<br>AGENTIC<br>WORK</div>
+          <span class="orbit-node orbit-node--a">ALVIRA / CONTEXT</span>
+          <span class="orbit-node orbit-node--b">ailhat / PORTFOLIO</span>
+          <span class="orbit-node orbit-node--c">AgentOS / EXECUTION</span>
+          <span class="orbit-node orbit-node--d">LEDGATo / AUTHORITY</span>
+        </div>
+      </div>
       <div class="journal-hero__rule" aria-hidden="true"></div>
     </section>
 
     <section id="now" class="journal-section">
       <div class="section-marker"><span>01</span><span>NOW / ACTIVE PROOF</span></div>
       <div class="journal-heading"><h2>What am I trying to prove now?</h2></div>
-      <div class="learning-callout"><small>AgentOS · CURRENT TEST</small><h2>Assignment isn’t execution.</h2><p>A governed fleet can say work is moving without proving what was attempted. The next proof is a complete objective trail: request → routing → execution → evidence → independent verification → report.</p><a href="/journal/agentos/">Follow the AgentOS evidence →</a></div>
+      <div class="learning-callout"><small>AgentOS · CURRENT TEST</small><h2>Assignment isn’t execution.</h2><p>The active proof is the trail, not the status label.</p><a href="/journal/agentos/">Follow the AgentOS evidence →</a></div>
+      <div class="proof-rail" aria-label="AgentOS proof trail">
+        <div class="proof-step"><small>01</small><b>Request</b><span class="proof-state proof-state--known">Known</span></div>
+        <div class="proof-step"><small>02</small><b>Route</b><span class="proof-state proof-state--known">Recorded</span></div>
+        <div class="proof-step"><small>03</small><b>Execute</b><span class="proof-state proof-state--blocked">Runtime blocked</span></div>
+        <div class="proof-step"><small>04</small><b>Evidence</b><span class="proof-state">Pending</span></div>
+        <div class="proof-step"><small>05</small><b>Verify</b><span class="proof-state">Pending</span></div>
+        <div class="proof-step"><small>06</small><b>Report</b><span class="proof-state">Pending</span></div>
+      </div>
     </section>
 
     <section class="journal-section journal-inspiration" aria-labelledby="inspiration-title">
@@ -125,64 +190,33 @@
     <section id="discoveries" class="journal-section">
       <div class="section-marker"><span>02</span><span>RECENT DISCOVERIES</span></div>
       <div class="journal-heading"><h2>What changed my mind?</h2></div>
-      <div class="evidence-strip">
-        <article class="evidence-item"><small>AgentOS · OBSERVABILITY GAP</small><h3>A status saying work is underway is not evidence that meaningful execution occurred.</h3><p>That makes attempted executions, timestamps, produced evidence, and verifier state first-class parts of the system.</p></article>
-        <article class="evidence-item"><small>LEDGATo · VERIFIED BOUNDARY</small><h3>One GitHub lab boundary has independent denial and provider readback evidence.</h3><p>Useful proof, deliberately bounded: it does not establish universal bypass resistance.</p></article>
-        <article class="evidence-item"><small>ALVIRA · INTEGRATION EVIDENCE</small><h3>Bridge has one recorded end-to-end connection.</h3><p>The next question is harder: does retained Context measurably improve the work?</p></article>
+      <div class="discovery-ledger">
+        <article class="discovery-row"><span class="discovery-date">09.18 / GAP</span><i class="discovery-dot"></i><h3>“In progress” is not execution evidence.</h3><p>AgentOS now treats attempted executions, timestamps, evidence and verifier state as first-class.</p></article>
+        <article class="discovery-row"><span class="discovery-date">09.18 / PROOF</span><i class="discovery-dot"></i><h3>A boundary can be independently denied and read back.</h3><p>LEDGATo has one bounded GitHub lab proof. Broader bypass resistance remains open.</p></article>
+        <article class="discovery-row"><span class="discovery-date">09.03 / LINK</span><i class="discovery-dot"></i><h3>Context can cross one end-to-end bridge.</h3><p>ALVIRA’s next question is not connectivity. It is measurable Context Lift.</p></article>
       </div>
     </section>
 
     <section id="questions" class="journal-section ecosystem-brief" aria-labelledby="questions-title">
       <div class="section-marker"><span>03</span><span>OPEN QUESTIONS</span></div>
       <div class="journal-heading"><h2 id="questions-title">What am I trying to prove?</h2></div>
-      <div class="question-grid">
-        <a class="question-card" href="/journal/ledgato/">
-          <small>LEDGATo · Enforcement</small>
-          <h3>Can an AI agent actually be stopped before it crosses an unauthorized boundary?</h3>
-          <span>Follow the evidence →</span>
-        </a>
-        <a class="question-card" href="/journal/alvira/">
-          <small>ALVIRA · Context Intelligence</small>
-          <h3>Does persistent context measurably make AI more useful?</h3>
-          <span>Follow the evidence →</span>
-        </a>
-        <a class="question-card" href="/journal/agentos/">
-          <small>AgentOS · Execution</small>
-          <h3>Can an agent workforce reliably run work without constant founder intervention?</h3>
-          <span>Follow the evidence →</span>
-        </a>
-        <a class="question-card" href="/journal/ailhat/">
-          <small>ailhat · Portfolio Intelligence</small>
-          <h3>Can intelligence across an agent portfolio reveal what humans would otherwise miss?</h3>
-          <span>Follow the evidence →</span>
-        </a>
+      <div class="system-map">
+        <div class="system-core">ONE SYSTEM<br>FOUR QUESTIONS</div>
+        <a class="system-node" href="/journal/alvira/"><small>01 · CONTEXT</small><h3>Does persistent context improve the work?</h3><span>ALVIRA →</span></a>
+        <a class="system-node" href="/journal/ailhat/"><small>02 · INTELLIGENCE</small><h3>Can the portfolio reveal what a person would miss?</h3><span>ailhat →</span></a>
+        <a class="system-node" href="/journal/agentos/"><small>03 · EXECUTION</small><h3>Can the workforce run without constant intervention?</h3><span>AgentOS →</span></a>
+        <a class="system-node" href="/journal/ledgato/"><small>04 · AUTHORITY</small><h3>Can an agent be stopped at an unauthorized boundary?</h3><span>LEDGATo →</span></a>
       </div>
     </section>
 
     <section id="builds" class="journal-section current-bets" aria-labelledby="evidence-title">
       <div class="section-marker"><span>04</span><span>BUILDS / EVIDENCE</span></div>
       <div class="journal-heading"><h2 id="evidence-title">The builds behind the questions.</h2></div>
-      <div class="evidence-strip">
-        <article class="evidence-item">
-          <small>LEDGATo · VERIFIED BOUNDARY</small>
-          <h3>A GitHub lab boundary has independent denial and provider readback evidence.</h3>
-          <p>Scope: one documented adapter boundary. Unresolved: broader adapters, deployed client use, and universal bypass resistance.</p>
-        </article>
-        <article class="evidence-item">
-          <small>ALVIRA · INTEGRATION EVIDENCE</small>
-          <h3>Bridge has one recorded end-to-end connection.</h3>
-          <p>That supports an integration proof, not a claim that every onboarding or production journey is complete. Next: measure whether retained Context improves the work.</p>
-        </article>
-        <article class="evidence-item">
-          <small>AgentOS · CONTROL-PLANE PROOF</small>
-          <h3>Routing, persistence, harness changes, and verifier independence are now explicit system concerns.</h3>
-          <p>Unresolved: one complete governed objective from request through independent verification and report.</p>
-        </article>
-        <article class="evidence-item">
-          <small>ailhat · PILOT BOUNDARY</small>
-          <h3>Portfolio intelligence remains separate from execution and authority.</h3>
-          <p>Manual evidence and routing are the current proof surface; automated market ingestion and a complete external-user journey remain unproven.</p>
-        </article>
+      <div class="proof-matrix" aria-label="Current ecosystem proof matrix">
+        <div class="proof-matrix__row"><div class="proof-matrix__cell"><span class="proof-matrix__label">Product</span><strong class="proof-matrix__product">LEDGATo</strong></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Current proof</span><strong>Verified boundary</strong><div class="proof-matrix__bar"><span class="w3"></span></div><span class="proof-matrix__note">Independent denial + provider readback on one GitHub lab boundary.</span></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Next proof</span><strong>Broader adapters + bypass resistance</strong></div></div>
+        <div class="proof-matrix__row"><div class="proof-matrix__cell"><span class="proof-matrix__label">Product</span><strong class="proof-matrix__product">ALVIRA</strong></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Current proof</span><strong>Integration recorded</strong><div class="proof-matrix__bar"><span class="w1"></span></div><span class="proof-matrix__note">One recorded end-to-end Bridge connection.</span></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Next proof</span><strong>Measure Context Lift</strong></div></div>
+        <div class="proof-matrix__row"><div class="proof-matrix__cell"><span class="proof-matrix__label">Product</span><strong class="proof-matrix__product">AgentOS</strong></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Current proof</span><strong>Control plane defined</strong><div class="proof-matrix__bar"><span class="w2"></span></div><span class="proof-matrix__note">Routing, persistence, harness and verifier independence are explicit.</span></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Next proof</span><strong>One complete governed objective</strong></div></div>
+        <div class="proof-matrix__row"><div class="proof-matrix__cell"><span class="proof-matrix__label">Product</span><strong class="proof-matrix__product">ailhat</strong></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Current proof</span><strong>Pilot boundary</strong><div class="proof-matrix__bar"><span class="w4"></span></div><span class="proof-matrix__note">Portfolio intelligence remains separate from execution and authority.</span></div><div class="proof-matrix__cell"><span class="proof-matrix__label">Next proof</span><strong>External-user journey</strong></div></div>
       </div>
       <div class="journal-cta-row">
         <a class="journal-link" href="/journal/field-notes/">Field Notes →</a>
@@ -192,9 +226,15 @@
     <section id="constraints" class="journal-section">
       <div class="section-marker"><span>05</span><span>CONSTRAINTS / NEXT PROOF</span></div>
       <div class="journal-heading"><h2>What is stopping the next proof?</h2></div>
-      <div class="question-grid">
-        <article class="question-card"><small>CAPITAL / INFRASTRUCTURE</small><h3>Some product proofs now require paid infrastructure, external testing, or sustained runtime that a zero-dollar build cannot simulate indefinitely.</h3><span>Tracked against specific milestones</span></article>
-        <article class="question-card"><small>PEOPLE / EXTERNAL EVIDENCE</small><h3>Several claims need evidence from people other than me: real users, adversarial testers, design partners, or collaborators.</h3><span>Participation opens only where a real test exists</span></article>
+      <div class="constraint-map">
+        <article class="constraint-block"><small>BLOCKER / CAPITAL + INFRASTRUCTURE</small><h3>$0 can build the system. It cannot simulate every proof condition indefinitely.</h3><p>Paid runtime, external testing and sustained infrastructure are now attached to specific proof targets.</p></article>
+        <div class="constraint-bridge">REMOVING THE BLOCKER<br>SHOULD CHANGE THE EVIDENCE</div>
+        <article class="constraint-target"><small>NEXT PROOF</small><h3>Run the tests the current budget cannot.</h3><p>Funding only matters here when it unlocks a named experiment.</p></article>
+      </div>
+      <div class="constraint-map" style="margin-top:20px">
+        <article class="constraint-block"><small>BLOCKER / PEOPLE</small><h3>Founder-only evidence is not enough.</h3><p>Some claims require real users, adversarial testers, design partners or collaborators.</p></article>
+        <div class="constraint-bridge">EXTERNAL EVIDENCE</div>
+        <article class="constraint-target"><small>NEXT PROOF</small><h3>Put another person in the loop.</h3><p>Participation opens only where a concrete test already exists.</p></article>
       </div>
     </section>
 
