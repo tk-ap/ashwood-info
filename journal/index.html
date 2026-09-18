@@ -63,26 +63,43 @@
 
   <main id="journal-content">
     <nav class="journal-index journal-index--simple" aria-label="Build Journal quick reference">
-      <a href="#questions">Ecosystem</a>
-      <a href="#evidence">Evidence</a>
-      <a href="#method">Method</a>
-      <a href="#learn">AI from Zero</a>
+      <a href="#now">Now</a>
+      <a href="#discoveries">Discoveries</a>
+      <a href="#questions">Open questions</a>
+      <a href="#constraints">Constraints</a>
+      <a href="#builds">Builds</a>
     </nav>
 
     <section class="journal-hero journal-hero--archive journal-hero--simple cinematic-opening" aria-labelledby="journal-title">
       <div class="cinematic-opening__field" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="journal-hero__meta"><span>BUILD JOURNAL / ASHWOOD</span><span>QUESTION → EVIDENCE → DECISION</span></div>
       <div class="journal-hero__body">
-        <p class="journal-kicker">THE REASONING STAYS WITH THE WORK.</p>
-        <h1 id="journal-title"><span>FOLLOW</span><span>THE</span><span>QUESTION.</span></h1>
-        <p class="journal-deck">The decisions, experiments, failures, and evidence behind what I build.</p>
-        <a class="opening-cue" href="#questions">Explore the journal <span aria-hidden="true">↓</span></a>
+        <p class="journal-kicker">A WORKING RECORD, NOT A HIGHLIGHT REEL.</p>
+        <h1 id="journal-title"><span>BUILD.</span><span>LEARN.</span><span>SHOW THE RECEIPTS.</span></h1>
+        <p class="journal-deck">I’m testing what changes when AI stops being only a tool I use and starts doing meaningful work on my behalf. This is the record of what I build, what breaks, what I learn, and what changes my mind.</p>
+        <a class="opening-cue" href="#now">See what I’m testing now <span aria-hidden="true">↓</span></a>
       </div>
       <div class="journal-hero__rule" aria-hidden="true"></div>
     </section>
 
+    <section id="now" class="journal-section">
+      <div class="section-marker"><span>01</span><span>NOW / ACTIVE PROOF</span></div>
+      <div class="journal-heading"><h2>What am I trying to prove now?</h2><p>The current work is less about whether agents can be assigned tasks and more about whether autonomous work can be observed, reconstructed, and trusted while it is happening.</p></div>
+      <div class="learning-callout"><small>AgentOS · CURRENT TEST</small><h2>Assignment isn’t execution.</h2><p>A governed fleet can say work is moving without proving what was attempted. The next proof is a complete objective trail: request → routing → execution → evidence → independent verification → report.</p><a href="/journal/agentos/">Follow the AgentOS evidence →</a></div>
+    </section>
+
+    <section id="discoveries" class="journal-section">
+      <div class="section-marker"><span>02</span><span>RECENT DISCOVERIES</span></div>
+      <div class="journal-heading"><h2>What changed my mind?</h2><p>Not every commit belongs here. These are the failures, proofs, decisions, and reversals that changed what I build next.</p></div>
+      <div class="evidence-strip">
+        <article class="evidence-item"><small>AgentOS · OBSERVABILITY GAP</small><h3>A status saying work is underway is not evidence that meaningful execution occurred.</h3><p>That makes attempted executions, timestamps, produced evidence, and verifier state first-class parts of the system.</p></article>
+        <article class="evidence-item"><small>LEDGATo · VERIFIED BOUNDARY</small><h3>One GitHub lab boundary has independent denial and provider readback evidence.</h3><p>Useful proof, deliberately bounded: it does not establish universal bypass resistance.</p></article>
+        <article class="evidence-item"><small>ALVIRA · INTEGRATION EVIDENCE</small><h3>Bridge has one recorded end-to-end connection.</h3><p>The next question is harder: does retained Context measurably improve the work?</p></article>
+      </div>
+    </section>
+
     <section id="questions" class="journal-section ecosystem-brief" aria-labelledby="questions-title">
-      <div class="section-marker"><span>01</span><span>ECOSYSTEM / CURRENT QUESTIONS</span></div>
+      <div class="section-marker"><span>03</span><span>OPEN QUESTIONS</span></div>
       <div class="journal-heading">
         <h2 id="questions-title">What am I trying to prove?</h2>
         <p>ALVIRA carries context. ailhat reads the portfolio. AgentOS routes governed work. LEDGATo tests whether authority can hold at the boundary. Each thread asks a different version of the same question: can AI become more useful without becoming less accountable?</p>
@@ -111,11 +128,11 @@
       </div>
     </section>
 
-    <section id="evidence" class="journal-section current-bets" aria-labelledby="evidence-title">
-      <div class="section-marker"><span>02</span><span>RECENT EVIDENCE</span></div>
+    <section id="builds" class="journal-section current-bets" aria-labelledby="evidence-title">
+      <div class="section-marker"><span>04</span><span>BUILDS / EVIDENCE</span></div>
       <div class="journal-heading">
-        <h2 id="evidence-title">What changed?</h2>
-        <p>Not activity for activity’s sake. These are the moments that changed a claim, a boundary, or the next decision.</p>
+        <h2 id="evidence-title">The builds behind the questions.</h2>
+        <p>Each product thread keeps the deeper evidence, decisions, reversals, and technical boundaries behind the public observations.</p>
       </div>
       <div class="evidence-strip">
         <article class="evidence-item">
@@ -144,8 +161,17 @@
       </div>
     </section>
 
+    <section id="constraints" class="journal-section">
+      <div class="section-marker"><span>05</span><span>CONSTRAINTS / NEXT PROOF</span></div>
+      <div class="journal-heading"><h2>What is stopping the next proof?</h2><p>Constraints belong in the record when removing them would materially change what can be tested. The point is not to dramatize scarcity; it is to make the gap between a claim and its next credible proof visible.</p></div>
+      <div class="question-grid">
+        <article class="question-card"><small>CAPITAL / INFRASTRUCTURE</small><h3>Some product proofs now require paid infrastructure, external testing, or sustained runtime that a zero-dollar build cannot simulate indefinitely.</h3><span>Tracked against specific milestones</span></article>
+        <article class="question-card"><small>PEOPLE / EXTERNAL EVIDENCE</small><h3>Several claims need evidence from people other than me: real users, adversarial testers, design partners, or collaborators.</h3><span>Participation opens only where a real test exists</span></article>
+      </div>
+    </section>
+
     <section id="method" class="journal-section" aria-labelledby="method-title">
-      <div class="section-marker"><span>03</span><span>HOW THE JOURNAL WORKS</span></div>
+      <div class="section-marker"><span>06</span><span>HOW THE JOURNAL WORKS</span></div>
       <div class="journal-heading">
         <h2 id="method-title">The evidence trail.</h2>
         <p>A build matters here when it changes what I know, what I believe, or what I do next.</p>
