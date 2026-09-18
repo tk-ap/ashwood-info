@@ -24,13 +24,49 @@ Purpose: turn existing ASHWOOD work into honest sponsorship asks by recording **
 
 **Do not sell 'fund ledgato development.'** A future ask should name the external pilot environment and exactly what sponsor money pays for. A design partner providing its own authorized test environment may reduce the cash requirement to near zero; that is product validation, not ASHWOOD sponsorship.
 
-## ASHWOOD creative release
+## ASHWOOD creative release — first candidate: next t.kap release
 
-**Next sponsor milestone:** one already-intended release with an itemized expense: recording/mix/master, photography/film production, print/fabrication, venue, distribution, or another unavoidable release cost.
+**Why music is first:** the public Music surface already records two active unreleased bodies rather than a hypothetical future project:
 
-**Incremental cash cost today:** **TBD — no specific next release budget is recorded in the repo.**
+- `singleOptions`: Healthy & Wealthy, Eventually, Stupid, Just Dance, Show Some Love
+- `sOUNDcLoud`: PULLUP, NobodyElse, WithYou
 
-**Do not publish a generic creative sponsorship price.** Pick the next release first, obtain/record the real expense, then that expense becomes the ask.
+The canonical music direction already defines the release loop as `listen → respond → decide`, and the private Rights Ledger requires explicit commercial clearance before a track is treated as commercially releasable.
+
+**Next sponsor milestone:** move **one existing, commercially cleared t.kap draft** from active draft to finished release.
+
+**Track selection status:** **NOT YET CHOSEN.** Do not pick a song just because it is visible in the repo. The selection should come from TK's artistic judgment plus the existing release-signal/review process.
+
+### Budget that must be itemized for the selected track
+
+Record only costs that are actually required for that song:
+
+- beat / producer license or collaborator clearance, if applicable;
+- final recording or vocal-session cost, if required;
+- mix;
+- master;
+- cover artwork / photography, only if not created in-house;
+- distributor/release fee, only if incremental;
+- copyright/registration fees that TK chooses to incur for this release;
+- optional visual/video only if it is part of the actual release plan.
+
+Existing tools, subscriptions, equipment, artwork, or work TK can perform without incremental cash cost are **not** sponsor expenses.
+
+**Incremental cash cost today:** **TBD pending track selection + quotes.**
+
+### Sponsor-ready condition
+
+This offer becomes READY when:
+1. TK names the track;
+2. Rights Ledger status is `CLEARED` (or all required agreements are explicitly resolved);
+3. final-release scope is frozen;
+4. each external cost has a real quote/fee;
+5. the sum becomes the exact sponsorship ask;
+6. sponsor acknowledgment and completion evidence are defined.
+
+**Proposed sponsorship framing once ready:** “Help take [TRACK] from draft to release. $X covers [itemized costs]. The song and creative direction remain mine; your support is acknowledged in the agreed release record, and you receive a direct completion/evidence update.”
+
+**Do not publish a generic creative sponsorship price.** The production budget for the selected track becomes the ask.
 
 ## Build Journal public experiment
 
