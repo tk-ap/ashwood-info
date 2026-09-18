@@ -136,6 +136,66 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   function weight(x){const age=daysSince(x.date),fresh=age<=2?1:age<=7?.82:age<=14?.58:age<=30?.32:.08,status=x.status==='COMPLETED'?1.15:x.status==='PLANNED'?.25:.8;return fresh*status*(x.confidence||1);}
   function goalStats(goal){const ev=allEvidence().filter(x=>x.goal===goal.id||x.secondaryGoals?.includes(goal.id)),recent=ev.filter(x=>daysSince(x.date)<=30),weighted=recent.reduce((s,x)=>s+weight(x)*(x.goal===goal.id?1:.35),0),momentum=Math.min(100,Math.round(weighted*22)),newest=ev[0]?.date||null;let status='IN_PROGRESS';if(!newest||daysSince(newest)>30)status='STALE';else if(daysSince(newest)>14||momentum<18)status='NEEDS_ATTENTION';return{ev,recent,momentum,newest,status};}
 
+
+  function contentCandidateScore(x){
+    if(!x?.date || daysSince(x.date)>14) return 0;
+    const t=`${x.sourceLabel||''} ${x.title||''} ${x.notes||''}`.toLowerCase();
+    let score=(14-daysSince(x.date))*2 + (x.confidence||.5)*10;
+    if(/fix|fail|break|regress|block|deny|proof|verify|test|learn|change|decision|launch|ship|deploy|merge|complete|evidence|boundary|context|route|approval|agent/.test(t)) score+=14;
+    if(/docs|chore|typo|dependency|cache|metadata/.test(t)) score-=8;
+    if(x.status==='COMPLETED') score+=5;
+    if(x.source==='board' && /running|in_progress/i.test(x.status||'')) score-=4;
+    return score;
+  }
+
+  function contentAngle(x){
+    const t=`${x.title||''}`.replace(/^(feat|fix|docs|chore|refactor|test)(\([^)]*\))?:\s*/i,'').trim();
+    const repo=PRODUCT_ROLES[x.sourceLabel]?.label || x.sourceLabel || x.source;
+    const lower=t.toLowerCase();
+    if(/fix|regress|fail|broken|bug/.test(lower)) return {why:'A failure or correction is usually more informative than a generic progress update.',hook:`I hit a problem in ${repo}: ${t}`};
+    if(/proof|verify|test|evidence|boundary|deny/.test(lower)) return {why:'This has a concrete proof/evidence angle instead of relying on a product claim.',hook:`A useful proof point from ${repo}: ${t}`};
+    if(/decision|change|route|approval|architecture/.test(lower)) return {why:'This records a decision that changed how the system is being built.',hook:`A build decision I made in ${repo}: ${t}`};
+    return {why:'This is recent work with a traceable source. The draft stays close to the evidence rather than inventing a lesson.',hook:`Something that changed in ${repo}: ${t}`};
+  }
+
+  function contentDrafts(x){
+    const a=contentAngle(x), source=x.url?' The receipt is in the linked build evidence.':'';
+    return {
+      Threads:`${a.hook}. Still figuring out what it means beyond this specific build, but this is the part I want to keep watching.`,
+      LinkedIn:`${a.hook}. What matters to me is the evidence behind the change, not the status update itself.${source} The next test is whether the change holds up in actual use.`,
+      'Build Journal':`What I was trying to do: [add the goal].\n\nWhat actually happened: ${x.title}.\n\nWhat I learned: [owner interpretation].\n\nWhat changed because of it: [next decision/test].`
+    };
+  }
+
+  function renderFromWork(){
+    const host=$('#from-work-queue'); if(!host) return;
+    const dismissed=new Set(JSON.parse(localStorage.getItem('ashwood.dismissedContentEvidence')||'[]'));
+    const candidates=allEvidence().filter(x=>!dismissed.has(x.id)).map(x=>({...x,_score:contentCandidateScore(x)})).filter(x=>x._score>18).sort((a,b)=>b._score-a._score).slice(0,6);
+    host.innerHTML=candidates.length?candidates.map((x,i)=>{
+      const a=contentAngle(x), drafts=contentDrafts(x), first=Object.entries(drafts)[0];
+      return `<article class="content-opportunity" data-content-id="${escapeHtml(x.id)}">
+        <div class="content-opportunity__meta"><span>${escapeHtml(x.sourceLabel||x.source)} · ${relativeDate(x.date)}</span><span>evidence score ${Math.round(x._score)}</span></div>
+        <h3>${escapeHtml(x.title)}</h3>
+        <p class="content-opportunity__why"><strong>Why it may be worth sharing:</strong> ${escapeHtml(a.why)}</p>
+        <div class="content-opportunity__draft">
+          <label>Draft channel
+            <select data-content-channel="${i}">${Object.keys(drafts).map(k=>`<option>${escapeHtml(k)}</option>`).join('')}</select>
+          </label>
+          <textarea rows="5" data-content-draft="${i}">${escapeHtml(first[1])}</textarea>
+        </div>
+        <div class="content-opportunity__actions">
+          ${x.url?`<a href="${escapeHtml(x.url)}" target="_blank" rel="noopener">Source evidence ↗</a>`:''}
+          <button type="button" data-copy-content="${i}">Copy draft</button>
+          <button type="button" data-dismiss-content="${escapeHtml(x.id)}">Dismiss</button>
+        </div>
+        <script type="application/json" data-drafts="${i}">${JSON.stringify(drafts).replace(/</g,'\\u003c')}</script>
+      </article>`;
+    }).join(''):'<p class="workstream-empty"><strong>No strong new candidate right now.</strong><span>ASHWOOD checked the current evidence sources and did not find a recent item strong enough to turn into a post. That is a valid outcome.</span></p>';
+    $('[data-content-channel]').forEach(sel=>sel.addEventListener('change',()=>{const i=sel.dataset.contentChannel;const data=JSON.parse(document.querySelector(`[data-drafts="${i}"]`).textContent);document.querySelector(`[data-content-draft="${i}"]`).value=data[sel.value]||'';}));
+    $('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{const ta=document.querySelector(`[data-content-draft="${btn.dataset.copyContent}"]`);await navigator.clipboard.writeText(ta.value);btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy draft',1200);}));
+    $('[data-dismiss-content]').forEach(btn=>btn.addEventListener('click',()=>{dismissed.add(btn.dataset.dismissContent);localStorage.setItem('ashwood.dismissedContentEvidence',JSON.stringify([...dismissed].slice(-200)));renderFromWork();}));
+  }
+
   function render() {
     const evidence=allEvidence(), last7=evidence.filter(x=>daysSince(x.date)<=7), moved=new Set(last7.flatMap(x=>[x.goal,...(x.secondaryGoals||[])])).size, active=state.repos.filter(r=>daysSince(r.pushed_at)<=14).length, needs=GOALS.filter(g=>['STALE','NEEDS_ATTENTION'].includes(goalStats(g).status)).length;
     $('#pulse-grid').innerHTML=[[moved,'goals with evidence · 7d'],[active,'active ecosystem repos · 14d'],[needs,'buckets needing review'],[state.persistedEvidence.length,'private evidence items']].map(([n,l])=>`<article class="pulse-card"><div class="pulse-number">${n}</div><div class="pulse-label">${l}</div></article>`).join('');
@@ -143,7 +203,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     const products=state.repos.map(r=>({name:PRODUCT_ROLES[r.name]?.label||r.name,type:PRODUCT_ROLES[r.name]?.type||'Discovered ecosystem repository',state:daysSince(r.pushed_at)<=7?'ACTIVE':daysSince(r.pushed_at)<=21?'QUIET':'STALE',pushedAt:r.pushed_at,url:r.html_url,description:r.description||''}));
     if(state.ailhat?.product) products.unshift({name:'ailhat intelligence',type:'Portfolio Intelligence contract',state:state.ailhat.product.attention_status||state.ailhat.product.state,pushedAt:state.ailhat.scan?.observed_at,url:'https://ailhat.vercel.app/',description:`Readiness ${state.ailhat.product.readiness_score ?? 'unknown'} · ${state.ailhat.attention?.top_next_action||'No next action supplied'}`});
     $('#ecosystem-list').innerHTML=products.map(p=>`<article class="ecosystem-row"><div><a class="ecosystem-name" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.name)} ↗</a><div class="ecosystem-commit">${escapeHtml(p.description)}</div></div><div class="ecosystem-type">${escapeHtml(p.type)}</div><div><span class="status-pill">${escapeHtml(p.state)}</span><div class="ecosystem-age">${p.pushedAt?relativeDate(p.pushedAt):'source timestamp unavailable'}</div></div></article>`).join('')||'<p class="empty-state">No project details available from the current sources.</p>';
-    renderEvidence(); renderAttention(); renderNext();
+    renderEvidence(); renderAttention(); renderNext(); renderFromWork();
     $('#as-of').textContent=`Refreshed ${new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`;
     $('#live-state').textContent=state.error?state.error:`Private state + GitHub + ${state.ailhat?.ok?'ailhat':'ailhat unavailable'} · ${state.board.length} governed tasks`;
   }
