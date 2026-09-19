@@ -463,3 +463,7 @@ The target is not "make the ecosystem look like 21st.dev."
 The target is:
 
 > Make the ecosystem understandable by watching it work, and explorable enough that a stranger can roam it at their leisure.
+
+## Reference audit
+
+The first concrete 21st.dev audit for ASHWOOD + ALVIRA is in [21ST_REFERENCE_AUDIT_V1.md](./21ST_REFERENCE_AUDIT_V1.md). Treat it as a working ledger: references can be adopted, rejected, or superseded after prototyping.
