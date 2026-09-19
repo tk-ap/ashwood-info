@@ -263,6 +263,15 @@ The page communicates more with fewer words and makes deeper exploration feel na
 
 Rebuild the signed-out product story around an interactive interview-to-context journey.
 
+**Copy volatility guardrail:** ALVIRA landing-page messaging is under active review in a separate initiative and may change materially before prototyping begins. Treat the current live copy as temporary content, not a fixed design dependency.
+
+Before any ALVIRA prototype:
+- inspect the live site again;
+- compare the current information hierarchy with the latest messaging direction;
+- preserve interaction structure independently from exact headlines/body copy;
+- use semantic content slots (problem, interview, Context Mirror, correction, portability, Bridge, proof, CTA) so revised copy can drop in without redesigning the interaction;
+- do not freeze or duplicate copy from an earlier snapshot unless it is explicitly re-approved.
+
 Explore:
 - interview progress;
 - Context Mirror formation;
@@ -418,9 +427,11 @@ Avoid:
 - [ ] Test whether the page supports non-linear exploration.
 
 ### ALVIRA
-- [ ] Storyboard the signed-out interview → Context Mirror → correction → Bridge flow.
+- [ ] Re-check the live ALVIRA landing page and current messaging direction immediately before storyboarding/prototyping.
+- [ ] Storyboard the signed-out interview → Context Mirror → correction → Bridge flow using semantic content slots rather than fixed copy.
 - [ ] Identify the minimum interactive demo states.
 - [ ] Prototype those states using references, not copied styling.
+- [ ] Reconcile the prototype with any copy changes from the parallel messaging initiative before shipping.
 - [ ] Measure whether explanatory copy can be removed after interaction is added.
 
 ### Shared system
