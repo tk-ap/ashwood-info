@@ -41,3 +41,7 @@ For ASHWOOD specifically, translate useful React/shadcn patterns into the existi
 Do not add visuals only as decoration. A visual component should replace explanation, clarify system state, reveal hierarchy, or make an interaction easier to understand.
 
 Generic "AI dashboard" styling is not the target. References should be adapted to each product's existing design direction.
+
+## Execution roadmap
+
+The durable rollout plan, ecosystem interaction grammar, pilot sequence, idea-intake model, and handoff criteria live in [IMMERSIVE_UI_ROADMAP.md](./IMMERSIVE_UI_ROADMAP.md).
