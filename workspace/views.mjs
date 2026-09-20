@@ -11,7 +11,7 @@ const VIEW_META = {
     eyebrow: "Operating the portfolio",
     tools: [
       {label:"Build logs", href:"/workspace/build-logs/"},
-      {label:"Review checklist", href:"/workspace/v3-playtest/"}
+      {label:"Production review", href:"/workspace/v3-playtest/"}
     ]
   },
   work: {
