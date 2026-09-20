@@ -99,8 +99,20 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   function boardGoal(b){const p=String(b.product||'').toLowerCase();if(p.includes('ashwood'))return 'leadership';if(p.includes('agent-os'))return 'learning';return 'ownership';}
 
   function boardEvidence() {
-    const statusMap={done:'COMPLETED',blocked:'BLOCKED',review:'IN_PROGRESS',running:'IN_PROGRESS',ready:'PLANNED',waiting_approval:'IN_PROGRESS'};
-    return state.board.map(b=>({id:`board:${b.board_key}`,source:'board',sourceLabel:'Milchik fleet',title:b.title,date:b.updated_at,status:statusMap[b.status]||'IN_PROGRESS',goal:boardGoal(b),secondaryGoals:[],confidence:.9,notes:`${b.product||'workforce'} · ${b.assignee||'unassigned'}`,url:''}));
+    const statusMap={done:'COMPLETED',accepted:'COMPLETED',completed:'COMPLETED',retired:'COMPLETED',blocked:'BLOCKED',collision:'BLOCKED',revoked:'BLOCKED',failed:'BLOCKED',review:'IN_PROGRESS',running:'IN_PROGRESS',ready:'PLANNED',queued:'PLANNED',waiting_approval:'IN_PROGRESS',waiting_capacity:'IN_PROGRESS',proposed:'PLANNED',approved:'PLANNED',release_pending:'PLANNED'};
+    return state.board.map(b=>({
+      id:`board:${b.board_key}`,
+      source:'board',
+      sourceLabel:b.kind==='backlog'?'Milchik backlog':'Milchik fleet',
+      title:b.title,
+      date:b.updated_at,
+      status:statusMap[String(b.status||'').toLowerCase()]||(b.kind==='backlog'?'PLANNED':'IN_PROGRESS'),
+      goal:boardGoal(b),
+      secondaryGoals:[],
+      confidence:b.kind==='backlog'?.72:.9,
+      notes:[b.product||'workforce',b.assignee||null,b.blocker||b.next_gate||null].filter(Boolean).join(' · '),
+      url:b.canonical_url||''
+    }));
   }
 
   function ailhatEvidence() {
