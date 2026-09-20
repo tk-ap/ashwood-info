@@ -10,13 +10,13 @@
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
   <link rel="stylesheet" href="/workspace/workspace.css?v=20260918-content-monitor1" />
   <link rel="stylesheet" href="/workspace/intelligence-hero.css?v=20260908-intel1" />
-  <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
+  <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />\n  <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260918-social-channels2"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
-  <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
+  <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>\n  <script type="module" src="/workspace/today.mjs?v=20260920-today1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
@@ -46,6 +46,55 @@
     <section class="workspace-intro" aria-labelledby="workspace-title">
       <p class="eyebrow">Your private workspace</p>
       <h1 id="workspace-title">Where the work is going.</h1>
+    </section>
+
+    <nav class="workspace-section-nav" aria-label="Workspace sections">
+      <a href="#today">Today</a>
+      <a href="#build">Build</a>
+      <a href="#work">Work</a>
+      <a href="#network">Network</a>
+      <a href="#evidence-panel">Evidence</a>
+      <a href="#frame">Self</a>
+    </nav>
+
+    <section class="today-command" id="today" aria-labelledby="today-title">
+      <div class="today-command__head">
+        <div>
+          <p class="today-command__eyebrow">Today · operating surface</p>
+          <h2 id="today-title">What happens next.</h2>
+        </div>
+        <p class="today-command__date"><span id="today-date"></span><br /><span id="today-runtime-status">Waiting for private runtime…</span></p>
+      </div>
+
+      <form class="today-command__capture" id="today-capture-form">
+        <input id="today-capture-input" type="text" autocomplete="off" placeholder="Capture anything — a task, idea, person, blocker, proof, or instruction…" aria-label="Capture anything" />
+        <button type="submit">Capture</button>
+      </form>
+      <p class="today-command__capture-status" id="today-capture-status">Capture is private to this browser until explicitly routed.</p>
+
+      <div class="today-command__grid" aria-label="AgentOS today summary">
+        <article class="today-command__stat"><strong id="today-running-count">—</strong><span>AgentOS running</span></article>
+        <article class="today-command__stat"><strong id="today-owner-count">—</strong><span>Needs you</span></article>
+        <article class="today-command__stat"><strong id="today-blocked-count">—</strong><span>Blocked</span></article>
+        <article class="today-command__stat"><strong id="today-done-count">—</strong><span>Completed in projection</span></article>
+      </div>
+
+      <div class="today-command__body">
+        <div class="today-command__panel">
+          <h3>What AgentOS is doing</h3>
+          <div class="today-command__rows" id="today-running"><p class="today-command__empty">Loading synced work…</p></div>
+          <h3 style="margin-top:24px">What needs you</h3>
+          <div class="today-command__rows" id="today-needs-you"><p class="today-command__empty">Checking approvals and blockers…</p></div>
+        </div>
+        <aside class="today-command__panel">
+          <h3>Next highest-value objective</h3>
+          <div id="today-objective"><p class="today-command__empty">Reading ranked priorities…</p></div>
+          <details class="today-command__local">
+            <summary>Recent local captures</summary>
+            <ul class="today-command__local-list" id="today-local-list"></ul>
+          </details>
+        </aside>
+      </div>
     </section>
 
     <section class="owner-intelligence" id="owner-intelligence" aria-live="polite">
@@ -88,7 +137,7 @@
       <div class="goal-grid" id="goal-grid"></div>
     </section>
 
-    <section class="workstreams" aria-labelledby="workstreams-title">
+    <section class="workstreams" id="build" aria-labelledby="workstreams-title">
       <div class="section-heading-row">
         <div>
           <p class="section-kicker">Current work</p>
@@ -101,7 +150,7 @@
       </div>
     </section>
 
-    <section class="workstreams content-monitor" aria-labelledby="from-work-title">
+    <section class="workstreams content-monitor" id="work" aria-labelledby="from-work-title">
       <div class="section-heading-row">
         <div><p class="section-kicker">Live evidence → public artifact</p><h2 id="from-work-title">From the work</h2></div>
         <p class="section-note">ASHWOOD checks current GitHub, governed-work, private evidence, and ailhat signals on refresh. It only surfaces recent candidates with traceable evidence; no candidate is also a valid result.</p>
@@ -110,7 +159,7 @@
       <div class="workstream-list" id="from-work-queue" aria-live="polite"><p class="workstream-empty"><strong>Reading current work…</strong><span>Looking for evidence-backed failures, proofs, decisions, changed approaches, and meaningful milestones.</span></p></div>
     </section>
 
-    <section class="workstreams" aria-labelledby="partnerships-title">
+    <section class="workstreams" id="network" aria-labelledby="partnerships-title">
       <div class="section-heading-row">
         <div><p class="section-kicker">Sponsorship / outbound</p><h2 id="partnerships-title">Sponsor pipeline</h2></div>
         <p class="section-note">Find people and organizations with a credible reason to fund work already in motion. ALVIRA design-partner leads stay separate.</p>
