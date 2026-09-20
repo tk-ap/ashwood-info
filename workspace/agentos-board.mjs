@@ -146,4 +146,5 @@ async function start() {
 }
 
 window.addEventListener("ashwood:refresh-feed", load);
+window.addEventListener("ashwood:workspace-authenticated", load);
 start();
