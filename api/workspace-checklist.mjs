@@ -1,4 +1,4 @@
-import { aiZeroReviewItems } from './_review-targets.mjs';
+import { deploymentSpecificReviewItems } from './_review-targets.mjs';
 import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
 
 const CHECKLIST_ID = 'v3-playtest-2026-09-08';
@@ -82,7 +82,7 @@ async function syncProductionDeployment(sql, row) {
   const existing = Array.isArray(row?.auto_items) ? row.auto_items : [];
   const itemId = `deploy:${sha}`;
   const recorded = existing.find(item => item?.id === itemId);
-  if (recorded && aiZeroReviewItems(recorded).every(check => existing.some(item => item.id === check.id))) return row;
+  if (recorded && deploymentSpecificReviewItems(recorded).every(check => existing.some(item => item.id === check.id))) return row;
 
   try {
     const response = await fetch(`https://api.github.com/repos/${REPO}/commits/${sha}`, {
@@ -104,7 +104,7 @@ async function syncProductionDeployment(sql, row) {
       areas,
       files: files.slice(0, 40),
     };
-    const checks = aiZeroReviewItems(nextItem).filter(check => !existing.some(item => item.id === check.id));
+    const checks = deploymentSpecificReviewItems(nextItem).filter(check => !existing.some(item => item.id === check.id));
     const autoItems = [...checks, ...(recorded ? [] : [nextItem]), ...existing].slice(0, 200);
     const rows = await sql`
       INSERT INTO workspace_checklists (checklist_id, auto_items, updated_at)
