@@ -64,6 +64,39 @@ export default async function handler(req, res) {
       return json(res, 200, { ok: true, command: rows[0] || null });
     }
 
+    let body = null;
+    let action = null;
+    if (req.method === 'POST') {
+      body = parseBody(req);
+      action = String(body.action || 'add_evidence');
+      if (action === 'command_runtime_update') {
+        if (!machineAuthorized) return json(res, 403, { ok: false, error: 'Invalid command sync token' });
+        await ensureCommandTable(sql);
+        const id = String(body.id || '').trim().slice(0, 250);
+        const status = String(body.status || '').trim().toLowerCase();
+        if (!id || !COMMAND_RUNTIME_STATES.has(status)) return json(res, 400, { ok: false, error: 'Invalid command runtime update' });
+        const directiveId = String(body.runtime_directive_id || '').trim().slice(0, 120) || null;
+        const taskId = String(body.runtime_task_id || '').trim().slice(0, 250) || null;
+        const error = String(body.error || '').trim().slice(0, 1200) || null;
+        const governance = body.governance && typeof body.governance === 'object' && !Array.isArray(body.governance)
+          ? body.governance
+          : null;
+        const rows = await sql`UPDATE workspace_commands SET
+          status = ${status},
+          runtime_directive_id = COALESCE(${directiveId}, runtime_directive_id),
+          runtime_task_id = COALESCE(${taskId}, runtime_task_id),
+          governance = COALESCE(${governance ? JSON.stringify(governance) : null}::jsonb, governance),
+          error = ${error},
+          claim_id = NULL,
+          lease_expires_at = NULL,
+          updated_at = NOW()
+          WHERE id = ${id}
+          RETURNING id, status`;
+        if (!rows[0]) return json(res, 404, { ok: false, error: 'Command not found' });
+        return json(res, 200, { ok: true, id, status });
+      }
+    }
+
     const session = await requireSession(req);
     if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
 
@@ -87,36 +120,6 @@ export default async function handler(req, res) {
     }
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
-    const body = parseBody(req);
-    const action = String(body.action || 'add_evidence');
-
-    if (action === 'command_runtime_update') {
-      if (!machineAuthorized) return json(res, 403, { ok: false, error: 'Invalid command sync token' });
-      await ensureCommandTable(sql);
-      const id = String(body.id || '').trim().slice(0, 250);
-      const status = String(body.status || '').trim().toLowerCase();
-      if (!id || !COMMAND_RUNTIME_STATES.has(status)) return json(res, 400, { ok: false, error: 'Invalid command runtime update' });
-      const directiveId = String(body.runtime_directive_id || '').trim().slice(0, 120) || null;
-      const taskId = String(body.runtime_task_id || '').trim().slice(0, 250) || null;
-      const error = String(body.error || '').trim().slice(0, 1200) || null;
-      const governance = body.governance && typeof body.governance === 'object' && !Array.isArray(body.governance)
-        ? body.governance
-        : null;
-      const rows = await sql`UPDATE workspace_commands SET
-        status = ${status},
-        runtime_directive_id = COALESCE(${directiveId}, runtime_directive_id),
-        runtime_task_id = COALESCE(${taskId}, runtime_task_id),
-        governance = COALESCE(${governance ? JSON.stringify(governance) : null}::jsonb, governance),
-        error = ${error},
-        claim_id = NULL,
-        lease_expires_at = NULL,
-        updated_at = NOW()
-        WHERE id = ${id}
-        RETURNING id, status`;
-      if (!rows[0]) return json(res, 404, { ok: false, error: 'Command not found' });
-      return json(res, 200, { ok: true, id, status });
-    }
-
     if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
 
     if (action === 'submit_command') {
