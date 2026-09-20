@@ -1,5 +1,6 @@
 import { deploymentSpecificReviewItems } from './_review-targets.mjs';
 import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { REVIEW_ACTIVE_DAYS, splitReviewAttention } from './_attention.mjs';
 
 const CHECKLIST_ID = 'v3-playtest-2026-09-08';
 const REPO = 'tk-ap/ashwood-info';
@@ -131,15 +132,20 @@ export default async function handler(req, res) {
       const rows = await sql`SELECT checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, review_started, updated_at FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;
       let row = rows[0] || { completed_items: [], notes: {}, auto_items: [], deployment_completed_items: [], deployment_notes: {}, updated_at: null };
       row = await syncProductionDeployment(sql, row);
+      const autoItems = Array.isArray(row?.auto_items) ? row.auto_items : [];
+      const deploymentCompletedItems = Array.isArray(row?.deployment_completed_items) ? row.deployment_completed_items : [];
+      const deploymentAttention = splitReviewAttention(autoItems, new Set(deploymentCompletedItems));
       return json(res, 200, {
         ok: true,
         checklist_id: CHECKLIST_ID,
         completed_items: Array.isArray(row?.completed_items) ? row.completed_items : [],
         notes: row?.notes && typeof row.notes === 'object' ? row.notes : {},
-        auto_items: Array.isArray(row?.auto_items) ? row.auto_items : [],
-        deployment_completed_items: Array.isArray(row?.deployment_completed_items) ? row.deployment_completed_items : [],
+        auto_items: autoItems,
+        deployment_completed_items: deploymentCompletedItems,
         deployment_notes: row?.deployment_notes && typeof row.deployment_notes === 'object' ? row.deployment_notes : {},
         review_started: row?.review_started || {},
+        deployment_attention: deploymentAttention,
+        review_policy: { active_days: REVIEW_ACTIVE_DAYS },
         updated_at: row?.updated_at || null,
       });
     }

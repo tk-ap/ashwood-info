@@ -1,7 +1,10 @@
 const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const host = document.querySelector('#ecosystem-feed');
-const status = document.querySelector('#ecosystem-feed-status');
-let feed = [];
+const statusNode = document.querySelector('#ecosystem-feed-status');
+
+let attention = { active: [], ignored: [], archive: [] };
+let monitoring = [];
+let activeDays = 7;
 
 async function api(path, options = {}) {
   const response = await fetch(path, { credentials: 'same-origin', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options });
@@ -53,48 +56,99 @@ function explainNotification(item) {
   return { plain, role, curiosity, goal: humanGoal(item.goal_id) };
 }
 
-function render() {
-  if (!host) return;
-  if (!feed.length) {
-    host.innerHTML = '<p class="ecosystem-feed__empty"><strong>No feed items yet.</strong><span>Signals, decisions, blockers, and results will appear here as the ecosystem publishes evidence.</span></p>';
-    if (status) status.textContent = 'No saved feed items';
-    return;
+function decisionActions(item, bucket) {
+  const state = String(item.status || 'SIGNAL').toUpperCase();
+  if (bucket === 'archive') return '<span>Archived decision</span>';
+
+  const source = item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open source ↗</a>` : '';
+  if (state === 'ACCEPTED') {
+    return `${source}<span>Kept in focus</span><button type="button" data-feed-decision="DISMISSED" data-feed-id="${escapeHtml(item.id)}">Dismiss</button>`;
   }
-  host.innerHTML = feed.map(item => {
-    const resolved = ['ACCEPTED', 'DISMISSED'].includes(String(item.status).toUpperCase());
-    const status = String(item.status || 'SIGNAL').toUpperCase();
-    const explanation = explainNotification(item);
-    return `<article class="ecosystem-feed__item ${resolved ? 'is-resolved' : ''}" data-notification-status="${escapeHtml(status)}" role="listitem">
-      <div class="ecosystem-feed__topline"><span class="ecosystem-feed__source"><span class="ecosystem-feed__source-dot" aria-hidden="true"></span><strong>${escapeHtml(item.source_label || item.source || 'Ecosystem')}</strong><span>notification</span></span><time datetime="${escapeHtml(item.occurred_at || '')}">${formatDate(item.occurred_at)}</time></div>
-      <div class="ecosystem-feed__body"><div class="ecosystem-feed__signal-mark" aria-hidden="true">↗</div><div><h3>${escapeHtml(item.title)}</h3><p class="ecosystem-feed__notes">${escapeHtml(item.notes || 'Evidence received. Review before turning it into work.')}</p></div></div>
-      <div class="ecosystem-feed__meta"><span class="ecosystem-feed__status">${escapeHtml(status.replaceAll('_', ' '))}</span><span>Confidence ${Math.round(Number(item.confidence || .5) * 100)}%</span><span>Goal ${escapeHtml(item.goal_id || 'unassigned')}</span></div>
-      <details class="ecosystem-feed__elitk"><summary class="ecosystem-feed__elitk-button"><span>ELITK</span><span>Explain this notification</span></summary><div class="ecosystem-feed__explanation"><p><strong>Plain English</strong>${escapeHtml(explanation.plain)}</p><p><strong>How it fits the build</strong>${escapeHtml(explanation.role)} The signal is connected to ${escapeHtml(explanation.goal)}.</p><p class="ecosystem-feed__curiosity"><strong>Keep going</strong>${escapeHtml(explanation.curiosity)}</p></div></details>
-      <div class="ecosystem-feed__actions">
-        ${item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open source ↗</a>` : ''}
-        ${resolved ? '<span>Decision recorded</span>' : `<button type="button" data-feed-decision="ACCEPTED" data-feed-id="${escapeHtml(item.id)}">Keep in focus</button><button type="button" data-feed-decision="DISMISSED" data-feed-id="${escapeHtml(item.id)}">Dismiss</button>`}
-      </div>
-    </article>`;
-  }).join('');
-  if (status) status.textContent = `${feed.length} saved feed item${feed.length === 1 ? '' : 's'}`;
-  host.querySelectorAll('[data-feed-decision]').forEach(button => button.addEventListener('click', async () => {
+  const focusLabel = bucket === 'ignored' ? 'Restore to focus' : 'Keep in focus';
+  return `${source}<button type="button" data-feed-decision="ACCEPTED" data-feed-id="${escapeHtml(item.id)}">${focusLabel}</button><button type="button" data-feed-decision="DISMISSED" data-feed-id="${escapeHtml(item.id)}">Dismiss</button>`;
+}
+
+function itemHtml(item, bucket = 'active') {
+  const state = String(item.status || 'SIGNAL').toUpperCase();
+  const explanation = explainNotification(item);
+  const bucketClass = bucket === 'archive' ? ' is-resolved' : bucket === 'ignored' ? ' is-aged' : '';
+  const agingNote = bucket === 'ignored'
+    ? `<p class="ecosystem-feed__aging">Aged out after ${activeDays} days without action. This is not a dismissal.</p>`
+    : '';
+
+  return `<article class="ecosystem-feed__item${bucketClass}" data-notification-status="${escapeHtml(state)}" role="listitem">
+    <div class="ecosystem-feed__topline"><span class="ecosystem-feed__source"><span class="ecosystem-feed__source-dot" aria-hidden="true"></span><strong>${escapeHtml(item.source_label || item.source || 'Ecosystem')}</strong><span>notification</span></span><time datetime="${escapeHtml(item.occurred_at || '')}">${formatDate(item.occurred_at)}</time></div>
+    <div class="ecosystem-feed__body"><div class="ecosystem-feed__signal-mark" aria-hidden="true">↗</div><div><h3>${escapeHtml(item.title)}</h3><p class="ecosystem-feed__notes">${escapeHtml(item.notes || 'Evidence received. Review before turning it into work.')}</p></div></div>
+    <div class="ecosystem-feed__meta"><span class="ecosystem-feed__status">${escapeHtml(state.replaceAll('_', ' '))}</span><span>Confidence ${Math.round(Number(item.confidence || .5) * 100)}%</span><span>Goal ${escapeHtml(item.goal_id || 'unassigned')}</span></div>
+    ${agingNote}
+    <details class="ecosystem-feed__elitk"><summary class="ecosystem-feed__elitk-button"><span>ELITK</span><span>Explain this notification</span></summary><div class="ecosystem-feed__explanation"><p><strong>Plain English</strong>${escapeHtml(explanation.plain)}</p><p><strong>How it fits the build</strong>${escapeHtml(explanation.role)} The signal is connected to ${escapeHtml(explanation.goal)}.</p><p class="ecosystem-feed__curiosity"><strong>Keep going</strong>${escapeHtml(explanation.curiosity)}</p></div></details>
+    <div class="ecosystem-feed__actions">${decisionActions(item, bucket)}</div>
+  </article>`;
+}
+
+function bucketHtml(title, items, bucket, note) {
+  if (!items.length) return '';
+  return `<details class="ecosystem-feed__bucket ecosystem-feed__bucket--${bucket}">
+    <summary><span>${escapeHtml(title)}</span><small>${items.length}</small></summary>
+    ${note ? `<p class="ecosystem-feed__bucket-note">${escapeHtml(note)}</p>` : ''}
+    <div class="ecosystem-feed__bucket-items">${items.map(item => itemHtml(item, bucket)).join('')}</div>
+  </details>`;
+}
+
+function monitoringHtml() {
+  const candidates = monitoring.filter(item => item.needs_review);
+  if (!candidates.length) return '';
+  return `<details class="ecosystem-feed__monitoring">
+    <summary><span>Monitoring worth reviewing</span><small>${candidates.length} source${candidates.length === 1 ? '' : 's'}</small></summary>
+    <p class="ecosystem-feed__bucket-note">These sources repeatedly produced signals that aged out without action. That does not prove the monitoring is useless; it tells you where to question frequency or whether the signal belongs here at all.</p>
+    <div class="ecosystem-feed__monitoring-grid">
+      ${candidates.map(item => `<article><strong>${escapeHtml(item.source)}</strong><span>${item.ignored} of ${item.total} signals aged out · ${Math.round(Number(item.ignored_rate || 0) * 100)}%</span><small>${item.kept_in_focus} kept in focus · ${item.dismissed} dismissed</small></article>`).join('')}
+    </div>
+  </details>`;
+}
+
+function bindActions() {
+  host?.querySelectorAll('[data-feed-decision]').forEach(button => button.addEventListener('click', async () => {
     button.disabled = true;
     try {
       await api('/api/workspace-state', { method: 'POST', body: JSON.stringify({ action: 'record_feed_decision', id: button.dataset.feedId, status: button.dataset.feedDecision }) });
       await load();
     } catch (error) {
       button.disabled = false;
-      if (status) status.textContent = error.message;
+      if (statusNode) statusNode.textContent = error.message;
     }
   }));
+}
+
+function render() {
+  if (!host) return;
+  const active = attention.active || [];
+  const ignored = attention.ignored || [];
+  const archive = attention.archive || [];
+
+  const activeHtml = active.length
+    ? active.map(item => itemHtml(item, 'active')).join('')
+    : '<p class="ecosystem-feed__empty"><strong>Nothing needs attention right now.</strong><span>Ordinary observations age out automatically; blockers, approval requests, and anything you explicitly keep in focus stay visible.</span></p>';
+
+  host.innerHTML = `
+    <div class="ecosystem-feed__active">${activeHtml}</div>
+    ${bucketHtml('Not acted on', ignored, 'ignored', `Ordinary signals leave the main view after ${activeDays} days without action. Restore one if it turns out to matter.`)}
+    ${monitoringHtml()}
+    ${bucketHtml('Archive', archive, 'archive', 'Completed and dismissed signals remain searchable history instead of dashboard content.')}
+  `;
+  if (statusNode) statusNode.textContent = `${active.length} need attention · ${ignored.length} aged out`;
+  bindActions();
 }
 
 async function load() {
   try {
     const data = await api('/api/workspace-state?view=feed');
-    feed = data.feed || [];
+    attention = data.attention || { active: data.feed || [], ignored: [], archive: [] };
+    monitoring = data.monitoring || [];
+    activeDays = Number(data.attention_policy?.ordinary_signal_days || 7);
     render();
   } catch (error) {
-    if (status) status.textContent = error.status === 401 ? 'Unlock Workspace to read the ecosystem feed.' : 'Feed unavailable';
+    if (statusNode) statusNode.textContent = 'Feed unavailable';
   }
 }
 

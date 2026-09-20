@@ -21,61 +21,67 @@
   function render() {
     const items = Array.isArray(snapshot.auto_items) ? snapshot.auto_items : [];
     const completed = new Set(snapshot.deployment_completed_items || []);
-    const pending = items.filter(item => !completed.has(item.id));
-    const reviewed = items.filter(item => completed.has(item.id));
+    const activeDays = Number(snapshot.review_policy?.active_days || 14);
+    const cutoff = Date.now() - (activeDays * 24 * 60 * 60 * 1000);
+
+    const active = [];
+    const ignored = [];
+    const reviewed = [];
+
+    for (const item of items) {
+      if (completed.has(item.id)) {
+        reviewed.push(item);
+        continue;
+      }
+      const when = new Date(item.deployed_at || item.occurred_at || item.created_at || 0).getTime();
+      if (Number.isFinite(when) && when > 0 && when < cutoff) ignored.push(item);
+      else active.push(item);
+    }
 
     mount.hidden = false;
 
-    if (!items.length) {
-      mount.innerHTML = `
-        <div class="v3-checklist__head">
-          <div>
-            <p class="section-kicker">Production review queue</p>
-            <h2>Nothing waiting.</h2>
-          </div>
-          <div class="v3-checklist__progress"><strong>0</strong><span>awaiting review</span></div>
-        </div>
-        <p class="v3-checklist__note">No production-facing deployment currently needs owner review. New release-specific checks will appear here automatically after a relevant production change.</p>`;
-      return;
-    }
-
-    const itemHtml = item => {
+    const itemHtml = (item, bucket) => {
       const done = completed.has(item.id);
       const files = Array.isArray(item.files) ? item.files : [];
-      return `<div class="v3-checklist__item ${done ? 'is-done' : ''}">
+      const aging = bucket === 'ignored'
+        ? `<p class="v3-checklist__note">Aged out after ${activeDays} days without review. This is not approval; restore it by reviewing and checking it off if it still matters.</p>`
+        : '';
+      return `<div class="v3-checklist__item ${done ? 'is-done' : bucket === 'ignored' ? 'is-aged' : ''}">
         <div>
         <label>
           <input type="checkbox" data-deploy-review-id="${esc(item.id)}" ${done ? 'checked' : ''}/>
           <span><strong>${esc(item.label || 'Review production deployment')}</strong><br/><small>${esc(item.detail || '')}${files.length ? `<br/>Changed: ${esc(files.slice(0,8).join(' · '))}${files.length > 8 ? ' …' : ''}` : ''}</small></span>
         </label>
         ${item.review_target === 'ai-from-zero' ? `<a class="v3-checklist__open" href="/api/workspace-review-visit?item=${encodeURIComponent(item.id)}">Review live ↗</a>` : item.review_target === 'workspace-cohesion' ? `<a class="v3-checklist__open" href="/workspace/">Review live ↗</a>` : ''}
-        <p class="v3-checklist__note">${done ? 'Approved by owner' : snapshot.review_started?.[item.id] ? 'Review started · awaiting your approval' : 'Awaiting owner review'}</p>
+        <p class="v3-checklist__note">${done ? 'Approved by owner' : snapshot.review_started?.[item.id] ? 'Review started · awaiting your approval' : bucket === 'ignored' ? 'Not acted on' : 'Awaiting owner review'}</p>
+        ${aging}
         </div>
         <textarea data-deploy-note-id="${esc(item.id)}" rows="1" placeholder="What did you notice?">${esc(snapshot.deployment_notes?.[item.id] || '')}</textarea>
       </div>`;
     };
 
+    const activeHtml = active.length
+      ? `<details class="v3-checklist__section" open><summary><span>Needs review</span><small>${active.length} open</small></summary><div class="v3-checklist__items">${active.map(item => itemHtml(item, 'active')).join('')}</div></details>`
+      : '';
+
+    const ignoredHtml = ignored.length
+      ? `<details class="v3-checklist__section v3-checklist__section--ignored"><summary><span>Not acted on</span><small>${ignored.length} aged out</small></summary><p class="v3-checklist__note v3-checklist__bucket-note">These releases stayed unreviewed for more than ${activeDays} days, so they no longer occupy the primary queue. Their lack of attention is useful signal about whether this kind of review work is worth generating.</p><div class="v3-checklist__items">${ignored.map(item => itemHtml(item, 'ignored')).join('')}</div></details>`
+      : '';
+
+    const reviewedHtml = reviewed.length
+      ? `<details class="v3-checklist__section v3-checklist__section--done"><summary><span>Archive</span><small>${reviewed.length} reviewed</small></summary><div class="v3-checklist__items">${reviewed.map(item => itemHtml(item, 'archive')).join('')}</div></details>`
+      : '';
+
     mount.innerHTML = `
       <div class="v3-checklist__head">
         <div>
           <p class="section-kicker">Production review queue</p>
-          <h2>${pending.length ? 'Review what shipped.' : 'Production reviewed.'}</h2>
+          <h2>${active.length ? 'Review what shipped.' : 'Nothing needs review.'}</h2>
         </div>
-        <div class="v3-checklist__progress"><strong>${pending.length}</strong><span>awaiting review</span></div>
+        <div class="v3-checklist__progress"><strong>${active.length}</strong><span>needs attention</span></div>
       </div>
-      <p class="v3-checklist__note">ASHWOOD creates release-specific checks when a production deployment changes a user-facing surface. Only your explicit approval counts as reviewed.</p>
-      <div class="v3-checklist__sections">
-        ${pending.length ? `
-        <details class="v3-checklist__section" open>
-          <summary><span>Needs review</span><small>${pending.length} open</small></summary>
-          <div class="v3-checklist__items">${pending.map(itemHtml).join('')}</div>
-        </details>` : ''}
-        ${reviewed.length ? `
-        <details class="v3-checklist__section v3-checklist__section--done">
-          <summary><span>Previously reviewed</span><small>${reviewed.length} complete</small></summary>
-          <div class="v3-checklist__items">${reviewed.map(itemHtml).join('')}</div>
-        </details>` : ''}
-      </div>
+      <p class="v3-checklist__note">Current release checks stay here for ${activeDays} days. Reviewed work moves to Archive; untouched work moves to Not acted on instead of aging indefinitely in the main queue. Only your explicit approval counts as reviewed.</p>
+      <div class="v3-checklist__sections">${activeHtml}${ignoredHtml}${reviewedHtml}</div>
       <div class="v3-checklist__footer"><span id="deploy-review-save-state">${unsaved ? 'Unsaved changes' : 'Saved'}</span></div>`;
   }
 

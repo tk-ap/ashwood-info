@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 import { aiZeroReviewItems, deploymentReviewTarget, deploymentSpecificReviewItems, workspaceCohesionReviewItems } from '../api/_review-targets.mjs';
+import { REVIEW_ACTIVE_DAYS, splitReviewAttention } from '../api/_attention.mjs';
 
 // Exercise the actual handlers and SQL against PostgreSQL in memory. Only session
 // lookup and the GitHub commit response are substituted; no production data is used.
@@ -17,7 +18,8 @@ async function fixture(env = 'production') {
     getSql: () => sql, requireSession: async req => req.auth ? { token: 'test-owner' } : null,
     json: (res, status, body) => { res.statusCode = status; res.body = body; },
     parseBody: req => req.body || {}, sameOrigin: req => req.origin !== 'foreign',
-    aiZeroReviewItems, deploymentReviewTarget, deploymentSpecificReviewItems, workspaceCohesionReviewItems, process,
+    aiZeroReviewItems, deploymentReviewTarget, deploymentSpecificReviewItems, workspaceCohesionReviewItems,
+    REVIEW_ACTIVE_DAYS, splitReviewAttention, process,
     fetch: async () => ({ ok: true, json: async () => ({ files: files.map(filename => ({ filename })), commit: { message: 'AI from Zero appetite pass' } }) }),
   };
   async function handler(name) {
@@ -176,8 +178,28 @@ test('production review is primary and V3 baseline is preserved as history', asy
 
 test('production queue has a useful empty state and separates reviewed history', async () => {
   const source = await readFile(new URL('../workspace/deployment-review.js', import.meta.url), 'utf8');
-  assert.match(source, /Nothing waiting\./);
+  assert.match(source, /Nothing needs review\./);
   assert.match(source, /Needs review/);
-  assert.match(source, /Previously reviewed/);
+  assert.match(source, /Archive/);
   assert.match(source, /Only your explicit approval counts as reviewed/);
+});
+
+
+test('production review API exposes active, ignored, and archived attention buckets', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const state = (await f.get()).body;
+  assert.equal(state.review_policy.active_days, REVIEW_ACTIVE_DAYS);
+  assert.ok(state.deployment_attention);
+  assert.equal(
+    state.deployment_attention.active.length + state.deployment_attention.ignored.length + state.deployment_attention.archive.length,
+    state.auto_items.length,
+  );
+});
+
+test('production review UI removes aged items from the primary queue without deleting them', async () => {
+  const source = await readFile(new URL('../workspace/deployment-review.js', import.meta.url), 'utf8');
+  assert.match(source, /Not acted on/);
+  assert.match(source, /Aged out after/);
+  assert.match(source, /This is not approval/);
+  assert.match(source, /Archive/);
 });
