@@ -224,7 +224,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     $('#live-state').textContent='Refreshing…';
     const results=await Promise.allSettled([loadPersistentState(),loadGithubEvidence(),loadAilhatEvidence(),loadBoard()]);
     state.error=results.filter(r=>r.status==='rejected').map(r=>r.reason.message).join(' · ')||null;
-    state.lastRefresh=new Date(); render(); $('#refresh-evidence').disabled=false;
+    state.lastRefresh=new Date(); render(); window.dispatchEvent(new CustomEvent('ashwood:ailhat-signals',{detail:ailhatEvidence()})); window.dispatchEvent(new Event('ashwood:refresh-feed')); $('#refresh-evidence').disabled=false;
   }
   function selectGoal(id){
     state.selectedGoal=id;
