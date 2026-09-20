@@ -138,7 +138,7 @@ test('existing schema and deployment records acquire visit state and missing AI 
 
 test('unrelated production changes do not create appetite checks; review-system changes create no queue noise', async t => {
   const f = await fixture(); t.after(() => f.db.close());
-  f.setFiles(['api/_review-targets.mjs', 'workspace/review-links.js', 'workspace/deployment-review.js']);
+  f.setFiles(['vercel.json', 'api/_review-targets.mjs', 'workspace/review-links.js', 'workspace/deployment-review.js']);
   assert.deepEqual((await f.get()).body.auto_items, []);
   f.setFiles(['music/index.html']);
   assert.equal((await f.get()).body.auto_items.length, 1);
@@ -162,4 +162,22 @@ test('cohesion review UI links the feature checks back to the live Workspace', a
   const source = await readFile(new URL('../workspace/deployment-review.js', import.meta.url), 'utf8');
   assert.match(source, /workspace-cohesion/);
   assert.match(source, /href=\"\/workspace\/\"/);
+});
+
+
+test('production review is primary and V3 baseline is preserved as history', async () => {
+  const page = await readFile(new URL('../workspace/v3-playtest/index.html', import.meta.url), 'utf8');
+  assert.match(page, /<title>Production Review — ASHWOOD Workspace<\/title>/);
+  assert.match(page, /Review what changed\./);
+  assert.match(page, /Historical V3 baseline/);
+  assert.match(page, /preserved review evidence/);
+  assert.doesNotMatch(page, /<h1 id="playtest-title">Play with V3\.<\/h1>/);
+});
+
+test('production queue has a useful empty state and separates reviewed history', async () => {
+  const source = await readFile(new URL('../workspace/deployment-review.js', import.meta.url), 'utf8');
+  assert.match(source, /Nothing waiting\./);
+  assert.match(source, /Needs review/);
+  assert.match(source, /Previously reviewed/);
+  assert.match(source, /Only your explicit approval counts as reviewed/);
 });
