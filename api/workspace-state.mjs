@@ -35,6 +35,7 @@ const COMMAND_RUNTIME_STATES = new Set([
   'routing',
   'governance_unavailable',
   'governance_denied',
+  'governance_approval_required',
   'route_failed',
   'dispatched',
   'completed',
