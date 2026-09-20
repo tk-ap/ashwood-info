@@ -47,7 +47,9 @@ import { renderFrame, mountCheckin } from './frame.mjs';
         e.preventDefault(); const fd=new FormData(e.currentTarget); const error=wrap.querySelector('.auth-error'); error.textContent='';
         try {
           await api('/api/workspace-auth',{method:'POST',body:JSON.stringify({action:status.configured?'login':'setup',passphrase:fd.get('passphrase'),bootstrap:fd.get('bootstrap')})});
-          wrap.remove(); $('.workspace-shell').inert=false; resolve(true);
+          wrap.remove(); $('.workspace-shell').inert=false;
+          window.dispatchEvent(new Event('ashwood:workspace-authenticated'));
+          resolve(true);
         } catch(err) { error.textContent=err.message; }
       });
     });
