@@ -2,6 +2,8 @@ const LANES = [
   { id: "in_progress", label: "In progress", empty: "No current execution is confirmed." },
   { id: "stuck", label: "Stuck", empty: "Nothing is currently classified as stuck." },
   { id: "review", label: "Review", empty: "Nothing is waiting for review or approval." },
+  { id: "orphaned_pr", label: "Orphaned PRs", empty: "No open PRs are outside AgentOS/backlog tracking." },
+  { id: "untriaged", label: "Untriaged", empty: "No discovered GitHub issues are waiting for Milchik triage." },
   { id: "backlog", label: "Backlog", empty: "No captured backlog items are waiting." },
   { id: "done", label: "Recently done", empty: "No recent completed work is mirrored." }
 ];
@@ -43,7 +45,12 @@ function card(row) {
 
   let html = '<article class="agentos-board-card" data-kind="' + escapeHtml(row.kind || "") + '">';
   html += '<div class="agentos-board-card__top">';
-  html += '<span class="agentos-board-card__type">' + escapeHtml(row.kind === "backlog" ? "captured backlog" : "governed work") + '</span>';
+  const typeLabel = row.kind === "backlog"
+    ? "captured backlog"
+    : String(row.kind || "").startsWith("github_")
+      ? "GitHub inventory"
+      : "governed work";
+  html += '<span class="agentos-board-card__type">' + escapeHtml(typeLabel) + '</span>';
   html += '<span class="agentos-board-card__freshness ' + freshness.cls + '">' + escapeHtml(freshness.label) + '</span>';
   html += '</div>';
   html += '<h4>' + escapeHtml(row.title || "Untitled work") + '</h4>';
