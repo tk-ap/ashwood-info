@@ -24,11 +24,11 @@ function render() {
   }
   host.innerHTML = feed.map(item => {
     const resolved = ['ACCEPTED', 'DISMISSED'].includes(String(item.status).toUpperCase());
-    return `<article class="ecosystem-feed__item ${resolved ? 'is-resolved' : ''}">
-      <div class="ecosystem-feed__topline"><span>${escapeHtml(item.source_label || item.source)} · ${formatDate(item.occurred_at)}</span><span class="status-pill">${escapeHtml(item.status || 'SIGNAL')}</span></div>
-      <h3>${escapeHtml(item.title)}</h3>
-      <p class="ecosystem-feed__notes">${escapeHtml(item.notes || 'Evidence received. Review before turning it into work.')}</p>
-      <div class="ecosystem-feed__meta"><span>Confidence ${Math.round(Number(item.confidence || .5) * 100)}%</span><span>Goal ${escapeHtml(item.goal_id || 'unassigned')}</span></div>
+    const status = String(item.status || 'SIGNAL').toUpperCase();
+    return `<article class="ecosystem-feed__item ${resolved ? 'is-resolved' : ''}" data-notification-status="${escapeHtml(status)}" role="listitem">
+      <div class="ecosystem-feed__topline"><span class="ecosystem-feed__source"><span class="ecosystem-feed__source-dot" aria-hidden="true"></span><strong>${escapeHtml(item.source_label || item.source || 'Ecosystem')}</strong><span>notification</span></span><time datetime="${escapeHtml(item.occurred_at || '')}">${formatDate(item.occurred_at)}</time></div>
+      <div class="ecosystem-feed__body"><div class="ecosystem-feed__signal-mark" aria-hidden="true">↗</div><div><h3>${escapeHtml(item.title)}</h3><p class="ecosystem-feed__notes">${escapeHtml(item.notes || 'Evidence received. Review before turning it into work.')}</p></div></div>
+      <div class="ecosystem-feed__meta"><span class="ecosystem-feed__status">${escapeHtml(status.replaceAll('_', ' '))}</span><span>Confidence ${Math.round(Number(item.confidence || .5) * 100)}%</span><span>Goal ${escapeHtml(item.goal_id || 'unassigned')}</span></div>
       <div class="ecosystem-feed__actions">
         ${item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open source ↗</a>` : ''}
         ${resolved ? '<span>Decision recorded</span>' : `<button type="button" data-feed-decision="ACCEPTED" data-feed-id="${escapeHtml(item.id)}">Keep in focus</button><button type="button" data-feed-decision="DISMISSED" data-feed-id="${escapeHtml(item.id)}">Dismiss</button>`}
