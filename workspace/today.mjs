@@ -75,9 +75,9 @@ function renderObjective(priorities, rows) {
     host.innerHTML = '<p class="today-command__empty">No ranked objective is configured.</p>';
     return;
   }
-  host.innerHTML = '<div class="today-command__objective"><span class="today-command__objective-label">Next highest-value objective · rank ' + escapeHtml(chosen.rank) + '</span><h4>' + escapeHtml(chosen.product) + '</h4><p>' + escapeHtml(chosen.outcome) + '</p><p class="today-command__owner"><strong>Your next:</strong> ' + escapeHtml(chosen.owner_next) + '</p><div class="today-command__objective-actions"><button class="today-command__button" type="button" id="today-open-priorities">Open objective</button><button class="today-command__button is-secondary" type="button" id="today-copy-objective">Copy for AgentOS</button></div></div>';
+  host.innerHTML = '<div class="today-command__objective"><span class="today-command__objective-label">Next highest-value objective · rank ' + escapeHtml(chosen.rank) + '</span><h4>' + escapeHtml(chosen.product) + '</h4><p>' + escapeHtml(chosen.outcome) + '</p><p class="today-command__owner"><strong>Your next:</strong> ' + escapeHtml(chosen.owner_next) + '</p><div class="today-command__objective-actions"><button class="today-command__button" type="button" id="today-open-priorities">Open objective</button><button class="today-command__button is-secondary" type="button" id="today-copy-objective">Copy for AgentOS</button><button class="today-command__button is-secondary" type="button" id="today-refresh-objective">Get next objective</button></div></div>';
   q('#today-open-priorities')?.addEventListener('click', () => document.querySelector('#actual-priorities')?.scrollIntoView({behavior:'smooth',block:'start'}));
-  q('#today-copy-objective')?.addEventListener('click', async event => {
+  q('#today-refresh-objective')?.addEventListener('click', async event => { event.currentTarget.textContent = 'Checking…'; await loadToday(); });\n  q('#today-copy-objective')?.addEventListener('click', async event => {
     const text = chosen.product + ': ' + chosen.outcome + '\nYour next: ' + chosen.owner_next;
     await navigator.clipboard.writeText(text);
     event.currentTarget.textContent = 'Copied';
@@ -108,7 +108,7 @@ async function loadToday() {
       fetchJson('/api/workspace-board').catch(() => ({rows:[]})),
       fetch('/workspace/priorities.json',{cache:'no-store'}).then(r => r.json())
     ]);
-    const rows = [...(workstreams.rows || []), ...(board.rows || []).map(normalizeBoard)];
+    const combined = [...(workstreams.rows || []), ...(board.rows || []).map(normalizeBoard)];\n    const seen = new Set();\n    const rows = combined.filter(row => { const key = [row.product,row.title,row.status].map(value => String(value || '').toLowerCase()).join('|'); if (seen.has(key)) return false; seen.add(key); return true; });
     setStats(rows);
     renderObjective(priorityData.priorities || [], rows);
     if (status) status.textContent = 'Live from Workspace + AgentOS projection';
