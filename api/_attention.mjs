@@ -30,7 +30,9 @@ export function classifySignal(item = {}, now = Date.now()) {
   const status = String(item.status || 'SIGNAL').toUpperCase();
   if (ARCHIVE_SIGNAL_STATUSES.has(status)) return 'archive';
   if (signalNeedsPersistentAttention(item)) return 'active';
-  return ageDays(item.occurred_at, now) > SIGNAL_ACTIVE_DAYS ? 'ignored' : 'active';
+  const age = ageDays(item.occurred_at, now);
+  if (!Number.isFinite(age)) return 'active';
+  return age > SIGNAL_ACTIVE_DAYS ? 'ignored' : 'active';
 }
 
 export function splitSignalAttention(items = [], now = Date.now()) {
@@ -42,7 +44,9 @@ export function splitSignalAttention(items = [], now = Date.now()) {
 export function classifyReviewItem(item = {}, completed = new Set(), now = Date.now()) {
   if (completed.has(item.id)) return 'archive';
   const occurred = item.deployed_at || item.occurred_at || item.created_at;
-  return ageDays(occurred, now) > REVIEW_ACTIVE_DAYS ? 'ignored' : 'active';
+  const age = ageDays(occurred, now);
+  if (!Number.isFinite(age)) return 'active';
+  return age > REVIEW_ACTIVE_DAYS ? 'ignored' : 'active';
 }
 
 export function splitReviewAttention(items = [], completed = new Set(), now = Date.now()) {
