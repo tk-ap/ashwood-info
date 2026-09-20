@@ -8,6 +8,10 @@ export default async function handler(req, res) {
     const sql = getSql();
 
     if (req.method === 'GET') {
+      if (req.query?.view === 'feed') {
+        const feed = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes FROM workspace_evidence WHERE source IN ('ailhat', 'agent-os', 'board', 'github', 'manual') ORDER BY occurred_at DESC LIMIT 80`;
+        return json(res, 200, { ok: true, feed });
+      }
       if (req.query?.view === 'build_logs') {
         const logs = await sql`SELECT id, title, occurred_at, status, notes FROM workspace_evidence WHERE source = 'build_log' ORDER BY occurred_at DESC LIMIT 500`;
         return json(res, 200, { ok: true, logs });
@@ -21,6 +25,31 @@ export default async function handler(req, res) {
     if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
     const body = parseBody(req);
     const action = String(body.action || 'add_evidence');
+
+    if (action === 'ingest_external_signal') {
+      const id = String(body.id || '').trim().slice(0, 250);
+      const source = String(body.source || '').trim().slice(0, 40);
+      const sourceLabel = String(body.source_label || source).trim().slice(0, 120);
+      const title = String(body.title || '').trim().slice(0, 500);
+      const goalId = String(body.goal_id || 'ownership').trim().slice(0, 80);
+      const status = String(body.status || 'SIGNAL').trim().slice(0, 40);
+      const occurredAt = new Date(body.occurred_at || Date.now());
+      const confidence = Math.max(0, Math.min(1, Number(body.confidence ?? .5)));
+      const notes = String(body.notes || '').trim().slice(0, 2000) || null;
+      const url = String(body.url || '').trim().slice(0, 1000) || null;
+      if (!id || !source || !title || Number.isNaN(occurredAt.getTime())) return json(res, 400, { ok: false, error: 'Missing signal fields' });
+      await sql`INSERT INTO workspace_evidence (id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes) VALUES (${id}, ${source}, ${sourceLabel}, ${title}, ${occurredAt.toISOString()}, ${status}, ${goalId}, '[]'::jsonb, ${confidence}, ${url}, ${notes}) ON CONFLICT (id) DO UPDATE SET source_label = EXCLUDED.source_label, title = EXCLUDED.title, occurred_at = EXCLUDED.occurred_at, goal_id = EXCLUDED.goal_id, confidence = EXCLUDED.confidence, url = EXCLUDED.url, notes = EXCLUDED.notes, updated_at = NOW(), status = CASE WHEN workspace_evidence.status IN ('ACCEPTED', 'DISMISSED') THEN workspace_evidence.status ELSE EXCLUDED.status END`;
+      return json(res, 200, { ok: true, id });
+    }
+
+    if (action === 'record_feed_decision') {
+      const id = String(body.id || '').trim().slice(0, 250);
+      const status = String(body.status || '').trim().toUpperCase();
+      if (!id || !['ACCEPTED', 'DISMISSED'].includes(status)) return json(res, 400, { ok: false, error: 'Invalid feed decision' });
+      const updated = await sql`UPDATE workspace_evidence SET status = ${status}, updated_at = NOW() WHERE id = ${id} AND source IN ('ailhat', 'agent-os', 'board', 'github', 'manual') RETURNING id`;
+      if (!updated[0]) return json(res, 404, { ok: false, error: 'Feed item not found' });
+      return json(res, 200, { ok: true, id, status });
+    }
 
     if (action === 'add_evidence') {
       const title = String(body.title || '').trim().slice(0, 500);
