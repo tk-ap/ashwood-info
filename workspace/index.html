@@ -28,13 +28,18 @@
         <span class="workspace-label">Workspace</span>
       </div>
       <div class="workspace-actions">
-        <a class="text-button" href="/workspace/build-logs/">Build logs</a>
+        <a class="text-button workspace-primary-link" href="/workspace/build-logs/">Build logs</a>
         <span class="live-state" id="live-state" aria-live="polite">Locked</span>
-        <a class="text-button" href="/workspace/v3-playtest/">Review checklist</a>
-        <button class="text-button" id="change-passphrase" type="button">Change passphrase</button>
-        <button class="text-button" id="sign-out" type="button">Lock workspace</button>
-        <button class="text-button" id="refresh-evidence" type="button">Refresh evidence</button>
-        <button class="text-button" id="add-evidence" type="button">Add evidence</button>
+        <details class="workspace-menu">
+          <summary class="text-button">Menu</summary>
+          <div class="workspace-menu-panel">
+            <a class="text-button" href="/workspace/v3-playtest/">Review checklist</a>
+            <button class="text-button" id="change-passphrase" type="button">Change passphrase</button>
+            <button class="text-button" id="sign-out" type="button">Lock workspace</button>
+            <button class="text-button" id="refresh-evidence" type="button">Refresh evidence</button>
+            <button class="text-button" id="add-evidence" type="button">Add evidence</button>
+          </div>
+        </details>
       </div>
     </header>
 
@@ -266,6 +271,12 @@
     </footer>
   </main>
 
+  <nav class="workspace-mobile-nav" aria-label="Workspace navigation">
+    <a href="#workspace-title">Today</a>
+    <a href="#ecosystem-feed">Feed</a>
+    <a href="#evidence-panel">Evidence</a>
+    <button type="button" id="mobile-add-evidence">Add</button>
+  </nav>
   <dialog id="evidence-dialog" class="evidence-dialog">
     <form method="dialog" id="evidence-form">
       <div class="dialog-heading">
