@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import crypto from 'node:crypto';
 import { PGlite } from '@electric-sql/pglite';
 import { sha256 } from '../api/_workspace.mjs';
+import { SIGNAL_ACTIVE_DAYS, monitoringSummary, splitSignalAttention } from '../api/_attention.mjs';
 
 async function fixture() {
   const db = new PGlite();
@@ -19,6 +20,9 @@ async function fixture() {
     requireSession: async req => req.owner ? { token: 'owner-session' } : null,
     sameOrigin: req => req.origin !== 'foreign',
     sha256,
+    SIGNAL_ACTIVE_DAYS,
+    monitoringSummary,
+    splitSignalAttention,
   };
 
   const source = (await readFile(new URL('../api/workspace-state.mjs', import.meta.url), 'utf8'))
