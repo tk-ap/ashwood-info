@@ -3,7 +3,6 @@ const ACTIVE = new Set(["active","in_progress","running","executing","started","
 const NEEDS_OWNER = new Set(["waiting_approval","decision_required","review","needs_attention"]);
 const BLOCKED = new Set(["blocked","failed","error"]);
 const DONE = new Set(["completed","done","shipped"]);
-const CAPTURE_KEY = "ashwood.workspace.capture.v1";
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
   "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
@@ -36,25 +35,6 @@ async function readJson(url) {
   return response.json();
 }
 
-function captures() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(CAPTURE_KEY) || "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (_) {
-    return [];
-  }
-}
-
-function saveCapture(text) {
-  const items = captures();
-  items.unshift({ id:String(Date.now()), text:text, created_at:new Date().toISOString() });
-  localStorage.setItem(CAPTURE_KEY, JSON.stringify(items.slice(0,20)));
-}
-
-function removeCapture(id) {
-  localStorage.setItem(CAPTURE_KEY, JSON.stringify(captures().filter(item => item.id !== id)));
-}
-
 function relative(value) {
   const time = Date.parse(value || "");
   if (!Number.isFinite(time)) return "";
@@ -70,7 +50,7 @@ function renderOwnerList(rows, priorities) {
   const host = document.querySelector("#today-owner-list");
   if (!host) return;
   const decisions = rows.filter(row => isAgent(row) && (NEEDS_OWNER.has(statusOf(row)) || BLOCKED.has(statusOf(row))));
-  const local = captures().slice(0,3);
+  const commands = (snapshot.commands || []).filter(command => !["completed","cancelled"].includes(normalize(command.status))).slice(0,3);
   const priorityActions = priorities
     .filter(priority => ["NOW","SUPPORT"].includes(String(priority.tier || "").toUpperCase()))
     .filter(priority => !rows.some(row => matchesPriority(row, priority) && ACTIVE.has(statusOf(row))))
@@ -99,25 +79,21 @@ function renderOwnerList(rows, priorities) {
     );
   });
 
-  local.forEach(item => {
+  commands.forEach(item => {
+    const status = String(item.status || "queued").replaceAll("_"," ");
+    const governance = item.governance && item.governance.outcome ? " · ledgato " + String(item.governance.outcome).toLowerCase() : "";
     cards.push(
-      '<article class="today-item today-capture" data-capture-id="' + escapeHtml(item.id) + '">' +
-      '<p class="today-item__eyebrow"><b>Captured</b><span>' + escapeHtml(relative(item.created_at)) + '</span></p>' +
-      '<h4>' + escapeHtml(item.text) + '</h4>' +
-      '<p>Private browser capture · not dispatched to AgentOS.</p>' +
-      '<button type="button" data-remove-capture="' + escapeHtml(item.id) + '">Clear</button>' +
+      '<article class="today-item today-capture">' +
+      '<p class="today-item__eyebrow"><b>' + escapeHtml(status) + '</b><span>' + escapeHtml(relative(item.created_at)) + governance + '</span></p>' +
+      '<h4>' + escapeHtml(item.command_text) + '</h4>' +
+      '<p>' + escapeHtml(item.error || "Submitted to the AgentOS command ingress. Runtime status updates here as routing and governance advance.") + '</p>' +
       '</article>'
     );
   });
 
   host.innerHTML = cards.join("") || '<p class="today-empty">Nothing currently requires you. That is a real state, not an empty dashboard.</p>';
   const count = document.querySelector("#today-owner-count");
-  if (count) count.textContent = String(decisions.length + priorityActions.length + local.length);
-
-  host.querySelectorAll("[data-remove-capture]").forEach(button => button.addEventListener("click", () => {
-    removeCapture(button.dataset.removeCapture);
-    renderOwnerList(rows, priorities);
-  }));
+  if (count) count.textContent = String(decisions.length + priorityActions.length + commands.length);
 }
 
 function renderAgentList(rows, priorities) {
@@ -228,7 +204,7 @@ function renderSummary(rows) {
   if (status) status.textContent = active + " underway · " + needs + " need you · " + blocked + " blocked · " + done + " recently complete";
 }
 
-let snapshot = { rows:[], priorities:[] };
+let snapshot = { rows:[], priorities:[], commands:[] };
 
 async function loadToday() {
   const refresh = document.querySelector("#today-refresh");
@@ -236,11 +212,13 @@ async function loadToday() {
   try {
     const results = await Promise.all([
       readJson("/api/workspace-workstreams"),
-      readJson("/workspace/priorities.json")
+      readJson("/workspace/priorities.json"),
+      readJson("/api/workspace-state?view=commands")
     ]);
     snapshot = {
       rows:Array.isArray(results[0].rows) ? results[0].rows : [],
-      priorities:Array.isArray(results[1].priorities) ? results[1].priorities : []
+      priorities:Array.isArray(results[1].priorities) ? results[1].priorities : [],
+      commands:Array.isArray(results[2].commands) ? results[2].commands : []
     };
     renderSummary(snapshot.rows);
     renderOwnerList(snapshot.rows, snapshot.priorities);
@@ -263,14 +241,30 @@ function mountCommand() {
   const input = document.querySelector("#today-command-input");
   const note = document.querySelector("#today-command-note");
   if (!form || !input) return;
-  form.addEventListener("submit", event => {
+  form.addEventListener("submit", async event => {
     event.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    saveCapture(text);
-    input.value = "";
-    if (note) note.textContent = "Captured privately in this browser. Nothing was dispatched to AgentOS.";
-    renderOwnerList(snapshot.rows, snapshot.priorities);
+    const button = form.querySelector("button[type=submit]");
+    if (button) button.disabled = true;
+    if (note) note.textContent = "Submitting to AgentOS ingress…";
+    try {
+      const response = await fetch("/api/workspace-state", {
+        method:"POST",
+        credentials:"same-origin",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"submit_command",command:text})
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || "Command submission failed");
+      input.value = "";
+      if (note) note.textContent = "Queued for AgentOS. Routing is local; ledgato must ALLOW the governed dispatch before execution is enqueued.";
+      await loadToday();
+    } catch (error) {
+      if (note) note.textContent = error.message;
+    } finally {
+      if (button) button.disabled = false;
+    }
   });
 }
 
