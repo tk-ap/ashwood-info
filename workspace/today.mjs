@@ -9,7 +9,15 @@ const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
 }[char]));
 
 const normalize = value => String(value || "").toLowerCase();
-const statusOf = row => normalize(row && row.status);
+const statusOf = row => {
+  const status = normalize(row && row.status);
+  const lane = normalize(row && row.lane);
+  if (lane === "in_progress" && !ACTIVE.has(status)) return "in_progress";
+  if (lane === "review" && !NEEDS_OWNER.has(status)) return "review";
+  if (lane === "stuck" && !BLOCKED.has(status)) return "blocked";
+  if (lane === "done" && !DONE.has(status)) return "done";
+  return status;
+};
 const isAgent = row => {
   const text = [row && row.source_system,row && row.owner,row && row.assignee].map(normalize).join(" ");
   return text.includes("agentos") || text.includes("agent os") || text.includes("agent-os") || text.includes("milchik");
@@ -209,31 +217,63 @@ let snapshot = { rows:[], priorities:[], commands:[] };
 async function loadToday() {
   const refresh = document.querySelector("#today-refresh");
   if (refresh) refresh.disabled = true;
-  try {
-    const results = await Promise.all([
-      readJson("/api/workspace-workstreams"),
-      readJson("/workspace/priorities.json"),
-      readJson("/api/workspace-state?view=commands")
-    ]);
-    snapshot = {
-      rows:Array.isArray(results[0].rows) ? results[0].rows : [],
-      priorities:Array.isArray(results[1].priorities) ? results[1].priorities : [],
-      commands:Array.isArray(results[2].commands) ? results[2].commands : []
-    };
+
+  const results = await Promise.allSettled([
+    readJson("/api/workspace-board"),
+    readJson("/workspace/priorities.json"),
+    readJson("/api/workspace-state?view=commands")
+  ]);
+
+  const boardResult = results[0];
+  const prioritiesResult = results[1];
+  const commandsResult = results[2];
+
+  snapshot = {
+    rows: boardResult.status === "fulfilled" && Array.isArray(boardResult.value.rows) ? boardResult.value.rows : [],
+    priorities: prioritiesResult.status === "fulfilled" && Array.isArray(prioritiesResult.value.priorities) ? prioritiesResult.value.priorities : [],
+    commands: commandsResult.status === "fulfilled" && Array.isArray(commandsResult.value.commands) ? commandsResult.value.commands : []
+  };
+
+  renderOwnerList(snapshot.rows, snapshot.priorities);
+  renderNext(snapshot.rows, snapshot.priorities);
+
+  if (boardResult.status === "fulfilled") {
     renderSummary(snapshot.rows);
-    renderOwnerList(snapshot.rows, snapshot.priorities);
     renderAgentList(snapshot.rows, snapshot.priorities);
-    renderNext(snapshot.rows, snapshot.priorities);
     renderSessions(snapshot.rows, snapshot.priorities);
-    if (refresh) refresh.textContent = "Refresh next objective";
-    return true;
-  } catch (error) {
+  } else {
+    const error = boardResult.reason || new Error("AgentOS board unavailable");
+    const locked = error.status === 401;
+    const message = locked
+      ? "Unlock Workspace to load AgentOS execution."
+      : "AgentOS execution could not load from the synced board. The Workspace is not inferring motion.";
+
     const status = document.querySelector("#today-status");
-    if (status) status.textContent = error.status === 401 ? "Unlock Workspace to load Today." : "Today could not load canonical work.";
-    return false;
-  } finally {
-    if (refresh) refresh.disabled = false;
+    if (status) status.textContent = message;
+
+    const agent = document.querySelector("#today-agent-list");
+    if (agent) agent.innerHTML = '<p class="today-empty">' + escapeHtml(message) + '</p>';
+
+    const sessions = document.querySelector("#today-sessions");
+    if (sessions) sessions.innerHTML = '<p class="today-empty">' + escapeHtml(message) + '</p>';
+
+    const count = document.querySelector("#today-agent-count");
+    if (count) count.textContent = "0";
   }
+
+  if (commandsResult.status === "rejected" && commandsResult.reason?.status !== 401) {
+    const owner = document.querySelector("#today-owner-list");
+    if (owner && !snapshot.commands.length && !snapshot.priorities.length) {
+      owner.innerHTML = '<p class="today-empty">Owner actions could not load. Try refreshing Today.</p>';
+    }
+  }
+
+  if (refresh) {
+    refresh.disabled = false;
+    refresh.textContent = "Refresh next objective";
+  }
+
+  return boardResult.status === "fulfilled";
 }
 
 function mountCommand() {
@@ -283,4 +323,5 @@ function start() {
 }
 
 window.addEventListener("ashwood:refresh-feed", () => loadToday());
+window.addEventListener("ashwood:workspace-authenticated", () => loadToday());
 start();
