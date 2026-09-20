@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { getSql, json, parseBody, requireSession, sameOrigin, sha256 } from './_workspace.mjs';
+import { SIGNAL_ACTIVE_DAYS, monitoringSummary, splitSignalAttention } from './_attention.mjs';
 
 
 function commandSyncTokenValid(req) {
@@ -103,8 +104,15 @@ export default async function handler(req, res) {
 
     if (req.method === 'GET') {
       if (req.query?.view === 'feed') {
-        const feed = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes FROM workspace_evidence WHERE source IN ('ailhat', 'agent-os', 'board', 'github', 'manual') ORDER BY occurred_at DESC LIMIT 80`;
-        return json(res, 200, { ok: true, feed });
+        const feed = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes FROM workspace_evidence WHERE source IN ('ailhat', 'agent-os', 'board', 'github', 'manual') ORDER BY occurred_at DESC LIMIT 250`;
+        const attention = splitSignalAttention(feed);
+        return json(res, 200, {
+          ok: true,
+          feed: attention.active,
+          attention,
+          monitoring: monitoringSummary(feed),
+          attention_policy: { ordinary_signal_days: SIGNAL_ACTIVE_DAYS },
+        });
       }
       if (req.query?.view === 'build_logs') {
         const logs = await sql`SELECT id, title, occurred_at, status, notes FROM workspace_evidence WHERE source = 'build_log' ORDER BY occurred_at DESC LIMIT 500`;
