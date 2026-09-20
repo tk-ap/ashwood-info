@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-09-08",
+  "as_of": "2026-09-20",
   "principle": "The priority surface answers what deserves attention now. AgentOS execution labels must come from synced canonical workstreams, never from assumptions.",
   "portfolio_constraint": "Do not start a new standalone product until at least one of the current top three priorities reaches its current proof milestone. Capture new ideas to backlog only by default.",
   "workspace_first_screen": [
-    "WHAT MATTERS",
+    "WHAT HAPPENS NEXT",
     "WHAT AGENTS ARE DOING",
     "WHAT NEEDS YOU",
     "WHAT CHANGED"
@@ -28,7 +28,9 @@
         "10 qualified prospects are researched and ranked.",
         "At least 3 design-partner conversations or outreach attempts are initiated with owner approval."
       ],
-      "match": ["ledgato"]
+      "match": [
+        "ledgato"
+      ]
     },
     {
       "rank": 2,
@@ -42,7 +44,11 @@
         "Workspace receives trustworthy execution projection from AgentOS.",
         "Blocked, approval-required, underway, stale, and complete states surface clearly."
       ],
-      "match": ["agentos", "agent os", "agent-os"]
+      "match": [
+        "agentos",
+        "agent os",
+        "agent-os"
+      ]
     },
     {
       "rank": 3,
@@ -56,7 +62,9 @@
         "At least one measurable context-value signal is captured, such as Re-explanation Rate or Context Lift.",
         "Progress is judged by user value rather than feature count."
       ],
-      "match": ["alvira"]
+      "match": [
+        "alvira"
+      ]
     },
     {
       "rank": 4,
@@ -69,7 +77,9 @@
         "Build Journal preserves a clear evidence trail without becoming copy-heavy.",
         "ASHWOOD remains an operating/evidence surface rather than a new startup obligation."
       ],
-      "match": ["ashwood"]
+      "match": [
+        "ashwood"
+      ]
     },
     {
       "rank": 5,
@@ -83,7 +93,9 @@
         "Recommended work routes into AgentOS or an owning system.",
         "The outcome of the intervention can be tracked."
       ],
-      "match": ["ailhat"]
+      "match": [
+        "ailhat"
+      ]
     },
     {
       "rank": 6,
@@ -95,7 +107,10 @@
         "Real lessons from completed or active builds are captured as practical learning material.",
         "The education layer remains downstream of execution rather than creating independent delivery pressure."
       ],
-      "match": ["ai from zero", "ai-from-zero"]
+      "match": [
+        "ai from zero",
+        "ai-from-zero"
+      ]
     }
   ]
 }
