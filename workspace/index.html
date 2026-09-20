@@ -13,12 +13,16 @@
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />
-  <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />\n  <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-board1" />
+  <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
+  <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-board1" />
+  <link rel="stylesheet" href="/workspace/cohesion.css?v=20260920-cohesion1" />
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260918-social-channels2"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
-  <script type="module" src="/workspace/today.mjs?v=20260920-today1"></script>\n  <script type="module" src="/workspace/agentos-board.mjs?v=20260920-board1"></script>
+  <script type="module" src="/workspace/today.mjs?v=20260920-today1"></script>
+  <script type="module" src="/workspace/agentos-board.mjs?v=20260920-board1"></script>
+  <script type="module" src="/workspace/views.mjs?v=20260920-cohesion1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
@@ -45,19 +49,22 @@
       </div>
     </header>
 
-    <nav class="workspace-section-nav" aria-label="Workspace sections">
-      <a href="#today">Today</a>
-      <a href="#agentos-board-section">AgentOS</a>\n      <a href="#build">Build</a>
-      <a href="#work">Work</a>
-      <a href="#network">Network</a>
-      <a href="#evidence-panel">Evidence</a>
-      <a href="#self">Self</a>
+    <nav class="workspace-section-nav" aria-label="Workspace views">
+      <a href="#today" data-workspace-nav="today">Today</a>
+      <a href="#build" data-workspace-nav="build">Build</a>
+      <a href="#work" data-workspace-nav="work">Work</a>
+      <a href="#network" data-workspace-nav="network">Network</a>
+      <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
+      <a href="#self" data-workspace-nav="self">Self</a>
     </nav>
 
-    <section class="workspace-intro" aria-labelledby="workspace-title">
-      <p class="eyebrow">Your private workspace</p>
-      <h1 id="workspace-title">Today.</h1>
-      <p class="workspace-intro__deck">What matters. What is moving. What needs you.</p>
+    <section class="workspace-view-intro" aria-labelledby="workspace-title">
+      <div class="workspace-view-intro__copy">
+        <p class="eyebrow" id="workspace-view-eyebrow">Your private workspace</p>
+        <h1 id="workspace-title" tabindex="-1">Today.</h1>
+        <p class="workspace-view-intro__deck" id="workspace-view-deck">What matters. What is moving. What needs you.</p>
+      </div>
+      <div class="workspace-view-tools" id="workspace-view-tools" aria-label="View tools"></div>
     </section>
 
     <section class="today-command-center" id="today" aria-labelledby="today-title">
@@ -347,11 +354,14 @@
     </footer>
   </main>
 
-  <nav class="workspace-mobile-nav" aria-label="Workspace navigation">
-    <a href="#today">Today</a>
-    <a href="#build">Build</a>
-    <a href="#evidence-panel">Evidence</a>
-    <button type="button" id="mobile-add-evidence">Add</button>
+  <nav class="workspace-mobile-nav" aria-label="Workspace views">
+    <a href="#today" data-workspace-nav="today">Today</a>
+    <a href="#build" data-workspace-nav="build">Build</a>
+    <a href="#work" data-workspace-nav="work">Work</a>
+    <a href="#network" data-workspace-nav="network">Network</a>
+    <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
+    <a href="#self" data-workspace-nav="self">Self</a>
+    <button type="button" id="mobile-add-evidence" aria-label="Add evidence">Add</button>
   </nav>
   <dialog id="evidence-dialog" class="evidence-dialog">
     <form method="dialog" id="evidence-form">
