@@ -5,44 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
   <meta name="theme-color" content="#f5f3ef" />
-  <title>V3 Playtest — ASHWOOD Workspace</title>
+  <title>Production Review — ASHWOOD Workspace</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
   <link rel="stylesheet" href="/workspace/workspace.css?v=20260909-rebalance1" />
-  <link rel="stylesheet" href="/workspace/v3-playtest.css?v=20260909-fixes1" />
+  <link rel="stylesheet" href="/workspace/v3-playtest.css?v=20260920-production-review1" />
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script src="/workspace/v3-playtest.js?v=20260909-fixes1" defer></script>
-  <script src="/workspace/deployment-review.js?v=20260908-review2" defer></script>
+  <script src="/workspace/deployment-review.js?v=20260920-production-review1" defer></script>
   <script src="/workspace/review-links.js?v=20260908-specific1" defer></script>
 </head>
-<body class="workspace-page">
+<body class="workspace-page production-review-page">
   <main class="workspace-shell">
     <header class="workspace-masthead">
       <div>
         <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
-        <span class="workspace-label">Workspace / V3 playtest</span>
+        <span class="workspace-label">Workspace / Production review</span>
       </div>
       <div class="workspace-actions">
         <a class="text-button" href="/workspace/">Back to workspace</a>
-        <a class="text-button" href="/">Open V3 homepage</a>
+        <a class="text-button" href="/">Open live site</a>
       </div>
     </header>
 
-    <section class="workspace-intro" aria-labelledby="playtest-title">
-      <p class="eyebrow">Private continuity surface</p>
-      <h1 id="playtest-title">Play with V3.</h1>
-      <p class="workspace-lede">Check things off as you test. Objective visit checks can update themselves while Workspace is unlocked; judgment and behavior checks stay manual.</p>
+    <section class="workspace-intro production-review-intro" aria-labelledby="playtest-title">
+      <p class="eyebrow">Private release review</p>
+      <h1 id="playtest-title">Review what changed.</h1>
+      <p class="workspace-lede">New production-facing changes appear here as release-specific checks. Use the live product, record what you notice, and only mark a check complete when you have actually reviewed it.</p>
     </section>
 
-    <section class="v3-checklist" id="deployment-review-items" aria-label="New production deployment review items" hidden></section>
-
-    <section class="v3-checklist" id="v3-playtest-checklist" aria-label="ASHWOOD V3 playtest checklist">
-      <p class="v3-checklist__loading">Loading V3 playtest checklist…</p>
+    <section class="v3-checklist production-review-primary" id="deployment-review-items" aria-label="Production deployment review queue">
+      <p class="v3-checklist__loading">Loading production review queue…</p>
     </section>
+
+    <details class="review-history">
+      <summary>
+        <span>Historical V3 baseline</span>
+        <small>September 8, 2026 · preserved review evidence</small>
+      </summary>
+      <div class="review-history__body">
+        <p class="v3-checklist__note">The original V3 playtest remains intact as historical owner review evidence. It is no longer the default QA surface and should not accumulate new release checks.</p>
+        <section class="v3-checklist" id="v3-playtest-checklist" aria-label="Historical ASHWOOD V3 playtest checklist">
+          <p class="v3-checklist__loading">Loading historical V3 checklist…</p>
+        </section>
+      </div>
+    </details>
 
     <footer class="workspace-footer">
-      <span>Canonical checklist: <code>workspace/V3_PLAYTEST_2026-09-08.md</code></span>
-      <details><summary>About this checklist</summary><p>Completion state is private owner state. Objective destination visits may auto-complete after an authenticated visit. Subjective judgments, multi-step actions, and behavior verification never auto-complete merely because a page was opened. New production-facing deployments are automatically queued above until you confirm them reviewed.</p></details>
+      <span>Primary QA: production review queue · Historical baseline: <code>workspace/V3_PLAYTEST_2026-09-08.md</code></span>
+      <details><summary>About review state</summary><p>Production-facing deployments generate review work when they change a user-facing surface. Release-specific checks stay manual unless an objective visit is explicitly designed to auto-complete. The September 8 V3 checklist is preserved as historical evidence rather than expanded indefinitely.</p></details>
     </footer>
   </main>
 </body>
