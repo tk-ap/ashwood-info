@@ -40,3 +40,10 @@
 .review-history__body>.v3-checklist__note{max-width:720px;margin:0 0 8px}
 .review-history__body>.v3-checklist{margin-top:28px;margin-bottom:0;opacity:.84}
 @media(max-width:760px){.review-history>summary{align-items:flex-start;flex-direction:column;gap:7px}.review-history>summary small{text-align:left}}
+
+
+.v3-checklist__section--ignored{opacity:.82}
+.v3-checklist__section--ignored>summary span{color:var(--ashwood-muted)}
+.v3-checklist__section--ignored .v3-checklist__item{box-shadow:none}
+.v3-checklist__section--ignored .v3-checklist__item.is-aged{background:color-mix(in srgb,var(--ashwood-field-green) 4%,transparent)}
+.v3-checklist__bucket-note{max-width:760px;margin:0 0 14px}
