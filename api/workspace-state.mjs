@@ -8,6 +8,10 @@ export default async function handler(req, res) {
     const sql = getSql();
 
     if (req.method === 'GET') {
+      if (req.query?.view === 'build_logs') {
+        const logs = await sql`SELECT id, title, occurred_at, status, notes FROM workspace_evidence WHERE source = 'build_log' ORDER BY occurred_at DESC LIMIT 500`;
+        return json(res, 200, { ok: true, logs });
+      }
       const evidence = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes FROM workspace_evidence ORDER BY occurred_at DESC LIMIT 500`;
       const overrides = await sql`SELECT evidence_id, goal_id FROM workspace_goal_overrides`;
       return json(res, 200, { ok: true, evidence, overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])) });
