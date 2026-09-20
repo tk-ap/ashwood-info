@@ -99,14 +99,14 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   function boardGoal(b){const p=String(b.product||'').toLowerCase();if(p.includes('ashwood'))return 'leadership';if(p.includes('agent-os'))return 'learning';return 'ownership';}
 
   function boardEvidence() {
-    const statusMap={done:'COMPLETED',accepted:'COMPLETED',completed:'COMPLETED',retired:'COMPLETED',blocked:'BLOCKED',collision:'BLOCKED',revoked:'BLOCKED',failed:'BLOCKED',review:'IN_PROGRESS',running:'IN_PROGRESS',ready:'PLANNED',queued:'PLANNED',waiting_approval:'IN_PROGRESS',waiting_capacity:'IN_PROGRESS',proposed:'PLANNED',approved:'PLANNED',release_pending:'PLANNED'};
+    const statusMap={done:'COMPLETED',accepted:'COMPLETED',completed:'COMPLETED',retired:'COMPLETED',blocked:'BLOCKED',collision:'BLOCKED',revoked:'BLOCKED',failed:'BLOCKED',stale:'BLOCKED',review:'IN_PROGRESS',running:'IN_PROGRESS',ready:'PLANNED',queued:'PLANNED',waiting_approval:'IN_PROGRESS',waiting_capacity:'IN_PROGRESS',proposed:'PLANNED',approved:'PLANNED',release_pending:'PLANNED',untriaged:'PLANNED',orphaned_pr:'PLANNED'};
     return state.board.map(b=>({
       id:`board:${b.board_key}`,
       source:'board',
-      sourceLabel:b.kind==='backlog'?'Milchik backlog':'Milchik fleet',
+      sourceLabel:b.kind==='backlog'?'Milchik backlog':String(b.kind||'').startsWith('github_')?'GitHub inventory':'Milchik fleet',
       title:b.title,
       date:b.updated_at,
-      status:statusMap[String(b.status||'').toLowerCase()]||(b.kind==='backlog'?'PLANNED':'IN_PROGRESS'),
+      status:statusMap[String(b.status||'').toLowerCase()]||((b.kind==='backlog'||String(b.kind||'').startsWith('github_'))?'PLANNED':'IN_PROGRESS'),
       goal:boardGoal(b),
       secondaryGoals:[],
       confidence:b.kind==='backlog'?.72:.9,
