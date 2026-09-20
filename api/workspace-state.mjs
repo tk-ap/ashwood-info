@@ -104,7 +104,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'GET') {
       if (req.query?.view === 'feed') {
-        const feed = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes FROM workspace_evidence WHERE source IN ('ailhat', 'agent-os', 'board', 'github', 'manual') ORDER BY occurred_at DESC LIMIT 250`;
+        const feed = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes FROM workspace_evidence WHERE source IN ('ailhat', 'agent-os', 'board', 'github', 'ledgato', 'alvira') ORDER BY occurred_at DESC LIMIT 250`;
         const attention = splitSignalAttention(feed);
         return json(res, 200, {
           ok: true,
@@ -160,7 +160,7 @@ export default async function handler(req, res) {
       const id = String(body.id || '').trim().slice(0, 250);
       const status = String(body.status || '').trim().toUpperCase();
       if (!id || !['ACCEPTED', 'DISMISSED'].includes(status)) return json(res, 400, { ok: false, error: 'Invalid feed decision' });
-      const updated = await sql`UPDATE workspace_evidence SET status = ${status}, updated_at = NOW() WHERE id = ${id} AND source IN ('ailhat', 'agent-os', 'board', 'github', 'manual') RETURNING id`;
+      const updated = await sql`UPDATE workspace_evidence SET status = ${status}, updated_at = NOW() WHERE id = ${id} AND source IN ('ailhat', 'agent-os', 'board', 'github', 'ledgato', 'alvira') RETURNING id`;
       if (!updated[0]) return json(res, 404, { ok: false, error: 'Feed item not found' });
       return json(res, 200, { ok: true, id, status });
     }
