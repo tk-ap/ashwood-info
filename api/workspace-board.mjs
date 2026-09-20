@@ -6,7 +6,7 @@ import { getSql, json, parseBody, requireSession, sha256 } from './_workspace.mj
 // work through this endpoint.
 
 function syncTokenValid(req) {
-  const expected = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  const expected = process.env.WORKSPACE_BOARD_SYNC_TOKEN || process.env.WORKSPACE_COMMAND_SYNC_TOKEN;
   if (!expected) return false;
   const header = String(req.headers?.authorization || '');
   const token = header.startsWith('Bearer ') ? header.slice(7) : '';
