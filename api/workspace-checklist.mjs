@@ -4,6 +4,7 @@ import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspac
 const CHECKLIST_ID = 'v3-playtest-2026-09-08';
 const REPO = 'tk-ap/ashwood-info';
 const REVIEW_SYSTEM_PATHS = [
+  'vercel.json',
   'api/workspace-checklist.mjs',
   'api/workspace-review-visit.mjs',
   'api/_review-targets.mjs',
