@@ -13,12 +13,12 @@
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />
-  <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
+  <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />\n  <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-board1" />
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260918-social-channels2"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
-  <script type="module" src="/workspace/today.mjs?v=20260920-today1"></script>
+  <script type="module" src="/workspace/today.mjs?v=20260920-today1"></script>\n  <script type="module" src="/workspace/agentos-board.mjs?v=20260920-board1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
@@ -47,7 +47,7 @@
 
     <nav class="workspace-section-nav" aria-label="Workspace sections">
       <a href="#today">Today</a>
-      <a href="#build">Build</a>
+      <a href="#agentos-board-section">AgentOS</a>\n      <a href="#build">Build</a>
       <a href="#work">Work</a>
       <a href="#network">Network</a>
       <a href="#evidence-panel">Evidence</a>
@@ -105,6 +105,21 @@
           <p class="section-note">Objective → why now → assigned owner → current step → next gate. No inferred motion without a synced source.</p>
         </div>
         <div id="today-sessions" aria-live="polite"><p class="today-empty">Loading AgentOS execution…</p></div>
+      </div>
+    </section>
+
+    <section class="agentos-board-section" id="agentos-board-section" aria-labelledby="agentos-board-title">
+      <div class="section-heading-row agentos-board-heading">
+        <div>
+          <p class="section-kicker">AgentOS · full operating queue</p>
+          <h2 id="agentos-board-title">Portfolio work board</h2>
+        </div>
+        <p class="agentos-board-status" id="agentos-board-status" aria-live="polite">Waiting for the private AgentOS snapshot…</p>
+      </div>
+      <p class="section-note">One read-only mirror of governed execution plus the durable Milchik backlog. ASHWOOD never moves or authorizes these cards.</p>
+      <div class="agentos-board-counts" id="agentos-board-counts" aria-label="AgentOS work counts"></div>
+      <div class="agentos-board" id="agentos-board" aria-live="polite">
+        <p class="agentos-board-empty">Loading AgentOS fleet and backlog…</p>
       </div>
     </section>
 
