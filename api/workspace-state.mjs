@@ -1,11 +1,105 @@
 import crypto from 'node:crypto';
-import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { getSql, json, parseBody, requireSession, sameOrigin, sha256 } from './_workspace.mjs';
+
+
+function commandSyncTokenValid(req) {
+  const expected = process.env.WORKSPACE_COMMAND_SYNC_TOKEN || process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  if (!expected) return false;
+  const header = String(req.headers?.authorization || '');
+  const token = header.startsWith('Bearer ') ? header.slice(7) : '';
+  if (!token) return false;
+  const left = Buffer.from(sha256(token), 'hex');
+  const right = Buffer.from(sha256(expected), 'hex');
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
+async function ensureCommandTable(sql) {
+  await sql`CREATE TABLE IF NOT EXISTS workspace_commands (
+    id TEXT PRIMARY KEY,
+    command_text TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'queued',
+    source TEXT NOT NULL DEFAULT 'workspace',
+    claim_id TEXT,
+    claimed_at TIMESTAMPTZ,
+    lease_expires_at TIMESTAMPTZ,
+    runtime_directive_id TEXT,
+    runtime_task_id TEXT,
+    governance JSONB,
+    error TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+}
+
+const COMMAND_RUNTIME_STATES = new Set([
+  'routing',
+  'governance_unavailable',
+  'governance_denied',
+  'governance_approval_required',
+  'route_failed',
+  'dispatched',
+  'completed',
+  'cancelled',
+]);
 
 export default async function handler(req, res) {
   try {
+    const sql = getSql();
+    const machineAuthorized = commandSyncTokenValid(req);
+
+    if (req.method === 'GET' && req.query?.view === 'command-next' && machineAuthorized) {
+      await ensureCommandTable(sql);
+      const claimId = crypto.randomUUID();
+      const rows = await sql`UPDATE workspace_commands
+        SET status = 'claimed', claim_id = ${claimId}, claimed_at = NOW(),
+            lease_expires_at = NOW() + INTERVAL '5 minutes', updated_at = NOW()
+        WHERE id = (
+          SELECT id FROM workspace_commands
+          WHERE status = 'queued'
+             OR (status = 'claimed' AND lease_expires_at IS NOT NULL AND lease_expires_at <= NOW())
+          ORDER BY created_at ASC
+          LIMIT 1
+          FOR UPDATE SKIP LOCKED
+        )
+        RETURNING id, command_text, status, claim_id, created_at`;
+      return json(res, 200, { ok: true, command: rows[0] || null });
+    }
+
+    let body = null;
+    let action = null;
+    if (req.method === 'POST') {
+      body = parseBody(req);
+      action = String(body.action || 'add_evidence');
+      if (action === 'command_runtime_update') {
+        if (!machineAuthorized) return json(res, 403, { ok: false, error: 'Invalid command sync token' });
+        await ensureCommandTable(sql);
+        const id = String(body.id || '').trim().slice(0, 250);
+        const status = String(body.status || '').trim().toLowerCase();
+        if (!id || !COMMAND_RUNTIME_STATES.has(status)) return json(res, 400, { ok: false, error: 'Invalid command runtime update' });
+        const directiveId = String(body.runtime_directive_id || '').trim().slice(0, 120) || null;
+        const taskId = String(body.runtime_task_id || '').trim().slice(0, 250) || null;
+        const error = String(body.error || '').trim().slice(0, 1200) || null;
+        const governance = body.governance && typeof body.governance === 'object' && !Array.isArray(body.governance)
+          ? body.governance
+          : null;
+        const rows = await sql`UPDATE workspace_commands SET
+          status = ${status},
+          runtime_directive_id = COALESCE(${directiveId}, runtime_directive_id),
+          runtime_task_id = COALESCE(${taskId}, runtime_task_id),
+          governance = COALESCE(${governance ? JSON.stringify(governance) : null}::jsonb, governance),
+          error = ${error},
+          claim_id = NULL,
+          lease_expires_at = NULL,
+          updated_at = NOW()
+          WHERE id = ${id}
+          RETURNING id, status`;
+        if (!rows[0]) return json(res, 404, { ok: false, error: 'Command not found' });
+        return json(res, 200, { ok: true, id, status });
+      }
+    }
+
     const session = await requireSession(req);
     if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
-    const sql = getSql();
 
     if (req.method === 'GET') {
       if (req.query?.view === 'feed') {
@@ -16,6 +110,11 @@ export default async function handler(req, res) {
         const logs = await sql`SELECT id, title, occurred_at, status, notes FROM workspace_evidence WHERE source = 'build_log' ORDER BY occurred_at DESC LIMIT 500`;
         return json(res, 200, { ok: true, logs });
       }
+      if (req.query?.view === 'commands') {
+        await ensureCommandTable(sql);
+        const commands = await sql`SELECT id, command_text, status, runtime_directive_id, runtime_task_id, governance, error, created_at, updated_at FROM workspace_commands ORDER BY created_at DESC LIMIT 30`;
+        return json(res, 200, { ok: true, commands });
+      }
       const evidence = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes FROM workspace_evidence ORDER BY occurred_at DESC LIMIT 500`;
       const overrides = await sql`SELECT evidence_id, goal_id FROM workspace_goal_overrides`;
       return json(res, 200, { ok: true, evidence, overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])) });
@@ -23,8 +122,15 @@ export default async function handler(req, res) {
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
     if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
-    const body = parseBody(req);
-    const action = String(body.action || 'add_evidence');
+
+    if (action === 'submit_command') {
+      await ensureCommandTable(sql);
+      const text = String(body.command || '').trim().slice(0, 2000);
+      if (!text) return json(res, 400, { ok: false, error: 'Command cannot be empty' });
+      const id = `workspace-command:${crypto.randomUUID()}`;
+      await sql`INSERT INTO workspace_commands (id, command_text, status, source) VALUES (${id}, ${text}, 'queued', 'workspace')`;
+      return json(res, 201, { ok: true, id, status: 'queued' });
+    }
 
     if (action === 'ingest_external_signal') {
       const id = String(body.id || '').trim().slice(0, 250);
