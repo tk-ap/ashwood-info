@@ -12,7 +12,7 @@
 .today-command-form{border:1px solid var(--line);background:var(--panel);padding:clamp(18px,2.5vw,28px);margin-bottom:1px}
 .today-command-label{display:block;margin-bottom:12px;font:600 10px/1 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .today-command-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
-.today-command-row input{min-width:0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);padding:11px 2px 13px;font:500 clamp(20px,2.4vw,31px)/1.2 inherit;letter-spacing:-.025em;outline:none}
+.today-command-row input{min-width:0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);padding:11px 2px 13px;font-family:inherit;font-size:clamp(20px,2.4vw,31px);font-weight:500;line-height:1.2;letter-spacing:-.025em;outline:none}
 .today-command-row input:focus{border-bottom-color:var(--ink)}
 .today-command-row button,.today-objective button{border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:0 18px;min-height:48px;font:600 10px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
 .today-command-row button:disabled,.today-objective button:disabled{opacity:.5;cursor:wait}
