@@ -180,7 +180,7 @@ test('production queue has a useful empty state and separates reviewed history',
   const source = await readFile(new URL('../workspace/deployment-review.js', import.meta.url), 'utf8');
   assert.match(source, /Nothing needs review\./);
   assert.match(source, /Needs review/);
-  assert.match(source, /Previously reviewed/);
+  assert.match(source, /Archive/);
   assert.match(source, /Only your explicit approval counts as reviewed/);
 });
 
