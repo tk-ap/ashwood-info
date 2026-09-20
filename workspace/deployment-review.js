@@ -80,7 +80,7 @@
         </div>
         <div class="v3-checklist__progress"><strong>${active.length}</strong><span>needs attention</span></div>
       </div>
-      <p class="v3-checklist__note">Current release checks stay here for ${activeDays} days. Reviewed work moves to Archive; untouched work moves to Not acted on instead of aging indefinitely in the main queue.</p>
+      <p class="v3-checklist__note">Current release checks stay here for ${activeDays} days. Reviewed work moves to Archive; untouched work moves to Not acted on instead of aging indefinitely in the main queue. Only your explicit approval counts as reviewed.</p>
       <div class="v3-checklist__sections">${activeHtml}${ignoredHtml}${reviewedHtml}</div>
       <div class="v3-checklist__footer"><span id="deploy-review-save-state">${unsaved ? 'Unsaved changes' : 'Saved'}</span></div>`;
   }
