@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
-import { aiZeroReviewItems, deploymentReviewTarget } from '../api/_review-targets.mjs';
+import { aiZeroReviewItems, deploymentReviewTarget, deploymentSpecificReviewItems, workspaceCohesionReviewItems } from '../api/_review-targets.mjs';
 
 // Exercise the actual handlers and SQL against PostgreSQL in memory. Only session
 // lookup and the GitHub commit response are substituted; no production data is used.
@@ -17,7 +17,7 @@ async function fixture(env = 'production') {
     getSql: () => sql, requireSession: async req => req.auth ? { token: 'test-owner' } : null,
     json: (res, status, body) => { res.statusCode = status; res.body = body; },
     parseBody: req => req.body || {}, sameOrigin: req => req.origin !== 'foreign',
-    aiZeroReviewItems, deploymentReviewTarget, process,
+    aiZeroReviewItems, deploymentReviewTarget, deploymentSpecificReviewItems, workspaceCohesionReviewItems, process,
     fetch: async () => ({ ok: true, json: async () => ({ files: files.map(filename => ({ filename })), commit: { message: 'AI from Zero appetite pass' } }) }),
   };
   async function handler(name) {
@@ -142,4 +142,24 @@ test('unrelated production changes do not create appetite checks; review-system 
   assert.deepEqual((await f.get()).body.auto_items, []);
   f.setFiles(['music/index.html']);
   assert.equal((await f.get()).body.auto_items.length, 1);
+});
+
+
+test('Workspace cohesion production changes generate seven specific manual review checks plus the deployment item', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  f.setFiles(['workspace/index.html', 'workspace/cohesion.css', 'workspace/views.mjs']);
+  const state = (await f.get()).body;
+  const checks = state.auto_items.filter(item => item.review_target === 'workspace-cohesion');
+  assert.equal(checks.length, 7);
+  assert.equal(new Set(checks.map(item => item.id)).size, 7);
+  assert.ok(checks.some(item => item.id.endsWith('workspace-cohesion-today')));
+  assert.ok(checks.some(item => item.id.endsWith('workspace-cohesion-regression')));
+  assert.equal(state.auto_items.length, 8);
+  assert.deepEqual(state.deployment_completed_items, []);
+});
+
+test('cohesion review UI links the feature checks back to the live Workspace', async () => {
+  const source = await readFile(new URL('../workspace/deployment-review.js', import.meta.url), 'utf8');
+  assert.match(source, /workspace-cohesion/);
+  assert.match(source, /href=\"\/workspace\/\"/);
 });
