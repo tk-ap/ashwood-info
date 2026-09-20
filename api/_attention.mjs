@@ -1,5 +1,6 @@
 export const SIGNAL_ACTIVE_DAYS = 7;
 export const REVIEW_ACTIVE_DAYS = 14;
+export const MONITORING_WINDOW_DAYS = 90;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const ARCHIVE_SIGNAL_STATUSES = new Set(['DISMISSED', 'COMPLETED', 'DONE', 'RESOLVED', 'CANCELLED']);
@@ -50,9 +51,11 @@ export function splitReviewAttention(items = [], completed = new Set(), now = Da
   return result;
 }
 
-export function monitoringSummary(items = [], now = Date.now()) {
+export function monitoringSummary(items = [], now = Date.now(), windowDays = MONITORING_WINDOW_DAYS) {
   const groups = new Map();
   for (const item of items) {
+    if (String(item.source || '').toLowerCase() === 'manual') continue;
+    if (ageDays(item.occurred_at, now) > windowDays) continue;
     const key = String(item.source_label || item.source || 'Ecosystem').trim() || 'Ecosystem';
     const bucket = classifySignal(item, now);
     const current = groups.get(key) || {
