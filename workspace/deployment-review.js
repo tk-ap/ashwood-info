@@ -22,40 +22,59 @@
     const items = Array.isArray(snapshot.auto_items) ? snapshot.auto_items : [];
     const completed = new Set(snapshot.deployment_completed_items || []);
     const pending = items.filter(item => !completed.has(item.id));
+    const reviewed = items.filter(item => completed.has(item.id));
 
-    mount.hidden = !items.length;
-    if (!items.length) return;
+    mount.hidden = false;
+
+    if (!items.length) {
+      mount.innerHTML = `
+        <div class="v3-checklist__head">
+          <div>
+            <p class="section-kicker">Production review queue</p>
+            <h2>Nothing waiting.</h2>
+          </div>
+          <div class="v3-checklist__progress"><strong>0</strong><span>awaiting review</span></div>
+        </div>
+        <p class="v3-checklist__note">No production-facing deployment currently needs owner review. New release-specific checks will appear here automatically after a relevant production change.</p>`;
+      return;
+    }
+
+    const itemHtml = item => {
+      const done = completed.has(item.id);
+      const files = Array.isArray(item.files) ? item.files : [];
+      return `<div class="v3-checklist__item ${done ? 'is-done' : ''}">
+        <div>
+        <label>
+          <input type="checkbox" data-deploy-review-id="${esc(item.id)}" ${done ? 'checked' : ''}/>
+          <span><strong>${esc(item.label || 'Review production deployment')}</strong><br/><small>${esc(item.detail || '')}${files.length ? `<br/>Changed: ${esc(files.slice(0,8).join(' · '))}${files.length > 8 ? ' …' : ''}` : ''}</small></span>
+        </label>
+        ${item.review_target === 'ai-from-zero' ? `<a class="v3-checklist__open" href="/api/workspace-review-visit?item=${encodeURIComponent(item.id)}">Review live ↗</a>` : item.review_target === 'workspace-cohesion' ? `<a class="v3-checklist__open" href="/workspace/">Review live ↗</a>` : ''}
+        <p class="v3-checklist__note">${done ? 'Approved by owner' : snapshot.review_started?.[item.id] ? 'Review started · awaiting your approval' : 'Awaiting owner review'}</p>
+        </div>
+        <textarea data-deploy-note-id="${esc(item.id)}" rows="1" placeholder="What did you notice?">${esc(snapshot.deployment_notes?.[item.id] || '')}</textarea>
+      </div>`;
+    };
 
     mount.innerHTML = `
       <div class="v3-checklist__head">
         <div>
           <p class="section-kicker">Production review queue</p>
-          <h2>New since your last review</h2>
+          <h2>${pending.length ? 'Review what shipped.' : 'Production reviewed.'}</h2>
         </div>
         <div class="v3-checklist__progress"><strong>${pending.length}</strong><span>awaiting review</span></div>
       </div>
-      <p class="v3-checklist__note">ASHWOOD adds an unchecked item automatically when a production deployment changes a user-facing site surface. Only you checking it off counts as reviewed.</p>
+      <p class="v3-checklist__note">ASHWOOD creates release-specific checks when a production deployment changes a user-facing surface. Only your explicit approval counts as reviewed.</p>
       <div class="v3-checklist__sections">
+        ${pending.length ? `
         <details class="v3-checklist__section" open>
-          <summary><span>Live deployments</span><small>${items.length - pending.length}/${items.length}</small></summary>
-          <div class="v3-checklist__items">
-            ${items.map(item => {
-              const done = completed.has(item.id);
-              const files = Array.isArray(item.files) ? item.files : [];
-              return `<div class="v3-checklist__item ${done ? 'is-done' : ''}">
-                <div>
-                <label>
-                  <input type="checkbox" data-deploy-review-id="${esc(item.id)}" ${done ? 'checked' : ''}/>
-                  <span><strong>${esc(item.label || 'Review production deployment')}</strong><br/><small>${esc(item.detail || '')}${files.length ? `<br/>Changed: ${esc(files.slice(0,8).join(' · '))}${files.length > 8 ? ' …' : ''}` : ''}</small></span>
-                </label>
-                ${item.review_target === 'ai-from-zero' ? `<a class="v3-checklist__open" href="/api/workspace-review-visit?item=${encodeURIComponent(item.id)}">Review live ↗</a>` : item.review_target === 'workspace-cohesion' ? `<a class="v3-checklist__open" href="/workspace/">Review live ↗</a>` : ''}
-                <p class="v3-checklist__note">${done ? 'Approved by owner' : snapshot.review_started?.[item.id] ? 'Review started · awaiting your approval' : 'Awaiting owner review'}</p>
-                </div>
-                <textarea data-deploy-note-id="${esc(item.id)}" rows="1" placeholder="What did you notice?">${esc(snapshot.deployment_notes?.[item.id] || '')}</textarea>
-              </div>`;
-            }).join('')}
-          </div>
-        </details>
+          <summary><span>Needs review</span><small>${pending.length} open</small></summary>
+          <div class="v3-checklist__items">${pending.map(itemHtml).join('')}</div>
+        </details>` : ''}
+        ${reviewed.length ? `
+        <details class="v3-checklist__section v3-checklist__section--done">
+          <summary><span>Previously reviewed</span><small>${reviewed.length} complete</small></summary>
+          <div class="v3-checklist__items">${reviewed.map(itemHtml).join('')}</div>
+        </details>` : ''}
       </div>
       <div class="v3-checklist__footer"><span id="deploy-review-save-state">${unsaved ? 'Unsaved changes' : 'Saved'}</span></div>`;
   }
