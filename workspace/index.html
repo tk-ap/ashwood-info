@@ -12,11 +12,11 @@
   <link rel="stylesheet" href="/workspace/intelligence-hero.css?v=20260908-intel1" />
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
-  <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />
+  <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />\n  <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260918-social-channels2"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
-  <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
+  <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>\n  <script type="module" src="/workspace/today.mjs?v=20260920-today1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
@@ -43,9 +43,67 @@
       </div>
     </header>
 
+    <nav class="workspace-section-nav" aria-label="Workspace sections">
+      <a href="#today">Today</a>
+      <a href="#build">Build</a>
+      <a href="#work">Work</a>
+      <a href="#network">Network</a>
+      <a href="#evidence-panel">Evidence</a>
+      <a href="#self">Self</a>
+    </nav>
+
     <section class="workspace-intro" aria-labelledby="workspace-title">
       <p class="eyebrow">Your private workspace</p>
-      <h1 id="workspace-title">Where the work is going.</h1>
+      <h1 id="workspace-title">Today.</h1>
+      <p class="workspace-intro__deck">What matters. What is moving. What needs you.</p>
+    </section>
+
+    <section class="today-command-center" id="today" aria-labelledby="today-title">
+      <div class="today-head">
+        <div>
+          <p class="section-kicker">Today · command center</p>
+          <h2 id="today-title">Move the work.</h2>
+        </div>
+        <p class="today-head__status" id="today-status" aria-live="polite">Reading canonical workstreams…</p>
+      </div>
+
+      <form class="today-command-form" id="today-command-form">
+        <label class="today-command-label" for="today-command-input">Capture or direct your attention</label>
+        <div class="today-command-row">
+          <input id="today-command-input" name="command" type="text" autocomplete="off" placeholder="Get the ALVIRA investor page ready for outreach…" />
+          <button type="submit">Capture</button>
+        </div>
+        <p class="today-command-note" id="today-command-note">This first version captures privately in this browser. It does not claim AgentOS dispatch until a governed dispatch endpoint is actually connected.</p>
+      </form>
+
+      <div class="today-grid">
+        <article class="today-panel" aria-labelledby="today-owner-title">
+          <div class="today-panel__topline"><h3 id="today-owner-title">You</h3><span class="today-count" id="today-owner-count">0</span></div>
+          <div class="today-list" id="today-owner-list" aria-live="polite"><p class="today-empty">Reading owner actions…</p></div>
+        </article>
+        <article class="today-panel today-panel--agent" aria-labelledby="today-agent-title">
+          <div class="today-panel__topline"><h3 id="today-agent-title">AgentOS</h3><span class="today-count" id="today-agent-count">0</span></div>
+          <div class="today-list" id="today-agent-list" aria-live="polite"><p class="today-empty">Checking autonomous work…</p></div>
+        </article>
+      </div>
+
+      <article class="today-objective" aria-labelledby="today-next-title">
+        <div>
+          <p class="today-objective__kicker">Next highest-value objective</p>
+          <h3 id="today-next-title">Grounding the next objective…</h3>
+          <p class="today-objective__reason" id="today-next-reason">The recommendation will use ranked priorities plus confirmed workstream state.</p>
+          <a class="today-session__source" id="today-next-link" hidden target="_blank" rel="noopener"></a>
+        </div>
+        <button type="button" id="today-refresh">Get next objective</button>
+      </article>
+
+      <div class="today-sessions" aria-labelledby="today-sessions-title">
+        <div class="section-heading-row">
+          <div><p class="section-kicker">AgentOS · observable execution</p><h2 id="today-sessions-title">Current autonomous sessions</h2></div>
+          <p class="section-note">Objective → why now → assigned owner → current step → next gate. No inferred motion without a synced source.</p>
+        </div>
+        <div id="today-sessions" aria-live="polite"><p class="today-empty">Loading AgentOS execution…</p></div>
+      </div>
     </section>
 
     <section class="owner-intelligence" id="owner-intelligence" aria-live="polite">
@@ -88,7 +146,7 @@
       <div class="goal-grid" id="goal-grid"></div>
     </section>
 
-    <section class="workstreams" aria-labelledby="workstreams-title">
+    <section class="workstreams" id="build" aria-labelledby="workstreams-title">
       <div class="section-heading-row">
         <div>
           <p class="section-kicker">Current work</p>
@@ -101,7 +159,7 @@
       </div>
     </section>
 
-    <section class="workstreams content-monitor" aria-labelledby="from-work-title">
+    <section class="workstreams content-monitor" id="work" aria-labelledby="from-work-title">
       <div class="section-heading-row">
         <div><p class="section-kicker">Live evidence → public artifact</p><h2 id="from-work-title">From the work</h2></div>
         <p class="section-note">ASHWOOD checks current GitHub, governed-work, private evidence, and ailhat signals on refresh. It only surfaces recent candidates with traceable evidence; no candidate is also a valid result.</p>
@@ -110,7 +168,7 @@
       <div class="workstream-list" id="from-work-queue" aria-live="polite"><p class="workstream-empty"><strong>Reading current work…</strong><span>Looking for evidence-backed failures, proofs, decisions, changed approaches, and meaningful milestones.</span></p></div>
     </section>
 
-    <section class="workstreams" aria-labelledby="partnerships-title">
+    <section class="workstreams" id="network" aria-labelledby="partnerships-title">
       <div class="section-heading-row">
         <div><p class="section-kicker">Sponsorship / outbound</p><h2 id="partnerships-title">Sponsor pipeline</h2></div>
         <p class="section-note">Find people and organizations with a credible reason to fund work already in motion. ALVIRA design-partner leads stay separate.</p>
@@ -169,7 +227,7 @@
       </div>
     </section>
 
-    <details class="checkin disclosure" id="checkin-details" open>
+    <span id="self" class="workspace-anchor" aria-hidden="true"></span>\n    <details class="checkin disclosure" id="checkin-details" open>
       <summary>Today · daily check-in</summary>
       <section class="checkin" id="checkin" aria-labelledby="checkin-title">
         <div class="section-heading-row">
@@ -272,8 +330,8 @@
   </main>
 
   <nav class="workspace-mobile-nav" aria-label="Workspace navigation">
-    <a href="#workspace-title">Today</a>
-    <a href="#ecosystem-feed">Feed</a>
+    <a href="#today">Today</a>
+    <a href="#build">Build</a>
     <a href="#evidence-panel">Evidence</a>
     <button type="button" id="mobile-add-evidence">Add</button>
   </nav>
