@@ -29,3 +29,35 @@
 .agentos-board-card__footer a{color:var(--ink);font-size:10px;white-space:nowrap;text-underline-offset:3px}
 .agentos-board-empty{margin:0;padding:22px 16px;color:var(--muted);font-size:12px;line-height:1.5}
 @media(max-width:900px){.agentos-board{grid-template-columns:repeat(7,minmax(250px,78vw))}.agentos-board-heading{align-items:flex-start}.agentos-board-card dl{grid-template-columns:1fr}}
+
+.agentos-board-tools{display:grid;gap:12px;margin:18px 0 12px;padding:14px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 82%,transparent)}
+.agentos-board-views{display:flex;flex-wrap:wrap;gap:6px}
+.agentos-board-views button,.agentos-board-reset{appearance:none;border:1px solid var(--line);background:transparent;color:var(--muted);padding:7px 10px;font:600 9px/1 Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.agentos-board-views button:hover,.agentos-board-reset:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 34%,var(--line))}
+.agentos-board-views button.is-active{color:var(--ink);border-color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.agentos-board-filters{display:grid;grid-template-columns:minmax(180px,1.6fr) repeat(3,minmax(120px,.7fr)) auto;gap:8px;align-items:end}
+.agentos-board-filters label{display:grid;gap:5px}
+.agentos-board-filters label>span{font:600 8px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.agentos-board-filters input,.agentos-board-filters select{width:100%;min-height:34px;border:1px solid var(--line);border-radius:0;background:var(--paper);color:var(--ink);padding:7px 9px;font:500 11px/1.2 Arial,sans-serif}
+.agentos-board-filter-summary{margin:0;font-size:10px;color:var(--muted);letter-spacing:.03em}
+.agentos-board-lane__toggle{width:100%;display:flex;align-items:center;gap:8px;border:0;background:transparent;color:inherit;padding:0;cursor:pointer;text-align:left}
+.agentos-board-lane__toggle>span:last-child{margin-left:auto;font-size:11px;color:var(--muted)}
+.agentos-board-lane__chevron{display:inline-block;font-size:12px;color:var(--muted);transition:transform .16s ease}
+.agentos-board-lane.is-collapsed{min-width:150px}
+.agentos-board-lane.is-collapsed .agentos-board-lane__chevron{transform:rotate(-90deg)}
+.agentos-board-lane.is-collapsed .agentos-board-lane__cards{display:none}
+.agentos-board-card{position:relative;border-left:3px solid var(--domain-tone,var(--line));transition:background-color .15s ease,border-color .15s ease}
+.agentos-board-card[data-domain="agentos"]{--domain-tone:#7a5aa6;background:color-mix(in srgb,#7a5aa6 4%,var(--panel))}
+.agentos-board-card[data-domain="ecosystem"]{--domain-tone:#1f7a69;background:color-mix(in srgb,#1f7a69 4%,var(--panel))}
+.agentos-board-card:hover{background:color-mix(in srgb,var(--domain-tone) 8%,var(--panel))}
+.agentos-board-card__badges{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}
+.agentos-board-card__domain,.agentos-board-card__product,.agentos-board-card__priority,.agentos-board-card__type{display:inline-flex;align-items:center;min-height:18px;padding:3px 6px;border:1px solid var(--line);font:600 7px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.agentos-board-card[data-domain="agentos"] .agentos-board-card__domain{border-color:color-mix(in srgb,#7a5aa6 55%,var(--line));color:#7a5aa6;background:color-mix(in srgb,#7a5aa6 10%,transparent)}
+.agentos-board-card[data-domain="ecosystem"] .agentos-board-card__domain{border-color:color-mix(in srgb,#1f7a69 55%,var(--line));color:#1f7a69;background:color-mix(in srgb,#1f7a69 10%,transparent)}
+.agentos-board-card__product{color:var(--ink)}
+.agentos-board-card__priority{color:#9a6823;border-color:color-mix(in srgb,#b58a43 55%,var(--line))}
+.agentos-board-card__type{color:var(--muted)}
+.agentos-board-card__why{margin:11px 0 0;font-size:11px;line-height:1.45;color:var(--muted)}
+.agentos-board-card__why strong{color:var(--ink);font:600 8px/1 Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;margin-right:4px}
+@media(max-width:1100px){.agentos-board-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.agentos-board-reset{min-height:34px}}
+@media(max-width:700px){.agentos-board-filters{grid-template-columns:1fr}.agentos-board-tools{padding:12px}.agentos-board-views{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.agentos-board-views button{text-align:left}}
