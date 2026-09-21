@@ -36,7 +36,7 @@
           <p>Ideas, arguments, questions, and changing convictions behind the work. Not a feed of updates. A public record of what I think, what I am learning, and what is compelling the next thing I make.</p>
         </div>
 
-        <div class="dispatch-archive__list" aria-label="ASHWOOD Dispatch issues">
+        <div class="dispatch-archive__list" id="dispatch-live-list" aria-label="ASHWOOD Dispatch issues">
           <a class="dispatch-archive__item" href="/dispatch/001-the-mind-is-the-moat/">
             <span class="dispatch-archive__number">001</span>
             <span>
@@ -70,5 +70,5 @@
         <span>© 2026 TK Ashwood</span>
       </footer>
     </main>
-  </body>
+  <script>(async()=>{try{const r=await fetch("/api/dispatch-studio?view=published",{cache:"no-store"}),d=await r.json(),box=document.querySelector("#dispatch-live-list");for(const x of d.dispatches||[]){if(box.querySelector(`a[href="/dispatch/${x.slug}/"]`))continue;const a=document.createElement("a");a.className="dispatch-archive__item";a.href="/dispatch/"+x.slug+"/";const date=x.published_at?new Date(x.published_at).toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"}).toUpperCase():"";a.innerHTML=`<span class="dispatch-archive__number">NEW</span><span><h2>${x.title}</h2><p>Field notes on building durable, governable agent systems.</p></span><span class="dispatch-date">${date}</span>`;box.prepend(a)}}catch(_){}})();</script></body>
 </html>
