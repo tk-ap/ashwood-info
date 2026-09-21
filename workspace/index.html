@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-operatorviews1" />
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260920-globalelitk2" />
+  <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260920-inlinework1" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260920-authrefresh1"></script>
@@ -23,7 +24,8 @@
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
   <script type="module" src="/workspace/agentos-board.mjs?v=20260920-operatorviews1"></script>
-  <script type="module" src="/workspace/views.mjs?v=20260920-inlineelitk1"></script>
+  <script type="module" src="/workspace/views.mjs?v=20260920-inlinecareer1"></script>
+  <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260920-inlinework1"></script>
   <script type="module" src="/workspace/elitk-page.mjs?v=20260920-inlineelitk1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
@@ -186,16 +188,111 @@
       </div>
     </section>
 
-    <section class="workstreams content-monitor" id="work" aria-labelledby="from-work-title">
-      <div class="section-heading-row">
-        <div><p class="section-kicker">Live evidence → public artifact</p><h2 id="from-work-title">From the work</h2></div>
-        <p class="section-note">ASHWOOD checks current GitHub, governed-work, private evidence, and ailhat signals on refresh. It only surfaces recent candidates with traceable evidence; no candidate is also a valid result.</p>
+    <section class="workstreams career-ops-page" id="work" aria-labelledby="career-work-title">
+      <div class="career-workspace-head">
+        <div>
+          <p class="section-kicker">Income &amp; opportunity</p>
+          <h2 id="career-work-title">Career Ops</h2>
+          <p>Applications, fresh opportunities, preserved postings, compensation, interview context, and next actions — directly inside Work.</p>
+        </div>
+        <div class="career-workspace-actions">
+          <span id="career-state" aria-live="polite">Locked</span>
+          <button class="career-primary" type="button" id="career-refresh">Refresh</button>
+        </div>
       </div>
-      <div class="content-monitor__truth"><strong>Nothing publishes automatically.</strong> Drafts stay private until you choose what to do with them. Dismissed evidence stays out of this queue on this browser.</div>
-      <div class="workstream-list" id="from-work-queue" aria-live="polite"><p class="workstream-empty"><strong>Reading current work…</strong><span>Looking for evidence-backed failures, proofs, decisions, changed approaches, and meaningful milestones.</span></p></div>
+
+      <section class="career-summary" id="career-summary" aria-live="polite"></section>
+
+      <section class="career-sync">
+        <div>
+          <p class="section-kicker">Inbox continuity</p>
+          <h2>Application email monitor</h2>
+        </div>
+        <div id="career-sync-state" class="career-sync-state"></div>
+      </section>
+
+      <section class="career-opportunities" aria-labelledby="career-opportunities-title">
+        <div class="career-opportunities-head">
+          <div>
+            <p class="section-kicker">Fresh targets</p>
+            <h2 id="career-opportunities-title">What should I apply to next?</h2>
+            <p id="career-opportunity-meta">Loading new options…</p>
+          </div>
+          <button class="career-primary" type="button" id="career-opportunity-refresh">Refresh options</button>
+        </div>
+        <div class="career-opportunity-grid" id="career-opportunity-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="career-board">
+        <div class="career-board-head">
+          <div>
+            <p class="section-kicker">Pipeline</p>
+            <h2>Application tracker</h2>
+            <span id="career-refreshed"></span>
+          </div>
+          <button class="career-primary" type="button" id="career-add">Add application</button>
+        </div>
+        <div class="career-layout">
+          <div class="career-applications" id="career-applications" aria-live="polite"></div>
+          <aside class="career-detail" id="career-detail" aria-live="polite"></aside>
+        </div>
+      </section>
+
+      <dialog id="career-dialog" class="career-dialog">
+        <form id="career-form">
+          <div class="career-dialog-head">
+            <div>
+              <p class="section-kicker">Private application record</p>
+              <h2 id="career-dialog-title">Add application</h2>
+            </div>
+            <button type="button" data-career-close aria-label="Close">×</button>
+          </div>
+          <input type="hidden" id="career-form-id" />
+          <div class="career-form-grid">
+            <label>Company<input id="career-company" required /></label>
+            <label>Role<input id="career-role" required /></label>
+            <label>Job / requisition ID<input id="career-job-id" /></label>
+            <label>Posting URL<input id="career-posting-url" type="url" /></label>
+            <label>Location<input id="career-location" /></label>
+            <label>Work arrangement<input id="career-work-arrangement" placeholder="Remote / Hybrid / On-site" /></label>
+            <label>Salary minimum<input id="career-salary-min" type="number" min="0" step="1000" /></label>
+            <label>Salary maximum<input id="career-salary-max" type="number" min="0" step="1000" /></label>
+            <label>Requested salary<input id="career-requested-salary" type="number" min="0" step="1000" /></label>
+            <label>Status<select id="career-status-input">
+              <option>TARGET</option><option>APPLIED</option><option>SCREENING</option><option>RECRUITER</option>
+              <option>ASSESSMENT</option><option>INTERVIEW</option><option>OFFER</option><option>DEFERRED</option>
+              <option>REJECTED</option><option>DECLINED</option><option>CLOSED</option>
+            </select></label>
+            <label>Submitted date<input id="career-submitted-at" type="date" /></label>
+            <label>Next action due<input id="career-next-action-at" type="datetime-local" /></label>
+          </div>
+          <label>Next action<textarea id="career-next-action" rows="2"></textarea></label>
+          <label>Fit decision / why this role<textarea id="career-fit-decision" rows="2"></textarea></label>
+          <fieldset>
+            <legend>Posting snapshot</legend>
+            <label>Summary<textarea id="career-summary-input" rows="3"></textarea></label>
+            <label>Responsibilities — one per line<textarea id="career-responsibilities" rows="5"></textarea></label>
+            <label>Requirements — one per line<textarea id="career-requirements" rows="5"></textarea></label>
+            <label>Preferred — one per line<textarea id="career-preferred" rows="4"></textarea></label>
+            <label>Interview notes<textarea id="career-interview-notes" rows="3"></textarea></label>
+          </fieldset>
+          <fieldset>
+            <legend>Submitted materials</legend>
+            <label>Résumé version<input id="career-resume" placeholder="TK_Ashwood_Resume_2026.pdf" /></label>
+            <label>Projects used<input id="career-projects" placeholder="ledgato, AgentOS" /></label>
+            <label>Work sample<input id="career-work-sample" placeholder="ALVIRA" /></label>
+          </fieldset>
+          <label>Private notes<textarea id="career-notes" rows="4"></textarea></label>
+          <p class="career-form-error" id="career-form-error" aria-live="polite"></p>
+          <div class="career-dialog-actions">
+            <button type="button" data-career-close>Cancel</button>
+            <button class="career-primary" type="submit" id="career-save">Save application</button>
+          </div>
+        </form>
+      </dialog>
     </section>
 
-    <section class="workstreams" id="network" aria-labelledby="partnerships-title">
+    <section class="workstreams" id="network"    <section class="workstreams" id="network" aria-labelledby="partnerships-title">
       <div class="section-heading-row">
         <div><p class="section-kicker">Sponsorship / outbound</p><h2 id="partnerships-title">Sponsor pipeline</h2></div>
         <p class="section-note">Find people and organizations with a credible reason to fund work already in motion. ALVIRA design-partner leads stay separate.</p>
