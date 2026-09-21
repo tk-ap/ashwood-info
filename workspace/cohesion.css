@@ -149,3 +149,13 @@
 .workspace-elitk-switch__track span{width:10px;height:10px;border-radius:50%;background:var(--muted);transition:transform .18s ease,background .18s ease}
 .workspace-elitk-switch input:checked + .workspace-elitk-switch__track span{transform:translateX(14px);background:var(--ink)}
 .workspace-elitk-switch small{font:inherit;color:var(--muted)}
+
+/* Each selected view begins directly beneath its view header. */
+.workspace-page[data-workspace-current-view="work"] #work,
+.workspace-page[data-workspace-current-view="network"] #network,
+.workspace-page[data-workspace-current-view="self"] #self-operating-model,
+.workspace-page[data-workspace-current-view="build"] #agentos-board-section,
+.workspace-page[data-workspace-current-view="evidence"] #owner-intelligence{margin-top:24px!important}
+.workspace-page[data-workspace-current-view="work"] .workspace-view-utility,
+.workspace-page[data-workspace-current-view="network"] .workspace-view-utility,
+.workspace-page[data-workspace-current-view="self"] .workspace-view-utility{margin-top:16px}
