@@ -45,7 +45,8 @@ const VIEW_META = {
 
 const GROUPS = {
   today: [
-    "#today"
+    "#today",
+    ".actual-priorities"
   ],
   build: [
     "#agentos-board-section",
