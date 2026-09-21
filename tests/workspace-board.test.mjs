@@ -20,7 +20,7 @@ async function fixture() {
     sha256,
   };
 
-  const source = (await readFile(new URL('../api/workspace-board.mjs', import.meta.url), 'utf8'))
+  const source = (await readFile(new URL('../api/_agentos-board-handler.mjs', import.meta.url), 'utf8'))
     .replace(/^import .*;\n/gm, '')
     .replace('export default async function handler', 'async function handler');
   const handler = Function(...Object.keys(dependencies), source + '\nreturn handler;')(...Object.values(dependencies));
