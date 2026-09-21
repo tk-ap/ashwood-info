@@ -217,3 +217,16 @@
   .network-context-grid{grid-template-columns:1fr}
   .network-form-grid{grid-template-columns:1fr}
 }
+
+/* Strict view isolation: no unassigned or inactive content may reserve layout space. */
+.workspace-page[data-workspace-view-ready="true"] .workspace-view-section[data-workspace-active="false"],
+.workspace-page[data-workspace-view-ready="true"] .workspace-view-section[data-workspace-view="unassigned"]{
+  display:none!important;
+  margin:0!important;
+  padding:0!important;
+  min-height:0!important;
+}
+.agentos-board-refresh{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.agentos-board-refresh p{margin:0}
+#agentos-board-refresh{border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 12px;font:inherit;cursor:pointer}
+#agentos-board-refresh:disabled{opacity:.55;cursor:wait}
