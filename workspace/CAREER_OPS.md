@@ -78,3 +78,18 @@ When an application reaches `RECRUITER`, `ASSESSMENT`, or `INTERVIEW`, Career Op
 - the next scheduled action or interview.
 
 This is an owner tool, not a public-facing career feature.
+
+
+### Delegated Gmail implementation
+
+Career Ops has a server-only Gmail sync endpoint at `/api/workspace-career-gmail-sync`. The browser never receives Gmail OAuth credentials or refresh/access tokens.
+
+Required Vercel server environment variables:
+
+- `CAREER_GMAIL_CLIENT_ID`
+- `CAREER_GMAIL_CLIENT_SECRET`
+- `CAREER_GMAIL_REFRESH_TOKEN`
+
+The delegated grant must resolve to exactly `hire.tkashwood@gmail.com`; the endpoint rejects any other mailbox. Use the least-privilege Gmail read scope (`https://www.googleapis.com/auth/gmail.readonly`). The ChatGPT Gmail connector authorization is intentionally not copied or exported: ChatGPT connector tokens are not application credentials for ASHWOOD.
+
+The first implementation scans recent non-promotional mail, de-duplicates by Gmail message ID, matches messages to tracked applications using company/title/requisition evidence, and only advances status when explicit message language supports the transition. Ambiguous messages remain email events rather than inferred offers, interviews, or rejections.
