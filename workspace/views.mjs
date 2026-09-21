@@ -94,7 +94,9 @@ const VIEW_FOR_HASH = {
   checkin:"self"
 };
 
-function q(selector){ return document.querySelector(selector); }\n\nfunction markConnectionsDisclosure(){
+function q(selector){ return document.querySelector(selector); }
+
+function markConnectionsDisclosure(){
   document.querySelectorAll(".workspace-shell > details.disclosure").forEach(details => {
     if (details.querySelector(".visual-pair")) details.classList.add("workspace-connections");
   });
