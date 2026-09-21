@@ -288,10 +288,12 @@ function render(data) {
   renderBoard(data);
 }
 
-async function load() {
+async function load({ manual = false } = {}) {
   const host = document.querySelector("#agentos-board");
   const status = document.querySelector("#agentos-board-status");
   if (!host) return false;
+  const refresh = document.querySelector("#agentos-board-refresh");
+  if (refresh) { refresh.disabled = true; refresh.textContent = manual ? "Refreshing…" : "Updating…"; }
   try {
     const response = await fetch("/api/workspace-agentos", {
       credentials:"same-origin",
@@ -308,6 +310,8 @@ async function load() {
     if (status) status.textContent = "AgentOS board unavailable: " + error.message;
     host.innerHTML = '<p class="agentos-board-empty">The mirror could not load. Canonical AgentOS state is unchanged.</p>';
     return false;
+  } finally {
+    if (refresh) { refresh.disabled = false; refresh.textContent = "Refresh AgentOS snapshot"; }
   }
 }
 
@@ -321,7 +325,8 @@ async function start() {
 }
 
 if (typeof window !== "undefined") {
-  window.addEventListener("ashwood:refresh-feed", load);
+  window.addEventListener("ashwood:refresh-feed", () => load({ manual:true }));
+  document.querySelector("#agentos-board-refresh")?.addEventListener("click", () => load({ manual:true }));
   window.addEventListener("ashwood:workspace-authenticated", load);
   start();
 }
