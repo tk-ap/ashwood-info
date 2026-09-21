@@ -1,36 +1,69 @@
-const LIMIT=100;
-const PROJECTS=[
-  {name:"ASHWOOD",id:"prj_p0OqGFvZZU8940ePrXIoVocuTUl7"},
-  {name:"ledgato",id:"prj_yMUW9t71FNsaFeJSNntNCV4tZZFe"},
-  {name:"ALVIRA",id:"prj_ocnKA4Xr7Jd1aTjUKcRjYgsniy5l"},
-  {name:"ailhat",id:"prj_dqOUuTJPaegWYi3l4f9Kx8vxyWOe"}
-];
-const ASHWOOD=PROJECTS[0];
-function fmt(ts){return ts?new Intl.DateTimeFormat(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(ts)):"—"}
-function age(ts){if(!ts)return"unknown";const m=Math.max(0,Math.round((Date.now()-ts)/60000));return m<60?m+"m ago":Math.round(m/60)+"h ago"}
-function capacity(n){return n>=LIMIT?"BLOCKED":n>=90?"CRITICAL":n>=75?"CAUTION":"SAFE"}
-function stateLabel(x){if(!x)return"UNKNOWN";if(x.state==="READY"&&x.target==="production")return"LIVE";if(x.state==="READY")return"PREVIEW READY";return x.state||"UNKNOWN"}
-function render(data){
- const summary=document.querySelector("#deployment-budget-summary"),projects=document.querySelector("#deployment-budget-projects"),availability=document.querySelector("#deployment-availability");
- if(!summary||!projects)return;
- const rows=(data.deployments||[]).sort((a,b)=>b.created-a.created), cutoff=Date.now()-86400000, live=rows.filter(x=>x.created>cutoff), used=live.length,left=Math.max(0,LIMIT-used),next=[...live].sort((a,b)=>a.created-b.created)[0]?.created+86400000,s=capacity(used);
- const ashwood=rows.filter(x=>x.projectId===ASHWOOD.id), prod=ashwood.find(x=>x.target==="production"&&x.state==="READY"), latest=ashwood[0], pending=ashwood.filter(x=>!x.target&&["BUILDING","QUEUED","INITIALIZING"].includes(x.state)), failed=ashwood.filter(x=>["ERROR","CANCELED"].includes(x.state)).slice(0,2);
- if(availability)availability.innerHTML=
-   '<article><small>ASHWOOD production</small><strong>'+stateLabel(prod)+'</strong><span>'+(prod?age(prod.created)+" · "+(prod.state||""):"No READY production deployment observed")+'</span></article>'+
-   '<article><small>Latest deployment</small><strong>'+stateLabel(latest)+'</strong><span>'+(latest?(latest.target||"preview")+" · "+age(latest.created):"No deployment observed")+'</span></article>'+
-   '<article><small>Deploy availability</small><strong>'+(left>0?"AVAILABLE":"BLOCKED")+'</strong><span>'+left+' / '+LIMIT+' rolling slots remain</span></article>'+
-   '<article><small>Queue / failures</small><strong>'+pending.length+' / '+failed.length+'</strong><span>active preview builds / recent canceled or error</span></article>';
- summary.innerHTML='<article><strong>'+used+' / '+LIMIT+'</strong><span>deployments used</span></article><article><strong>'+left+'</strong><span>slots available</span></article><article><strong>'+s+'</strong><span>capacity state</span></article><article><strong>'+fmt(next)+'</strong><span>next slot ages out</span></article>';
- projects.innerHTML=PROJECTS.map(p=>{const r=live.filter(x=>x.projectId===p.id);const newest=rows.find(x=>x.projectId===p.id);return '<article><strong>'+p.name+'</strong><span>'+r.length+' deployments / 24h</span><small>'+stateLabel(newest)+' · '+(newest?age(newest.created):"no recent deploy")+'</small></article>'}).join("");
- document.querySelector("#deployment-budget")?.setAttribute("data-capacity-state",s.toLowerCase());
- const note=document.querySelector("#deployment-budget-note");if(note)note.textContent="Live Vercel readout. Production status is based on the newest READY production deployment; availability combines current deployment state with the rolling 24-hour team budget.";
+// Workspace deployment tracker: a read-only view of the canonical AgentOS
+// deployment budget. AgentOS observes Vercel, computes the rolling budget and
+// governs deployments; ASHWOOD only renders the snapshot it publishes.
+import { budgetView, selectBudgetRow } from "/workspace/deployment-budget-view.mjs";
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
-async function load(){
- const b=document.querySelector("#deployment-budget-refresh");if(b){b.disabled=true;b.textContent="Refreshing…"}
- try{const r=await fetch("/api/workspace-state?view=deployments",{credentials:"same-origin",cache:"no-store"});if(!r.ok)throw new Error("deployment data "+r.status);render(await r.json())}
- catch(e){const h=document.querySelector("#deployment-availability")||document.querySelector("#deployment-budget-summary");if(h)h.innerHTML="<p>Live deployment status unavailable: "+e.message+". This does not mean production is down.</p>"}
- finally{if(b){b.disabled=false;b.textContent="Refresh deployments"}}
+function fmt(iso) {
+  return iso ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(iso)) : "—";
 }
-document.querySelector("#deployment-budget-refresh")?.addEventListener("click",load);
-window.addEventListener("ashwood:workspace-authenticated",load);
+function card(label, value, detail) {
+  return `<article><small>${esc(label)}</small><strong>${esc(value)}</strong><span>${esc(detail)}</span></article>`;
+}
+
+function render(view) {
+  const summary = document.querySelector("#deployment-budget-summary");
+  const projects = document.querySelector("#deployment-budget-projects");
+  const availability = document.querySelector("#deployment-availability");
+  const note = document.querySelector("#deployment-budget-note");
+  if (!summary || !projects) return;
+  const section = document.querySelector("#deployment-budget");
+  if (!view.available) {
+    summary.innerHTML = `<p>${esc(view.message)}</p>`;
+    projects.innerHTML = "";
+    if (availability) availability.innerHTML = "";
+    section?.setAttribute("data-telemetry", "unavailable");
+    return;
+  }
+  if (availability) availability.innerHTML =
+    card("ASHWOOD production", view.production.label, view.production.detail) +
+    card("Latest deployment", view.latest.label, view.latest.detail) +
+    card("Deploy availability", view.deployAllowed ? "AVAILABLE" : "BLOCKED",
+      view.capacityAvailable === null ? "capacity unknown" : `${view.capacityAvailable} / ${view.limit} slots`) +
+    card("Parked deployments", String(view.parked.length),
+      view.parked.length ? view.parked.map(p => p.product || p.work_id).join(", ") : "none waiting for capacity");
+  summary.innerHTML =
+    card("Rolling capacity used", view.used === null ? "—" : `${view.used} / ${view.limit}`, "deployments, trailing 24h") +
+    card("Capacity available", view.capacityAvailable ?? "—", "slots") +
+    card("Operating band", view.band, view.deployAllowed ? "deploys allowed by policy" : "deploys parked") +
+    card("Next slot", fmt(view.nextSlotAt), "oldest deployment ages out");
+  projects.innerHTML = view.projects.map(p =>
+    `<article><strong>${esc(p.name)}</strong><span>${esc(p.used24h)} deployments / 24h</span><small>${esc(p.latest)} · ${esc(p.age)}</small></article>`).join("");
+  section?.setAttribute("data-capacity-state", view.band.toLowerCase());
+  section?.setAttribute("data-telemetry", view.telemetry);
+  if (note) note.textContent = `${view.telemetryNote} Canonical AgentOS budget (${view.limitSource === "agentos_policy" ? "AgentOS operating policy" : view.limitSource}` +
+    `${view.providerLimitVerified ? "" : "; provider limit not independently verified"}). ASHWOOD displays it; AgentOS governs deployments.`;
+}
+
+async function load() {
+  const button = document.querySelector("#deployment-budget-refresh");
+  if (button) { button.disabled = true; button.textContent = "Refreshing…"; }
+  try {
+    const response = await fetch("/api/workspace-board", { credentials: "same-origin", cache: "no-store" });
+    if (!response.ok) throw new Error("AgentOS board " + response.status);
+    const payload = await response.json();
+    render(budgetView(selectBudgetRow(payload.rows)));
+  } catch (error) {
+    const host = document.querySelector("#deployment-availability") || document.querySelector("#deployment-budget-summary");
+    if (host) host.innerHTML = `<p>Deployment budget unavailable: ${esc(error.message)}. This does not mean production is down.</p>`;
+    document.querySelector("#deployment-budget")?.setAttribute("data-telemetry", "unavailable");
+  } finally {
+    if (button) { button.disabled = false; button.textContent = "Refresh"; }
+  }
+}
+
+document.querySelector("#deployment-budget-refresh")?.addEventListener("click", load);
+window.addEventListener("ashwood:workspace-authenticated", load);
 load();
