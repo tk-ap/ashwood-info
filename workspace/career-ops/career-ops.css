@@ -28,3 +28,17 @@
 .workspace-page .career-ops-page .career-workspace-head{margin-top:0}
 .workspace-page[data-workspace-current-view="work"] .workspace-view-utility{display:none!important}
 html[data-ashwood-theme="paper-light"]{--career-ink:#171713;--career-muted:#706f68;--career-line:rgba(23,23,19,.16);--career-paper:#f5f3ef;--career-card:#faf8f3;--career-accent:#5b2b21}
+
+/* Mobile inline Career Ops must occupy the Work canvas; no reserved empty tracker height. */
+@media(max-width:700px){
+  .workspace-page #work.career-ops-page{display:block!important;min-height:0!important}
+  .workspace-page #work .career-workspace-head{display:flex!important;visibility:visible!important;opacity:1!important;padding:0 0 20px}
+  .workspace-page #work .career-summary,
+  .workspace-page #work .career-sync,
+  .workspace-page #work .career-opportunities,
+  .workspace-page #work .career-board{visibility:visible!important;opacity:1!important}
+  .workspace-page #work .career-layout{min-height:0}
+  .workspace-page #work .career-applications:empty,
+  .workspace-page #work .career-detail:empty{display:none}
+  .workspace-page #work .career-layout:has(.career-applications:empty) {display:none}
+}
