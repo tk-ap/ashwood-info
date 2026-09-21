@@ -74,7 +74,8 @@ test('ELITK translates jargon inline while preserving the underlying page struct
   assert.equal(humanizeText('Orphaned PRs'), 'Code changes not linked to tracked work');
   assert.equal(humanizeText('Confidence 72%'), 'How sure the system is: 72%');
   assert.equal(humanizeText('TARGET'), 'considering');
-  assert.equal(humanizeText('Canonical source ↗'), 'Source of truth ↗');
+  assert.equal(humanizeText('Canonical source ↗'), 'Authoritative record ↗');
+  assert.equal(humanizeText('Products, active workstreams, governed execution, and the systems moving them forward.'), 'Products, active projects, agent work with rules and permission checks, and the systems moving them forward.');
 });
 
 test('ELITK engine is reversible, persistent, and observes data loaded after the toggle', async () => {
