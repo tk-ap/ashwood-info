@@ -37,6 +37,21 @@ async function api(options={}) {
   return body;
 }
 
+async function gmailSyncApi() {
+  const response = await fetch('/api/workspace-career-gmail-sync', {
+    method:'POST',
+    credentials:'same-origin',
+    headers:{ 'Content-Type':'application/json' }
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(body.error || `Sync failed (${response.status})`);
+    error.code = body.code;
+    throw error;
+  }
+  return body;
+}
+
 async function opportunityApi({ cursor=0, refresh=false }={}) {
   const query = new URLSearchParams({ cursor:String(cursor) });
   if (refresh) query.set('refresh', '1');
@@ -179,7 +194,7 @@ function renderSyncState() {
     const latest = gmailEvents[0];
     node.innerHTML = `<strong>Gmail activity detected</strong><span>${gmailEvents.length} tracked message event${gmailEvents.length === 1 ? '' : 's'} · latest ${escapeHtml(fmtDateTime(latest.occurred_at))}</span>`;
   } else {
-    node.innerHTML = `<strong>Inbox sync ready, not connected</strong><span>Connect the dedicated job-search Gmail account in ChatGPT; application emails can then be matched to these records and written into the timeline without exposing credentials to ASHWOOD.</span>`;
+    node.innerHTML = `<strong>Inbox sync awaiting delegated authorization</strong><span>Career Ops uses server-side delegated Gmail access. No Gmail credential or token is sent to the browser.</span>`;
   }
 }
 
@@ -400,7 +415,22 @@ async function saveApplication(event) {
 }
 
 $('#career-add').addEventListener('click', () => openApplicationDialog());
-$('#career-refresh').addEventListener('click', load);
+$('#career-refresh').addEventListener('click', async () => {
+  const button = $('#career-refresh');
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Syncing inbox…';
+  try {
+    await gmailSyncApi();
+    await load();
+  } catch (error) {
+    const node = $('#career-sync-state');
+    node.innerHTML = `<strong>Inbox sync unavailable</strong><span>${escapeHtml(error.message)}</span>`;
+  } finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
+});
 $('#career-opportunity-refresh').addEventListener('click', () => loadOpportunities({ refresh:true }));
 $('#career-form').addEventListener('submit', saveApplication);
 document.querySelectorAll('[data-career-close]').forEach(button => button.addEventListener('click', () => $('#career-dialog').close()));
