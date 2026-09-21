@@ -25,8 +25,9 @@
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
   <script type="module" src="/workspace/agentos-board.mjs?v=20260920-operatorviews1"></script>
-  <script type="module" src="/workspace/views.mjs?v=20260921-viewisolation4"></script>
+  <script type="module" src="/workspace/views.mjs?v=20260921-provisionworknetwork1"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260920-inlinework1"></script>
+  <script type="module" src="/workspace/network.mjs?v=20260921-networkops1"></script>
   <script type="module" src="/workspace/elitk-page.mjs?v=20260920-inlineelitk1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
@@ -293,36 +294,74 @@
       </dialog>
     </section>
 
-    <section class="workstreams" id="network" aria-labelledby="network-title">
-      <div class="section-heading-row">
-        <div><p class="section-kicker">Relationships / distribution</p><h2 id="network-title">Network</h2></div>
-        <p class="section-note">One operating view for sponsors, collaborators, referrals, invitations, introductions, and design-partner relationships.</p>
+    <section class="workstreams network-ops" id="network" aria-labelledby="network-title">
+      <div class="network-workspace-head">
+        <div>
+          <p class="section-kicker">Relationships / distribution</p>
+          <h2 id="network-title">Network</h2>
+          <p>One private operating view for sponsors, collaborators, referrals, invitations, introductions, and design partners.</p>
+        </div>
+        <div class="network-workspace-actions">
+          <span id="network-state" aria-live="polite">Loading…</span>
+          <button type="button" id="network-refresh">Refresh</button>
+          <button type="button" id="network-add">Add relationship</button>
+        </div>
       </div>
 
-      <div class="workstream-list" id="partnership-pipeline">
-        <article class="workstream-card">
-          <p class="section-kicker">Public sponsorship intake</p>
-          <h3>Support work already in motion</h3>
-          <p>The public sponsorship page is an acquisition surface. Leads and follow-up belong here, not on a second internal page.</p>
-          <p><strong>Track:</strong> prospect · project fit · why they may care · contact · channel · proposed milestone · support level · outreach · follow-up · status · notes · next action · source.</p>
-          <p><strong>Pipeline:</strong> research → ready → contacted → replied → meeting → proposal → won / lost.</p>
-        </article>
+      <section class="network-summary" id="network-summary" aria-live="polite"></section>
 
-        <article class="workstream-card">
-          <p class="section-kicker">Invite / referral</p>
-          <h3>Share the Workspace model</h3>
-          <p>Workspace access should not imply sponsorship or payment. Treat invitations as their own relationship type so a friend, collaborator, family member, tester, or referred user can receive a private Workspace independently of whether money changes hands.</p>
-          <p><strong>Track:</strong> invitee · relationship · referral source · invite URL · sent · accepted · Workspace created · last activity · next action.</p>
-          <p class="section-note">Referral attribution is a Network signal. The referral URL itself should come from the system that issued it; do not invent or hard-code one here.</p>
-        </article>
+      <div class="network-layout">
+        <div class="network-relationships" id="network-relationships" aria-live="polite"></div>
+        <aside class="network-detail" id="network-detail" aria-live="polite"></aside>
+      </div>
 
-        <article class="workstream-card">
-          <p class="section-kicker">Organizational relationships</p>
-          <h3>ALVIRA design partners</h3>
-          <p>Keep organizational ALVIRA testing distinct from ASHWOOD sponsorship, while showing the relationship and follow-up state in this same Network view.</p>
-          <p><a href="https://alviratech.vercel.app/partners" target="_blank" rel="noopener">Public Design Partner / POC intake ↗</a></p>
+      <div class="network-context-grid">
+        <article>
+          <p class="section-kicker">Public intake</p>
+          <h3>Sponsorship</h3>
+          <p>The public sponsor page acquires interest. This private Network view owns the relationship, follow-up, status, next action, and notes.</p>
+        </article>
+        <article>
+          <p class="section-kicker">Access</p>
+          <h3>Invite / referral</h3>
+          <p>Workspace invitations are a relationship type, not a payment state. Store only an actual issued referral or invite URL.</p>
+        </article>
+        <article>
+          <p class="section-kicker">Product</p>
+          <h3>Design partners</h3>
+          <p>ALVIRA design partners remain distinct from ASHWOOD sponsors while sharing the same relationship operating layer.</p>
         </article>
       </div>
+
+      <dialog id="network-dialog" class="network-dialog">
+        <form id="network-form">
+          <div class="network-dialog-head">
+            <div><p class="section-kicker">Private relationship record</p><h2>Add / edit relationship</h2></div>
+            <button type="button" data-network-close aria-label="Close">×</button>
+          </div>
+          <input type="hidden" id="network-form-id" />
+          <div class="network-form-grid">
+            <label>Name<input id="network-name" required /></label>
+            <label>Organization<input id="network-organization" /></label>
+            <label>Type<select id="network-type"><option>SPONSOR</option><option>INVITE</option><option>REFERRAL</option><option>COLLABORATOR</option><option>INTRODUCTION</option><option>DESIGN_PARTNER</option><option>OTHER</option></select></label>
+            <label>Status<select id="network-status-input"><option>RESEARCH</option><option>READY</option><option>CONTACTED</option><option>REPLIED</option><option>MEETING</option><option>PROPOSAL</option><option>WON</option><option>LOST</option><option>INVITED</option><option>ACCEPTED</option><option>ACTIVE</option><option>PAUSED</option></select></label>
+            <label>Contact<input id="network-contact" /></label>
+            <label>Channel<input id="network-channel" placeholder="Email / DM / intro / in person" /></label>
+            <label>Support level<input id="network-support-level" /></label>
+            <label>Source<input id="network-source" placeholder="Sponsor page / referral / event / manual" /></label>
+            <label>Referral / invite URL<input id="network-referral-url" type="url" /></label>
+            <label>Next action due<input id="network-next-action-at" type="datetime-local" /></label>
+          </div>
+          <label>Project fit<textarea id="network-project-fit" rows="2"></textarea></label>
+          <label>Why they may care<textarea id="network-why-care" rows="3"></textarea></label>
+          <label>Next action<textarea id="network-next-action" rows="2"></textarea></label>
+          <label>Notes<textarea id="network-notes" rows="4"></textarea></label>
+          <div class="network-dialog-actions">
+            <button type="button" data-network-close>Cancel</button>
+            <button type="submit">Save relationship</button>
+          </div>
+        </form>
+      </dialog>
     </section>
 
     <section class="ashwood-drop" id="ashwood-drop" aria-labelledby="ashwood-drop-title">
