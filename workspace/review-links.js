@@ -19,7 +19,7 @@
       const link = document.createElement('a');
       link.className = 'v3-checklist__open';
       link.dataset.reviewOpen = id;
-      link.href = `/api/workspace-review-visit?item=${encodeURIComponent(id)}`;
+      link.href = `/api/workspace-review?view=visit&item=${encodeURIComponent(id)}`;
       link.textContent = 'Open · auto-checks visit ↗';
       link.title = 'Reaching this destination is enough to complete this objective visit check.';
       label.append(link);
