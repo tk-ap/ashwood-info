@@ -293,7 +293,7 @@ async function load() {
   const status = document.querySelector("#agentos-board-status");
   if (!host) return false;
   try {
-    const response = await fetch("/api/workspace-board", {
+    const response = await fetch("/api/workspace-agentos", {
       credentials:"same-origin",
       cache:"no-store"
     });
