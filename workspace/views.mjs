@@ -115,13 +115,10 @@ function renderTools(view){
   if (!host) return;
   host.replaceChildren();
 
-  const elitk = document.createElement("button");
-  elitk.type = "button";
-  elitk.className = "workspace-elitk-trigger";
-  elitk.dataset.elitkToggle = "";
-  elitk.textContent = "ELITK · Plain language";
-  elitk.setAttribute("aria-pressed", "false");
-  host.append(elitk);
+  const elitkLabel = document.createElement("label");
+  elitkLabel.className = "workspace-elitk-switch";
+  elitkLabel.innerHTML = '<span>ELITK</span><input type="checkbox" data-elitk-toggle aria-label="Toggle plain language"><span class="workspace-elitk-switch__track" aria-hidden="true"><span></span></span><small>Plain language</small>';
+  host.append(elitkLabel);
 
   (VIEW_META[view]?.tools || []).forEach(tool => {
     if (tool.action === "evidence") {
