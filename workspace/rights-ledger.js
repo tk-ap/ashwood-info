@@ -170,7 +170,7 @@
       submit.disabled = true;
       saveStatus.textContent = 'Saving…';
       try {
-        const res = await fetch('/api/workspace-upload', {
+        const res = await fetch('/api/workspace-media', {
           method:'PATCH', credentials:'same-origin', headers:{'Content-Type':'application/json'},
           body:JSON.stringify({ id:Number(item.id), rightsLedger })
         });
@@ -196,7 +196,7 @@
 
   async function load() {
     try {
-      const res = await fetch('/api/workspace-upload', { credentials:'same-origin', cache:'no-store' });
+      const res = await fetch('/api/workspace-media', { credentials:'same-origin', cache:'no-store' });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
       uploads = body.uploads || [];
