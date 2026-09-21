@@ -51,6 +51,13 @@ ASHWOOD's UI and private Workspace should feel alive: a living, breathing workin
 - Keep merge and production promotion human-gated unless the owner explicitly authorizes a narrower task-specific action.
 - A READY preview is evidence that a deployment built; it is not proof that the experience passed human/visual verification.
 
+### Obsolete Branch Guardrail
+
+- `feature/workspace-elitk` is obsolete and stale. Do **not** merge, rebase, revive, or use it as the starting point for Workspace work.
+- That branch contains an older Workspace implementation and a superseded board-wide ELITK approach; applying it risks regressing the newer command-center UI on `main`.
+- The canonical ELITK behavior is the per-notification explainer in `workspace/feed.mjs` on current `main` (`ELITK · Explain this notification`).
+- Any future ELITK or Workspace work must start from current `main` and preserve the live `Today / Build / Work / Network / Evidence / Self` command-center structure.
+
 ### Canonical Deployment Topology
 
 - Read `.agent-os/deployment.yaml` before any release, deployment diagnosis, or claim about live state.
