@@ -35,18 +35,17 @@ test('view router keeps AgentOS inside Build and personal context inside Self', 
 });
 
 
-test('ELITK is a view-level control available regardless of the active Workspace view', async () => {
-  const source = await readFile(viewsPath, 'utf8');
-  assert.match(source, /ELITK · Explain this view/);
-  assert.match(source, /data\.elitkTrigger|dataset\.elitkTrigger/);
-  assert.match(source, /function summaryFor\(view\)/);
-  for (const view of ['today','build','work','network','evidence']) {
-    assert.match(source, new RegExp('view === "' + view + '"'));
-  }
-  assert.match(source, /What this view is for/);
-  assert.match(source, /What it says right now/);
-  assert.match(source, /How to read it/);
-  assert.match(source, /does not move work, approve actions, or upgrade evidence/);
+test('ELITK is an inline page-transform toggle on every primary Workspace view', async () => {
+  const [source, html] = await Promise.all([
+    readFile(viewsPath, 'utf8'),
+    readFile(htmlPath, 'utf8')
+  ]);
+  assert.match(source, /ELITK · Plain language/);
+  assert.match(source, /dataset\.elitkToggle/);
+  assert.doesNotMatch(source, /summaryFor\(view\)/);
+  assert.doesNotMatch(source, /workspace-elitk-panel/);
+  assert.match(html, /\/workspace\/elitk-page\.mjs/);
+  assert.match(html, /\/workspace\/elitk-page\.css/);
 });
 
 
@@ -69,10 +68,22 @@ test('ELITK modules pass JavaScript syntax checks', () => {
   }
 });
 
-test('ELITK re-escapes rendered Workspace text before using innerHTML', async () => {
-  const source = await readFile(viewsPath, 'utf8');
-  assert.match(source, /function escapeHtml\(value\)/);
-  assert.match(source, /escapeHtml\(summary\.purpose\)/);
-  assert.match(source, /escapeHtml\(summary\.current\)/);
-  assert.match(source, /escapeHtml\(summary\.read\)/);
+test('ELITK translates jargon inline while preserving the underlying page structure', async () => {
+  const { humanizeText } = await import(elitkPagePath);
+  assert.equal(humanizeText('P1'), 'high priority');
+  assert.equal(humanizeText('Orphaned PRs'), 'Code changes not linked to tracked work');
+  assert.equal(humanizeText('Confidence 72%'), 'How sure the system is: 72%');
+  assert.equal(humanizeText('TARGET'), 'considering');
+  assert.equal(humanizeText('Canonical source ↗'), 'Source of truth ↗');
+});
+
+test('ELITK engine is reversible, persistent, and observes data loaded after the toggle', async () => {
+  const source = await readFile(elitkPagePath, 'utf8');
+  assert.match(source, /function restore\(\)/);
+  assert.match(source, /localStorage\.setItem\(STORAGE_KEY/);
+  assert.match(source, /new MutationObserver/);
+  assert.match(source, /characterData:true/);
+  assert.match(source, /childList:true/);
+  assert.match(source, /attributes:true/);
+  assert.match(source, /ELITK ON · Show original/);
 });
