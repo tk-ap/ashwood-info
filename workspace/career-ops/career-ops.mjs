@@ -23,7 +23,7 @@ const state = {
 };
 
 async function api(options={}) {
-  const response = await fetch('/api/workspace-career-ops', {
+  const response = await fetch('/api/workspace-career', {
     credentials:'same-origin',
     headers:{ 'Content-Type':'application/json', ...(options.headers || {}) },
     ...options
@@ -40,7 +40,7 @@ async function api(options={}) {
 async function opportunityApi({ cursor=0, refresh=false }={}) {
   const query = new URLSearchParams({ cursor:String(cursor) });
   if (refresh) query.set('refresh', '1');
-  const response = await fetch(`/api/workspace-career-opportunities?${query.toString()}`, {
+  const response = await fetch(`/api/workspace-career?view=opportunities&${query.toString()}`, {
     credentials:'same-origin',
     headers:{ 'Accept':'application/json' }
   });
