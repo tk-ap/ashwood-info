@@ -27,8 +27,8 @@ async function fixture(env = 'production') {
       .replace(/^import .*;\n/gm, '').replace('export default async function handler', 'async function handler');
     return Function(...Object.keys(dependencies), `${source}\nreturn handler;`)(...Object.values(dependencies));
   }
-  const checklist = await handler('workspace-checklist');
-  const visit = await handler('workspace-review-visit');
+  const checklist = await handler('_review-checklist-handler');
+  const visit = await handler('_review-visit-handler');
   async function call(fn, req = {}) {
     const res = { headers: {}, setHeader(key, value) { this.headers[key] = value; }, end() {} };
     await fn({ auth: true, method: 'GET', url: '/', ...req }, res);
