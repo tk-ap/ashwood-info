@@ -1,123 +1,377 @@
-const q = selector => document.querySelector(selector);
-const qa = selector => [...document.querySelectorAll(selector)];
-const clean = value => String(value || "").replace(/\s+/g, " ").trim();
-const clip = (value, limit = 280) => {
-  const text = clean(value);
-  return text.length > limit ? text.slice(0, limit - 1).trimEnd() + "…" : text;
-};
+const STORAGE_KEY = "ashwood.elitk-mode.v2";
 
-const CONFIG = {
-  "build-logs": {
-    title: "Build logs",
-    purpose: "This page is the memory of what was tried, decided, failed, learned, or left unresolved while building. It is history and context, not automatic proof that every recorded claim is true.",
-    current() {
-      const visible = qa("#logs article").length;
-      const status = clean(q("#status")?.textContent) || "Build logs are still loading.";
-      return status + " " + visible + " log entr" + (visible === 1 ? "y is" : "ies are") + " currently visible after the search filter.";
-    },
-    read: "A saved log tells you what was recorded at that moment. Use it to understand why a decision was made, then check newer evidence before treating an old conclusion as current truth.",
-    observe: ["#status", "#logs"]
-  },
-  "career-ops": {
-    title: "Career Ops",
-    purpose: "This page is the job-search operating view. It keeps applications, fresh role targets, inbox signals, compensation, and next actions in one place so the search does not lose context.",
-    current() {
-      const summary = qa("#career-summary article").map(node => clean(node.textContent)).filter(Boolean).join(" · ");
-      const opportunities = qa(".career-opportunity-card").length;
-      const applications = qa(".career-row").length;
-      const state = clean(q("#career-state")?.textContent) || "Career state is still loading.";
-      return (summary ? "Pipeline: " + summary + ". " : "") + applications + " tracked application(s), " + opportunities + " fresh opportunity card(s). " + state;
-    },
-    read: "A role in Fresh targets is a lead to evaluate, not a recommendation or an application. Pipeline status describes where a recorded application sits; 'needs action' means the tracker sees a follow-up or deadline that deserves review.",
-    observe: ["#career-summary", "#career-opportunity-grid", "#career-applications", "#career-state"]
-  },
-  "production-review": {
-    title: "Production review",
-    purpose: "This page is the release-checking surface. It turns production-facing changes into concrete things a human should inspect before calling a release fully verified.",
-    current() {
-      const queue = q("#deployment-review-items");
-      const history = q("#v3-playtest-checklist");
-      const queueCount = queue ? [...queue.children].filter(node => !node.classList.contains("v3-checklist__loading")).length : 0;
-      const historyCount = history ? [...history.children].filter(node => !node.classList.contains("v3-checklist__loading")).length : 0;
-      return queueCount + " current release-review item(s) and " + historyCount + " historical baseline item(s) are rendered.";
-    },
-    read: "A deployment being built or reachable is not the same as a reviewed release. Current checks are the things that still need human verification; the historical V3 baseline is preserved evidence and should not be mistaken for current release work.",
-    observe: ["#deployment-review-items", "#v3-playtest-checklist"]
+export const EXACT_TRANSLATIONS = new Map([
+  ["ELITK · Explain this view", "ELITK"],
+  ["ELITK · Explain this page", "ELITK"],
+  ["Today · command center", "Today · what needs to move"],
+  ["Move the work.", "What should move today."],
+  ["Capture or direct your attention", "Tell the system what you want handled"],
+  ["AgentOS", "AgentOS · automated work"],
+  ["AgentOS · observable execution", "Agent activity you can inspect"],
+  ["Current autonomous sessions", "What agents are working on now"],
+  ["Next highest-value objective", "Most useful next thing to do"],
+  ["Grounding the next objective…", "Figuring out the most useful next step…"],
+  ["AgentOS · full operating queue", "Everything the system knows about the work"],
+  ["Portfolio work board", "All tracked work"],
+  ["Waiting for the private AgentOS snapshot…", "Loading the latest saved work status…"],
+  ["All work", "Everything"],
+  ["Sprint focus", "Current focus"],
+  ["Needs attention", "Needs you"],
+  ["In progress", "Being worked on"],
+  ["Stuck", "Blocked"],
+  ["Review", "Needs checking"],
+  ["Orphaned PRs", "Code changes not linked to tracked work"],
+  ["Untriaged", "Not sorted yet"],
+  ["Backlog", "Saved for later"],
+  ["Recently done", "Recently completed"],
+  ["Search", "Find"],
+  ["Owner", "Responsible"],
+  ["Priority", "Importance"],
+  ["All products", "Every product"],
+  ["All owners", "Everyone"],
+  ["All priority", "Any importance"],
+  ["P0 only", "Urgent only"],
+  ["P1+", "High priority and above"],
+  ["P2+", "Normal priority and above"],
+  ["Prioritized", "Has a priority"],
+  ["Reset", "Clear filters"],
+  ["captured backlog", "saved for later"],
+  ["coverage gap", "missing tracking"],
+  ["runtime intake", "new work found by the system"],
+  ["GitHub inventory", "GitHub work found"],
+  ["governed work", "controlled agent work"],
+  ["freshness unknown", "last update unknown"],
+  ["live", "up to date"],
+  ["aging", "getting old"],
+  ["stale", "out of date"],
+  ["Canonical source ↗", "Source of truth ↗"],
+  ["Status", "Current state"],
+  ["Last activity", "Last changed"],
+  ["Attempts", "Tries"],
+  ["Authority", "Permission"],
+  ["Current work", "Projects being worked on"],
+  ["Active workstreams", "Active projects"],
+  ["Live evidence → public artifact", "Real work → something you can show publicly"],
+  ["From the work", "Things worth sharing from your work"],
+  ["Sponsorship / outbound", "Funding and outreach"],
+  ["Sponsor pipeline", "Sponsor conversations"],
+  ["Owner signal · live", "Things the system thinks you should notice"],
+  ["Ecosystem notifications", "Updates from across your products"],
+  ["Private · owner review", "Private · for you to review"],
+  ["Current pulse", "Recent changes"],
+  ["What moved", "What changed"],
+  ["Projects → goals", "How projects support your goals"],
+  ["The connections", "What connects to what"],
+  ["The rhythm", "Recent activity"],
+  ["Evidence ledger", "Proof and records"],
+  ["Explore the evidence", "See the proof"],
+  ["Not just a celebration layer", "Problems count too"],
+  ["Attention & contradictions", "Things that need a closer look"],
+  ["Actionable opportunities", "Things you could act on"],
+  ["The frame", "Big-picture direction"],
+  ["Saturn frame", "Long-term life frame"],
+  ["The recorded six-check variant", "The saved six-question version"],
+  ["Career Ops", "Job search"],
+  ["Income & opportunity", "Income and job opportunities"],
+  ["Inbox continuity", "Email follow-up"],
+  ["Application email monitor", "Application email updates"],
+  ["Fresh targets", "New jobs to consider"],
+  ["Pipeline", "Application progress"],
+  ["Application tracker", "Applications"],
+  ["active pipeline", "active applications"],
+  ["submitted / screening", "applied or being reviewed"],
+  ["recruiter / assessment / interview", "in conversation with employers"],
+  ["need action", "need your follow-up"],
+  ["Posting snapshot", "Saved job posting"],
+  ["Submitted materials", "What you sent"],
+  ["Fit decision / why this role", "Why this role may fit"],
+  ["Job / requisition ID", "Job ID"],
+  ["Work arrangement", "Remote / hybrid / on-site"],
+  ["Production Review", "Live-site check"],
+  ["Workspace / Production review", "Workspace / Live-site check"],
+  ["Private release review", "Private live-site review"],
+  ["Historical V3 baseline", "Older V3 review"],
+  ["preserved review evidence", "saved review record"],
+  ["Primary QA: production review queue", "Main quality check: current live-site review"],
+  ["Reported history", "What was recorded at the time"]
+]);
+
+const PHRASE_TRANSLATIONS = [
+  [/\bP0\b/g, "urgent"],
+  [/\bP1\b/g, "high priority"],
+  [/\bP2\b/g, "normal priority"],
+  [/\bP3\b/g, "low priority"],
+  [/\bIN_PROGRESS\b/g, "being worked on"],
+  [/\bSIGNAL\b/g, "needs a look"],
+  [/\bACCEPTED\b/g, "kept in focus"],
+  [/\bDISMISSED\b/g, "dismissed"],
+  [/\bCOMPLETED\b/g, "completed"],
+  [/\bPLANNED\b/g, "planned"],
+  [/\bTARGET\b/g, "considering"],
+  [/\bAPPLIED\b/g, "applied"],
+  [/\bSCREENING\b/g, "company is reviewing"],
+  [/\bRECRUITER\b/g, "talking to recruiter"],
+  [/\bASSESSMENT\b/g, "assessment or test"],
+  [/\bINTERVIEW\b/g, "interviewing"],
+  [/\bOFFER\b/g, "offer received"],
+  [/\bDEFERRED\b/g, "paused"],
+  [/\bREJECTED\b/g, "not selected"],
+  [/\bDECLINED\b/g, "you declined"],
+  [/\bCLOSED\b/g, "closed"],
+  [/\bREADY\b/g, "built successfully"],
+  [/\bBLOCKED\b/g, "blocked"],
+  [/\bConfidence\s+(\d+)%/gi, "How sure the system is: $1%"],
+  [/\bGoal\s+([^·\n]+)/gi, "Related goal: $1"],
+  [/\bowner\s+([^\s·,]+)/gi, "responsible: $1"],
+  [/\bnext gate\b/gi, "what has to happen next"],
+  [/\bcanonical source\b/gi, "source of truth"],
+  [/\borphaned PRs?\b/gi, "code changes not linked to tracked work"],
+  [/\buntriaged\b/gi, "not sorted yet"],
+  [/\bworkstreams?\b/gi, "active projects"],
+  [/\bgoverned execution\b/gi, "controlled agent work"],
+  [/\bgoverned work\b/gi, "controlled agent work"],
+  [/\bowner directives?\b/gi, "your instructions"],
+  [/\brouting decisions?\b/gi, "decisions about which agent or tool handles the work"],
+  [/\bauthorization boundary\b/gi, "permission check"],
+  [/\bauthority expires?\b/gi, "permission expires"],
+  [/\bauthority\b/gi, "permission"],
+  [/\bcoverage gaps?\b/gi, "missing tracking"],
+  [/\bruntime intake\b/gi, "new work found by the system"],
+  [/\bGitHub inventory\b/gi, "GitHub work found"],
+  [/\bcaptured backlog\b/gi, "saved for later"],
+  [/\bbacklog\b/gi, "saved for later"],
+  [/\bfreshness unknown\b/gi, "last update unknown"],
+  [/\baging\b/gi, "getting old"],
+  [/\bstale\b/gi, "out of date"],
+  [/\bdeployment review\b/gi, "live-site check"],
+  [/\bproduction deployment\b/gi, "live-site release"],
+  [/\bproduction-facing\b/gi, "live-site"],
+  [/\brelease-specific\b/gi, "for this release"],
+  [/\bQA\b/g, "quality check"],
+  [/\bposting snapshot\b/gi, "saved job posting"],
+  [/\bactive pipeline\b/gi, "active applications"]
+];
+
+export function humanizeText(value) {
+  const original = String(value ?? "");
+  const match = original.match(/^(\s*)([\s\S]*?)(\s*)$/);
+  const leading = match?.[1] || "";
+  const core = match?.[2] || "";
+  const trailing = match?.[3] || "";
+  if (!core.trim()) return original;
+
+  const trimmed = core.trim();
+  let translated = EXACT_TRANSLATIONS.get(trimmed);
+  if (translated == null) {
+    translated = trimmed;
+    for (const [pattern, replacement] of PHRASE_TRANSLATIONS) {
+      translated = translated.replace(pattern, replacement);
+    }
   }
-};
 
-function make(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
+  translated = translated
+    .replace(
+      /Commands enter AgentOS as your instructions\. Routing remains reviewable, and ledgato must ALLOW the controlled agent work before directed work can enter the execution queue\./i,
+      "Your instruction is recorded, the system chooses how to handle it, and ledgato checks permission before any agent work starts."
+    )
+    .replace(
+      /Objective → why now → assigned responsible → current step → what has to happen next\./i,
+      "What we are trying to do → why it matters now → who is handling it → what is happening → what must happen next."
+    )
+    .replace(
+      /No inferred motion without a synced source\./i,
+      "If there is no synced evidence, the page will not pretend the work is moving."
+    )
+    .replace(
+      /Read-only ecosystem work ledger:/i,
+      "Read-only list of tracked work:"
+    )
+    .replace(
+      /Views and filters change what you see; ASHWOOD never moves or authorizes these cards\./i,
+      "Filters only change what you see here. ASHWOOD does not move work or give agents permission."
+    )
+    .replace(
+      /ASHWOOD shows the human-facing projection; execution truth stays in AgentOS, ailhat, and the owning repos\./i,
+      "ASHWOOD shows the readable view. The actual work status still comes from AgentOS, ailhat, and the product repositories."
+    )
+    .replace(
+      /ASHWOOD checks current GitHub, controlled agent work, private evidence, and ailhat signals on refresh\./i,
+      "ASHWOOD checks GitHub, agent work, private records, and ailhat updates when you refresh."
+    )
+    .replace(
+      /A candidate is also a valid result/i,
+      "a candidate is automatically a finished result"
+    );
+
+  return leading + translated + trailing;
 }
 
-function mount() {
-  const page = document.body.dataset.elitkPage;
-  const config = CONFIG[page];
-  if (!config) return;
+let active = false;
+let applying = false;
+let textState = new WeakMap();
+let textNodes = new Set();
+let attrState = new WeakMap();
+let attrElements = new Set();
 
-  const button = make("button", "elitk-page-trigger", "ELITK · Explain this page");
+function skipTextNode(node) {
+  const parent = node.parentElement;
+  if (!parent) return true;
+  if (parent.closest("script,style,noscript,[data-elitk-toggle]")) return true;
+  return false;
+}
+
+function transformTextNode(node, forceSource = false) {
+  if (!active || skipTextNode(node)) return;
+  const current = node.data;
+  let state = textState.get(node);
+
+  if (!state || forceSource || current !== state.transformed) {
+    state = { original: current, transformed: humanizeText(current) };
+    textState.set(node, state);
+    textNodes.add(node);
+  }
+
+  if (node.data !== state.transformed) {
+    applying = true;
+    node.data = state.transformed;
+    applying = false;
+  }
+}
+
+function transformAttributes(element, forceSource = false) {
+  if (!active || !(element instanceof Element) || element.matches("[data-elitk-toggle]")) return;
+  const attrs = ["aria-label", "title", "placeholder"];
+  let states = attrState.get(element);
+  if (!states) {
+    states = new Map();
+    attrState.set(element, states);
+  }
+
+  for (const attr of attrs) {
+    if (!element.hasAttribute(attr)) continue;
+    const current = element.getAttribute(attr) || "";
+    let state = states.get(attr);
+    if (!state || forceSource || current !== state.transformed) {
+      state = { original: current, transformed: humanizeText(current) };
+      states.set(attr, state);
+      attrElements.add(element);
+    }
+    if (current !== state.transformed) {
+      applying = true;
+      element.setAttribute(attr, state.transformed);
+      applying = false;
+    }
+  }
+}
+
+function walk(root) {
+  if (!active || !root) return;
+  if (root.nodeType === Node.TEXT_NODE) {
+    transformTextNode(root);
+    return;
+  }
+  if (!(root instanceof Element || root instanceof Document || root instanceof DocumentFragment)) return;
+
+  if (root instanceof Element) transformAttributes(root);
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    if (node.nodeType === Node.TEXT_NODE) transformTextNode(node);
+    else transformAttributes(node);
+  }
+}
+
+function restore() {
+  applying = true;
+  for (const node of textNodes) {
+    const state = textState.get(node);
+    if (state && node.isConnected) node.data = state.original;
+  }
+  for (const element of attrElements) {
+    const states = attrState.get(element);
+    if (!states || !element.isConnected) continue;
+    for (const [attr, state] of states) element.setAttribute(attr, state.original);
+  }
+  applying = false;
+  textState = new WeakMap();
+  textNodes = new Set();
+  attrState = new WeakMap();
+  attrElements = new Set();
+}
+
+function syncButtons() {
+  document.querySelectorAll("[data-elitk-toggle]").forEach(button => {
+    button.textContent = active ? "ELITK ON · Show original" : "ELITK · Plain language";
+    button.setAttribute("aria-pressed", String(active));
+    button.classList.toggle("is-active", active);
+  });
+  document.body.dataset.elitkActive = String(active);
+}
+
+function ensureSubpageButton() {
+  if (document.querySelector("[data-elitk-toggle]")) return;
+  if (!document.body.dataset.elitkPage) return;
+  const button = document.createElement("button");
   button.type = "button";
-  button.setAttribute("aria-expanded", "false");
-  button.setAttribute("aria-controls", "elitk-page-panel");
-
-  const panel = make("section", "elitk-page-panel");
-  panel.id = "elitk-page-panel";
-  panel.hidden = true;
-  panel.setAttribute("aria-live", "polite");
-
-  const header = make("div", "elitk-page-panel__head");
-  const headingWrap = make("div");
-  headingWrap.append(make("p", "elitk-page-kicker", "ELITK · plain-language layer"), make("h2", "", config.title + ", without the jargon."));
-  const refresh = make("button", "elitk-page-refresh", "Refresh summary");
-  refresh.type = "button";
-  header.append(headingWrap, refresh);
-
-  const grid = make("div", "elitk-page-grid");
-  const fields = [
-    ["What this page is for", () => config.purpose],
-    ["What it says right now", () => config.current()],
-    ["How to read it", () => config.read]
-  ];
-  const valueNodes = [];
-  for (const [label, getter] of fields) {
-    const article = make("article");
-    article.append(make("strong", "", label));
-    const value = make("p", "", getter());
-    valueNodes.push([value, getter]);
-    article.append(value);
-    grid.append(article);
-  }
-
-  panel.append(header, grid, make("p", "elitk-page-grounding", "Grounded only in the data currently rendered on this page. ELITK explains the display; it does not move work, approve actions, or upgrade evidence."));
-
-  const host = q(".career-masthead nav") || q(".workspace-actions");
+  button.className = "elitk-page-trigger";
+  button.dataset.elitkToggle = "";
+  const host = document.querySelector(".career-masthead nav, .workspace-actions");
   if (host) host.append(button);
-  else q("h1")?.insertAdjacentElement("afterend", button);
-
-  const anchor = q(".career-hero") || q(".production-review-intro") || q("h1");
-  anchor?.insertAdjacentElement("afterend", panel);
-
-  let open = false;
-  const render = () => valueNodes.forEach(([node, getter]) => { node.textContent = getter(); });
-  const toggle = () => {
-    open = !open;
-    panel.hidden = !open;
-    button.setAttribute("aria-expanded", String(open));
-    button.classList.toggle("is-active", open);
-    if (open) render();
-  };
-
-  button.addEventListener("click", toggle);
-  refresh.addEventListener("click", render);
-
-  const observer = new MutationObserver(() => { if (open) render(); });
-  for (const selector of config.observe) {
-    const node = q(selector);
-    if (node) observer.observe(node, { childList:true, subtree:true, characterData:true });
-  }
+  else document.querySelector("main")?.prepend(button);
 }
 
-mount();
+export function setElitkMode(next) {
+  active = Boolean(next);
+  try { localStorage.setItem(STORAGE_KEY, active ? "1" : "0"); } catch {}
+  if (active) walk(document.body);
+  else restore();
+  syncButtons();
+  window.dispatchEvent(new CustomEvent("ashwood:elitk-mode", { detail:{ active } }));
+}
+
+export function getElitkMode() {
+  return active;
+}
+
+function start() {
+  ensureSubpageButton();
+  try { active = localStorage.getItem(STORAGE_KEY) === "1"; } catch { active = false; }
+
+  document.addEventListener("click", event => {
+    const button = event.target.closest?.("[data-elitk-toggle]");
+    if (!button) return;
+    setElitkMode(!active);
+  });
+
+  const observer = new MutationObserver(records => {
+    if (applying) return;
+    let shouldSync = false;
+    for (const record of records) {
+      if (record.type === "characterData") {
+        if (active) transformTextNode(record.target, true);
+        continue;
+      }
+      if (record.type === "attributes") {
+        if (active) transformAttributes(record.target, true);
+        continue;
+      }
+      for (const node of record.addedNodes) {
+        if (node.nodeType === Node.ELEMENT_NODE && node.matches?.("[data-elitk-toggle]")) shouldSync = true;
+        if (active) walk(node);
+      }
+    }
+    if (shouldSync) syncButtons();
+  });
+  observer.observe(document.documentElement, {
+    subtree:true,
+    childList:true,
+    characterData:true,
+    attributes:true,
+    attributeFilter:["aria-label","title","placeholder"]
+  });
+
+  if (active) walk(document.body);
+  syncButtons();
+}
+
+if (typeof document !== "undefined") start();
