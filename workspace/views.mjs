@@ -24,10 +24,7 @@ const VIEW_META = {
     title: "Network.",
     deck: "Sponsors, design partners, collaborators, and the relationships that can move the work.",
     eyebrow: "Relationships and outbound",
-    tools: [
-      {label:"Sponsorship page", href:"/sponsor/", external:true},
-      {label:"ALVIRA partners", href:"https://alviratech.vercel.app/partners", external:true}
-    ]
+    tools: []
   },
   evidence: {
     title: "Evidence.",
@@ -165,7 +162,7 @@ function renderUtility(view){
   const copy = {
     build:"<strong>Build is the execution view.</strong> AgentOS state is mirrored here; authority remains in AgentOS and ledgato.",
     work:"<strong>Work is the professional view.</strong> Keep career motion and public artifacts separate from product execution.",
-    network:"<strong>Network is the relationship view.</strong> Track outreach without turning every contact into a product task.",
+    network:"<strong>Network is the relationship control center.</strong> Sponsorship, invitations, referrals, collaborators, introductions, and design partners enter here; payment is only one possible relationship.",
     evidence:"<strong>Evidence is the record.</strong> Use it to verify claims, inspect signals, and trace why priorities changed.",
     self:"<strong>Self is context, not the dashboard.</strong> Goals and check-ins inform decisions without crowding Today."
   };
