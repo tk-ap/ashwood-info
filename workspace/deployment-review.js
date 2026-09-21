@@ -52,7 +52,7 @@
           <input type="checkbox" data-deploy-review-id="${esc(item.id)}" ${done ? 'checked' : ''}/>
           <span><strong>${esc(item.label || 'Review production deployment')}</strong><br/><small>${esc(item.detail || '')}${files.length ? `<br/>Changed: ${esc(files.slice(0,8).join(' · '))}${files.length > 8 ? ' …' : ''}` : ''}</small></span>
         </label>
-        ${item.review_target === 'ai-from-zero' ? `<a class="v3-checklist__open" href="/api/workspace-review-visit?item=${encodeURIComponent(item.id)}">Review live ↗</a>` : item.review_target === 'workspace-cohesion' ? `<a class="v3-checklist__open" href="/workspace/">Review live ↗</a>` : ''}
+        ${item.review_target === 'ai-from-zero' ? `<a class="v3-checklist__open" href="/api/workspace-review?view=visit&item=${encodeURIComponent(item.id)}">Review live ↗</a>` : item.review_target === 'workspace-cohesion' ? `<a class="v3-checklist__open" href="/workspace/">Review live ↗</a>` : ''}
         <p class="v3-checklist__note">${done ? 'Approved by owner' : snapshot.review_started?.[item.id] ? 'Review started · awaiting your approval' : bucket === 'ignored' ? 'Not acted on' : 'Awaiting owner review'}</p>
         ${aging}
         </div>
@@ -88,7 +88,7 @@
   async function load() {
     if (unsaved) return;
     try {
-      const res = await fetch('/api/workspace-checklist', { credentials:'same-origin', cache:'no-store' });
+      const res = await fetch('/api/workspace-review', { credentials:'same-origin', cache:'no-store' });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
       snapshot = body;
@@ -100,7 +100,7 @@
   }
 
   async function save() {
-    const res = await fetch('/api/workspace-checklist', {
+    const res = await fetch('/api/workspace-review', {
       method:'PATCH', credentials:'same-origin', keepalive:true, headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         scope:'deployment',
