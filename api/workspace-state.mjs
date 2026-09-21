@@ -324,6 +324,14 @@ export default async function handler(req, res) {
       }));
       if (items.some(item => !item.title || !item.outcome)) return json(res, 400, { ok:false, error:'Every sprint item needs a title and outcome' });
       const sourceGeneratedAt = String(body.source_generated_at || '').slice(0,80) || null;
+      const active = await sql`SELECT id,status,payload FROM workspace_commands
+        WHERE command_kind = 'ailhat_sprint' AND status NOT IN ('completed','cancelled')
+        ORDER BY created_at DESC LIMIT 1`;
+      if (active[0]) return json(res, 409, {
+        ok:false,
+        error:'An accepted sprint is already active. Complete or cancel it before accepting a new recommendation.',
+        active:{ id:active[0].id, status:active[0].status, payload:active[0].payload }
+      });
       const deferredSourceIds = Array.isArray(body.deferred_source_ids) ? body.deferred_source_ids.map(value=>String(value).slice(0,250)).filter(Boolean).slice(0,20) : [];
       const selectionMode = items.some(item => item.override) || deferredSourceIds.length ? 'owner-overridden' : 'ailhat-default';
       const fingerprint = sha256(JSON.stringify({ sourceGeneratedAt, items, deferredSourceIds }));
