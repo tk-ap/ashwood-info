@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T15:45:41.179Z",
+  "generated_at": "2026-09-21T15:44:54.373Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
@@ -13,7 +13,7 @@
         "at": "2026-09-08T18:25:02.000Z",
         "caption": "guess i’m hotter than the weather called for\n\nsummer on my skin, winter on my body\n\ncoastline part of the fit btw\n\nleft the city, kept the p",
         "likes": null,
-        "comments": 1,
+        "comments": 2,
         "type": "Sidecar",
         "url": "https://www.instagram.com/p/DdCU1CCmVC3/"
       },
@@ -29,37 +29,37 @@
   },
   "tiktok": {
     "account": "tiktokoftk",
-    "followers": 68,
+    "followers": 69,
     "following": 41,
     "verified": false,
     "total_videos": 22,
     "latest_video_at": "2026-09-08T22:08:27.000Z",
     "videos_30d": 7,
-    "avg_plays": 293,
+    "avg_plays": 295,
     "avg_likes": 25,
     "avg_comments": 2,
     "recent_videos": [
       {
         "at": "2026-09-08T22:08:27.000Z",
         "caption": "stg I be forgetting that part 😅 , let’s just work though #model #queer #streetwear #fypシ゚viral #exp ",
-        "plays": 300,
-        "likes": 21,
+        "plays": 317,
+        "likes": 22,
         "comments": 2,
         "shares": 0
       },
       {
         "at": "2026-09-05T01:23:06.000Z",
         "caption": "#catsoftiktok #animallover ",
-        "plays": 730,
-        "likes": 91,
+        "plays": 737,
+        "likes": 92,
         "comments": 0,
         "shares": 1
       },
       {
         "at": "2026-09-05T01:02:53.000Z",
         "caption": "thinking out loud… one side only 🤭 ✨#artistsoftiktok #poetry #blackpoet #fypシ゚viral #exp ",
-        "plays": 193,
-        "likes": 10,
+        "plays": 194,
+        "likes": 11,
         "comments": 0,
         "shares": 0
       }
