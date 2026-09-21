@@ -24,11 +24,11 @@
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
-  <script type="module" src="/workspace/agentos-board.mjs?v=20260920-operatorviews1"></script>
-  <script type="module" src="/workspace/views.mjs?v=20260921-provisionworknetwork1"></script>
+  <script type="module" src="/workspace/agentos-board.mjs?v=20260921-refreshsnapshot1"></script>
+  <script type="module" src="/workspace/views.mjs?v=20260921-isolation2"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260920-inlinework1"></script>
   <script type="module" src="/workspace/network.mjs?v=20260921-networkops1"></script>
-  <script type="module" src="/workspace/elitk-page.mjs?v=20260920-inlineelitk1"></script>
+  <script type="module" src="/workspace/elitk-page.mjs?v=20260921-togglefix1?v=20260920-inlineelitk1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
@@ -125,9 +125,9 @@
       <div class="section-heading-row agentos-board-heading">
         <div>
           <p class="section-kicker">AgentOS · full operating queue</p>
-          <h2 id="agentos-board-title">Portfolio work board</h2>
+          <h2 id="agentos-board-title">Kanban Board</h2>
         </div>
-        <p class="agentos-board-status" id="agentos-board-status" aria-live="polite">Waiting for the private AgentOS snapshot…</p>
+        <div class="agentos-board-refresh"><p class="agentos-board-status" id="agentos-board-status" aria-live="polite">Waiting for the private AgentOS snapshot…</p><button type="button" id="agentos-board-refresh">Refresh AgentOS snapshot</button></div>
       </div>
       <p class="section-note">Read-only ecosystem work ledger: governed execution, Milchik backlog, discovered work, and explicit coverage gaps. Views and filters change what you see; ASHWOOD never moves or authorizes these cards.</p>
       <div class="agentos-board-tools" id="agentos-board-tools" aria-label="AgentOS board views and filters"></div>
