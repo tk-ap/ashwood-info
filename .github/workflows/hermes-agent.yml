@@ -9,15 +9,13 @@ name: Hermes Agent
 #
 # Authentication and cost:
 #   - GitHub access: GITHUB_TOKEN (auto-provided, scoped to this repo).
-#   - Hermes model/provider: OPENROUTER_API_KEY (repo secret).
-#     If the secret is missing, the workflow prints setup instructions and exits.
-#   - Spending: controlled by your OpenRouter account and any per-key credit cap.
-#     The workflow does not set or manage credits.
+#   - Hermes inference: Nous free tier, gated with HERMES_GUEST_ONBOARDING=1.
+#   - Model: nous/welcome. No paid model-provider key is required.
 #
 # Known limitations / follow-ups:
 #   - Uses GITHUB_TOKEN rather than a GitHub App bot identity (follow-up).
-#   - Hermes model is whatever the Hermes default resolves to via OpenRouter.
-#     To pin a model, add a HERMES_MODEL repo secret.
+#   - The free tier intentionally pins nous/welcome; paid-model routing belongs
+#     in an explicitly authorized workflow, not this zero-dollar review path.
 #   - Visual/interaction verification requires a human gate; Hermes cannot
 #     truly verify visuals. Build check only where the build fits in budget.
 #   - Scheduled runs are commented out by default.
@@ -59,8 +57,7 @@ jobs:
     env:
       GH_REPO: ${{ github.repository }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      HERMES_MODEL: ${{ secrets.HERMES_MODEL }}
+      HERMES_GUEST_ONBOARDING: "1"
 
     steps:
       - name: Checkout product repository
@@ -75,22 +72,11 @@ jobs:
           curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
           echo "Hermes installed"
 
-      - name: Preflight — required secrets and tooling
+      - name: Preflight — zero-dollar Hermes runtime
         run: |
           set -euo pipefail
           echo "runtime: python=$(python3 --version 2>&1 || true), git=$(git --version 2>&1 || true), gh=$(gh --version 2>&1 | head -1 || true), hermes=$(hermes --version 2>&1 | head -1 || true)"
-          if [ -z "${{ secrets.OPENROUTER_API_KEY }}" ]; then
-            echo "ERROR: OPENROUTER_API_KEY repo secret is missing."
-            echo "Add it at: https://github.com/${{ github.repository }}/settings/secrets/actions"
-            echo "Create a key at https://openrouter.ai/keys, then: gh secret set OPENROUTER_API_KEY --repo ${{ github.repository }}"
-            exit 1
-          fi
-          echo "OPENROUTER_API_KEY: set (value hidden)"
-          if [ -n "${{ secrets.HERMES_MODEL }}" ]; then
-            echo "HERMES_MODEL: ${{ secrets.HERMES_MODEL }}"
-          else
-            echo "HERMES_MODEL: not set — Hermes uses its default"
-          fi
+          echo "Hermes inference: Nous free tier (nous/welcome)"
 
       - name: Build the prompt
         id: prompt
@@ -118,10 +104,7 @@ jobs:
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
-          CMD=(hermes chat --query-file /tmp/hermes-prompt.txt --provider openrouter)
-          if [ -n "${HERMES_MODEL:-}" ]; then
-            CMD+=(--model "$HERMES_MODEL")
-          fi
+          CMD=(hermes chat --query-file /tmp/hermes-prompt.txt --provider nous --model nous/welcome)
           echo "Running: ${CMD[*]}"
           "${CMD[@]}"
 
