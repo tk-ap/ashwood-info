@@ -3,7 +3,7 @@ const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 const state={relationships:[],selectedId:null};
 
 async function api(options={}){
-  const r=await fetch('/api/workspace-network',{credentials:'same-origin',headers:{'Content-Type':'application/json',...(options.headers||{})},...options});
+  const r=await fetch('/api/workspace-state?view=network',{credentials:'same-origin',headers:{'Content-Type':'application/json',...(options.headers||{})},...options});
   const body=await r.json().catch(()=>({}));
   if(!r.ok) throw new Error(body.error||`Request failed (${r.status})`);
   return body;
@@ -76,7 +76,7 @@ function openDialog(r=null){
 
 async function save(e){
   e.preventDefault();
-  const payload={action:'upsert_relationship',id:$('#network-form-id').value||undefined,name:$('#network-name').value,organization:$('#network-organization').value,relationship_type:$('#network-type').value,status:$('#network-status-input').value,project_fit:$('#network-project-fit').value,why_care:$('#network-why-care').value,contact:$('#network-contact').value,channel:$('#network-channel').value,support_level:$('#network-support-level').value,source:$('#network-source').value,referral_url:$('#network-referral-url').value,next_action:$('#network-next-action').value,next_action_at:$('#network-next-action-at').value,notes:$('#network-notes').value};
+  const payload={action:'network_upsert',id:$('#network-form-id').value||undefined,name:$('#network-name').value,organization:$('#network-organization').value,relationship_type:$('#network-type').value,status:$('#network-status-input').value,project_fit:$('#network-project-fit').value,why_care:$('#network-why-care').value,contact:$('#network-contact').value,channel:$('#network-channel').value,support_level:$('#network-support-level').value,source:$('#network-source').value,referral_url:$('#network-referral-url').value,next_action:$('#network-next-action').value,next_action_at:$('#network-next-action-at').value,notes:$('#network-notes').value};
   const out=await api({method:'POST',body:JSON.stringify(payload)}); state.selectedId=out.id; $('#network-dialog').close(); await load();
 }
 
