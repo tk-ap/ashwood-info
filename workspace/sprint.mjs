@@ -38,8 +38,9 @@ function render() {
     <article class="ailhat-sprint-card" data-index="${index}">
       <div class="ailhat-sprint-rank"><span>${index + 1}</span><small>${item.override ? "Owner override" : "ailhat"}</small></div>
       <div class="ailhat-sprint-card__body">
-        <label>Outcome<input data-field="title" value="${esc(item.title)}" /></label>
+        <label>Item<input data-field="title" value="${esc(item.title)}" /></label>
         <label>Product<input data-field="productName" value="${esc(item.productName)}" /></label>
+        <label class="ailhat-sprint-wide">Outcome<input data-field="outcome" value="${esc(item.outcome)}" /></label>
         <label>Why now<textarea data-field="whyNow" rows="2">${esc(item.whyNow)}</textarea></label>
         <p class="ailhat-sprint-evidence"><strong>Evidence</strong> ${esc((item.evidence || []).join(" · ") || "No supporting evidence returned.")}</p>
         <p class="ailhat-sprint-verify"><strong>Verify</strong> ${esc(item.verification || "Independent verification required.")}</p>
