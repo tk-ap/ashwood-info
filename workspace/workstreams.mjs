@@ -69,7 +69,7 @@ async function load() {
   const count = document.querySelector('#workstream-count');
   if (!target) return;
   try {
-    const response = await fetch('/api/workspace-workstreams', { credentials: 'same-origin', cache: 'no-store' });
+    const response = await fetch('/api/workspace-agentos?view=workstreams', { credentials: 'same-origin', cache: 'no-store' });
     if (response.status === 401) {
       setSurfaceState(target, 'locked');
       if (count) count.textContent = 'Workspace locked';
