@@ -78,10 +78,11 @@ function render(data) {
   const observedValues = rows.map(row => row.observed_at).filter(Boolean).sort();
   const observed = data.observed_at || observedValues[observedValues.length - 1] || null;
   const fresh = freshnessState(observed);
+  const snapshotId = data.snapshot_id ? String(data.snapshot_id).slice(0, 10) : null;
 
   if (status) {
     status.textContent = observed
-      ? "Last AgentOS snapshot " + relative(observed) + " · " + fresh.label
+      ? "Last AgentOS snapshot " + relative(observed) + " · " + fresh.label + (snapshotId ? " · " + snapshotId : "")
       : "No AgentOS snapshot has been received yet.";
     status.className = "agentos-board-status " + fresh.cls;
   }
