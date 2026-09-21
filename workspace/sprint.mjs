@@ -211,5 +211,4 @@ async function loadHistory() {
 document.querySelector("#ailhat-sprint-refresh")?.addEventListener("click", loadRecommendation);
 document.querySelector("#ailhat-sprint-accept")?.addEventListener("click", acceptSprint);
 document.querySelector("#ailhat-sprint-add")?.addEventListener("click", addOwnerItem);
-loadRecommendation();
-loadHistory();
+loadHistory().then(loadRecommendation);
