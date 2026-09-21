@@ -20,3 +20,14 @@ test("Workspace still loads the deployment tracker alongside the rest of Build",
   assert.match(workspace, /deployment-budget\.mjs\?v=20260921-agentos1/);
   assert.match(workspace, /id="deployment-budget"/);
 });
+
+test("Dispatch Studio renders persisted titles and sources as text, not HTML", () => {
+  const archive = read("../dispatch/index.html");
+  assert.doesNotMatch(archive, /innerHTML=`[^`]*\$\{x\.title\}/, "published title must not be interpolated into innerHTML");
+  assert.match(archive, /h\.textContent=String\(x\.title/);
+  assert.match(archive, /\^\[a-z0-9-\]\+\$/, "slug is validated before use in a URL");
+  const studio = read("../workspace/dispatch-studio/index.html");
+  assert.doesNotMatch(studio, /href="'\+s\.url\+'"/, "source URL must not be concatenated into HTML");
+  assert.match(studio, /u\.protocol!=='https:'&&u\.protocol!=='http:'/, "only http(s) source links");
+  assert.match(studio, /a\.textContent=String\(s\.label/);
+});
