@@ -108,6 +108,7 @@ function freshnessState(value) {
 }
 
 function kindLabel(row) {
+  if (row.kind === "operator_action") return "Omarchy handoff";
   if (row.kind === "backlog") return "captured backlog";
   if (row.kind === "coverage_gap") return "coverage gap";
   if (row.kind === "ecosystem_intake") return "runtime intake";

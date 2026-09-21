@@ -1,0 +1,21 @@
+.operator-actions-section{display:grid;gap:1rem}
+.operator-actions-heading{align-items:end}
+.operator-actions-controls{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.operator-actions-controls button{min-height:2.5rem}
+.operator-actions-status{font-size:.78rem;opacity:.65}
+.operator-actions-list{display:grid;gap:.75rem}
+.operator-actions-empty{margin:0;padding:1rem;border:1px dashed color-mix(in srgb,currentColor 18%,transparent);border-radius:1rem;opacity:.65}
+.operator-action-card{display:grid;gap:.7rem;padding:1rem;border:1px solid color-mix(in srgb,currentColor 14%,transparent);border-radius:1rem;background:color-mix(in srgb,currentColor 3%,transparent)}
+.operator-action-card.is-blocked{border-style:dashed}
+.operator-action-card__top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.operator-action-card__top h3{margin:.35rem 0 0;font-size:1rem}
+.operator-action-card__flags{display:flex;gap:.35rem;flex-wrap:wrap}
+.operator-action-card__flags span{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .45rem;border:1px solid color-mix(in srgb,currentColor 18%,transparent);border-radius:999px;opacity:.75}
+.operator-action-card__reason,.operator-action-card__blocker,.operator-action-card__prereq,.operator-action-card__note{margin:0;font-size:.8rem;line-height:1.5}
+.operator-action-card__blocker{padding:.55rem .7rem;border-left:2px solid currentColor;background:color-mix(in srgb,currentColor 4%,transparent)}
+.operator-action-card__meta{display:flex;gap:.5rem 1rem;flex-wrap:wrap;font-size:.68rem;opacity:.58}
+.operator-action-card details{border-top:1px solid color-mix(in srgb,currentColor 10%,transparent);padding-top:.55rem}
+.operator-action-card summary{cursor:pointer;font-size:.75rem;font-weight:600}
+.operator-action-card pre{margin:.55rem 0 0;padding:.75rem;border-radius:.7rem;overflow:auto;white-space:pre-wrap;background:color-mix(in srgb,currentColor 5%,transparent);font-size:.72rem;line-height:1.55}
+.operator-action-card__note{opacity:.55}
+@media(max-width:760px){.operator-action-card__top{display:grid}.operator-action-card__top button{justify-self:start}.operator-actions-controls{width:100%}.operator-actions-controls button{flex:1}}

@@ -46,6 +46,7 @@ const VIEW_META = {
 const GROUPS = {
   today: [
     "#today",
+    "#operator-actions-section",
     ".actual-priorities"
   ],
   build: [

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />
   <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
+  <link rel="stylesheet" href="/workspace/operator-actions.css?v=20260921-operator1" />
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-operatorviews1" />
   <link rel="stylesheet" href="/workspace/sprint.css?v=20260921-sprint1" />
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
@@ -25,6 +26,7 @@
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
+  <script type="module" src="/workspace/operator-actions.mjs?v=20260921-operator1"></script>
   <script type="module" src="/workspace/agentos-board.mjs?v=20260921-refreshsnapshot1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/deployment-budget.mjs?v=20260921-live1"></script>
@@ -121,6 +123,24 @@
           <p class="section-note">Objective → why now → assigned owner → current step → next gate. No inferred motion without a synced source.</p>
         </div>
         <div id="today-sessions" aria-live="polite"><p class="today-empty">Loading AgentOS execution…</p></div>
+      </div>
+    </section>
+
+    <section class="operator-actions-section" id="operator-actions-section" aria-labelledby="operator-actions-title">
+      <div class="section-heading-row operator-actions-heading">
+        <div>
+          <p class="section-kicker">Omarchy · desk pickup</p>
+          <h2 id="operator-actions-title">Terminal actions waiting for you</h2>
+        </div>
+        <div class="operator-actions-controls">
+          <span class="operator-actions-status" id="operator-actions-status" aria-live="polite">Reading AgentOS…</span>
+          <button type="button" id="operator-actions-copy-all" disabled hidden>Copy all ready commands</button>
+          <button type="button" id="operator-actions-refresh">Refresh</button>
+        </div>
+      </div>
+      <p class="section-note">AgentOS stores workstation/root/interactive steps here when you are away and continues everything else it can do. This surface is read-only: commands run only when you execute them on Omarchy or a future governed local executor is authorized to do so.</p>
+      <div class="operator-actions-list" id="operator-actions-list" aria-live="polite">
+        <p class="operator-actions-empty">Reading deferred operator actions…</p>
       </div>
     </section>
 
