@@ -28,7 +28,7 @@ async function fixture({ delFails = false } = {}) {
     process: { env: {} },
   };
 
-  const source = (await readFile(new URL('../api/workspace-upload.mjs', import.meta.url), 'utf8'))
+  const source = (await readFile(new URL('../api/_upload-handler.mjs', import.meta.url), 'utf8'))
     .replace(/^import .*;\n/gm, '')
     .replace(/^export async function ensureUploadsTable/m, 'async function unusedEnsure')
     .replace('export default async function handler', 'async function handler');
@@ -48,7 +48,7 @@ async function fixture({ delFails = false } = {}) {
 
   async function call(req = {}) {
     const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end() {} };
-    await handler({ method: 'DELETE', auth: true, url: '/api/workspace-upload', ...req }, res);
+    await handler({ method: 'DELETE', auth: true, url: '/api/workspace-media', ...req }, res);
     return res;
   }
   const count = async () => Number((await sql`SELECT COUNT(*)::int AS n FROM workspace_uploads`)[0].n);
