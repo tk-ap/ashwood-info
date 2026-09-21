@@ -64,6 +64,7 @@ test('AgentOS snapshot is private, replaceable, and preserves lifecycle fields',
           phase:'revoked',
           assignee:'eugene',
           product:'AgentOS',
+          work_domain:'agentos',
           work_id:'directive-4-routing',
           task_id:'t1',
           blocker:'Authority expired.',
@@ -79,6 +80,7 @@ test('AgentOS snapshot is private, replaceable, and preserves lifecycle fields',
           title:'Idea mentioned once',
           status:'proposed',
           product:'ALVIRA',
+          work_domain:'ecosystem',
           priority:'p2',
           source:'human',
           updated_at:'2026-09-20T20:00:00Z',
@@ -96,8 +98,10 @@ test('AgentOS snapshot is private, replaceable, and preserves lifecycle fields',
   assert.equal(visible.body.snapshot_id, 'snapshot-abc123');
   assert.equal(visible.body.rows[0].snapshot_id, 'snapshot-abc123');
   assert.equal(visible.body.rows[0].lane, 'stuck');
+  assert.equal(visible.body.rows[0].work_domain, 'agentos');
   assert.equal(visible.body.rows[0].blocker, 'Authority expired.');
   assert.equal(visible.body.rows[1].kind, 'backlog');
+  assert.equal(visible.body.rows[1].work_domain, 'ecosystem');
 
   const replacement = await f.call({
     method:'POST',
