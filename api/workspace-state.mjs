@@ -32,6 +32,36 @@ async function ensureCommandTable(sql) {
   )`;
 }
 
+const NETWORK_TYPES = new Set(['SPONSOR','INVITE','REFERRAL','COLLABORATOR','INTRODUCTION','DESIGN_PARTNER','OTHER']);
+const NETWORK_STATUSES = new Set(['RESEARCH','READY','CONTACTED','REPLIED','MEETING','PROPOSAL','WON','LOST','INVITED','ACCEPTED','ACTIVE','PAUSED']);
+const trimNetwork = (value, max = 500) => {
+  const text = String(value ?? '').trim();
+  return text ? text.slice(0, max) : null;
+};
+
+async function ensureNetworkTable(sql) {
+  await sql`CREATE TABLE IF NOT EXISTS workspace_network_relationships (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    organization TEXT,
+    relationship_type TEXT NOT NULL DEFAULT 'OTHER',
+    status TEXT NOT NULL DEFAULT 'RESEARCH',
+    project_fit TEXT,
+    why_care TEXT,
+    contact TEXT,
+    channel TEXT,
+    support_level TEXT,
+    source TEXT,
+    referral_url TEXT,
+    next_action TEXT,
+    next_action_at TIMESTAMPTZ,
+    notes TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+  await sql`CREATE INDEX IF NOT EXISTS workspace_network_relationships_status_idx ON workspace_network_relationships(status, updated_at DESC)`;
+}
+
 const COMMAND_RUNTIME_STATES = new Set([
   'routing',
   'governance_unavailable',
@@ -123,6 +153,22 @@ export default async function handler(req, res) {
         const commands = await sql`SELECT id, command_text, status, runtime_directive_id, runtime_task_id, governance, error, created_at, updated_at FROM workspace_commands ORDER BY created_at DESC LIMIT 30`;
         return json(res, 200, { ok: true, commands });
       }
+      if (req.query?.view === 'network') {
+        await ensureNetworkTable(sql);
+        const relationships = await sql`
+          SELECT id,name,organization,relationship_type,status,project_fit,why_care,contact,channel,
+            support_level,source,referral_url,next_action,next_action_at,notes,created_at,updated_at
+          FROM workspace_network_relationships
+          ORDER BY
+            CASE status
+              WHEN 'REPLIED' THEN 1 WHEN 'MEETING' THEN 2 WHEN 'PROPOSAL' THEN 3
+              WHEN 'CONTACTED' THEN 4 WHEN 'READY' THEN 5 WHEN 'INVITED' THEN 6
+              WHEN 'ACCEPTED' THEN 7 WHEN 'ACTIVE' THEN 8 WHEN 'RESEARCH' THEN 9
+              WHEN 'PAUSED' THEN 10 WHEN 'WON' THEN 11 WHEN 'LOST' THEN 12 ELSE 13 END,
+            COALESCE(next_action_at,updated_at) ASC
+        `;
+        return json(res, 200, { ok: true, relationships });
+      }
       const evidence = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes FROM workspace_evidence ORDER BY occurred_at DESC LIMIT 500`;
       const overrides = await sql`SELECT evidence_id, goal_id FROM workspace_goal_overrides`;
       return json(res, 200, { ok: true, evidence, overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])) });
@@ -130,6 +176,35 @@ export default async function handler(req, res) {
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
     if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
+
+    if (action === 'network_upsert') {
+      await ensureNetworkTable(sql);
+      const name = trimNetwork(body.name, 220);
+      if (!name) return json(res, 400, { ok: false, error: 'Name is required' });
+      const id = trimNetwork(body.id, 250) || `network:${crypto.randomUUID()}`;
+      const type = String(body.relationship_type || 'OTHER').toUpperCase();
+      const status = String(body.status || 'RESEARCH').toUpperCase();
+      const nextActionAt = body.next_action_at ? new Date(body.next_action_at) : null;
+      await sql`
+        INSERT INTO workspace_network_relationships(
+          id,name,organization,relationship_type,status,project_fit,why_care,contact,channel,
+          support_level,source,referral_url,next_action,next_action_at,notes,updated_at
+        ) VALUES (
+          ${id},${name},${trimNetwork(body.organization,220)},${NETWORK_TYPES.has(type)?type:'OTHER'},
+          ${NETWORK_STATUSES.has(status)?status:'RESEARCH'},${trimNetwork(body.project_fit,700)},${trimNetwork(body.why_care,1200)},
+          ${trimNetwork(body.contact,500)},${trimNetwork(body.channel,120)},${trimNetwork(body.support_level,250)},
+          ${trimNetwork(body.source,250)},${trimNetwork(body.referral_url,1000)},${trimNetwork(body.next_action,1000)},
+          ${nextActionAt && !Number.isNaN(nextActionAt.getTime()) ? nextActionAt.toISOString() : null},${trimNetwork(body.notes,4000)},NOW()
+        )
+        ON CONFLICT(id) DO UPDATE SET
+          name=EXCLUDED.name,organization=EXCLUDED.organization,relationship_type=EXCLUDED.relationship_type,
+          status=EXCLUDED.status,project_fit=EXCLUDED.project_fit,why_care=EXCLUDED.why_care,
+          contact=EXCLUDED.contact,channel=EXCLUDED.channel,support_level=EXCLUDED.support_level,
+          source=EXCLUDED.source,referral_url=EXCLUDED.referral_url,next_action=EXCLUDED.next_action,
+          next_action_at=EXCLUDED.next_action_at,notes=EXCLUDED.notes,updated_at=NOW()
+      `;
+      return json(res, 200, { ok: true, id });
+    }
 
     if (action === 'submit_command') {
       await ensureCommandTable(sql);
