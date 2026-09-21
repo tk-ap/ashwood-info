@@ -1,4 +1,4 @@
-const state = { source: null, items: [], deferred: [], accepted: null };
+const state = { source: null, items: [], deferred: [], accepted: null, active: null };
 
 const esc = (value = "") => String(value).replace(/[&<>'"]/g, c => ({
   "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
@@ -124,8 +124,12 @@ async function loadRecommendation() {
       score: item.score,
       override: false,
     }));
+    const changedSinceActive = state.active?.payload?.sourceGeneratedAt &&
+      state.active.payload.sourceGeneratedAt !== payload.generatedAt;
     status(state.items.length === 5
-      ? "ailhat selected the default sprint. Edit or reorder only if you want to override it."
+      ? (changedSinceActive
+          ? "ailhat has a newer recommendation. The accepted sprint below remains frozen until it is completed or cancelled."
+          : "ailhat selected the default sprint. Edit or reorder only if you want to override it.")
       : `ailhat returned ${state.items.length} eligible item${state.items.length === 1 ? "" : "s"}; five are required to accept a sprint.`);
     render();
   } catch (error) {
@@ -153,7 +157,13 @@ async function acceptSprint() {
       }),
     });
     const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || "Could not create directive");
+    if (!response.ok) {
+      if (response.status === 409 && payload.active) {
+        state.active = payload.active;
+        await loadHistory();
+      }
+      throw new Error(payload.error || "Could not create directive");
+    }
     state.accepted = payload;
     status(payload.existing ? "This sprint is already queued for AgentOS." : "Sprint frozen. AgentOS intake is queued.");
     const preview = document.querySelector("#ailhat-sprint-directive-preview");
@@ -177,9 +187,22 @@ async function loadHistory() {
     const payload = await response.json();
     if (!response.ok) throw new Error();
     const rows = payload.directives || [];
-    root.innerHTML = rows.length ? rows.slice(0, 5).map(row =>
-      `<div class="ailhat-sprint-history__row"><span>${esc(row.status)}</span><strong>${esc(row.id)}</strong><small>${esc(new Date(row.created_at).toLocaleString())}</small></div>`
-    ).join("") : '<p class="ailhat-sprint-empty">No accepted ailhat sprint directives yet.</p>';
+    state.active = rows.find(row => !["completed","cancelled"].includes(String(row.status))) || null;
+    root.innerHTML = rows.length ? rows.slice(0, 5).map(row => {
+      const frozen = row.payload?.items || [];
+      const runtimeItems = row.governance?.items || [];
+      const runtimeByExternal = new Map(runtimeItems.map(item => [item.external_id, item]));
+      const items = frozen.map((item, index) => {
+        const runtime = runtimeItems[index] || runtimeByExternal.get(`${row.id}::item:${index + 1}`) || {};
+        return `<li><span>${index + 1}</span><strong>${esc(item.title || item.outcome || "Untitled")}</strong><small>${esc(runtime.status || "queued")}${runtime.task_id ? ` · ${esc(runtime.task_id)}` : ""}</small></li>`;
+      }).join("");
+      return `<article class="ailhat-sprint-history__card">
+        <div class="ailhat-sprint-history__row"><span>${esc(row.status)}</span><strong>${esc(row.id)}</strong><small>${esc(new Date(row.created_at).toLocaleString())}</small></div>
+        <p class="ailhat-sprint-history__meta">Frozen · ${esc(row.payload?.selectionMode || "accepted")} · source ${esc(row.payload?.sourceGeneratedAt || "unknown")}</p>
+        <ol class="ailhat-sprint-history__items">${items}</ol>
+      </article>`;
+    }).join("") : '<p class="ailhat-sprint-empty">No accepted ailhat sprint directives yet.</p>';
+    render();
   } catch {
     root.innerHTML = '<p class="ailhat-sprint-empty">Directive history unavailable.</p>';
   }
@@ -188,5 +211,4 @@ async function loadHistory() {
 document.querySelector("#ailhat-sprint-refresh")?.addEventListener("click", loadRecommendation);
 document.querySelector("#ailhat-sprint-accept")?.addEventListener("click", acceptSprint);
 document.querySelector("#ailhat-sprint-add")?.addEventListener("click", addOwnerItem);
-loadRecommendation();
-loadHistory();
+loadHistory().then(loadRecommendation);
