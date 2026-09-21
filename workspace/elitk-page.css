@@ -1,7 +1,6 @@
 .elitk-page-trigger,.elitk-page-refresh{border:1px solid currentColor;background:transparent;color:inherit;padding:9px 11px;font:600 10px/1 system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
-.elitk-page-trigger{background:currentColor}
-.elitk-page-trigger::first-line{color:inherit}
-.career-ops-page .elitk-page-trigger,.production-review-page .elitk-page-trigger{background:var(--ink,#171713);color:var(--paper,#f5f3ef);border-color:var(--ink,#171713)}
+.elitk-page-trigger{background:var(--ink,#171713);color:var(--paper,#f5f3ef);border-color:var(--ink,#171713)}
+body:not(.workspace-page) .elitk-page-trigger{background:#f1eee6;color:#11110f;border-color:#f1eee6}
 .elitk-page-trigger.is-active{outline:2px solid currentColor;outline-offset:2px}
 .elitk-page-panel{margin:20px 0 28px;padding:20px;border:1px solid currentColor;background:rgba(127,127,127,.08);color:inherit}
 .elitk-page-panel[hidden]{display:none!important}
