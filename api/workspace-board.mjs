@@ -44,6 +44,7 @@ async function ensureTable(sql) {
   await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS canonical_url TEXT`;
   await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS observed_at TIMESTAMPTZ`;
   await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb`;
+  await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS snapshot_id TEXT`;
 }
 
 function text(value, max = 500) {
@@ -55,7 +56,7 @@ function optionalText(value, max = 500) {
   return valueText || null;
 }
 
-function cleanRow(row, fallbackObservedAt) {
+function cleanRow(row, fallbackObservedAt, snapshotId) {
   const boardKey = text(row?.board_key, 250);
   const title = text(row?.title, 500);
   if (!boardKey || !title) return null;
@@ -91,6 +92,7 @@ function cleanRow(row, fallbackObservedAt) {
     observedAt: observedAt.toISOString(),
     metadata: row?.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata)
       ? row.metadata : {},
+    snapshotId: optionalText(snapshotId || row?.snapshot_id, 128),
   };
 }
 
@@ -106,7 +108,7 @@ export default async function handler(req, res) {
         board_key, source_system, kind, lane, title, status, phase, assignee,
         product, workspace, work_id, task_id, priority, source, summary, blocker,
         next_gate, attempts, authority_expires, canonical_url, updated_at,
-        observed_at, metadata
+        observed_at, metadata, snapshot_id
         FROM workspace_board
         ORDER BY
           CASE lane
@@ -123,10 +125,12 @@ export default async function handler(req, res) {
         const value = row.observed_at ? new Date(row.observed_at).getTime() : 0;
         return Math.max(latest, Number.isFinite(value) ? value : 0);
       }, 0);
+      const snapshotId = rows.find(row => row.snapshot_id)?.snapshot_id || null;
       return json(res, 200, {
         ok: true,
         rows,
         observed_at: freshness ? new Date(freshness).toISOString() : null,
+        snapshot_id: snapshotId,
       });
     }
 
@@ -135,8 +139,9 @@ export default async function handler(req, res) {
 
     const body = parseBody(req);
     const fallbackObservedAt = body.observed_at || new Date().toISOString();
+    const snapshotId = optionalText(body.snapshot_id, 128);
     const rows = (Array.isArray(body.rows) ? body.rows : [])
-      .map(row => cleanRow(row, fallbackObservedAt))
+      .map(row => cleanRow(row, fallbackObservedAt, snapshotId))
       .filter(Boolean)
       .slice(0, 500);
     if (!rows.length) return json(res, 400, { ok: false, error: 'Empty snapshot' });
@@ -154,7 +159,7 @@ export default async function handler(req, res) {
         board_key, source_system, kind, lane, title, status, phase, assignee,
         product, workspace, work_id, task_id, priority, source, summary, blocker,
         next_gate, attempts, authority_expires, canonical_url, updated_at,
-        observed_at, metadata
+        observed_at, metadata, snapshot_id
       ) VALUES (
         ${row.boardKey}, ${row.sourceSystem}, ${row.kind}, ${row.lane},
         ${row.title}, ${row.status}, ${row.phase}, ${row.assignee},
@@ -162,7 +167,7 @@ export default async function handler(req, res) {
         ${row.priority}, ${row.source}, ${row.summary}, ${row.blocker},
         ${row.nextGate}, ${row.attempts}, ${row.authorityExpires},
         ${row.canonicalUrl}, ${row.updatedAt}, ${row.observedAt},
-        ${JSON.stringify(row.metadata)}::jsonb
+        ${JSON.stringify(row.metadata)}::jsonb, ${row.snapshotId}
       ) ON CONFLICT (board_key) DO UPDATE SET
         source_system = EXCLUDED.source_system,
         kind = EXCLUDED.kind,
@@ -185,7 +190,8 @@ export default async function handler(req, res) {
         canonical_url = EXCLUDED.canonical_url,
         updated_at = EXCLUDED.updated_at,
         observed_at = EXCLUDED.observed_at,
-        metadata = EXCLUDED.metadata`;
+        metadata = EXCLUDED.metadata,
+        snapshot_id = EXCLUDED.snapshot_id`;
     }
 
     return json(res, 200, {
@@ -193,6 +199,7 @@ export default async function handler(req, res) {
       upserted: rows.length,
       source_system: sourceSystem,
       observed_at: fallbackObservedAt,
+      snapshot_id: snapshotId,
     });
   } catch (error) {
     console.error('workspace board failed', error);
