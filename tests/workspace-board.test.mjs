@@ -52,6 +52,7 @@ test('AgentOS snapshot is private, replaceable, and preserves lifecycle fields',
       source_system:'agent-os',
       replace:true,
       observed_at:'2026-09-20T20:00:00Z',
+      snapshot_id:'snapshot-abc123',
       rows:[
         {
           board_key:'fleet:t1',
@@ -92,6 +93,8 @@ test('AgentOS snapshot is private, replaceable, and preserves lifecycle fields',
   const visible = await f.call({ owner:true });
   assert.equal(visible.statusCode, 200);
   assert.equal(visible.body.rows.length, 2);
+  assert.equal(visible.body.snapshot_id, 'snapshot-abc123');
+  assert.equal(visible.body.rows[0].snapshot_id, 'snapshot-abc123');
   assert.equal(visible.body.rows[0].lane, 'stuck');
   assert.equal(visible.body.rows[0].blocker, 'Authority expired.');
   assert.equal(visible.body.rows[1].kind, 'backlog');
