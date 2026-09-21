@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />
   <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-operatorviews1" />
+  <link rel="stylesheet" href="/workspace/sprint.css?v=20260921-sprint1" />
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
   <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260921-workcanvas3" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
@@ -25,6 +26,7 @@
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
   <script type="module" src="/workspace/agentos-board.mjs?v=20260921-refreshsnapshot1"></script>
+  <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/deployment-budget.mjs?v=20260921-live1"></script>
   <script type="module" src="/workspace/views.mjs?v=20260921-deploytracker1"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260920-inlinework1"></script>
@@ -119,6 +121,30 @@
           <p class="section-note">Objective → why now → assigned owner → current step → next gate. No inferred motion without a synced source.</p>
         </div>
         <div id="today-sessions" aria-live="polite"><p class="today-empty">Loading AgentOS execution…</p></div>
+      </div>
+    </section>
+
+    <section class="ailhat-sprint-section" id="sprint-directive" aria-labelledby="ailhat-sprint-title">
+      <div class="section-heading-row ailhat-sprint-heading">
+        <div>
+          <p class="section-kicker">ailhat · Portfolio Intelligence</p>
+          <h2 id="ailhat-sprint-title">Next 5 Sprint</h2>
+        </div>
+        <div class="ailhat-sprint-actions">
+          <button type="button" id="ailhat-sprint-refresh">Refresh ailhat</button>
+          <button type="button" id="ailhat-sprint-accept" disabled>Accept Sprint &amp; Create Directive</button>
+        </div>
+      </div>
+      <p class="ailhat-sprint-intro">ailhat selects the default five from portfolio evidence. Edit or reorder only when you want to override its judgment. Acceptance freezes this sprint and queues a governed AgentOS directive; it does not itself grant execution authority.</p>
+      <p class="ailhat-sprint-status" id="ailhat-sprint-status" aria-live="polite">Waiting for ailhat…</p>
+      <div class="ailhat-sprint-items" id="ailhat-sprint-items" aria-live="polite"></div>
+      <details class="ailhat-sprint-preview" id="ailhat-sprint-directive-preview" hidden>
+        <summary>Generated AgentOS markdown directive</summary>
+        <pre></pre>
+      </details>
+      <div>
+        <p class="section-kicker">Accepted sprint directives</p>
+        <div class="ailhat-sprint-history" id="ailhat-sprint-history" aria-live="polite"></div>
       </div>
     </section>
 

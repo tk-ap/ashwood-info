@@ -30,6 +30,56 @@ async function ensureCommandTable(sql) {
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
+  await sql`ALTER TABLE workspace_commands ADD COLUMN IF NOT EXISTS command_kind TEXT NOT NULL DEFAULT 'owner_command'`;
+  await sql`ALTER TABLE workspace_commands ADD COLUMN IF NOT EXISTS payload JSONB`;
+  await sql`ALTER TABLE workspace_commands ADD COLUMN IF NOT EXISTS content_hash TEXT`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS workspace_commands_content_hash_idx ON workspace_commands(content_hash) WHERE content_hash IS NOT NULL`;
+}
+
+function sprintMarkdown(directive) {
+  const lines = [
+    '# AILHAT SPRINT DIRECTIVE',
+    '',
+    `DIRECTIVE ID: ${directive.id}`,
+    `SOURCE: ailhat Portfolio Intelligence`,
+    `SELECTION: ${directive.selectionMode}`,
+    `ITEM COUNT: ${directive.items.length}`,
+    'AUTHORITY: accepted owner sprint intent; AgentOS governance still applies',
+    '',
+    '## Sprint objective',
+    'Resolve the five highest-value selected portfolio outcomes and return verified evidence.',
+    '',
+    '## Shared constraints',
+    '- preserve product and authorization boundaries',
+    '- resolve dependencies before blocked downstream work',
+    '- batch compatible changes where appropriate',
+    '- do not infer permission from ailhat recommendation',
+    '- do not mark complete until intended behavior is independently verified and evidence is recorded',
+  ];
+  directive.items.forEach((item, index) => {
+    lines.push(
+      '',
+      `## ${index + 1} — ${item.title}`,
+      `AILHAT RANK: ${item.sourceRank ?? 'owner-added'}`,
+      `OUTCOME: ${item.outcome || item.title}`,
+      `WHY NOW: ${item.whyNow || 'Owner override'}`,
+      `PRODUCT / REPO: ${item.productName || 'Portfolio'}${item.repository ? ' · ' + item.repository : ''}`,
+      `DEPENDENCIES: ${(item.dependencies || []).join('; ') || 'none recorded'}`,
+      `BLOCKERS: ${(item.blockers || []).join('; ') || 'none recorded'}`,
+      'ACCEPTANCE:',
+      ...(item.acceptanceCriteria || []).map(value => '- ' + value),
+      `VERIFY: ${item.verification || 'Independent verification required.'}`,
+      `OVERRIDE: ${item.override ? 'owner changed ailhat recommendation/order' : 'none'}`,
+      `SOURCE: ${item.sourceId || 'owner override'}`,
+    );
+  });
+  lines.push(
+    '',
+    '## Completion gate',
+    'Resolve every selected item to either verified complete or explicitly blocked/deferred with reason, evidence, and canonical AgentOS state updated.',
+    ''
+  );
+  return lines.join('\n');
 }
 
 const NETWORK_TYPES = new Set(['SPONSOR','INVITE','REFERRAL','COLLABORATOR','INTRODUCTION','DESIGN_PARTNER','OTHER']);
@@ -92,7 +142,7 @@ export default async function handler(req, res) {
           LIMIT 1
           FOR UPDATE SKIP LOCKED
         )
-        RETURNING id, command_text, status, claim_id, created_at`;
+        RETURNING id, command_text, command_kind, payload, content_hash, status, claim_id, created_at`;
       return json(res, 200, { ok: true, command: rows[0] || null });
     }
 
@@ -133,6 +183,21 @@ export default async function handler(req, res) {
     if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
 
     if (req.method === 'GET') {
+      if (req.query?.view === 'sprint-recommendation') {
+        const token = process.env.AILHAT_WORKSPACE_READ_TOKEN;
+        const endpoint = process.env.AILHAT_NEXT_SPRINT_URL || 'https://ailhat.vercel.app/api/next-sprint';
+        if (!token) return json(res, 503, { ok:false, error:'AILHAT_WORKSPACE_READ_TOKEN is not configured' });
+        const response = await fetch(endpoint, { headers:{ Authorization:'Bearer '+token, Accept:'application/json' } });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) return json(res, 502, { ok:false, error:payload.error || 'ailhat recommendation unavailable', upstream_status:response.status });
+        return json(res, 200, payload);
+      }
+      if (req.query?.view === 'sprint-directives') {
+        await ensureCommandTable(sql);
+        const directives = await sql`SELECT id,status,payload,runtime_directive_id,runtime_task_id,governance,error,created_at,updated_at
+          FROM workspace_commands WHERE command_kind = 'ailhat_sprint' ORDER BY created_at DESC LIMIT 20`;
+        return json(res, 200, { ok:true, directives });
+      }
       if (req.query?.view === 'deployments') {
         const token = process.env.VERCEL_TOKEN;
         const teamId = process.env.VERCEL_TEAM_ID || 'team_o8DEWGS5bzF8jdgWsD9IfBec';
@@ -179,7 +244,7 @@ export default async function handler(req, res) {
       }
       if (req.query?.view === 'commands') {
         await ensureCommandTable(sql);
-        const commands = await sql`SELECT id, command_text, status, runtime_directive_id, runtime_task_id, governance, error, created_at, updated_at FROM workspace_commands ORDER BY created_at DESC LIMIT 30`;
+        const commands = await sql`SELECT id, command_text, command_kind, payload, status, runtime_directive_id, runtime_task_id, governance, error, created_at, updated_at FROM workspace_commands ORDER BY created_at DESC LIMIT 30`;
         return json(res, 200, { ok: true, commands });
       }
       if (req.query?.view === 'network') {
@@ -233,6 +298,44 @@ export default async function handler(req, res) {
           next_action_at=EXCLUDED.next_action_at,notes=EXCLUDED.notes,updated_at=NOW()
       `;
       return json(res, 200, { ok: true, id });
+    }
+
+    if (action === 'submit_sprint_directive') {
+      await ensureCommandTable(sql);
+      const selections = Array.isArray(body.selections) ? body.selections.slice(0, 5) : [];
+      if (selections.length !== 5) return json(res, 400, { ok:false, error:'A sprint directive requires exactly five selected items' });
+      const items = selections.map((item, index) => ({
+        sourceId:String(item?.sourceId || '').slice(0,250) || null,
+        sourceRank:Number(item?.sourceRank || 0) || null,
+        ownerRank:index + 1,
+        title:String(item?.title || '').trim().slice(0,500),
+        outcome:String(item?.outcome || item?.title || '').trim().slice(0,1200),
+        productId:String(item?.productId || '').slice(0,250) || null,
+        productName:String(item?.productName || 'Portfolio').trim().slice(0,200),
+        repository:String(item?.repository || '').trim().slice(0,500) || null,
+        whyNow:String(item?.whyNow || '').trim().slice(0,2000),
+        evidence:Array.isArray(item?.evidence) ? item.evidence.map(v=>String(v).slice(0,1000)).slice(0,12) : [],
+        dependencies:Array.isArray(item?.dependencies) ? item.dependencies.map(v=>String(v).slice(0,500)).slice(0,12) : [],
+        blockers:Array.isArray(item?.blockers) ? item.blockers.map(v=>String(v).slice(0,500)).slice(0,12) : [],
+        acceptanceCriteria:Array.isArray(item?.acceptanceCriteria) ? item.acceptanceCriteria.map(v=>String(v).slice(0,1000)).slice(0,12) : [],
+        verification:String(item?.verification || '').trim().slice(0,1500),
+        override:Boolean(item?.override) || Number(item?.sourceRank || 0) !== index + 1,
+      }));
+      if (items.some(item => !item.title || !item.outcome)) return json(res, 400, { ok:false, error:'Every sprint item needs a title and outcome' });
+      const sourceGeneratedAt = String(body.source_generated_at || '').slice(0,80) || null;
+      const selectionMode = items.some(item => item.override) ? 'owner-overridden' : 'ailhat-default';
+      const fingerprint = sha256(JSON.stringify({ sourceGeneratedAt, items }));
+      const existing = await sql`SELECT id,status,command_text FROM workspace_commands WHERE content_hash = ${fingerprint} LIMIT 1`;
+      if (existing[0]) return json(res, 200, { ok:true, existing:true, id:existing[0].id, status:existing[0].status, markdown:existing[0].command_text });
+      const id = 'ailhat-sprint:' + crypto.randomUUID();
+      const directive = {
+        schema:'workspace.ailhat-sprint/v1', id, source:'ailhat Portfolio Intelligence',
+        sourceGeneratedAt, acceptedAt:new Date().toISOString(), selectionMode, items
+      };
+      const markdown = sprintMarkdown(directive);
+      await sql`INSERT INTO workspace_commands(id,command_text,status,source,command_kind,payload,content_hash)
+        VALUES(${id},${markdown},'queued','ailhat-workspace','ailhat_sprint',${JSON.stringify(directive)}::jsonb,${fingerprint})`;
+      return json(res, 201, { ok:true, existing:false, id, status:'queued', markdown, directive });
     }
 
     if (action === 'submit_command') {
