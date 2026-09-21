@@ -44,6 +44,7 @@ function sprintMarkdown(directive) {
     `SOURCE: ailhat Portfolio Intelligence`,
     `SELECTION: ${directive.selectionMode}`,
     `ITEM COUNT: ${directive.items.length}`,
+    `DEFERRED AILHAT SOURCES: ${(directive.deferredSourceIds || []).join(', ') || 'none'}`,
     'AUTHORITY: accepted owner sprint intent; AgentOS governance still applies',
     '',
     '## Sprint objective',
@@ -323,14 +324,15 @@ export default async function handler(req, res) {
       }));
       if (items.some(item => !item.title || !item.outcome)) return json(res, 400, { ok:false, error:'Every sprint item needs a title and outcome' });
       const sourceGeneratedAt = String(body.source_generated_at || '').slice(0,80) || null;
-      const selectionMode = items.some(item => item.override) ? 'owner-overridden' : 'ailhat-default';
-      const fingerprint = sha256(JSON.stringify({ sourceGeneratedAt, items }));
+      const deferredSourceIds = Array.isArray(body.deferred_source_ids) ? body.deferred_source_ids.map(value=>String(value).slice(0,250)).filter(Boolean).slice(0,20) : [];
+      const selectionMode = items.some(item => item.override) || deferredSourceIds.length ? 'owner-overridden' : 'ailhat-default';
+      const fingerprint = sha256(JSON.stringify({ sourceGeneratedAt, items, deferredSourceIds }));
       const existing = await sql`SELECT id,status,command_text FROM workspace_commands WHERE content_hash = ${fingerprint} LIMIT 1`;
       if (existing[0]) return json(res, 200, { ok:true, existing:true, id:existing[0].id, status:existing[0].status, markdown:existing[0].command_text });
       const id = 'ailhat-sprint:' + crypto.randomUUID();
       const directive = {
         schema:'workspace.ailhat-sprint/v1', id, source:'ailhat Portfolio Intelligence',
-        sourceGeneratedAt, acceptedAt:new Date().toISOString(), selectionMode, items
+        sourceGeneratedAt, acceptedAt:new Date().toISOString(), selectionMode, deferredSourceIds, items
       };
       const markdown = sprintMarkdown(directive);
       await sql`INSERT INTO workspace_commands(id,command_text,status,source,command_kind,payload,content_hash)
