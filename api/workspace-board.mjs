@@ -45,6 +45,7 @@ async function ensureTable(sql) {
   await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS observed_at TIMESTAMPTZ`;
   await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb`;
   await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS snapshot_id TEXT`;
+  await sql`ALTER TABLE workspace_board ADD COLUMN IF NOT EXISTS work_domain TEXT`;
 }
 
 function text(value, max = 500) {
@@ -93,6 +94,12 @@ function cleanRow(row, fallbackObservedAt, snapshotId) {
     metadata: row?.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata)
       ? row.metadata : {},
     snapshotId: optionalText(snapshotId || row?.snapshot_id, 128),
+    workDomain: (() => {
+      const explicit = optionalText(row?.work_domain || row?.metadata?.work_domain, 40);
+      if (explicit === 'agentos' || explicit === 'ecosystem') return explicit;
+      const normalized = String(row?.product || '').toLowerCase().replace(/[\s-]+/g, '');
+      return normalized === 'agentos' ? 'agentos' : 'ecosystem';
+    })(),
   };
 }
 
@@ -108,7 +115,7 @@ export default async function handler(req, res) {
         board_key, source_system, kind, lane, title, status, phase, assignee,
         product, workspace, work_id, task_id, priority, source, summary, blocker,
         next_gate, attempts, authority_expires, canonical_url, updated_at,
-        observed_at, metadata, snapshot_id
+        observed_at, metadata, snapshot_id, work_domain
         FROM workspace_board
         ORDER BY
           CASE lane
@@ -159,7 +166,7 @@ export default async function handler(req, res) {
         board_key, source_system, kind, lane, title, status, phase, assignee,
         product, workspace, work_id, task_id, priority, source, summary, blocker,
         next_gate, attempts, authority_expires, canonical_url, updated_at,
-        observed_at, metadata, snapshot_id
+        observed_at, metadata, snapshot_id, work_domain
       ) VALUES (
         ${row.boardKey}, ${row.sourceSystem}, ${row.kind}, ${row.lane},
         ${row.title}, ${row.status}, ${row.phase}, ${row.assignee},
@@ -167,7 +174,7 @@ export default async function handler(req, res) {
         ${row.priority}, ${row.source}, ${row.summary}, ${row.blocker},
         ${row.nextGate}, ${row.attempts}, ${row.authorityExpires},
         ${row.canonicalUrl}, ${row.updatedAt}, ${row.observedAt},
-        ${JSON.stringify(row.metadata)}::jsonb, ${row.snapshotId}
+        ${JSON.stringify(row.metadata)}::jsonb, ${row.snapshotId}, ${row.workDomain}
       ) ON CONFLICT (board_key) DO UPDATE SET
         source_system = EXCLUDED.source_system,
         kind = EXCLUDED.kind,
@@ -191,7 +198,8 @@ export default async function handler(req, res) {
         updated_at = EXCLUDED.updated_at,
         observed_at = EXCLUDED.observed_at,
         metadata = EXCLUDED.metadata,
-        snapshot_id = EXCLUDED.snapshot_id`;
+        snapshot_id = EXCLUDED.snapshot_id,
+        work_domain = EXCLUDED.work_domain`;
     }
 
     return json(res, 200, {
