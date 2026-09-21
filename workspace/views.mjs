@@ -49,6 +49,7 @@ const GROUPS = {
     ".actual-priorities"
   ],
   build: [
+    "#sprint-directive",
     "#deployment-budget",
     "#agentos-board-section",
     "#build",
