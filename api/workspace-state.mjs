@@ -133,6 +133,35 @@ export default async function handler(req, res) {
     if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
 
     if (req.method === 'GET') {
+      if (req.query?.view === 'deployments') {
+        const token = process.env.VERCEL_TOKEN;
+        const teamId = process.env.VERCEL_TEAM_ID || 'team_o8DEWGS5bzF8jdgWsD9IfBec';
+        const projects = [
+          ['prj_p0OqGFvZZU8940ePrXIoVocuTUl7','ASHWOOD'],
+          ['prj_yMUW9t71FNsaFeJSNntNCV4tZZFe','ledgato'],
+          ['prj_ocnKA4Xr7Jd1aTjUKcRjYgsniy5l','ALVIRA'],
+          ['prj_dqOUuTJPaegWYi3l4f9Kx8vxyWOe','ailhat']
+        ];
+        if (!token) return json(res, 503, { ok:false, error:'VERCEL_TOKEN is not configured' });
+        const since = Date.now() - 86400000;
+        const deployments = [];
+        await Promise.all(projects.map(async ([projectId, projectName]) => {
+          const url = new URL('https://api.vercel.com/v6/deployments');
+          url.searchParams.set('projectId', projectId);
+          url.searchParams.set('teamId', teamId);
+          url.searchParams.set('since', String(since));
+          url.searchParams.set('limit', '100');
+          const response = await fetch(url, { headers:{ Authorization:'Bearer '+token } });
+          if (!response.ok) throw new Error('Vercel deployments '+response.status);
+          const payload = await response.json();
+          for (const item of payload.deployments || []) deployments.push({
+            id:item.uid || item.id, projectId, projectName, created:item.created || item.createdAt,
+            state:item.state || item.readyState || 'UNKNOWN', target:item.target || null
+          });
+        }));
+        deployments.sort((a,b)=>b.created-a.created);
+        return json(res, 200, { ok:true, limit:100, window_hours:24, observed_at:new Date().toISOString(), deployments });
+      }
       if (req.query?.view === 'feed') {
         const feed = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes FROM workspace_evidence WHERE source IN ('ailhat', 'agent-os', 'board', 'github', 'ledgato', 'alvira') ORDER BY occurred_at DESC LIMIT 250`;
         const attention = splitSignalAttention(feed);
