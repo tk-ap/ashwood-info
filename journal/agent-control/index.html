@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A public working record of the emerging AgentOS, LEDGATo, execution, and independent verification architecture." />
+  <link rel="canonical" href="https://ashwood-info.vercel.app/journal/agent-control/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#11110f" />
+  <title>AGENT CONTROL — BUILD JOURNAL / ASHWOOD</title>
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
+  <link rel="stylesheet" href="/journal/journal.css?v=20260918-hero2" />
+  <style>
+    :root{--bg:#11110f;--ink:#f1eee6;--muted:#99968e;--rule:rgba(241,238,230,.16);--gold:#d6c24a;--ox:#8e3145;--green:#89a76f}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 8%,rgba(214,194,74,.07),transparent 26%),var(--bg);color:var(--ink)}
+    .mast{display:flex;justify-content:space-between;gap:20px;padding:20px clamp(20px,4vw,56px);border-bottom:1px solid var(--rule);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}
+    .mast a{color:inherit;text-decoration:none}.shell{width:min(1320px,calc(100% - 40px));margin:auto}.hero{padding:clamp(70px,11vw,150px) 0 80px}.kicker,.eyebrow{font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+    h1{max-width:11ch;margin:18px 0 28px;font:300 clamp(58px,10vw,150px)/.86 Arial,Helvetica,sans-serif;letter-spacing:-.065em}.deck{max-width:650px;margin:0;color:var(--muted);font-size:clamp(18px,2vw,24px);line-height:1.5}
+    .truth{margin-top:42px;padding:18px 0;border-block:1px solid var(--rule);font:600 11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.truth b{color:var(--gold)}
+    section{padding:clamp(64px,9vw,120px) 0;border-top:1px solid var(--rule)}.section-head{display:grid;grid-template-columns:150px 1fr;gap:24px;margin-bottom:44px}.section-head h2{margin:0;max-width:12ch;font:400 clamp(42px,6vw,84px)/.92 Arial,Helvetica,sans-serif;letter-spacing:-.05em}.section-head p{max-width:620px;margin:16px 0 0;color:var(--muted);line-height:1.6}
+    .system{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule)}.node{position:relative;display:grid;grid-template-columns:140px 1fr 1fr;gap:28px;align-items:center;min-height:180px;padding:clamp(24px,4vw,42px);background:var(--bg)}.node:not(:last-child):after{content:"↓";position:absolute;left:68px;bottom:-15px;z-index:3;padding:3px;background:var(--bg);color:var(--gold)}.num{font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--gold)}.node h3{margin:0;font-size:clamp(30px,4vw,52px);font-weight:500;letter-spacing:-.04em}.node p{margin:0;color:var(--muted);line-height:1.55}.node strong{display:block;margin-bottom:7px;color:var(--ink);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}
+    .status{border:1px solid var(--rule)}.row{display:grid;grid-template-columns:minmax(170px,.8fr) 160px minmax(260px,1.6fr);border-bottom:1px solid var(--rule)}.row:last-child{border-bottom:0}.cell{padding:22px;border-right:1px solid var(--rule);line-height:1.45}.cell:last-child{border-right:0}.head .cell{font:600 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.cap{font-weight:600}.state{display:inline-flex;padding:7px 9px;border:1px solid var(--rule);font:600 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em;text-transform:uppercase}.exists{border-color:rgba(137,167,111,.65);color:#afc89a}.emerging{border-color:rgba(214,194,74,.65);color:var(--gold)}.missing{border-color:rgba(142,49,69,.8);color:#d57b8e}.note{color:var(--muted)}
+    .principle{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}.principle div{min-height:220px;padding:30px;background:var(--bg);display:flex;flex-direction:column;justify-content:space-between}.principle b{font-size:clamp(26px,3vw,42px);letter-spacing:-.04em}.principle span{color:var(--muted);line-height:1.5}
+    .cta{display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:end;padding:clamp(50px,8vw,100px);border:1px solid var(--gold);background:linear-gradient(135deg,rgba(214,194,74,.09),transparent 55%)}.cta h2{margin:0;max-width:10ch;font:400 clamp(46px,7vw,94px)/.9 Arial,Helvetica,sans-serif;letter-spacing:-.055em}.cta p{color:var(--muted);line-height:1.6}.button{display:inline-flex;justify-content:center;align-items:center;min-height:54px;padding:0 20px;border:1px solid var(--gold);color:var(--ink);text-decoration:none;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}
+    .foot{padding:32px 0 70px;color:var(--muted);font:500 10px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+    @media(max-width:760px){.section-head,.node,.cta{grid-template-columns:1fr}.node:not(:last-child):after{left:24px}.row{grid-template-columns:1fr}.head{display:none}.cell{border-right:0;border-bottom:1px solid var(--rule)}.cell:last-child{border-bottom:0}.principle{grid-template-columns:1fr}.mast{flex-wrap:wrap}.shell{width:min(100% - 28px,1320px)}}
+  </style>
+</head>
+<body>
+<header class="mast"><a href="/">ASHWOOD</a><a href="/journal/">BUILD JOURNAL</a><span>PUBLIC WORKING RECORD / 21 SEP 2026</span></header>
+<main>
+  <div class="shell hero">
+    <p class="kicker">AGENT CONTROL / CURRENT ARCHITECTURE</p>
+    <h1>Intelligence is not authority.</h1>
+    <p class="deck">A working map of the system emerging underneath the builds: who decides what should happen, who may authorize it, who executes it, and how reality is independently checked afterward.</p>
+    <div class="truth"><b>STATUS:</b> architecture and bounded proofs exist. Universal non-bypassable enforcement and independent verification across every harness do not yet.</div>
+  </div>
+
+  <section><div class="shell">
+    <div class="section-head"><span class="eyebrow">01 / SYSTEM</span><div><h2>Four different jobs.</h2><p>Keeping these responsibilities separate is the point. A worker should not become its own authority or its own source of truth.</p></div></div>
+    <div class="system">
+      <article class="node"><span class="num">01</span><h3>AgentOS</h3><p><strong>Coordination</strong>Directives, routing, state, lifecycle and recovery. <em>What should happen?</em></p></article>
+      <article class="node"><span class="num">02</span><h3>LEDGATo</h3><p><strong>Authority</strong>Identity, grants, policy, approvals, revocation and decision receipts. <em>May it happen?</em></p></article>
+      <article class="node"><span class="num">03</span><h3>Execution plane</h3><p><strong>Work</strong>Claude, Codex, Hermes, APIs, MCPs and provider tools perform the authorized action. <em>Do the work.</em></p></article>
+      <article class="node"><span class="num">04</span><h3>Independent verification</h3><p><strong>Evidence</strong>External state, receipts, invariants and reconciliation establish the effect independently of the actor. <em>Did reality comply?</em></p></article>
+    </div>
+  </div></section>
+
+  <section><div class="shell">
+    <div class="section-head"><span class="eyebrow">02 / STATUS</span><div><h2>What exists. What doesn’t.</h2><p>No progress theater. “Exists” means there is an implemented mechanism or bounded proof. It does not mean the property has been proven universally.</p></div></div>
+    <div class="status" role="table" aria-label="Current agent control infrastructure status">
+      <div class="row head" role="row"><div class="cell">Capability</div><div class="cell">State</div><div class="cell">Current evidence / limit</div></div>
+      <div class="row"><div class="cell cap">AgentOS durable control plane</div><div class="cell"><span class="state exists">Exists</span></div><div class="cell note">Canonical state, routing and lifecycle are implemented; persistence/runtime stabilization remains active work.</div></div>
+      <div class="row"><div class="cell cap">Multi-harness routing</div><div class="cell"><span class="state emerging">Emerging</span></div><div class="cell note">Routing across execution harnesses exists, with lifecycle and ownership hardening still underway.</div></div>
+      <div class="row"><div class="cell cap">LEDGATo ALLOW / DENY / APPROVE</div><div class="cell"><span class="state exists">Exists</span></div><div class="cell note">Bounded enforcement behavior and approval semantics exist.</div></div>
+      <div class="row"><div class="cell cap">Delegated / JIT authority + revocation</div><div class="cell"><span class="state exists">Exists</span></div><div class="cell note">Authority can be scoped rather than treated as a permanent property of an agent.</div></div>
+      <div class="row"><div class="cell cap">Decision receipts / evidence model</div><div class="cell"><span class="state emerging">Emerging</span></div><div class="cell note">Receipts and durable evidence are part of the contract; coverage is not yet universal.</div></div>
+      <div class="row"><div class="cell cap">Non-bypassable enforcement across every tool</div><div class="cell"><span class="state missing">Not proven</span></div><div class="cell note">A bounded boundary proof is not the same as proving that every alternate path, cached credential or harness is fenced.</div></div>
+      <div class="row"><div class="cell cap">Strong principal identity everywhere</div><div class="cell"><span class="state missing">Incomplete</span></div><div class="cell note">Identity and privilege separation still need to hold across runtime, worker, verifier and red-team contexts.</div></div>
+      <div class="row"><div class="cell cap">Independent universal post-action verifier</div><div class="cell"><span class="state missing">Not yet</span></div><div class="cell note">The architecture calls for independent readback of effects; it is not yet a universal verification plane.</div></div>
+      <div class="row"><div class="cell cap">Automatic bypass-attempt detection</div><div class="cell"><span class="state missing">Not yet</span></div><div class="cell note">General detection and reconciliation of attempted boundary circumvention remains future infrastructure.</div></div>
+    </div>
+  </div></section>
+
+  <section><div class="shell">
+    <div class="section-head"><span class="eyebrow">03 / PRINCIPLE</span><div><h2>The trust boundary.</h2><p>The architecture becomes useful when claims by intelligent actors are treated as proposals, not facts.</p></div></div>
+    <div class="principle"><div><b>Intelligence ≠ Authority</b><span>An agent can reason about an action without possessing the right to perform it.</span></div><div><b>Authority ≠ Execution</b><span>A grant authorizes a bounded action; it does not prove the action occurred correctly.</span></div><div><b>Execution ≠ Evidence</b><span>The actor saying “done” is not proof. External state and independent verification close the loop.</span></div></div>
+  </div></section>
+
+  <section><div class="shell">
+    <div class="cta"><div><p class="kicker">PRIVATE BETA / EXTERNAL EVIDENCE</p><h2>Put another person in the loop.</h2></div><div><p>The next useful proof is not another internal claim. Private-beta participants can help test context, governed execution, authorization boundaries and the evidence trail under real conditions.</p><a class="button" href="/connect/">Request private beta access ↗</a></div></div>
+    <div class="foot">PUBLIC WORKING RECORD · Claims on this page are intentionally bounded to current evidence and should change when the evidence changes. <a href="/journal/" style="color:inherit">Return to Build Journal →</a></div>
+  </div></section>
+</main>
+</body>
+</html>
