@@ -37,7 +37,7 @@ const VIEW_META = {
   },
   self: {
     title: "Self.",
-    deck: "Goals, check-ins, personal framing, and the context that should shape the operating system without becoming the whole dashboard.",
+    deck: "Your compass, current thesis, practical constraints, decisions, check-ins, and the evidence shaping what comes next.",
     eyebrow: "Personal operating context",
     tools: []
   }
@@ -69,6 +69,7 @@ const GROUPS = {
     "details.attention"
   ],
   self: [
+    "#self-operating-model",
     "#frame",
     ".goals",
     "#checkin-details"
@@ -164,7 +165,7 @@ function renderUtility(view){
     work:"<strong>Work is the professional view.</strong> Keep career motion and public artifacts separate from product execution.",
     network:"<strong>Network is the relationship control center.</strong> Sponsorship, invitations, referrals, collaborators, introductions, and design partners enter here; payment is only one possible relationship.",
     evidence:"<strong>Evidence is the record.</strong> Use it to verify claims, inspect signals, and trace why priorities changed.",
-    self:"<strong>Self is context, not the dashboard.</strong> Goals and check-ins inform decisions without crowding Today."
+    self:"<strong>Self is your decision context.</strong> Define what matters, test it against evidence, compare real paths, and let the result shape Today without turning reflection into fact."
   };
   utility.innerHTML = copy[view] || "";
   first.parentNode.insertBefore(utility, first);
