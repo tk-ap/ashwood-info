@@ -108,14 +108,15 @@ function nodeText(selector, fallback = "") {
   return cleanText(q(selector)?.textContent, fallback);
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>'"]/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
+  })[char]);
+}
+
 function clip(value, limit = 280) {
   const text = cleanText(value);
   return text.length > limit ? text.slice(0, limit - 1).trimEnd() + "…" : text;
-}
-
-function countedLabel(selector, fallback) {
-  const items = qa(selector);
-  return items.length ? String(items.length) : fallback;
 }
 
 function boardCounts() {
@@ -221,13 +222,13 @@ function renderElitk(view) {
   const title = (VIEW_META[view]?.title || "Workspace.").replace(/\.$/, "");
   panel.innerHTML =
     '<div class="workspace-elitk-panel__head">' +
-      '<div><p class="section-kicker">ELITK · plain-language layer</p><h2>' + title + ', without the jargon.</h2></div>' +
+      '<div><p class="section-kicker">ELITK · plain-language layer</p><h2>' + escapeHtml(title) + ', without the jargon.</h2></div>' +
       '<button type="button" class="workspace-elitk-refresh" data-elitk-refresh>Refresh summary</button>' +
     '</div>' +
     '<div class="workspace-elitk-grid">' +
-      '<article><strong>What this view is for</strong><p>' + summary.purpose + '</p></article>' +
-      '<article><strong>What it says right now</strong><p>' + summary.current + '</p></article>' +
-      '<article><strong>How to read it</strong><p>' + summary.read + '</p></article>' +
+      '<article><strong>What this view is for</strong><p>' + escapeHtml(summary.purpose) + '</p></article>' +
+      '<article><strong>What it says right now</strong><p>' + escapeHtml(summary.current) + '</p></article>' +
+      '<article><strong>How to read it</strong><p>' + escapeHtml(summary.read) + '</p></article>' +
     '</div>' +
     '<p class="workspace-elitk-grounding">Grounded only in the data currently rendered in this Workspace view. ELITK explains the display; it does not move work, approve actions, or upgrade evidence.</p>';
 
