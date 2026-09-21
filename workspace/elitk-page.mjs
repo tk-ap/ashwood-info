@@ -329,10 +329,17 @@ function restore() {
 }
 
 function syncButtons() {
-  document.querySelectorAll("[data-elitk-toggle]").forEach(button => {
-    button.textContent = active ? "ELITK ON · Show original" : "ELITK · Plain language";
-    button.setAttribute("aria-pressed", String(active));
-    button.classList.toggle("is-active", active);
+  document.querySelectorAll("[data-elitk-toggle]").forEach(control => {
+    const isCheckbox = control instanceof HTMLInputElement && control.type === "checkbox";
+    if (isCheckbox) {
+      control.checked = active;
+      control.setAttribute("aria-checked", String(active));
+      control.closest(".workspace-elitk-switch")?.classList.toggle("is-active", active);
+    } else {
+      control.textContent = active ? "ELITK ON · Show original" : "ELITK · Plain language";
+      control.setAttribute("aria-pressed", String(active));
+      control.classList.toggle("is-active", active);
+    }
   });
   document.body.dataset.elitkActive = String(active);
 }
@@ -367,9 +374,14 @@ function start() {
   try { active = localStorage.getItem(STORAGE_KEY) === "1"; } catch { active = false; }
 
   document.addEventListener("click", event => {
-    const button = event.target.closest?.("[data-elitk-toggle]");
+    const button = event.target.closest?.("[data-elitk-toggle]:not(input)");
     if (!button) return;
     setElitkMode(!active);
+  });
+  document.addEventListener("change", event => {
+    const toggle = event.target.closest?.('input[type="checkbox"][data-elitk-toggle]');
+    if (!toggle) return;
+    setElitkMode(toggle.checked);
   });
 
   const observer = new MutationObserver(records => {
