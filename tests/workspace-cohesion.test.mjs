@@ -27,3 +27,18 @@ test('view router keeps AgentOS inside Build and personal context inside Self', 
   assert.match(source, /self:[\s\S]*"#frame"[\s\S]*"\.goals"[\s\S]*"#checkin-details"/);
   assert.match(source, /evidence:[\s\S]*"#evidence-panel"/);
 });
+
+
+test('ELITK is a view-level control available regardless of the active Workspace view', async () => {
+  const source = await readFile(viewsPath, 'utf8');
+  assert.match(source, /ELITK · Explain this view/);
+  assert.match(source, /data\.elitkTrigger|dataset\.elitkTrigger/);
+  assert.match(source, /function summaryFor\(view\)/);
+  for (const view of ['today','build','work','network','evidence']) {
+    assert.match(source, new RegExp('view === "' + view + '"'));
+  }
+  assert.match(source, /What this view is for/);
+  assert.match(source, /What it says right now/);
+  assert.match(source, /How to read it/);
+  assert.match(source, /does not move work, approve actions, or upgrade evidence/);
+});
