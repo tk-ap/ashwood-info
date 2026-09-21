@@ -2,9 +2,10 @@ name: Hermes Agent
 
 # Governed Hermes execution for tk-ap/ashwood-info.
 #
-# Hermes runs as an Agent OS harness: Agent OS (tk-ap/agent-os, loaded as a
-# subdirectory) resolves the task, selects the minimum agent team, and Hermes
-# executes within the task envelope using its model provider and tools.
+# Hermes runs under the Agent OS governance contract embedded in the review
+# prompt. This workflow does not clone the private Agent OS repository; doing so
+# with the repository-scoped GITHUB_TOKEN fails by design on cross-repo private
+# access and was unnecessary because no step consumed AGENT_OS_DIR.
 #
 # Authentication and cost:
 #   - GitHub access: GITHUB_TOKEN (auto-provided, scoped to this repo).
@@ -60,7 +61,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       HERMES_MODEL: ${{ secrets.HERMES_MODEL }}
-      AGENT_OS_DIR: ./agent-os
 
     steps:
       - name: Checkout product repository
@@ -68,14 +68,6 @@ jobs:
         with:
           fetch-depth: 0
           submodules: false
-
-      - name: Checkout Agent OS (as a subdirectory)
-        uses: actions/checkout@v4
-        with:
-          repository: tk-ap/agent-os
-          path: agent-os
-          ref: main
-          fetch-depth: 1
 
       - name: Install Hermes
         run: |
