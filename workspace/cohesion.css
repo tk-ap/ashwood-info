@@ -230,3 +230,15 @@
 .agentos-board-refresh p{margin:0}
 #agentos-board-refresh{border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 12px;font:inherit;cursor:pointer}
 #agentos-board-refresh:disabled{opacity:.55;cursor:wait}
+
+.deployment-budget{margin-top:24px;border-top:1px solid var(--line);padding-top:28px}
+.deployment-budget .section-heading-row button{border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 12px;font:inherit;cursor:pointer}
+.deployment-budget-summary{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin-top:18px}
+.deployment-budget-summary article{padding:18px;border-right:1px solid var(--line)}
+.deployment-budget-summary article:last-child{border-right:0}
+.deployment-budget-summary strong{display:block;font-size:clamp(24px,3vw,38px);font-weight:500}
+.deployment-budget-summary span,.deployment-budget-projects span,.deployment-budget-projects small{display:block;color:var(--muted);margin-top:5px}
+.deployment-budget-projects{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-top:0}
+.deployment-budget-projects article{padding:16px;border-right:1px solid var(--line)}
+.deployment-budget-projects article:last-child{border-right:0}
+@media(max-width:760px){.deployment-budget-summary,.deployment-budget-projects{grid-template-columns:1fr 1fr}.deployment-budget-summary article:nth-child(2),.deployment-budget-projects article:nth-child(2){border-right:0}}
