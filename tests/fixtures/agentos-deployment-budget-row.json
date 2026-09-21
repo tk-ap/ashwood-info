@@ -1,0 +1,184 @@
+{
+  "canonical": {
+    "available": 18,
+    "band": "conserve",
+    "deploy_allowed": true,
+    "limit": 100,
+    "limit_source": "agentos_policy",
+    "next_slot_at": "2026-09-21T23:35:00Z",
+    "observed_at": "2026-09-21T20:00:00Z",
+    "projects": {
+      "ALVIRA": {
+        "latest": {
+          "created_at": "2026-09-21T19:20:00Z",
+          "id": "dpl_2",
+          "state": "READY",
+          "target": "preview"
+        },
+        "production": {
+          "created_at": "2026-09-21T18:20:00Z",
+          "id": "dpl_6",
+          "state": "READY"
+        },
+        "used_24h": 20
+      },
+      "ASHWOOD": {
+        "latest": {
+          "created_at": "2026-09-21T19:50:00Z",
+          "id": "dpl_0",
+          "state": "ERROR",
+          "target": "production"
+        },
+        "production": {
+          "created_at": "2026-09-21T16:50:00Z",
+          "id": "dpl_12",
+          "state": "READY"
+        },
+        "used_24h": 21
+      },
+      "ailhat": {
+        "latest": {
+          "created_at": "2026-09-21T19:05:00Z",
+          "id": "dpl_3",
+          "state": "READY",
+          "target": "production"
+        },
+        "production": {
+          "created_at": "2026-09-21T19:05:00Z",
+          "id": "dpl_3",
+          "state": "READY"
+        },
+        "used_24h": 20
+      },
+      "ledgato": {
+        "latest": {
+          "created_at": "2026-09-21T19:35:00Z",
+          "id": "dpl_1",
+          "state": "READY",
+          "target": "preview"
+        },
+        "production": {
+          "created_at": "2026-09-21T17:35:00Z",
+          "id": "dpl_9",
+          "state": "READY"
+        },
+        "used_24h": 21
+      }
+    },
+    "provider_limit_verified": false,
+    "telemetry": {
+      "attempted_at": "2026-09-21T20:00:00Z",
+      "deployments_observed": 82,
+      "error": null,
+      "last_success_at": "2026-09-21T20:00:00Z",
+      "source": "vercel",
+      "stale": false,
+      "status": "ok",
+      "team_id": "team_o8DEWGS5bzF8jdgWsD9IfBec"
+    },
+    "used": 82,
+    "utilization": 0.82,
+    "window_hours": 24
+  },
+  "generated_by": "agent-os feat/deployment-budget-integration workspace_board.build_snapshot",
+  "row": {
+    "board_key": "agent-os:deployment-budget",
+    "kind": "deployment_budget",
+    "lane": "in_progress",
+    "metadata": {
+      "deployment_budget": {
+        "available": 18,
+        "band": "conserve",
+        "deploy_allowed": true,
+        "limit": 100,
+        "limit_source": "agentos_policy",
+        "next_slot_at": "2026-09-21T23:35:00Z",
+        "observed_at": "2026-09-21T20:00:00Z",
+        "projects": {
+          "ALVIRA": {
+            "latest": {
+              "created_at": "2026-09-21T19:20:00Z",
+              "id": "dpl_2",
+              "state": "READY",
+              "target": "preview"
+            },
+            "production": {
+              "created_at": "2026-09-21T18:20:00Z",
+              "id": "dpl_6",
+              "state": "READY"
+            },
+            "used_24h": 20
+          },
+          "ASHWOOD": {
+            "latest": {
+              "created_at": "2026-09-21T19:50:00Z",
+              "id": "dpl_0",
+              "state": "ERROR",
+              "target": "production"
+            },
+            "production": {
+              "created_at": "2026-09-21T16:50:00Z",
+              "id": "dpl_12",
+              "state": "READY"
+            },
+            "used_24h": 21
+          },
+          "ailhat": {
+            "latest": {
+              "created_at": "2026-09-21T19:05:00Z",
+              "id": "dpl_3",
+              "state": "READY",
+              "target": "production"
+            },
+            "production": {
+              "created_at": "2026-09-21T19:05:00Z",
+              "id": "dpl_3",
+              "state": "READY"
+            },
+            "used_24h": 20
+          },
+          "ledgato": {
+            "latest": {
+              "created_at": "2026-09-21T19:35:00Z",
+              "id": "dpl_1",
+              "state": "READY",
+              "target": "preview"
+            },
+            "production": {
+              "created_at": "2026-09-21T17:35:00Z",
+              "id": "dpl_9",
+              "state": "READY"
+            },
+            "used_24h": 21
+          }
+        },
+        "provider_limit_verified": false,
+        "telemetry": {
+          "attempted_at": "2026-09-21T20:00:00Z",
+          "deployments_observed": 82,
+          "error": null,
+          "last_success_at": "2026-09-21T20:00:00Z",
+          "source": "vercel",
+          "stale": false,
+          "status": "ok",
+          "team_id": "team_o8DEWGS5bzF8jdgWsD9IfBec"
+        },
+        "used": 82,
+        "utilization": 0.82,
+        "window_hours": 24
+      },
+      "parked_deployments": [],
+      "work_domain": "ecosystem"
+    },
+    "next_gate": "2026-09-21T23:35:00Z",
+    "observed_at": "2026-09-21T20:00:00+00:00",
+    "product": "agent-os",
+    "source": "deployment-budget",
+    "source_system": "agent-os",
+    "status": "conserve",
+    "summary": "18 available; next slot 2026-09-21T23:35:00Z; 0 deployment(s) parked; telemetry ok",
+    "title": "Deployment capacity: 82/100 used \u00b7 CONSERVE",
+    "updated_at": "2026-09-21T20:00:00Z",
+    "work_domain": "ecosystem"
+  }
+}
