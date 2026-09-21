@@ -101,6 +101,22 @@ function markConnectionsDisclosure(){
 
 function assignSections(){
   markConnectionsDisclosure();
+
+  /* Fail closed: every top-level content surface belongs to exactly one view.
+     This prevents legacy/unassigned Today content from leaking under every tab. */
+  const shell = q(".workspace-shell");
+  const structural = new Set([
+    q(".workspace-masthead"),
+    q(".workspace-section-nav"),
+    q(".workspace-view-intro"),
+    q(".workspace-footer")
+  ]);
+  shell?.querySelectorAll(":scope > section, :scope > details").forEach(node => {
+    if (structural.has(node)) return;
+    node.dataset.workspaceView = "today";
+    node.classList.add("workspace-view-section");
+  });
+
   Object.entries(GROUPS).forEach(([view, selectors]) => {
     selectors.forEach(selector => {
       document.querySelectorAll(selector).forEach(node => {
