@@ -50,7 +50,7 @@
   background:var(--ink);
   color:var(--paper);
 }
-.workspace-page[data-workspace-view-ready="true"] [data-workspace-view]{
+.workspace-page[data-workspace-view-ready="true"] [data-workspace-view][data-workspace-active="false"]{
   display:none!important;
 }
 .workspace-page[data-workspace-view-ready="true"] [data-workspace-view][data-workspace-active="true"]{
