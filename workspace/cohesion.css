@@ -140,3 +140,89 @@
 @media(prefers-reduced-motion:reduce){
   .workspace-page[data-workspace-view-ready="true"] [data-workspace-view][data-workspace-active="true"]{animation:none}
 }
+
+
+/* ELITK is a view-level interpretation layer available across all six Workspace views. */
+.workspace-elitk-trigger{
+  background:var(--ink)!important;
+  color:var(--paper)!important;
+  border-color:var(--ink)!important;
+}
+.workspace-elitk-trigger.is-active{
+  background:var(--workspace-accent)!important;
+  color:var(--ink)!important;
+  border-color:color-mix(in srgb,var(--ink) 45%,transparent)!important;
+}
+.workspace-elitk-panel{
+  margin:18px 0 8px;
+  padding:20px;
+  border:1px solid color-mix(in srgb,var(--ink) 22%,transparent);
+  border-left:3px solid var(--workspace-accent);
+  background:color-mix(in srgb,var(--workspace-accent) 18%,var(--paper));
+}
+.workspace-elitk-panel[hidden]{display:none!important}
+.workspace-elitk-panel__head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+  padding-bottom:16px;
+  border-bottom:1px solid color-mix(in srgb,var(--ink) 14%,transparent);
+}
+.workspace-elitk-panel__head h2{
+  margin:3px 0 0;
+  font-size:clamp(24px,3vw,36px);
+  line-height:1;
+  font-weight:500;
+  letter-spacing:-.04em;
+}
+.workspace-elitk-refresh{
+  flex:none;
+  border:1px solid color-mix(in srgb,var(--ink) 35%,transparent);
+  background:transparent;
+  color:var(--ink);
+  padding:8px 10px;
+  font:600 9px/1 Arial,sans-serif;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+.workspace-elitk-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  margin-top:16px;
+  background:color-mix(in srgb,var(--ink) 14%,transparent);
+}
+.workspace-elitk-grid article{
+  min-width:0;
+  padding:16px;
+  background:color-mix(in srgb,var(--paper) 94%,var(--workspace-accent));
+}
+.workspace-elitk-grid strong{
+  display:block;
+  margin-bottom:8px;
+  font:700 9px/1.2 Arial,sans-serif;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:color-mix(in srgb,var(--ink) 68%,transparent);
+}
+.workspace-elitk-grid p{
+  margin:0;
+  font-size:14px;
+  line-height:1.55;
+}
+.workspace-elitk-grounding{
+  margin:14px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+}
+@media(max-width:820px){
+  .workspace-elitk-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .workspace-elitk-panel{padding:16px}
+  .workspace-elitk-panel__head{display:grid}
+  .workspace-elitk-refresh{justify-self:start}
+}
