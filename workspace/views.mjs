@@ -101,8 +101,8 @@ function markConnectionsDisclosure(){
 function assignSections(){
   markConnectionsDisclosure();
 
-  /* Fail closed: every top-level content surface belongs to exactly one view.
-     This prevents legacy/unassigned Today content from leaking under every tab. */
+  /* View isolation is fail-closed. Every top-level Workspace content surface
+     starts hidden/unassigned, then the explicit map below assigns exactly one view. */
   const shell = q(".workspace-shell");
   const structural = new Set([
     q(".workspace-masthead"),
@@ -112,7 +112,8 @@ function assignSections(){
   ]);
   shell?.querySelectorAll(":scope > section, :scope > details").forEach(node => {
     if (structural.has(node)) return;
-    node.dataset.workspaceView = "today";
+    node.dataset.workspaceView = "unassigned";
+    node.dataset.workspaceActive = "false";
     node.classList.add("workspace-view-section");
   });
 
@@ -120,6 +121,7 @@ function assignSections(){
     selectors.forEach(selector => {
       document.querySelectorAll(selector).forEach(node => {
         node.dataset.workspaceView = view;
+        node.dataset.workspaceActive = "false";
         node.classList.add("workspace-view-section");
       });
     });
@@ -190,7 +192,7 @@ function renderUtility(view){
 function setView(view, {updateHash=true, focus=false} = {}){
   if (!VIEW_META[view]) view = "today";
   document.body.dataset.workspaceCurrentView = view;
-  document.querySelectorAll("[data-workspace-view]").forEach(node => {
+  document.querySelectorAll(".workspace-view-section[data-workspace-view]").forEach(node => {
     node.dataset.workspaceActive = String(node.dataset.workspaceView === view);
   });
   document.querySelectorAll("[data-workspace-nav]").forEach(link => {
