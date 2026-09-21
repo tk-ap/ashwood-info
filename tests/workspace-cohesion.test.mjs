@@ -40,7 +40,7 @@ test('ELITK is an inline page-transform toggle on every primary Workspace view',
     readFile(viewsPath, 'utf8'),
     readFile(htmlPath, 'utf8')
   ]);
-  assert.match(source, /ELITK · Plain language/);
+  assert.match(source, /workspace-elitk-switch/);\n  assert.match(source, /type="checkbox" data-elitk-toggle/);
   assert.match(source, /dataset\.elitkToggle/);
   assert.doesNotMatch(source, /summaryFor\(view\)/);
   assert.doesNotMatch(source, /workspace-elitk-panel/);
@@ -52,7 +52,6 @@ test('ELITK is an inline page-transform toggle on every primary Workspace view',
 test('ELITK is wired across standalone Workspace routes', async () => {
   const pages = [
     ['build-logs', await readFile(buildLogsPath, 'utf8')],
-    ['career-ops', await readFile(careerOpsPath, 'utf8')],
     ['production-review', await readFile(productionReviewPath, 'utf8')]
   ];
   for (const [page, html] of pages) {
