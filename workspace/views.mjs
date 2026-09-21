@@ -18,9 +18,7 @@ const VIEW_META = {
     title: "Work.",
     deck: "Career movement, professional opportunities, and useful public artifacts emerging from real work.",
     eyebrow: "Professional motion",
-    tools: [
-      {label:"Career ops", href:"/workspace/career-ops/"}
-    ]
+    tools: []
   },
   network: {
     title: "Network.",
