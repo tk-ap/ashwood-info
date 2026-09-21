@@ -161,7 +161,7 @@
     const original = button.textContent;
     button.textContent = publishToMusic ? 'Publishing…' : 'Removing…';
     try {
-      const res = await fetch('/api/workspace-upload', {
+      const res = await fetch('/api/workspace-media', {
         method:'PATCH',
         credentials:'same-origin',
         headers:{'Content-Type':'application/json'},
@@ -182,7 +182,7 @@
 
   async function loadLibrary() {
     try {
-      const res = await fetch('/api/workspace-upload', { credentials:'same-origin', cache:'no-store' });
+      const res = await fetch('/api/workspace-media', { credentials:'same-origin', cache:'no-store' });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
       const uploads = body.uploads || [];
@@ -228,7 +228,7 @@
       publishToMusic: String(meta.publishToMusic),
     });
     try {
-      const res = await fetch(`/api/workspace-upload-direct?${params}`, {
+      const res = await fetch(`/api/workspace-media?mode=direct&${params}`, {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/octet-stream' },
@@ -292,7 +292,7 @@
     button.disabled = true;
     button.textContent = 'Deleting…';
     try {
-      const res = await fetch('/api/workspace-upload', {
+      const res = await fetch('/api/workspace-media', {
         method: 'DELETE',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -386,7 +386,7 @@
         if (!direct) {
           await uploadWithStallRecovery(upload, pathname, file, {
             access: 'public',
-            handleUploadUrl: '/api/workspace-upload',
+            handleUploadUrl: '/api/workspace-media',
             multipart: file.size > 8 * 1024 * 1024,
             contentType: file.type || undefined,
             clientPayload: JSON.stringify(meta),
