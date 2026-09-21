@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import crypto from 'node:crypto';
 import { PGlite } from '@electric-sql/pglite';
 import { sha256 } from '../api/_workspace.mjs';
+import { boardColumns, isOpenBoardItem, translateOpenBoardItems } from '../workspace/board.mjs';
 
 async function fixture() {
   const db = new PGlite();
@@ -141,4 +142,25 @@ test('bad sync token cannot overwrite the board', async t => {
     body:{ rows:[{board_key:'x',title:'Nope'}] }
   });
   assert.equal(res.statusCode, 403);
+});
+
+test('ELITK translates every open AgentOS item without mutating board rows', () => {
+  const rows = [
+    { board_key: 'stuck-1', title: 'Resolve the handoff', lane: 'stuck', blocker: 'Authority expired.', product: 'AgentOS' },
+    { board_key: 'backlog-1', title: 'Review the idea', lane: 'backlog', assignee: 'TK' },
+    { board_key: 'done-1', title: 'Already shipped', lane: 'done' },
+  ];
+  assert.equal(isOpenBoardItem(rows[0]), true);
+  assert.equal(isOpenBoardItem(rows[1]), true);
+  assert.equal(isOpenBoardItem(rows[2]), false);
+  assert.deepEqual(boardColumns(rows).map(column => [column.lane, column.items.map(item => item.board_key)]), [
+    ['stuck', ['stuck-1']],
+    ['backlog', ['backlog-1']],
+    ['done', ['done-1']],
+  ]);
+  const translated = translateOpenBoardItems(rows);
+  assert.equal(translated.length, 2);
+  assert.match(translated[0].translation, /remove the blocker/);
+  assert.match(translated[1].translation, /decide whether this deserves to enter active work/);
+  assert.equal(rows[0].translation, undefined);
 });

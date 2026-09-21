@@ -14,14 +14,14 @@
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260920-feed1" />
   <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
-  <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-operatorviews1" />
+  <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260920-elitk1" />
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260920-cohesion1" />
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260920-authrefresh1"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
-  <script type="module" src="/workspace/agentos-board.mjs?v=20260920-operatorviews1"></script>
+  <script type="module" src="/workspace/agentos-board.mjs?v=20260920-elitk1"></script>
   <script type="module" src="/workspace/views.mjs?v=20260920-cohesion1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
@@ -121,14 +121,19 @@
           <p class="section-kicker">AgentOS · full operating queue</p>
           <h2 id="agentos-board-title">Portfolio work board</h2>
         </div>
-        <p class="agentos-board-status" id="agentos-board-status" aria-live="polite">Waiting for the private AgentOS snapshot…</p>
+        <div class="agentos-board-heading__actions">
+          <p class="agentos-board-status" id="agentos-board-status" aria-live="polite">Waiting for the private AgentOS snapshot…</p>
+          <button type="button" class="agentos-board-elitk" id="agentos-board-elitk">ELITK <span>Translate open items</span></button>
+        </div>
       </div>
       <p class="section-note">Read-only ecosystem work ledger: governed execution, Milchik backlog, discovered work, and explicit coverage gaps. Views and filters change what you see; ASHWOOD never moves or authorizes these cards.</p>
       <div class="agentos-board-tools" id="agentos-board-tools" aria-label="AgentOS board views and filters"></div>
       <div class="agentos-board-counts" id="agentos-board-counts" aria-label="AgentOS work counts"></div>
+      <p class="agentos-board-elitk-status" id="agentos-board-elitk-status" role="status" aria-live="polite"></p>
       <div class="agentos-board" id="agentos-board" aria-live="polite">
         <p class="agentos-board-empty">Loading AgentOS fleet and backlog…</p>
       </div>
+      <div class="agentos-board-elitk-output" id="agentos-board-elitk-output" hidden></div>
     </section>
 
     <section class="owner-intelligence" id="owner-intelligence" aria-live="polite">

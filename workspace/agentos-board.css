@@ -2,6 +2,20 @@
 .agentos-board-heading{align-items:flex-end}
 .agentos-board-status{margin:0;max-width:520px;font-size:12px;line-height:1.5;color:var(--muted)}
 .agentos-board-status.is-stale{color:#b96a5e}.agentos-board-status.is-aging{color:#b58a43}
+.agentos-board-heading__actions{display:flex;align-items:flex-end;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.agentos-board-elitk{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:10px 13px;font:600 10px/1 Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;cursor:pointer}
+.agentos-board-elitk span{font-weight:400;letter-spacing:0;text-transform:none;margin-left:5px}
+.agentos-board-elitk:disabled{opacity:.45;cursor:not-allowed}
+.agentos-board-elitk-status{min-height:1.5em;margin:14px 0 8px;color:var(--muted);font-size:12px}
+.agentos-board-elitk-output{margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
+.agentos-board-elitk-output__head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:14px}
+.agentos-board-elitk-output__head .section-kicker{margin-bottom:7px}
+.agentos-board-elitk-output__head h3{margin:0;font-size:24px;font-weight:400;letter-spacing:-.025em}
+.agentos-board-elitk-output__head>span{color:var(--muted);font-size:12px}
+.agentos-board-elitk-list{border-top:1px solid var(--line)}
+.agentos-board-elitk-list article{display:grid;grid-template-columns:minmax(180px,.32fr) minmax(0,1fr);gap:22px;padding:16px 0;border-bottom:1px solid var(--line)}
+.agentos-board-elitk-list article p{margin:0;font-size:14px;line-height:1.55}
+.agentos-board-elitk-item__source{color:var(--muted);font-size:12px!important}
 .agentos-board-counts{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 24px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .agentos-board-counts span{display:flex;gap:7px;align-items:baseline;font:600 10px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .agentos-board-counts b{font-size:18px;font-weight:500;color:var(--ink);letter-spacing:-.03em}
@@ -29,6 +43,7 @@
 .agentos-board-card__footer a{color:var(--ink);font-size:10px;white-space:nowrap;text-underline-offset:3px}
 .agentos-board-empty{margin:0;padding:22px 16px;color:var(--muted);font-size:12px;line-height:1.5}
 @media(max-width:900px){.agentos-board{grid-template-columns:repeat(7,minmax(250px,78vw))}.agentos-board-heading{align-items:flex-start}.agentos-board-card dl{grid-template-columns:1fr}}
+@media(max-width:760px){.agentos-board-heading__actions{align-items:flex-start;justify-content:flex-start}.agentos-board-elitk span{display:block;margin:4px 0 0;font-size:11px}.agentos-board-elitk-list article{grid-template-columns:1fr;gap:7px}}
 
 .agentos-board-tools{display:grid;gap:12px;margin:18px 0 12px;padding:14px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 82%,transparent)}
 .agentos-board-views{display:flex;flex-wrap:wrap;gap:6px}

@@ -1,3 +1,5 @@
+import { openBoardItems, translateOpenBoardItems } from './board.mjs';
+
 const LANES = [
   { id: "in_progress", label: "In progress", empty: "No current execution is confirmed." },
   { id: "stuck", label: "Stuck", empty: "Nothing is currently classified as stuck." },
@@ -18,6 +20,7 @@ const VIEW_PRESETS = [
 
 const STORAGE_KEY = "ashwood.agentos-board.view.v2";
 let lastData = null;
+let elitkRows = null;
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
   "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
@@ -268,8 +271,35 @@ function renderBoard(data) {
   }));
 }
 
+function renderElitk(data) {
+  const rows = Array.isArray(data?.rows) ? data.rows : [];
+  const open = openBoardItems(rows);
+  const button = document.querySelector('#agentos-board-elitk');
+  const status = document.querySelector('#agentos-board-elitk-status');
+  const output = document.querySelector('#agentos-board-elitk-output');
+  if (button) {
+    button.disabled = open.length === 0;
+    button.setAttribute('aria-label', open.length ? `Translate ${open.length} open board items with ELITK` : 'No open board items to translate');
+  }
+  if (!output) return;
+  if (!elitkRows) {
+    output.hidden = true;
+    return;
+  }
+  output.hidden = false;
+  output.innerHTML = '<div class="agentos-board-elitk-output__head"><div><p class="section-kicker">ELITK translation</p><h3>What the open items mean</h3></div><span>' + elitkRows.length + ' item' + (elitkRows.length === 1 ? '' : 's') + '</span></div>' +
+    '<div class="agentos-board-elitk-list">' + elitkRows.map(item => '<article><p class="agentos-board-elitk-item__source">' + escapeHtml(item.title || 'Untitled work item') + '</p><p>' + escapeHtml(item.translation) + '</p></article>').join('') + '</div>';
+  if (status) status.textContent = elitkRows.length ? `Translated ${elitkRows.length} open item${elitkRows.length === 1 ? '' : 's'} for review.` : 'There are no open items to translate.';
+}
+
+function translateOpenItems() {
+  elitkRows = translateOpenBoardItems(lastData?.rows || []);
+  renderElitk(lastData || { rows: [] });
+}
+
 function render(data) {
   lastData = data;
+  elitkRows = null;
   const status = document.querySelector("#agentos-board-status");
   const rows = Array.isArray(data.rows) ? data.rows : [];
   const observedValues = rows.map(row => row.observed_at).filter(Boolean).sort();
@@ -286,6 +316,7 @@ function render(data) {
 
   renderControls(data);
   renderBoard(data);
+  renderElitk(data);
 }
 
 async function load() {
@@ -321,6 +352,7 @@ async function start() {
 }
 
 if (typeof window !== "undefined") {
+  document.querySelector('#agentos-board-elitk')?.addEventListener('click', translateOpenItems);
   window.addEventListener("ashwood:refresh-feed", load);
   window.addEventListener("ashwood:workspace-authenticated", load);
   start();
