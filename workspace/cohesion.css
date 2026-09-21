@@ -141,3 +141,11 @@
   .workspace-page[data-workspace-view-ready="true"] [data-workspace-view][data-workspace-active="true"]{animation:none}
 }
 
+
+/* Workspace controls: dark-first and semantic ELITK switch. */
+.workspace-elitk-switch{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);padding:7px 9px;cursor:pointer;color:var(--ink);font:600 9px/1 Arial,sans-serif;letter-spacing:.09em;text-transform:uppercase}
+.workspace-elitk-switch input{position:absolute;opacity:0;pointer-events:none}
+.workspace-elitk-switch__track{width:30px;height:16px;border:1px solid var(--line);border-radius:999px;padding:2px;display:inline-flex;align-items:center;background:var(--panel)}
+.workspace-elitk-switch__track span{width:10px;height:10px;border-radius:50%;background:var(--muted);transition:transform .18s ease,background .18s ease}
+.workspace-elitk-switch input:checked + .workspace-elitk-switch__track span{transform:translateX(14px);background:var(--ink)}
+.workspace-elitk-switch small{font:inherit;color:var(--muted)}
