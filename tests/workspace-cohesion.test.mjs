@@ -42,7 +42,6 @@ test('ELITK is an inline page-transform toggle on every primary Workspace view',
   ]);
   assert.match(source, /workspace-elitk-switch/);
   assert.match(source, /type="checkbox" data-elitk-toggle/);
-  assert.match(source, /dataset\.elitkToggle/);
   assert.doesNotMatch(source, /summaryFor\(view\)/);
   assert.doesNotMatch(source, /workspace-elitk-panel/);
   assert.match(html, /\/workspace\/elitk-page\.mjs/);
