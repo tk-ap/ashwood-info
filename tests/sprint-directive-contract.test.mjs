@@ -10,6 +10,8 @@ test('Workspace sprint intake stays on the existing durable command queue', asyn
   assert.match(source, /view === 'sprint-recommendation'/);
   assert.match(source, /AILHAT_WORKSPACE_READ_TOKEN/);
   assert.match(source, /content_hash/);
+  assert.match(source, /An accepted sprint is already active/);
+  assert.match(source, /status NOT IN \('completed','cancelled'\)/);
 });
 
 test('Build exposes ailhat default selection and explicit acceptance', async () => {
@@ -20,4 +22,7 @@ test('Build exposes ailhat default selection and explicit acceptance', async () 
   assert.match(ui, /sourceRank/);
   assert.match(ui, /override/);
   assert.match(ui, /submit_sprint_directive/);
+  assert.match(ui, /remains frozen until it is completed or cancelled/);
+  assert.match(ui, /runtime\.task_id/);
+  assert.match(ui, /row\.payload\?\.items/);
 });
