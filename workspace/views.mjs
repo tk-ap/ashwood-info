@@ -55,8 +55,7 @@ const GROUPS = {
     "details.ecosystem"
   ],
   work: [
-    "#work",
-    ".next-action"
+    "#work"
   ],
   network: [
     "#network"
