@@ -1,0 +1,88 @@
+/* ASHWOOD / GRAVITY sandbox layer.
+   Intentionally isolated from the canonical V3 files so the experiment can be removed cleanly. */
+.v3-hero{position:relative;isolation:isolate}
+.ashwood-gravity-canvas{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  opacity:0;
+  background:#050605;
+  transition:opacity 900ms cubic-bezier(.2,.75,.25,1);
+}
+.ashwood-gravity-ready .ashwood-gravity-canvas{opacity:1}
+.ashwood-gravity-active .v3-hero{
+  background:#050605;
+  color:#f1eee6;
+}
+.ashwood-gravity-active .v3-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(5,6,5,.88) 0%,rgba(5,6,5,.69) 35%,rgba(5,6,5,.10) 70%,rgba(5,6,5,.02) 100%),
+    linear-gradient(180deg,rgba(5,6,5,.04) 62%,rgba(5,6,5,.55) 100%);
+}
+.ashwood-gravity-active .v3-hero__copy,
+.ashwood-gravity-active .v3-hero__image{z-index:2}
+.ashwood-gravity-active .v3-hero__copy::before{opacity:.12}
+.ashwood-gravity-active .v3-hero .v3-grounding,
+.ashwood-gravity-active .v3-hero .v3-kicker{color:rgba(241,238,230,.62)}
+.ashwood-gravity-active .v3-hero .v3-shimmer{
+  background-image:linear-gradient(105deg,#f1eee6,#d9b560,#54a887,#f1eee6);
+}
+.ashwood-gravity-active .v3-hero__image{
+  background:transparent;
+  box-shadow:-42px 0 90px rgba(0,0,0,.26);
+}
+.ashwood-gravity-active .v3-hero__image img{
+  opacity:.78;
+  filter:saturate(.72) contrast(1.08) brightness(.76);
+  mix-blend-mode:luminosity;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.44) 18%,#000 44%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.44) 18%,#000 44%,#000 100%);
+}
+.ashwood-gravity-active .v3-hero__image::after{
+  background:
+    radial-gradient(circle at 28% 42%,rgba(180,135,50,.12),transparent 24%),
+    linear-gradient(180deg,transparent 58%,rgba(5,6,5,.50));
+}
+.ashwood-gravity-active .v3-image-note{color:#f1eee6}
+.ashwood-gravity-active .v3-link{color:#f1eee6}
+.ashwood-gravity-active .v3-wordmark--hero{color:#f1eee6}
+.ashwood-gravity-active .v3-mast{
+  background:linear-gradient(180deg,rgba(5,6,5,.86),rgba(5,6,5,.18));
+  color:#f1eee6;
+  border-bottom-color:rgba(241,238,230,.14);
+}
+.ashwood-gravity-active .v3-mast__meta{color:rgba(241,238,230,.55)}
+
+@media(max-width:900px){
+  .ashwood-gravity-canvas{height:100svh;bottom:auto}
+  .ashwood-gravity-active .v3-hero::after{
+    height:100svh;
+    background:
+      linear-gradient(180deg,rgba(5,6,5,.78) 0%,rgba(5,6,5,.42) 58%,rgba(5,6,5,.06) 100%);
+  }
+  .ashwood-gravity-active .v3-hero__copy{
+    min-height:78svh;
+    text-shadow:0 2px 24px rgba(0,0,0,.38);
+  }
+  .ashwood-gravity-active .v3-hero__image{
+    background:#050605;
+    box-shadow:none;
+  }
+  .ashwood-gravity-active .v3-hero__image img{
+    opacity:.90;
+    mix-blend-mode:normal;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 20%,#000 100%);
+    mask-image:linear-gradient(180deg,transparent 0%,#000 20%,#000 100%);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .ashwood-gravity-canvas{transition:none}
+}
