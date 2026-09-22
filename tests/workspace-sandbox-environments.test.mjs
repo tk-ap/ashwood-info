@@ -8,6 +8,7 @@ const projection = JSON.parse(fs.readFileSync(path.join(ROOT, "data/sandbox-envi
 const deployment = fs.readFileSync(path.join(ROOT, ".agent-os/deployment.yaml"), "utf8");
 const view = fs.readFileSync(path.join(ROOT, "workspace/sandbox-environments.mjs"), "utf8");
 const workspaceViews = fs.readFileSync(path.join(ROOT, "workspace/views.mjs"), "utf8");
+const sandboxCss = fs.readFileSync(path.join(ROOT, "workspace/sandbox-environments.css"), "utf8");
 
 test("sandbox environment projection keeps production and sandbox distinct", () => {
   assert.equal(projection.schema, "ashwood.sandbox-environments/v1");
@@ -38,4 +39,9 @@ test("workspace exposes stable sandbox link without converting sandbox to produc
 
 test("Build view includes the sandbox environment continuity surface", () => {
   assert.match(workspaceViews, /build:\s*\[[\s\S]*"\.sandbox-environments"/);
+});
+
+
+test("Open Sandbox keeps a phone-sized tap target", () => {
+  assert.match(sandboxCss, /\.sandbox-primary-link\{[^}]*min-height:44px;/);
 });
