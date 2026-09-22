@@ -31,7 +31,7 @@ test("owner directives are submitted to the persistent operator thread", () => {
 
 test("Operator renders outcome evidence and sends canonical owner decisions", () => {
   assert.match(operator, /Outcome & evidence/);
-  assert.match(operator, /metadata\.owner_decision/);
+  assert.match(operator, /metadata\?\.owner_decision/);
   assert.match(operator, /submit_owner_decision/);
   assert.match(operator, /data-owner-decision/);
   assert.match(operator, /observed_snapshot/);
