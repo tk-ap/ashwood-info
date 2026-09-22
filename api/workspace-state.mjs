@@ -248,6 +248,15 @@ export default async function handler(req, res) {
         const commands = await sql`SELECT id, command_text, command_kind, payload, status, runtime_directive_id, runtime_task_id, governance, error, created_at, updated_at FROM workspace_commands ORDER BY created_at DESC LIMIT 30`;
         return json(res, 200, { ok: true, commands });
       }
+      if (req.query?.view === 'kanban-transition') {
+        await ensureCommandTable(sql);
+        const id = String(req.query?.id || '').trim().slice(0, 250);
+        if (!id) return json(res, 400, { ok:false, error:'Transition id is required' });
+        const rows = await sql`SELECT id,status,payload,governance,error,updated_at
+          FROM workspace_commands WHERE id = ${id} AND command_kind = 'kanban_transition' LIMIT 1`;
+        if (!rows[0]) return json(res, 404, { ok:false, error:'Transition not found' });
+        return json(res, 200, { ok:true, transition:rows[0] });
+      }
       if (req.query?.view === 'network') {
         await ensureNetworkTable(sql);
         const relationships = await sql`
@@ -346,6 +355,41 @@ export default async function handler(req, res) {
       await sql`INSERT INTO workspace_commands(id,command_text,status,source,command_kind,payload,content_hash)
         VALUES(${id},${markdown},'queued','ailhat-workspace','ailhat_sprint',${JSON.stringify(directive)}::jsonb,${fingerprint})`;
       return json(res, 201, { ok:true, existing:false, id, status:'queued', markdown, directive });
+    }
+
+    if (action === 'submit_kanban_transition') {
+      await ensureCommandTable(sql);
+      const taskId = String(body.task_id || '').trim().slice(0,250);
+      const workId = String(body.work_id || '').trim().slice(0,250);
+      const observedState = String(body.observed_state || '').trim().toUpperCase().slice(0,40);
+      const targetState = String(body.target_state || '').trim().toUpperCase().slice(0,40);
+      const observedGeneration = Number(body.observed_generation);
+      const idempotencyKey = String(body.idempotency_key || '').trim().slice(0,250);
+      if (!taskId || !workId || !observedState || !targetState || !idempotencyKey ||
+          !Number.isInteger(observedGeneration) || observedGeneration < 0) {
+        return json(res, 400, { ok:false, error:'Invalid Kanban transition request' });
+      }
+      const payload = {
+        schema:'workspace.kanban-transition/v1',
+        source:'ASHWOOD',
+        task_id:taskId,
+        work_id:workId,
+        observed_state:observedState,
+        observed_generation:observedGeneration,
+        target_state:targetState,
+        actor:'owner',
+        idempotency_key:idempotencyKey,
+      };
+      const fingerprint = sha256(JSON.stringify(payload));
+      const existing = await sql`SELECT id,status,payload,governance,error FROM workspace_commands
+        WHERE content_hash = ${fingerprint} LIMIT 1`;
+      if (existing[0]) return json(res, 200, { ok:true, existing:true, transition:existing[0] });
+      const id = 'kanban-transition:' + crypto.randomUUID();
+      await sql`INSERT INTO workspace_commands
+        (id,command_text,status,source,command_kind,payload,content_hash)
+        VALUES(${id},${'Governed Kanban transition '+observedState+' -> '+targetState},'queued',
+          'ashwood-kanban','kanban_transition',${JSON.stringify(payload)}::jsonb,${fingerprint})`;
+      return json(res, 202, { ok:true, existing:false, id, status:'queued' });
     }
 
     if (action === 'submit_command') {
