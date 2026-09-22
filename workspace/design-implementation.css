@@ -1,0 +1,72 @@
+/* Workspace → Build → Design Implementation (ashwood-info#149).
+   Uses the Workspace tokens (--paper, --ink, --muted, --line, --panel) and the Kanban's
+   status tones, so it reads as part of Build rather than a separate dashboard. */
+.design-impl{margin-top:24px;border-top:1px solid var(--line);padding-top:28px}
+.design-impl-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.design-impl-deck{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.design-impl-reconciled{margin:0;color:var(--muted);font-size:13px;max-width:44ch;text-align:right}
+
+.design-impl-summary{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:1px solid var(--line);margin-top:18px}
+.design-impl-count{appearance:none;background:transparent;border:0;border-right:1px solid var(--line);color:var(--ink);padding:14px 12px;text-align:left;font:inherit;cursor:pointer}
+.design-impl-count:last-child{border-right:0}
+.design-impl-count strong{display:block;font-size:clamp(20px,2.4vw,30px);font-weight:500;line-height:1}
+.design-impl-count span{display:block;color:var(--muted);font-size:12px;margin-top:6px;letter-spacing:.02em}
+.design-impl-count:hover,.design-impl-count:focus-visible{background:var(--panel);outline:none}
+.design-impl-count.is-active{background:var(--panel);box-shadow:inset 0 -2px 0 var(--ink)}
+.design-impl-count[data-filter="blocked"] strong{color:#d9a45a}
+.design-impl-count[data-filter="verified"] strong{color:#6fbfa9}
+
+.design-impl-list{margin-top:8px}
+.design-impl-product{margin-top:22px}
+.design-impl-product h3{display:flex;align-items:baseline;gap:10px;margin:0 0 8px;font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.design-impl-product h3 small{color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none;font-size:12px}
+
+.design-impl-item{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:6px 20px;padding:14px 0;border-top:1px solid var(--line);align-items:center}
+.design-impl-item-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;grid-column:1}
+.design-impl-item h4{margin:0;font-size:16px;font-weight:500}
+.design-impl-surface{margin:3px 0 0;color:var(--muted);font-size:12px}
+.design-impl-state{flex:none;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);padding:3px 7px;color:var(--muted)}
+.design-impl-item.is-verified .design-impl-state{color:#6fbfa9;border-color:#1f7a69}
+.design-impl-item.is-live .design-impl-state{color:var(--ink);border-color:var(--muted)}
+.design-impl-item.is-blocked .design-impl-state{color:#d9a45a;border-color:#b58a43}
+.design-impl-item.is-stale{opacity:.6}
+
+.design-impl-steps{grid-column:2;grid-row:1;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;list-style:none;margin:0;padding:0}
+.design-impl-step{height:6px;background:var(--line);position:relative}
+.design-impl-step.is-reached{background:var(--muted)}
+.design-impl-item.is-verified .design-impl-step.is-reached{background:#1f7a69}
+.design-impl-item.is-blocked .design-impl-step.is-current{background:#b58a43}
+.design-impl-step-label{position:absolute;top:9px;left:0;font-size:10px;color:var(--muted);white-space:nowrap;opacity:0}
+.design-impl-step.is-current .design-impl-step-label{opacity:1;color:var(--ink)}
+.design-impl-item:hover .design-impl-step-label,.design-impl-item:focus-within .design-impl-step-label{opacity:1}
+
+.design-impl-next{grid-column:1 / -1;margin:8px 0 0;color:var(--muted);font-size:14px;max-width:90ch}
+.design-impl-item.is-blocked .design-impl-next{color:#e3c08a}
+
+.design-impl-evidence{grid-column:1 / -1}
+.design-impl-evidence summary{cursor:pointer;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;width:max-content}
+.design-impl-evidence dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:10px 0 4px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);font-size:13px}
+.design-impl-evidence dt{color:var(--muted)}
+.design-impl-evidence dd{margin:0;overflow-wrap:anywhere}
+.design-impl-evidence a{color:var(--ink)}
+
+.design-impl-empty{color:var(--muted);padding:18px 0}
+.design-impl-empty.is-error{color:var(--alert)}
+.design-impl-stale{margin-top:22px;border-top:1px solid var(--line);padding-top:12px}
+.design-impl-stale summary{cursor:pointer;color:var(--muted);font-size:13px}
+.design-impl-stale ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.6}
+.design-impl-stale strong{color:var(--ink);font-weight:500}
+
+@media (max-width:900px){
+  .design-impl-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .design-impl-count:nth-child(4){border-right:0}
+  .design-impl-count:nth-child(-n+4){border-bottom:1px solid var(--line)}
+  .design-impl-item{grid-template-columns:1fr}
+  .design-impl-steps{grid-column:1;grid-row:auto;margin-top:6px;margin-bottom:12px}
+  .design-impl-reconciled{text-align:left}
+}
+@media (max-width:480px){
+  .design-impl-evidence dl{grid-template-columns:1fr}
+  .design-impl-evidence dt{margin-top:6px}
+}
+@media (prefers-reduced-motion:no-preference){.design-impl-count,.design-impl-step-label{transition:background .15s,opacity .15s}}
