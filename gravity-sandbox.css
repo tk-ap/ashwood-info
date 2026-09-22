@@ -470,3 +470,12 @@
 
 /* The old assistant UI must never leak into this sandbox even if another legacy runtime injects it. */
 .v3-doc,.v3-doc-panel,[data-doctor-bird],[data-doc-character],.doctor-bird,.doc-character{display:none!important}
+
+
+/* V4.3 / Lunar hierarchy: bodies are clearly legible in the greater scene without becoming UI cards. */
+.v3-hotspot{opacity:.94!important;filter:drop-shadow(0 10px 22px rgba(0,0,0,.62)) drop-shadow(0 0 10px var(--body-atmosphere))}
+.v3-hotspot::before{box-shadow:inset -15px -12px 24px rgba(0,0,0,.82),inset 3px 2px 9px rgba(255,226,164,.09),-5px -4px 14px rgba(222,194,130,.11),0 0 29px var(--body-atmosphere)!important}
+.v3-hotspot span{opacity:.14!important}
+.v3-hotspot:hover span,.v3-hotspot:focus-visible span,.v3-hotspot.is-near span{opacity:.58!important}
+.v3-hotspot.is-found span{opacity:.92!important}
+.v3-field__hint{color:rgba(241,238,230,.42)}
