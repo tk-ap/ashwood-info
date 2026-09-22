@@ -36,6 +36,7 @@ function environmentCard(product) {
         <small>SANDBOX</small>
         <strong>${escapeHtml(sandbox.provider || "here-now")}</strong>
         <p>${sandboxLink}</p>
+        <p><a href="/workspace/sandbox/?product=${encodeURIComponent(product.product_key)}">Review in Studio →</a></p>
       </div>
     </div>
     <div class="sandbox-environment-meta">
