@@ -5,6 +5,7 @@ import { PGlite } from "@electric-sql/pglite";
 
 const html = await readFile(new URL("../workspace/sandbox/index.html", import.meta.url), "utf8");
 const studio = await readFile(new URL("../workspace/sandbox-studio.mjs", import.meta.url), "utf8");
+const studioCss = await readFile(new URL("../workspace/sandbox-studio.css", import.meta.url), "utf8");
 const manifest = JSON.parse(await readFile(new URL("../data/sandbox-review-manifest.json", import.meta.url), "utf8"));
 
 test("Sandbox Studio is static-first and keeps visual review separate from production", () => {
@@ -87,4 +88,12 @@ test("sandbox checklist state is version-scoped and rejects non-here.now targets
     body:{product_key:"ashwood",sandbox_url:"https://mighty-yoga-pgph.here.now/",version_id:"v2"},
   });
   assert.equal(foreign.statusCode, 403);
+});
+
+
+test("Sandbox Studio keeps primary phone controls at least 44px tall", () => {
+  assert.match(studioCss, /\.sandbox-studio-toolbar>a\{[^}]*min-height:44px;/);
+  assert.match(studioCss, /\.sandbox-studio-viewports button,\.sandbox-studio-toggle\{[^}]*min-width:44px;[^}]*min-height:44px;/);
+  assert.match(studioCss, /\.sandbox-overlay-rail button\{width:44px;height:44px;/);
+  assert.match(studioCss, /\.sandbox-request button\{[^}]*min-width:44px;[^}]*min-height:44px;/);
 });
