@@ -1,0 +1,30 @@
+name: publish Gravity preview once
+
+on:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+    paths:
+      - "gravity-preview.trigger"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Publish verified Gravity preview
+        run: node scripts/herenow-publish-sandbox.mjs
+      - name: Preserve here.now result
+        uses: actions/upload-artifact@v4
+        with:
+          name: herenow-gravity-preview-result
+          path: .sandbox/herenow-result.json
+          if-no-files-found: error
+          retention-days: 1
