@@ -59,6 +59,7 @@
     if (!canvas) throw new Error("Gravity renderer requires a canvas");
 
     const state = {
+      // V4.4 visual gate: establish a believable still universe before enabling Flux motion.
       disposed: false,
       visible: true,
       reducedMotion,
@@ -127,8 +128,10 @@
         vec2 p=uv-shift;
         float r=length(p);
         float a=atan(p.y,p.x);
-        float t=u_time*(.08+.08*u_energy);
-        vec2 flow=gravityFlow(p,u_time,u_energy);
+        /* V4.4: reference-first still composition. Motion/Flux is deliberately gated off. */
+        float motionGate=0.0;
+        float t=u_time*(.08+.08*u_energy)*motionGate;
+        vec2 flow=gravityFlow(p,u_time*motionGate,u_energy)*motionGate;
         vec2 advected=p-flow*(.58+.42*u_energy);
         float ar=length(advected);
         float aa=atan(advected.y,advected.x);
@@ -162,8 +165,8 @@
         float band=exp(-pow(d.y/.022,2.))+0.42*exp(-pow(d.y/.052,2.))+0.13*exp(-pow(d.y/.105,2.));
         float inner=smoothstep(H*.96,H*1.12,lr);
         float outer=1.-smoothstep(.58,.78,dr);
-        float turbulence=fbm(vec2(dr*31.-u_time*.23,aa*3.2+u_time*.045));
-        float filaments=.32+.68*max(fluxFilament(advected,u_time,.2),fluxFilament(advected,u_time,.8));
+        float turbulence=fbm(vec2(dr*31.-u_time*.23*motionGate,aa*3.2+u_time*.045*motionGate));
+        float filaments=.32+.68*max(fluxFilament(advected,u_time*motionGate,.2),fluxFilament(advected,u_time*motionGate,.8));
         float disk=band*inner*outer*mix(turbulence,filaments,.62);
 
         /* Approaching side is hotter/brighter; receding side falls away. */
@@ -175,7 +178,7 @@
 
         /* Lensed rear disk arcs above/below the shadow. */
         float rearArc=exp(-pow((lr-H*1.34)/.030,2.))*smoothstep(.02,.24,abs(p.y))*smoothstep(.36,.02,abs(p.y));
-        rearArc*=.45+.55*fbm(vec2(aa*5.+u_time*.055,lr*35.));
+        rearArc*=.45+.55*fbm(vec2(aa*5.+u_time*.055*motionGate,lr*35.));
         col+=mix(gold,hot,.45)*rearArc*(.35+.22*u_energy);
 
         col+=hot*photon*(1.62+.38*u_energy);
@@ -184,14 +187,14 @@
 
         /* Sparse Flux-derived matter shares the exact same velocity field as the accretion flow. */
         vec2 fp=advected*vec2(1.,2.35);
-        float fluxA=fluxFilament(fp,u_time,.35);
-        float fluxB=fluxFilament(fp*rot(.38),u_time,.73);
+        float fluxA=fluxFilament(fp,u_time*motionGate,.35);
+        float fluxB=fluxFilament(fp*rot(.38),u_time*motionGate,.73);
         float flux=(fluxA*.72+fluxB*.42)*smoothstep(.72,.18,ar);
         float grains=step(.91,noise(floor((fp+flow*2.)*72.)))*flux;
         col+=mix(green*.62,hot,.38+doppler*.25)*(flux*.065+grains*.16)*(.55+.45*u_energy);
 
         /* Irregular darkness around the horizon avoids the portal-ring look. */
-        float edgeNoise=(fbm(vec2(aa*3.1,u_time*.012))-.5)*.008;
+        float edgeNoise=(fbm(vec2(aa*3.1,u_time*.012*motionGate))-.5)*.008;
         float shadow=1.-smoothstep(H*.78+edgeNoise,H*1.01+edgeNoise,lr);
         col*=1.-shadow*.9995;
         float core=1.-smoothstep(H*.64,H*.82,lr);
