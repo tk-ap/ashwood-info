@@ -15,16 +15,10 @@ const VIEW_META = {
       {label:"Review checklist", href:"/workspace/v3-playtest/"}
     ]
   },
-  work: {
-    title: "Work.",
-    deck: "Career movement, professional opportunities, and useful public artifacts emerging from real work.",
-    eyebrow: "Professional motion",
-    tools: []
-  },
-  activity: {
-    title: "Activity.",
-    deck: "What the ecosystem changed, what needs attention, and what is waiting on you.",
-    eyebrow: "Execution, decisions, and signals",
+  career: {
+    title: "Career.",
+    deck: "Applications, opportunities, professional relationships, and the work of creating runway.",
+    eyebrow: "Career operations",
     tools: []
   },
   evidence: {
@@ -47,7 +41,8 @@ const VIEW_META = {
 const GROUPS = {
   today: [
     "#today",
-    "#operator-actions-section"
+    "#operator-actions-section",
+    ".actual-priorities"
   ],
   build: [
     "#sprint-directive",
@@ -56,15 +51,12 @@ const GROUPS = {
     "#agentos-board-section",
     "#build",
     "#ashwood-drop",
-    "details.ecosystem"
+    "details.ecosystem",
+    ".ecosystem-feed"
   ],
-  work: [
+  career: [
     "#work",
     "#network"
-  ],
-  activity: [
-    ".ecosystem-feed",
-    ".actual-priorities"
   ],
   evidence: [
     "#owner-intelligence",
@@ -87,9 +79,10 @@ const VIEW_FOR_HASH = {
   "agentos-board-section":"build",
   "design-implementation":"build",
   "ashwood-drop":"build",
-  work:"work",
-  network:"work",
-  activity:"activity",
+  career:"career",
+  work:"career",
+  network:"career",
+  activity:"build",
   evidence:"evidence",
   "evidence-panel":"evidence",
   self:"self",
@@ -168,7 +161,7 @@ function renderTools(view){
 function syncDataHero(view){
   const hero = q("#workspace-view-data-hero");
   if (!hero) return;
-  hero.hidden = view !== "work";
+  hero.hidden = view !== "career";
   hero.dataset.heroView = view;
 }
 
@@ -192,8 +185,7 @@ function renderUtility(view){
   utility.className = "workspace-view-utility";
   const copy = {
     build:"<strong>Build is the execution view.</strong> AgentOS state is mirrored here; authority remains in AgentOS and ledgato.",
-    work:"<strong>Work is the professional view.</strong> Keep career motion and public artifacts separate from product execution.",
-    activity:"<strong>Activity is the operating stream.</strong> See what changed, what needs review, and what the ecosystem is asking you to decide.",
+    career:"<strong>Career is the professional view.</strong> Applications, opportunities and relationships stay together without mixing them into product execution.",
     evidence:"<strong>Evidence is the record.</strong> Use it to verify claims, inspect signals, and trace why priorities changed.",
     self:"<strong>Self is your decision context.</strong> Define what matters, test it against evidence, compare real paths, and let the result shape Today without turning reflection into fact."
   };
@@ -241,12 +233,26 @@ function initialView(){
   return VIEW_FOR_HASH[raw] || (VIEW_META[raw] ? raw : "today");
 }
 
+function openGlobalAdd(){
+  setView("today");
+  requestAnimationFrame(() => {
+    const input = q("#today-command-input");
+    input?.scrollIntoView({behavior:"smooth", block:"center"});
+    input?.focus?.({preventScroll:true});
+  });
+}
+
 function bindNavigation(){
   document.querySelectorAll("[data-workspace-nav]").forEach(link => {
     link.addEventListener("click", event => {
       event.preventDefault();
       setView(link.dataset.workspaceNav);
     });
+  });
+  q("#workspace-global-add")?.addEventListener("click", openGlobalAdd);
+  q("#workspace-notifications")?.addEventListener("click", () => {
+    setView("build");
+    requestAnimationFrame(() => q(".ecosystem-feed")?.scrollIntoView({behavior:"smooth", block:"start"}));
   });
   window.addEventListener("hashchange", () => setView(initialView(), {updateHash:false, anchor:hashAnchor()}));
 }

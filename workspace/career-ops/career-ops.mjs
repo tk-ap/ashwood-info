@@ -287,6 +287,8 @@ function render() {
 async function load() {
   try {
     $('#career-state').textContent = 'Loading…';
+    $('#career-applications').innerHTML = '<div class="workspace-state is-loading"><strong>Loading applications…</strong><span>Reading the private Career Ops record.</span></div>';
+    $('#career-detail').innerHTML = '<div class="workspace-state is-loading"><strong>Preparing application detail…</strong><span>Selecting the current application after the record loads.</span></div>';
     const data = await api();
     state.applications = data.applications || [];
     state.events = data.events || [];
@@ -304,7 +306,9 @@ async function load() {
       return;
     }
     $('#career-state').textContent = 'Unavailable';
-    $('#career-applications').innerHTML = `<div class="career-empty"><strong>Career Ops could not load.</strong><p>${escapeHtml(error.message)}</p></div>`;
+    $('#career-applications').innerHTML = `<div class="workspace-state is-error"><strong>Career Ops could not load.</strong><span>${escapeHtml(error.message)} Canonical application data was not changed.</span></div>`;
+    $('#career-detail').innerHTML = '<div class="workspace-state is-error"><strong>Application detail unavailable.</strong><span>No application was modified.</span></div>';
+    $('#career-opportunity-grid').innerHTML = '<div class="workspace-state is-error"><strong>Opportunities unavailable.</strong><span>The failure affects this view only; saved Career Ops records are unchanged.</span></div>';
   }
 }
 

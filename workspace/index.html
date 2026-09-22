@@ -8,7 +8,7 @@
   <title>Workspace — ASHWOOD</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
-  <link rel="stylesheet" href="/workspace/workspace.css?v=20260922-cohesion2" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20260922-design153" />
   <link rel="stylesheet" href="/workspace/intelligence-hero.css?v=20260922-ownersignal1" />
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
@@ -32,9 +32,9 @@
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/deployment-budget.mjs?v=20260921-agentos1"></script>
   <script type="module" src="/workspace/design-implementation.mjs?v=20260921-design149"></script>
-  <script type="module" src="/workspace/views.mjs?v=20260922-cohesion2"></script>
-  <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260922-viewhero1"></script>
-  <script type="module" src="/workspace/network.mjs?v=20260922-viewhero1"></script>
+  <script type="module" src="/workspace/views.mjs?v=20260922-design153"></script>
+  <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260922-design153"></script>
+  <script type="module" src="/workspace/network.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/elitk-page.mjs?v=20260922-toggle2"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
@@ -47,7 +47,8 @@
         <span class="workspace-label">Workspace</span>
       </div>
       <div class="workspace-actions">
-        <a class="text-button workspace-primary-link" href="/workspace/build-logs/">Build logs</a>
+        <button class="text-button workspace-global-add" id="workspace-global-add" type="button">Add</button>
+        <button class="text-button workspace-primary-link" id="workspace-notifications" type="button">Notifications <span id="workspace-notification-count" aria-label="unread notifications"></span></button>
         <span class="live-state" id="live-state" aria-live="polite">Locked</span>
         <details class="workspace-menu">
           <summary class="text-button">Menu</summary>
@@ -65,8 +66,7 @@
     <nav class="workspace-section-nav" aria-label="Workspace views">
       <a href="#today" data-workspace-nav="today">Today</a>
       <a href="#build" data-workspace-nav="build">Build</a>
-      <a href="#work" data-workspace-nav="work">Work</a>
-      <a href="#activity" data-workspace-nav="activity">Activity</a>
+      <a href="#career" data-workspace-nav="career">Career</a>
       <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
       <a href="#self" data-workspace-nav="self">Self</a>
     </nav>
@@ -380,8 +380,8 @@
       <div class="network-workspace-head">
         <div>
           <p class="section-kicker">Relationships / distribution</p>
-          <h2 id="network-title">Network</h2>
-          <p>One private operating view for sponsors, collaborators, referrals, invitations, introductions, and design partners.</p>
+          <h2 id="network-title">Relationships</h2>
+          <p>Relationships are part of Work: sponsors, collaborators, referrals, introductions, and design partners in one in-place list/detail view.</p>
         </div>
         <div class="network-workspace-actions">
           <span id="network-state" aria-live="polite">Loading…</span>
@@ -401,7 +401,7 @@
         <article>
           <p class="section-kicker">Public intake</p>
           <h3>Sponsorship</h3>
-          <p>The public sponsor page acquires interest. This private Network view owns the relationship, follow-up, status, next action, and notes.</p>
+          <p>The public sponsor page acquires interest. This private Work view owns the relationship, follow-up, status, next action, and notes.</p>
         </article>
         <article>
           <p class="section-kicker">Access</p>
@@ -496,73 +496,53 @@
     <span id="self" class="workspace-anchor" aria-hidden="true"></span>
 
     <section class="workstreams self-operating-model" id="self-operating-model" aria-labelledby="self-model-title">
-      <div class="section-heading-row">
+      <div class="section-heading-row self-model-head">
         <div>
-          <p class="section-kicker">Self · operating context</p>
-          <h2 id="self-model-title">Where am I, and what am I optimizing for?</h2>
+          <p class="section-kicker">Self · context intelligence</p>
+          <h2 id="self-model-title">How TK is wired — and what the system should do with that.</h2>
         </div>
-        <p class="section-note">Reflection informs decisions. Observed evidence remains distinct from interpretation.</p>
+        <p class="section-note">Synthesis first. Evidence and interpretation stay distinct; manual input is for correction, not upkeep.</p>
       </div>
-
-      <div class="workstream-list">
-        <article class="workstream-card" id="self-compass">
-          <p class="section-kicker">Compass</p>
-          <h3>What does success mean right now?</h3>
-          <p>Keep the current definition of success visible enough to shape Today, Work, and Build. Update it when evidence changes—not just when the mood changes.</p>
-          <p><strong>Use:</strong> current chapter · priorities · non-negotiables · practical constraints · what “enough” looks like · what is explicitly not the focus.</p>
+      <div class="workstream-list self-context-grid">
+        <article class="workstream-card self-context-lead" id="self-compass">
+          <p class="section-kicker">Operating model</p>
+          <h3>How I work best</h3>
+          <p>Surface durable patterns in decision-making, pace, autonomy, communication, motivation and attention. Separate observed behavior from working interpretations.</p>
+          <p class="self-context-use"><strong>System use:</strong> this is the default context agents should consult before deciding how to present, sequence, escalate or hand off work.</p>
         </article>
-
-        <article class="workstream-card" id="self-thesis">
-          <p class="section-kicker">Thesis → evidence → paths</p>
-          <h3>What do I believe about where I am going?</h3>
-          <p><strong>Thesis:</strong> the current working belief about the next chapter.</p>
-          <p><strong>Evidence:</strong> observed facts that support, contradict, or weaken it.</p>
-          <p><strong>Paths:</strong> realistic routes available from here, including the cost, dependency, and next test for each.</p>
+        <article class="workstream-card self-context-lead" id="self-system-adaptations">
+          <p class="section-kicker">Context → behavior</p>
+          <h3>How the ecosystem should adapt</h3>
+          <p>Translate context into explicit behavior for AgentOS, ALVIRA, ailhat, ledgato and ASHWOOD instead of leaving personal context as passive biography.</p>
+          <div class="self-adaptation-flow" aria-label="Context adaptation flow"><span>Context</span><span>Implication</span><span>System behavior</span></div>
         </article>
-
-        <article class="workstream-card" id="self-opportunity-scorecard">
-          <p class="section-kicker">Decision tool</p>
-          <h3>Compare the reality—not the fantasy.</h3>
-          <p>Evaluate opportunities against the life and work you are actually trying to build rather than generic prestige or possibility.</p>
-          <p><strong>Check:</strong> income/runway · learning · autonomy · proximity to the thesis · time/energy cost · reversibility · evidence created · downside.</p>
+        <article class="workstream-card" id="self-current-context">
+          <p class="section-kicker">Current context</p>
+          <h3>What is true right now</h3>
+          <p>Active priorities, constraints and chapter-level conditions. These may change quickly and should not be mistaken for durable identity.</p>
         </article>
-
-        <article class="workstream-card" id="self-weekly-direction">
-          <p class="section-kicker">Weekly direction / runway</p>
-          <h3>What has to be true this week?</h3>
-          <p>Connect personal direction to practical constraints. Weekly priorities should feed Today; runway constraints should be allowed to outrank interesting work when necessary.</p>
-          <p><strong>Track:</strong> this week’s outcome · commitments · runway pressure · blocked decisions · what to stop · next review.</p>
+        <article class="workstream-card" id="self-patterns">
+          <p class="section-kicker">Patterns</p>
+          <h3>What keeps showing up</h3>
+          <p>Recurring strengths, preferences and useful tendencies supported by multiple observations. Confidence should rise only with evidence.</p>
         </article>
-
-        <article class="workstream-card" id="self-coherence">
-          <p class="section-kicker">Coherence across frameworks</p>
-          <h3>Different languages. The same life to live.</h3>
-          <p>Self can hold multiple ways of describing the same person—values, lived history, personality frameworks, creative identity, spiritual or symbolic systems, career evidence, and practical constraints—without pretending they have equal evidentiary status.</p>
-          <p><strong>Rule:</strong> look for recurring patterns across independent lenses, translate them into plain-language hypotheses, then test those hypotheses against lived behavior and outcomes. Convergence can prompt reflection; it does not turn interpretation into fact.</p>
+        <article class="workstream-card" id="self-tensions">
+          <p class="section-kicker">Tensions</p>
+          <h3>Where the system should compensate</h3>
+          <p>Tradeoffs, friction and contradictions worth designing around—not labels to turn into identity.</p>
         </article>
-
-        <article class="workstream-card" id="self-durable-commitments">
-          <p class="section-kicker">Durable commitments</p>
-          <h3>Build the life that can carry who you are.</h3>
-          <p>Separate enduring commitments from temporary goals. The system should remember what repeatedly matters across chapters, while allowing the expression of those commitments to change.</p>
-          <p><strong>Trace:</strong> recurring value → current expression → supporting evidence → tension/contradiction → next experiment.</p>
-        </article>
-
-        <article class="workstream-card" id="self-next-chapter">
-          <p class="section-kicker">Next chapter</p>
-          <h3>What appears to be changing?</h3>
-          <p>Record what seems to be ending, emerging, or becoming more important, alongside the evidence behind that interpretation. Treat this as a working reflection, not a prediction.</p>
+        <article class="workstream-card" id="self-corrections">
+          <p class="section-kicker">Review</p>
+          <h3>Confirm, correct, reject</h3>
+          <p>Manual input appears when the system has a specific uncertainty. Corrections should update context; Self should not require routine form maintenance.</p>
         </article>
       </div>
-
       <details class="disclosure self-reference-library">
-        <summary>Reference library · personal frameworks</summary>
-        <div class="workstream-list">
-          <p>Keep longer reflection documents, quick-reference material, and interpretive frameworks here. Astrology, Human Design, Tree of Life, or similar systems may be useful as reflective lenses, but they should remain clearly separated from observed evidence and factual claims.</p>
-        </div>
+        <summary>Supporting evidence &amp; interpretive frameworks</summary>
+        <div class="workstream-list"><p>Inspect provenance, observations and optional reflective frameworks here. Interpretive lenses can prompt hypotheses; they do not become facts without supporting evidence.</p></div>
       </details>
     </section>
-    <details class="checkin disclosure" id="checkin-details" open>
+    <details class="checkin disclosure" id="checkin-details">
       <summary>Today · daily check-in</summary>
       <section class="checkin" id="checkin" aria-labelledby="checkin-title">
         <div class="section-heading-row">
@@ -667,8 +647,7 @@
   <nav class="workspace-mobile-nav" aria-label="Workspace views">
     <a href="#today" data-workspace-nav="today">Today</a>
     <a href="#build" data-workspace-nav="build">Build</a>
-    <a href="#work" data-workspace-nav="work">Work</a>
-    <a href="#activity" data-workspace-nav="activity">Activity</a>
+    <a href="#career" data-workspace-nav="career">Career</a>
     <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
     <a href="#self" data-workspace-nav="self">Self</a>
     <button type="button" id="mobile-add-evidence" aria-label="Add evidence">Add</button>

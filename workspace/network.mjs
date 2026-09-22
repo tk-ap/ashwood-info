@@ -35,7 +35,7 @@ function renderSummary(){
 function renderList(){
   const root=$('#network-relationships');
   if(!state.relationships.length){
-    root.innerHTML='<div class="network-empty"><strong>No relationships recorded yet.</strong><p>Add sponsors, collaborators, referrals, invitations, introductions, or design partners here. This is the private operating record.</p></div>';
+    root.innerHTML='<div class="network-empty"><strong>No relationships recorded yet.</strong><p>This is an intentional empty state. Add sponsors, collaborators, referrals, invitations, introductions, or design partners here. This is the private operating record.</p></div>';
     $('#network-detail').innerHTML='<div class="network-empty"><p>Select or add a relationship to see details and next action.</p></div>';
     return;
   }
@@ -85,11 +85,11 @@ async function save(e){
 
 async function load(){
   try{
-    $('#network-state').textContent='Loading…';
+    $('#network-state').textContent='Loading relationships…'; $('#network-relationships').innerHTML='<div class="workspace-state is-loading"><strong>Loading relationships…</strong><span>Reading the private Work relationship record.</span></div>'; $('#network-detail').innerHTML='<div class="workspace-state is-loading"><strong>Preparing detail…</strong><span>The selected relationship will appear here.</span></div>';
     const data=await api(); state.relationships=data.relationships||[];
     if(!state.selectedId&&state.relationships.length)state.selectedId=state.relationships[0].id;
     $('#network-state').textContent='Private workspace'; renderSummary(); renderList(); renderDetail();
-  }catch(e){$('#network-state').textContent='Unavailable';$('#network-relationships').innerHTML=`<div class="network-empty"><strong>Network could not load.</strong><p>${escapeHtml(e.message)}</p></div>`}
+  }catch(e){$('#network-state').textContent='Unavailable';$('#network-relationships').innerHTML=`<div class="workspace-state is-error"><strong>Relationships could not load.</strong><span>${escapeHtml(e.message)} Canonical relationship data was not changed.</span></div>`;$('#network-detail').innerHTML='<div class="workspace-state is-error"><strong>Detail unavailable.</strong><span>No relationship was modified.</span></div>'}
 }
 
 $('#network-add')?.addEventListener('click',()=>openDialog());
