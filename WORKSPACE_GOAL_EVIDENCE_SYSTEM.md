@@ -98,6 +98,20 @@ Examples include:
 - learning milestones
 - public publishing and visible leadership
 
+### Performance evidence lane
+
+Treat voice and on-camera performance as a first-class creative/professional evidence lane alongside modeling, music, writing, and visual work.
+
+The operating distinction is:
+
+- **Private archive** — auditions, self-tapes, casting sides, unreleased client material, and anything with unclear publication rights.
+- **Professional submission library** — cleared reels and selected samples intended for agents, casting, and direct professional outreach.
+- **Public ASHWOOD portfolio** — only rights-cleared material that can be presented as durable public evidence.
+
+Do not infer public-use rights merely because the user performed or recorded a piece. Preserve rights/context status as evidence metadata and keep private source material out of public portfolio surfaces.
+
+Current cleared performance evidence includes the ASHWOOD Voice Reel v1.4, the published ForThem affiliate/branded-content piece, and the Preview Models commercial demo reel. Project-specific audition material remains private unless separately cleared.
+
 The goal is not to turn all life activity into productivity metrics. The system should only surface evidence that is meaningfully connected to the user's stated direction.
 
 ---
