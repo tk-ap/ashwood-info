@@ -68,19 +68,17 @@
     </div>
     <div class="v3-global-nav__body">
       <nav class="v3-global-nav__links" aria-label="ASHWOOD pages">
-        <a href="/portfolio/"><small>01</small><span>Portfolio</span><b>↗</b></a>
-        <a href="/music/"><small>02</small><span>Music</span><b>↗</b></a>
-        <a href="/journal/"><small>03</small><span>Build Journal</span><b>↗</b></a>
-        <a href="/dispatch/"><small>04</small><span>Dispatch</span><b>↗</b></a>
-        <a href="/ai-from-zero/"><small>05</small><span>AI from Zero</span><b>↗</b></a>
-        <a href="/about/"><small>06</small><span>About</span><b>↗</b></a>
+        <a href="/work/"><small>01</small><span>Work</span><b>↗</b></a>
+        <a href="/journal/"><small>02</small><span>Builds</span><b>↗</b></a>
+        <a href="/about/"><small>03</small><span>About</span><b>↗</b></a>
+        <a href="/connect/"><small>04</small><span>Connect</span><b>↗</b></a>
       </nav>
       <div class="v3-global-nav__aside">
         <p>The homepage is one path through ASHWOOD, not the only path. Jump directly into any manifestation without having to follow the scroll.</p>
         <div class="v3-global-nav__secondary">
-          <a href="/connect/">Work together</a>
+          <a href="/dispatch/">Dispatch</a>
+          <a href="/ai-from-zero/">AI from Zero</a>
           <a href="/#thinking">The instinct</a>
-          <a href="/#evidence">Current work</a>
         </div>
         <a class="v3-global-nav__private" href="/workspace/" rel="nofollow" aria-label="Private ASHWOOD workspace">workspace ↗</a>
       </div>
