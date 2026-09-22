@@ -36,9 +36,8 @@
     script.onerror = reject;
     document.body.appendChild(script);
   });
-  loadScript('/doctor-bird-trigger.js?v=20260907-canonical-doc')
-    .then(() => loadScript('/doc-character-v2.js?v=20260907-canonical-doc'))
-    .catch(() => {});
+  /* V4 sandbox: public Doc is an anomaly, not a persistent character/widget.
+     Do not load the legacy Doctor Bird trigger or character runtime here. */
 
   /* Living identity: always types/backspaces between ASHWOOD and ASHW888D.
      It is synchronized across masthead and the mobile hero mark. */
