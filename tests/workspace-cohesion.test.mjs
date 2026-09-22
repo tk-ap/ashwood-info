@@ -11,13 +11,15 @@ const buildLogsPath = new URL('../workspace/build-logs/index.html', import.meta.
 const careerOpsPath = new URL('../workspace/career-ops/index.html', import.meta.url);
 const productionReviewPath = new URL('../workspace/v3-playtest/index.html', import.meta.url);
 
-test('workspace exposes exactly six primary views on desktop and mobile', async () => {
+test('workspace exposes exactly five primary views on desktop and mobile', async () => {
   const html = await readFile(htmlPath, 'utf8');
-  for (const view of ['today','build','work','activity','evidence','self']) {
+  for (const view of ['today','build','career','evidence','self']) {
     const matches = html.match(new RegExp('data-workspace-nav="' + view + '"', 'g')) || [];
     assert.equal(matches.length, 2, view + ' should exist once in desktop nav and once in mobile nav');
   }
   assert.doesNotMatch(html, /data-workspace-nav="agentos"/);
+  assert.doesNotMatch(html, /data-workspace-nav="activity"/);
+  assert.doesNotMatch(html, /data-workspace-nav="work"/);
 });
 
 test('workspace cohesion assets are loaded and escaped newline artifacts are gone', async () => {
@@ -92,18 +94,52 @@ test('ELITK engine is reversible, persistent, and observes data loaded after the
 test('Owner Constellation belongs only to Evidence', async () => {
   const source = await readFile(viewsPath, 'utf8');
   assert.match(source, /evidence:[\s\S]*"#owner-intelligence"/);
-  for (const view of ['today','build','work','activity','self']) {
+  for (const view of ['today','build','career','self']) {
     const block = source.match(new RegExp(view + ': \\[([\\s\\S]*?)\\n  \\]'))?.[1] || '';
     assert.doesNotMatch(block, /#owner-intelligence/, 'Owner Constellation must not appear in ' + view);
   }
 });
 
 
-test('What matters now is scoped to Activity rather than every Workspace view', async () => {
+test('What matters now is scoped to Today while full activity lives in Build', async () => {
   const source = await readFile(viewsPath, 'utf8');
-  assert.match(source, /activity:[\s\S]*"\.actual-priorities"/);
-  for (const view of ['today','build','work','evidence','self']) {
-    const block = source.match(new RegExp(view + ': \\[([\\s\\S]*?)\\n  \\]'))?.[1] || '';
-    assert.doesNotMatch(block, /\.actual-priorities/, 'What matters now must not appear in ' + view);
-  }
+  assert.match(source, /today:[\s\S]*"\.actual-priorities"/);
+  assert.match(source, /build:[\s\S]*"\.ecosystem-feed"/);
+  assert.doesNotMatch(source, /activity: \\[/);
+});
+
+
+test('Global Add routes every view to the existing durable Today command ingress', async () => {
+  const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
+  const views = await readFile(viewsPath, 'utf8');
+  assert.match(html, /id="workspace-global-add"/);
+  assert.match(views, /#workspace-global-add/);
+  assert.match(views, /setView\("today"\)/);
+  assert.match(views, /#today-command-input/);
+});
+
+test('Self is synthesis-first context intelligence rather than a manual form wall', async () => {
+  const css = await readFile(new URL('../workspace/workspace.css', import.meta.url), 'utf8');
+  assert.match(css, /#self-operating-model>\.workstream-list/);
+  assert.match(css, /\.self-context-grid/);
+  assert.match(css, /\.self-context-lead/);
+  const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
+  assert.match(html, /How TK is wired/);
+  assert.match(html, /How the ecosystem should adapt/);
+  assert.match(html, /Confirm, correct, reject/);
+});
+
+test('Career keeps Relationships nested and list-detail in place', async () => {
+  const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
+  const views = await readFile(viewsPath, 'utf8');
+  assert.match(views, /career:[\s\S]*"#work",[\s\S]*"#network"/);
+  assert.match(html, /<h2 id="network-title">Relationships<\/h2>/);
+  assert.match(html, /class="network-layout"/);
+  assert.match(html, /id="network-relationships"/);
+  assert.match(html, /id="network-detail"/);
+});
+
+test('Workspace state treatment distinguishes loading empty attention and error', async () => {
+  const css = await readFile(new URL('../workspace/workspace.css', import.meta.url), 'utf8');
+  for (const state of ['is-loading','is-empty','is-attention','is-error']) assert.match(css, new RegExp('\\.workspace-state\\.' + state));
 });
