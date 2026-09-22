@@ -4,6 +4,19 @@
   if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Public Doc is an optical anomaly, not a mascot or persistent assistant control.
+  const docAnomaly = document.createElement("span");
+  docAnomaly.className = "ashwood-doc-anomaly";
+  docAnomaly.setAttribute("aria-hidden", "true");
+  field.appendChild(docAnomaly);
+  let anomalyTimer = 0;
+  const glimpseDoc = () => {
+    if (reduced || docAnomaly.classList.contains("is-glimpsed")) return;
+    window.clearTimeout(anomalyTimer);
+    docAnomaly.classList.add("is-glimpsed");
+    anomalyTimer = window.setTimeout(() => docAnomaly.classList.remove("is-glimpsed"), 1150);
+  };
   const renderer = window.createAshwoodGravityRenderer({ canvas, reducedMotion: reduced });
   let fieldRect = field.getBoundingClientRect();
   let playing = false;
@@ -20,6 +33,7 @@
     const x = clamp((event.clientX - fieldRect.left) / Math.max(fieldRect.width, 1));
     const y = clamp((event.clientY - fieldRect.top) / Math.max(fieldRect.height, 1));
     renderer.setPointer({ x, y, active: 1 });
+    if (Math.abs(x - 0.5) + Math.abs(y - 0.5) > 0.52) glimpseDoc();
     field.style.setProperty("--gravity-pointer-x", `${x * 100}%`);
     field.style.setProperty("--gravity-pointer-y", `${y * 100}%`);
     // Bodies move at different depths; the black hole remains visually anchored.
@@ -63,6 +77,7 @@
     const found = readDiscovery();
     renderer.setDiscovery(found);
     field.dataset.discoveryCount = String(found.length);
+    if (found.length === 2 || found.length === 5) glimpseDoc();
   };
 
   syncDiscovery();
