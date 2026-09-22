@@ -44,7 +44,7 @@ async function queueAction(row, action) {
     `Treat ASHWOOD Workspace as the owner interface, preserve GitHub as source-code truth, ` +
     `preserve provider deployment facts as evidence, and route any mutating action through AgentOS/ledgato governance. ` +
     (action === 'gate'
-      ? 'Implement Workspace-authenticated access without exposing or reusing the raw ashwood_workspace_session cookie outside the ASHWOOD origin. Use a scoped gateway/grant boundary.'
+      ? 'Implement Workspace-authenticated access without exposing or reusing the raw Workspace owner session outside the ASHWOOD origin. Use a scoped gateway/grant boundary.'
       : action === 'verify'
         ? 'Check provider state, current version, access policy, expiry/persistence, and source-ref parity; update the sandbox registry with evidence.'
         : action === 'update'
