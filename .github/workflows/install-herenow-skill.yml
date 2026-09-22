@@ -1,0 +1,48 @@
+name: install here.now skill
+
+on:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+    paths:
+      - ".github/workflows/install-herenow-skill.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops/herenow-gravity-sandbox
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install here.now skill project-locally
+        env:
+          DISABLE_TELEMETRY: "1"
+        run: npx -y skills add heredotnow/skill --skill here-now --agent '*' --copy -y
+
+      - name: Verify skill install
+        run: |
+          test -f .agents/skills/here-now/SKILL.md
+          npx -y skills list --json
+
+      - name: Commit pinned skill
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .agents skills-lock.json .claude .codex .cursor .gemini 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No install changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: pin here.now agent skill"
+          git push origin HEAD:ops/herenow-gravity-sandbox
