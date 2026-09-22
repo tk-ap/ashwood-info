@@ -143,3 +143,48 @@ test('foreign-origin browser command submission is rejected', async t => {
   });
   assert.equal(res.statusCode, 403);
 });
+
+
+test('Kanban transition is durably queued, deduped, and queryable after a new request', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const body = {
+    action:'submit_kanban_transition',
+    task_id:'task-1',
+    work_id:'work-1',
+    observed_state:'FAILED',
+    observed_generation:2,
+    target_state:'READY',
+    idempotency_key:'drag-1',
+  };
+  const first = await f.call({ method:'POST', owner:true, body });
+  assert.equal(first.statusCode, 202);
+  assert.equal(first.body.status, 'queued');
+
+  const duplicate = await f.call({ method:'POST', owner:true, body });
+  assert.equal(duplicate.statusCode, 200);
+  assert.equal(duplicate.body.existing, true);
+  assert.equal(duplicate.body.transition.id, first.body.id);
+
+  const visible = await f.call({
+    owner:true,
+    query:{ view:'kanban-transition', id:first.body.id },
+  });
+  assert.equal(visible.statusCode, 200);
+  assert.equal(visible.body.transition.status, 'queued');
+  assert.equal(visible.body.transition.payload.schema, 'workspace.kanban-transition/v1');
+  assert.equal(visible.body.transition.payload.observed_generation, 2);
+});
+
+test('Kanban transition rejects incomplete or non-integer observed state', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const res = await f.call({
+    method:'POST', owner:true,
+    body:{
+      action:'submit_kanban_transition',
+      task_id:'task-1', work_id:'work-1',
+      observed_state:'FAILED', observed_generation:'bad',
+      target_state:'READY', idempotency_key:'drag-2',
+    },
+  });
+  assert.equal(res.statusCode, 400);
+});
