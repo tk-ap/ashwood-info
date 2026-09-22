@@ -479,3 +479,26 @@
 .v3-hotspot:hover span,.v3-hotspot:focus-visible span,.v3-hotspot.is-near span{opacity:.58!important}
 .v3-hotspot.is-found span{opacity:.92!important}
 .v3-field__hint{color:rgba(241,238,230,.42)}
+
+
+/* V4.4 — reference-first still-frame gate.
+   The universe carries the visual weight; markers only identify meaning.
+   Do not compensate for unfinished environment art with UI chrome or motion. */
+.v3-hotspot{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+.v3-hotspot::before{
+  width:7px!important;height:7px!important;
+  background:rgba(255,224,158,.96)!important;
+  border:1px solid rgba(255,238,196,.72)!important;
+  box-shadow:0 0 0 7px rgba(255,205,112,.055),0 0 20px rgba(255,205,112,.18)!important;
+}
+.v3-hotspot span{
+  opacity:.42!important;
+  letter-spacing:.24em!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.95);
+}
+.v3-hotspot:hover span,.v3-hotspot:focus-visible span,.v3-hotspot.is-near span,.v3-hotspot.is-found span{opacity:.92!important}
