@@ -31,13 +31,14 @@ async function run(name, viewport) {
       await route.fulfill({ status:202, contentType:"application/json", body:JSON.stringify({ok:true,id:"sandbox-change:test",status:"queued",thread_id:"operator:primary"}) });
     } else await route.continue();
   });
-  await page.route("https://*.here.now/**", async route => {
-    await route.fulfill({ status:200, contentType:"text/html", body:"<!doctype html><html><body style='background:#111;color:#ddd;font:16px sans-serif;padding:40px'><h1>Sandbox preview fixture</h1><p>Cross-origin preview placeholder for CI.</p></body></html>" });
+  await page.route(/https:\/\/[^/]+\.here\.now\/.*/, async route => {
+    await route.fulfill({ status:200, contentType:"text/html", body:"<!doctype html><html><body style='margin:0;background:#111;color:#ddd;font:16px sans-serif;padding:40px'><h1>Sandbox preview fixture</h1><p>Cross-origin preview placeholder for CI.</p></body></html>" });
   });
 
   const errors = [];
   page.on("pageerror", error => errors.push(String(error)));
   await page.goto(BASE + "/workspace/sandbox/", { waitUntil:"networkidle" });
+  await page.frameLocator("#sandbox-frame").getByText("Sandbox preview fixture").waitFor({ state:"visible" });
 
   const state = await page.evaluate(() => ({
     shellInert: document.querySelector(".sandbox-studio-shell")?.inert,
@@ -57,10 +58,16 @@ async function run(name, viewport) {
   if (state.overflow > 2) throw new Error(`${name}: horizontal overflow ${state.overflow}px`);
   if (errors.length) throw new Error(`${name}: page error ${errors[0]}`);
 
-  await page.locator('[data-viewport="mobile"]').click();
-  await page.waitForTimeout(350);
-  const mobileFrameWidth = await page.locator(".sandbox-frame-shell").evaluate(node => node.getBoundingClientRect().width);
-  if (mobileFrameWidth > 400.5) throw new Error(`${name}: mobile preview width ${mobileFrameWidth}`);
+  let mobileFrameWidth = null;
+  if (name === "mobile") {
+    await page.locator('button[data-viewport="mobile"]').click();
+    await page.waitForTimeout(350);
+    mobileFrameWidth = await page.locator(".sandbox-frame-shell").evaluate(node => node.getBoundingClientRect().width);
+    if (mobileFrameWidth > 400.5) throw new Error(`${name}: mobile preview width ${mobileFrameWidth}`);
+  } else {
+    const desktopFrameWidth = await page.locator(".sandbox-frame-shell").evaluate(node => node.getBoundingClientRect().width);
+    if (desktopFrameWidth < 600) throw new Error(`${name}: desktop preview unexpectedly narrow ${desktopFrameWidth}`);
+  }
 
   await page.locator(".sandbox-change-card").nth(1).click();
   const selectedChange = await page.locator("#sandbox-request-change").inputValue();
@@ -75,6 +82,8 @@ async function run(name, viewport) {
 
   await page.locator('[data-review-id="mobile"]').check();
   await page.waitForTimeout(500);
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.waitForTimeout(120);
 
   await page.screenshot({ path:`${OUT}/${name}.png`, fullPage:true });
   console.log(JSON.stringify({name,...state,mobileFrameWidth,submitted:submitted[0]},null,2));
