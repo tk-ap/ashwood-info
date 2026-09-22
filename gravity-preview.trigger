@@ -1,3 +1,5 @@
-verified-run=35757173599
-verified-sha=24ee8acbcfde2708c44009e34229b63f7b336a66
+verified-run=35759312668
+verified-sha=44d730d91343c724b719583685438123a48f58a8
+implementation-sha=ce7300b54c30d738df032031ca1ec5df25a65a65
+purpose=instinct-black-hole-v2
 published=2026-09-22
