@@ -5,8 +5,8 @@
 .agentos-board-counts{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 24px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .agentos-board-counts span{display:flex;gap:7px;align-items:baseline;font:600 10px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .agentos-board-counts b{font-size:18px;font-weight:500;color:var(--ink);letter-spacing:-.03em}
-.agentos-board{display:grid;grid-template-columns:repeat(7,minmax(230px,1fr));gap:1px;border:1px solid var(--line);background:var(--line);overflow-x:auto}
-.agentos-board-lane{min-width:230px;background:var(--paper)}
+.agentos-board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;border:1px solid var(--line);background:var(--line);overflow:visible}
+.agentos-board-lane{min-width:0;background:var(--paper)}
 .agentos-board-lane>header{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
 .agentos-board-lane>header h3{margin:0;font:600 10px/1 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
 .agentos-board-lane>header span{font-size:11px;color:var(--muted)}
@@ -28,7 +28,7 @@
 .agentos-board-card__footer{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-top:14px;padding-top:11px;border-top:1px solid var(--line);font-size:9px;color:var(--muted);overflow-wrap:anywhere}
 .agentos-board-card__footer a{color:var(--ink);font-size:10px;white-space:nowrap;text-underline-offset:3px}
 .agentos-board-empty{margin:0;padding:22px 16px;color:var(--muted);font-size:12px;line-height:1.5}
-@media(max-width:900px){.agentos-board{grid-template-columns:repeat(7,minmax(250px,78vw))}.agentos-board-heading{align-items:flex-start}.agentos-board-card dl{grid-template-columns:1fr}}
+@media(max-width:900px){.agentos-board{grid-template-columns:repeat(2,minmax(0,1fr))}.agentos-board-heading{align-items:flex-start}.agentos-board-card dl{grid-template-columns:1fr}}@media(max-width:620px){.agentos-board{grid-template-columns:1fr}}
 
 .agentos-board-tools{display:grid;gap:12px;margin:18px 0 12px;padding:14px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 82%,transparent)}
 .agentos-board-views{display:flex;flex-wrap:wrap;gap:6px}
@@ -43,7 +43,7 @@
 .agentos-board-lane__toggle{width:100%;display:flex;align-items:center;gap:8px;border:0;background:transparent;color:inherit;padding:0;cursor:pointer;text-align:left}
 .agentos-board-lane__toggle>span:last-child{margin-left:auto;font-size:11px;color:var(--muted)}
 .agentos-board-lane__chevron{display:inline-block;font-size:12px;color:var(--muted);transition:transform .16s ease}
-.agentos-board-lane.is-collapsed{min-width:150px}
+.agentos-board-lane.is-collapsed{min-width:0}
 .agentos-board-lane.is-collapsed .agentos-board-lane__chevron{transform:rotate(-90deg)}
 .agentos-board-lane.is-collapsed .agentos-board-lane__cards{display:none}
 .agentos-board-card{position:relative;border-left:3px solid var(--domain-tone,var(--line));transition:background-color .15s ease,border-color .15s ease}
@@ -61,3 +61,6 @@
 .agentos-board-card__why strong{color:var(--ink);font:600 8px/1 Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;margin-right:4px}
 @media(max-width:1100px){.agentos-board-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.agentos-board-reset{min-height:34px}}
 @media(max-width:700px){.agentos-board-filters{grid-template-columns:1fr}.agentos-board-tools{padding:12px}.agentos-board-views{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.agentos-board-views button{text-align:left}}
+
+/* Compact 21st.dev-inspired board density: fit the whole board to the viewport without a nested horizontal scroller. */
+@media(min-width:901px){.agentos-board-card{padding:12px 10px}.agentos-board-card h4{font-size:clamp(11px,1vw,15px)}.agentos-board-card__detail,.agentos-board-card__why{font-size:10px}.agentos-board-card dl{grid-template-columns:1fr;gap:6px}.agentos-board-card__footer{display:grid;gap:6px}.agentos-board-lane>header{padding:11px 9px}.agentos-board-card__badges{gap:3px}.agentos-board-card__domain,.agentos-board-card__product,.agentos-board-card__priority,.agentos-board-card__type{padding:2px 4px;font-size:6px}}
