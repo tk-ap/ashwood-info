@@ -47,8 +47,7 @@ const VIEW_META = {
 const GROUPS = {
   today: [
     "#today",
-    "#operator-actions-section",
-    ".actual-priorities"
+    "#operator-actions-section"
   ],
   build: [
     "#sprint-directive",
@@ -64,7 +63,8 @@ const GROUPS = {
     "#network"
   ],
   activity: [
-    ".ecosystem-feed"
+    ".ecosystem-feed",
+    ".actual-priorities"
   ],
   evidence: [
     "#owner-intelligence",
