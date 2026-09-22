@@ -1,9 +1,6 @@
 name: verify here.now Gravity baseline
 
 on:
-  push:
-    branches:
-      - ops/herenow-gravity-sandbox
   workflow_dispatch:
 
 permissions:
