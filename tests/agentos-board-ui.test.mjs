@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { filterRows, matchesView, workDomain } from '../workspace/agentos-board.mjs';
+import { canonicalState, filterRows, kanbanTarget, matchesView, transitionPayload, workDomain } from '../workspace/agentos-board.mjs';
 
 const rows = [
   { lane:'in_progress', product:'AgentOS', work_domain:'agentos', priority:'p2', title:'Build AgentOS ledger', assignee:'milchik', kind:'execution' },
@@ -44,4 +44,29 @@ test('combined filters behave like a persistent operator view', () => {
   });
   assert.equal(visible.length, 1);
   assert.equal(visible[0].title, 'Context portability baseline');
+});
+
+
+test('Kanban movement exposes only bounded AgentOS-safe targets', () => {
+  const proposed = { task_id:'t1', work_id:'w1', phase:'proposed', attempts:2 };
+  assert.equal(canonicalState(proposed), 'PROPOSED');
+  assert.equal(kanbanTarget(proposed, 'in_progress'), 'READY');
+  assert.equal(kanbanTarget(proposed, 'done'), null);
+  assert.equal(kanbanTarget({ ...proposed, phase:'running' }, 'in_progress'), null);
+  assert.equal(kanbanTarget({ phase:'proposed' }, 'in_progress'), null);
+});
+
+test('transition payload carries stable identity and observed generation', () => {
+  assert.deepEqual(
+    transitionPayload({ task_id:'t1', work_id:'w1', phase:'failed', attempts:3 }, 'in_progress', 'drag-1'),
+    {
+      action:'submit_kanban_transition',
+      task_id:'t1',
+      work_id:'w1',
+      observed_state:'FAILED',
+      observed_generation:3,
+      target_state:'READY',
+      idempotency_key:'drag-1',
+    }
+  );
 });
