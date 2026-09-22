@@ -1,11 +1,7 @@
-name: publish Gravity preview once
+name: publish disposable Gravity preview
 
 on:
-  push:
-    branches:
-      - ops/herenow-gravity-sandbox
-    paths:
-      - "gravity-preview.trigger"
+  workflow_dispatch:
 
 permissions:
   contents: read
