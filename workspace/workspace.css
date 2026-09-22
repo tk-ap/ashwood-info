@@ -303,3 +303,34 @@ html[data-ashwood-theme="phosphor-cyber"] .workspace-page{--paper:#07130d;--ink:
 body[data-workspace-current-view="work"] #network{margin-top:24px}
 @media(min-width:980px){.workspace-section-nav{position:sticky;top:12px;z-index:20;backdrop-filter:blur(16px)}}
 @media(max-width:680px){.activity-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-flow{gap:6px;overflow:auto}.activity-flow span{white-space:nowrap}}
+
+
+/* #153 — intentional Self composition and shared state language. */
+.workspace-global-add{border-color:color-mix(in srgb,var(--ashwood-field-green) 55%,var(--line))!important}
+.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>.workstream-card{grid-column:span 4;margin:0;border:0;border-radius:0;background:var(--paper);min-height:220px}
+.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-compass{grid-column:span 7;min-height:280px}
+.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-thesis{grid-column:span 5;min-height:280px}
+.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-weekly-direction{grid-column:span 6}
+.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-durable-commitments{grid-column:span 6}
+.workspace-state{padding:22px;border:1px solid var(--line);background:var(--panel);color:var(--muted);line-height:1.5}
+.workspace-state strong{display:block;color:var(--ink);margin-bottom:5px;font-weight:500}
+.workspace-state.is-loading{border-left:3px solid var(--state-signal,#86a8c7)}
+.workspace-state.is-empty{border-left:3px solid var(--state-quiet,#8b8b84)}
+.workspace-state.is-attention{border-left:3px solid var(--state-attention,#d5ad66)}
+.workspace-state.is-error{border-left:3px solid var(--state-risk,#cf7b72)}
+@media(max-width:900px){.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>.workstream-card,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-compass,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-thesis,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-weekly-direction,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-durable-commitments{grid-column:span 6}}
+@media(max-width:620px){.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list{grid-template-columns:1fr}.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>.workstream-card,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-compass,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-thesis,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-weekly-direction,.workspace-page[data-workspace-current-view="self"] #self-operating-model>.workstream-list>#self-durable-commitments{grid-column:1}}
+
+/* #153 — Self is a context-intelligence surface, not a form wall. */
+.self-model-head{align-items:end}
+.self-model-head h2{max-width:18ch;font-size:clamp(32px,4.8vw,64px);line-height:.98;letter-spacing:-.05em}
+.workspace-page[data-workspace-current-view="self"] .self-context-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+.workspace-page[data-workspace-current-view="self"] .self-context-grid>.workstream-card{grid-column:span 4}
+.workspace-page[data-workspace-current-view="self"] .self-context-grid>.self-context-lead{grid-column:span 6;min-height:310px}
+.self-context-use{margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.self-adaptation-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:28px;background:var(--line);border:1px solid var(--line)}
+.self-adaptation-flow span{background:var(--paper);padding:16px 12px;text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.self-adaptation-flow span+span:before{content:"→";float:left;color:var(--muted);transform:translateX(-18px)}
+.workspace-page[data-workspace-current-view="self"] #checkin-details{opacity:.86}
+@media(max-width:760px){.workspace-page[data-workspace-current-view="self"] .self-context-grid>.workstream-card,.workspace-page[data-workspace-current-view="self"] .self-context-grid>.self-context-lead{grid-column:1/-1}.self-adaptation-flow{grid-template-columns:1fr}.self-adaptation-flow span+span:before{content:"↓";float:none;display:block;transform:none;margin:-10px 0 8px}}
