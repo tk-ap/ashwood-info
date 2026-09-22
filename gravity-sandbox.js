@@ -4,7 +4,7 @@
   if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const stillFrameGate = true; // V4.8: global authored environment must pass before local motion resumes.
+  const stillFrameGate = true; // V4.9: scroll camera only; Flux/lensing/plasma and Doc motion remain gated.
   const thinkingStage = document.querySelector("#thinking");
   const siteCosmos = document.querySelector("[data-site-cosmos]");
 
@@ -25,14 +25,76 @@
   let playing = false;
   const clamp = (v) => Math.max(0, Math.min(1, v));
 
+  const heroStage = document.querySelector(".v3-hero");
+  const evidenceStage = document.querySelector("#evidence");
+  const depthStage = document.querySelector("#depth");
+
+  const setCamera = (progress, zone) => {
+    if (!siteCosmos) return;
+    const p = clamp(progress);
+    const instinctPull = zone === "instinct" ? 1 : 0;
+    const evidenceDrift = zone === "evidence" ? 1 : 0;
+    const depthDrift = zone === "depth" ? 1 : 0;
+
+    // Restrained differential movement: enough depth to change viewpoint,
+    // never enough to read as generic parallax.
+    const baseX = (-4 * p) + (evidenceDrift * -3) + (depthDrift * -5);
+    const baseY = (-8 * p) + (instinctPull * 3) + (depthDrift * -3);
+    const gravityX = (-7 * p) + (evidenceDrift * -5) + (depthDrift * -7);
+    const gravityY = (-11 * p) + (instinctPull * 5) + (depthDrift * -4);
+    const foregroundX = (-11 * p) + (evidenceDrift * -7) + (depthDrift * -9);
+    const foregroundY = (-15 * p) + (instinctPull * 7) + (depthDrift * -5);
+
+    const baseScale = zone === "instinct" ? 1.015 : zone === "hero" ? 1.045 : zone === "evidence" ? 1.03 : 1.04;
+    const gravityScale = zone === "instinct" ? 1.02 : zone === "hero" ? 1.035 : 1.03;
+    const foregroundScale = zone === "instinct" ? 1.04 : zone === "hero" ? 1.06 : 1.055;
+
+    const root = document.documentElement.style;
+    root.setProperty("--cosmos-base-x", `${baseX.toFixed(2)}px`);
+    root.setProperty("--cosmos-base-y", `${baseY.toFixed(2)}px`);
+    root.setProperty("--cosmos-gravity-x", `${gravityX.toFixed(2)}px`);
+    root.setProperty("--cosmos-gravity-y", `${gravityY.toFixed(2)}px`);
+    root.setProperty("--cosmos-foreground-x", `${foregroundX.toFixed(2)}px`);
+    root.setProperty("--cosmos-foreground-y", `${foregroundY.toFixed(2)}px`);
+    root.setProperty("--cosmos-base-scale", String(baseScale));
+    root.setProperty("--cosmos-gravity-scale", String(gravityScale));
+    root.setProperty("--cosmos-foreground-scale", String(foregroundScale));
+  };
+
   const syncCosmosPhase = () => {
     if (!thinkingStage || !siteCosmos) return;
-    const rect = thinkingStage.getBoundingClientRect();
-    let phase = "ambient";
-    if (rect.bottom <= innerHeight * 0.12) phase = "afterglow";
-    else if (rect.top <= innerHeight * 0.72 && rect.bottom >= innerHeight * 0.22) phase = "instinct";
+
+    const center = innerHeight * 0.5;
+    const heroRect = heroStage?.getBoundingClientRect();
+    const thinkingRect = thinkingStage.getBoundingClientRect();
+    const evidenceRect = evidenceStage?.getBoundingClientRect();
+    const depthRect = depthStage?.getBoundingClientRect();
+
+    let zone = "depth";
+    let phase = "afterglow";
+
+    if (heroRect && heroRect.bottom > center) {
+      zone = "hero";
+      phase = "ambient";
+    } else if (thinkingRect.top <= center && thinkingRect.bottom >= center) {
+      zone = "instinct";
+      phase = "instinct";
+    } else if (evidenceRect && evidenceRect.top <= center && evidenceRect.bottom >= center) {
+      zone = "evidence";
+      phase = "afterglow";
+    } else if (depthRect && depthRect.top > center) {
+      zone = "evidence";
+      phase = "afterglow";
+    }
+
+    const maxScroll = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
+    const progress = scrollY / maxScroll;
+
     document.body.dataset.cosmosPhase = phase;
+    document.body.dataset.cosmosZone = zone;
     siteCosmos.dataset.phase = phase;
+    siteCosmos.dataset.zone = zone;
+    setCamera(progress, zone);
   };
   syncCosmosPhase();
 
