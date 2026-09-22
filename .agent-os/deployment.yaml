@@ -11,6 +11,20 @@ hosting:
   project: ashwood
   production_url: https://ashwood-info.vercel.app
 
+sandboxes:
+  primary:
+    provider: here-now
+    owner_connection_ref: owner:provider:here-now
+    lifecycle: live
+    static_primary: true
+    slug: mighty-yoga-pgph
+    url: https://mighty-yoga-pgph.here.now/
+    current_version_id: 01M34Z9SBZS6MN1TGMZFT2KR7Y
+    source_ref: 0065f2aae3e8fecf11b833846ce7653885ef4335
+    verification:
+      state: passed
+      evidence_ref: github-actions:35755680639
+
 release_rules:
   - treat-this-file-as-the-canonical-deployment-topology
   - verify-the-current-main-sha-before-making-release-changes
@@ -18,3 +32,6 @@ release_rules:
   - require-the-production-url-and-changed-routes-to-return-successfully
   - verify-live-content-and-new-asset-content-types-before-reporting-live
   - never-infer-production-from-a-commit-push-preview-or-stale-repository-homepage
+  - sandbox-state-never-implies-production-state
+  - prefer-one-stable-sandbox-url-per-product
+  - provider-credentials-are-inherited-from-owner-connection-and-never-stored-here
