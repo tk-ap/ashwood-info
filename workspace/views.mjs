@@ -1,4 +1,12 @@
 const VIEW_META = {
+  operator: {
+    title: "Operator.",
+    deck: "Direct the ecosystem, follow the work, and stay inside one human-facing control surface.",
+    eyebrow: "ASHWOOD operating layer",
+    tools: [
+      {label:"Sandbox Studio direction", href:"https://github.com/tk-ap/ashwood-info/issues/159", external:true}
+    ]
+  },
   today: {
     title: "Today.",
     deck: "What matters. What is moving. What needs you.",
@@ -39,6 +47,9 @@ const VIEW_META = {
 };
 
 const GROUPS = {
+  operator: [
+    "#operator"
+  ],
   today: [
     "#today",
     "#operator-actions-section",
@@ -74,6 +85,7 @@ const GROUPS = {
 };
 
 const VIEW_FOR_HASH = {
+  operator:"operator",
   today:"today",
   build:"build",
   "agentos-board-section":"build",
@@ -180,7 +192,7 @@ function renderIntro(view){
 function renderUtility(view){
   document.querySelectorAll(".workspace-view-utility").forEach(node => node.remove());
   const first = document.querySelector('[data-workspace-view="' + view + '"][data-workspace-active="true"]');
-  if (!first || view === "today") return;
+  if (!first || view === "today" || view === "operator") return;
   const utility = document.createElement("div");
   utility.className = "workspace-view-utility";
   const copy = {
@@ -234,7 +246,7 @@ function initialView(){
 }
 
 function openGlobalAdd(){
-  setView("today");
+  setView("operator");
   requestAnimationFrame(() => {
     const input = q("#today-command-input");
     input?.scrollIntoView({behavior:"smooth", block:"center"});
