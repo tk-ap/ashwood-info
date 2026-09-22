@@ -396,9 +396,18 @@ export default async function handler(req, res) {
       await ensureCommandTable(sql);
       const text = String(body.command || '').trim().slice(0, 2000);
       if (!text) return json(res, 400, { ok: false, error: 'Command cannot be empty' });
+      const threadId = String(body.thread_id || 'operator:primary').trim().slice(0, 180) || 'operator:primary';
+      const parentCommandId = String(body.parent_command_id || '').trim().slice(0, 250) || null;
       const id = `workspace-command:${crypto.randomUUID()}`;
-      await sql`INSERT INTO workspace_commands (id, command_text, status, source) VALUES (${id}, ${text}, 'queued', 'workspace')`;
-      return json(res, 201, { ok: true, id, status: 'queued' });
+      const payload = {
+        schema: 'workspace.owner-command/v1',
+        thread_id: threadId,
+        parent_command_id: parentCommandId,
+        surface: 'operator',
+      };
+      await sql`INSERT INTO workspace_commands (id, command_text, command_kind, payload, status, source)
+        VALUES (${id}, ${text}, 'owner_command', ${JSON.stringify(payload)}::jsonb, 'queued', 'workspace')`;
+      return json(res, 201, { ok: true, id, status: 'queued', thread_id: threadId });
     }
 
     if (action === 'ingest_external_signal') {
