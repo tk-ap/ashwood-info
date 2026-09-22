@@ -1,0 +1,37 @@
+name: verify here.now Gravity baseline
+
+on:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Install Playwright Chromium
+        run: npx -y playwright@1.55.0 install --with-deps chromium
+
+      - name: Capture desktop baseline
+        run: |
+          npx -y playwright@1.55.0 screenshot             --device="Desktop Chrome"             --full-page             https://mighty-yoga-pgph.here.now/             herenow-desktop.png
+
+      - name: Capture mobile baseline
+        run: |
+          npx -y playwright@1.55.0 screenshot             --device="iPhone 15"             --full-page             https://mighty-yoga-pgph.here.now/             herenow-mobile.png
+
+      - name: Upload baseline screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: herenow-gravity-baseline-screenshots
+          path: |
+            herenow-desktop.png
+            herenow-mobile.png
+          if-no-files-found: error
+          retention-days: 7
