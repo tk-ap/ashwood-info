@@ -1,0 +1,49 @@
+name: verify Gravity sandbox
+
+on:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+    paths:
+      - "index.html"
+      - "gravity-*.js"
+      - "gravity-*.css"
+      - "scripts/gravity-sandbox-check.mjs"
+      - ".github/workflows/gravity-sandbox-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install browser tooling
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Start static sandbox server
+        run: |
+          npx -y http-server . -p 4173 -c-1 > /tmp/gravity-http.log 2>&1 &
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/gravity-http.log
+          exit 1
+      - name: Exercise Gravity renderer
+        run: node scripts/gravity-sandbox-check.mjs
+      - name: Preserve proof screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gravity-sandbox-proof
+          path: gravity-*.png
+          if-no-files-found: ignore
+          retention-days: 7
