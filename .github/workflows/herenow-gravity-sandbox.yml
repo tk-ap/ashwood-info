@@ -1,9 +1,6 @@
 name: here.now Gravity sandbox
 
 on:
-  push:
-    branches:
-      - ops/herenow-gravity-sandbox
   workflow_dispatch:
 
 permissions:
