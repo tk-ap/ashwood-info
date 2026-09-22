@@ -24,6 +24,9 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       cssOpacity: style?.opacity || null,
       pointerEvents: style?.pointerEvents || null,
       heroHeight: hero?.getBoundingClientRect().height || 0,
+      canvasInField: Boolean(document.querySelector(".v3-field > [data-gravity-canvas]")),
+      heroContainsCanvas: Boolean(document.querySelector(".v3-hero [data-gravity-canvas]")),
+      fieldBackground: getComputedStyle(document.querySelector(".v3-field")).backgroundColor,
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
     };
   });
@@ -36,6 +39,7 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   }
   if (initial.cssOpacity === "0") throw new Error(`${name}: canvas stayed hidden`);
   if (initial.pointerEvents !== "none") throw new Error(`${name}: canvas intercepted input`);
+  if (!initial.canvasInField || initial.heroContainsCanvas) throw new Error(`${name}: Gravity is not isolated to Instinct field`);
   if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);
 
   await page.mouse.move(1100, 360).catch(() => {});
