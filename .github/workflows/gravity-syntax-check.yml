@@ -1,0 +1,22 @@
+name: gravity syntax check
+on:
+  push:
+    branches: [ops/herenow-gravity-sandbox]
+    paths:
+      - "gravity-renderer.js"
+      - "gravity-sandbox.js"
+      - ".github/workflows/gravity-syntax-check.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: |
+          node --check gravity-renderer.js
+          node --check gravity-sandbox.js
