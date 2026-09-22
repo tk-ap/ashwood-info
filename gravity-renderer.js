@@ -97,95 +97,84 @@
       uniform float u_chapter;
 
       #define PI 3.14159265359
+      float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+      float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash21(i),hash21(i+vec2(1.,0.)),f.x),mix(hash21(i+vec2(0.,1.)),hash21(i+vec2(1.,1.)),f.x),f.y);}
+      float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(13.1,7.7);a*=.5;}return v;}
+      mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
 
-      float hash21(vec2 p) {
-        p = fract(p * vec2(123.34, 456.21));
-        p += dot(p, p + 45.32);
-        return fract(p.x * p.y);
-      }
+      void main(){
+        vec2 frag=gl_FragCoord.xy;
+        vec2 uv=(frag-.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
+        float aspect=u_resolution.x/max(u_resolution.y,1.);
+        vec2 shift=(u_pointer.xy-.5)*vec2(.025*aspect,.018)*u_pointer.z;
+        vec2 p=uv-shift;
+        float r=length(p);
+        float a=atan(p.y,p.x);
+        float t=u_time*(.08+.08*u_energy);
 
-      float noise(vec2 p) {
-        vec2 i = floor(p);
-        vec2 f = fract(p);
-        f = f * f * (3.0 - 2.0 * f);
-        return mix(
-          mix(hash21(i), hash21(i + vec2(1.0,0.0)), f.x),
-          mix(hash21(i + vec2(0.0,1.0)), hash21(i + vec2(1.0,1.0)), f.x),
-          f.y
-        );
-      }
+        vec3 night=vec3(.004,.006,.005);
+        vec3 gold=vec3(.74,.52,.20);
+        vec3 hot=vec3(1.0,.84,.51);
+        vec3 green=vec3(.08,.34,.25);
+        vec3 col=night;
 
-      mat2 rot(float a) {
-        float c = cos(a), s = sin(a);
-        return mat2(c,-s,s,c);
-      }
+        /* Sparse distant material; never a conventional star field. */
+        vec2 cell=floor(uv*42.);
+        float dust=step(.994,hash21(cell))*(.25+.75*sin(hash21(cell)*20.+t*3.)*.5+.5);
+        col+=dust*smoothstep(.32,1.05,r)*vec3(.16,.19,.16);
 
-      void main() {
-        vec2 frag = gl_FragCoord.xy;
-        vec2 uv = (frag - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-        float aspect = u_resolution.x / max(u_resolution.y, 1.0);
+        /* Strong-field lensing: bend coordinates increasingly toward the photon region. */
+        float bend=.020/max(r*r,.010);
+        vec2 lp=p*rot(bend*.15);
+        lp += normalize(p+vec2(.0001))*bend*.010;
+        float lr=length(lp);
 
-        vec2 pointerShift = (u_pointer.xy - 0.5) * vec2(0.035 * aspect, 0.026) * u_pointer.z;
-        vec2 p = uv - pointerShift;
+        float H=.142;
+        float photon=exp(-pow((lr-H*1.10)/.008,2.));
+        float photon2=exp(-pow((lr-H*1.24)/.020,2.));
+        float lensHalo=exp(-pow((lr-H*1.48)/.060,2.));
 
-        float r = length(p);
-        float angle = atan(p.y, p.x);
-        float time = u_time * (0.14 + 0.12 * u_energy);
+        /* Inclined accretion flow with turbulent radial texture and Doppler asymmetry. */
+        vec2 d=lp*rot(-.11);
+        d.y*=5.8;
+        float dr=length(d);
+        float band=exp(-pow(d.y/.022,2.))+0.42*exp(-pow(d.y/.052,2.))+0.13*exp(-pow(d.y/.105,2.));
+        float inner=smoothstep(H*.96,H*1.12,lr);
+        float outer=1.-smoothstep(.58,.78,dr);
+        float turbulence=fbm(vec2(dr*31.-t*1.8,a*3.2+t*.35));
+        float filaments=.42+.58*pow(abs(sin(a*8.-dr*49.+t*2.2)),3.);
+        float disk=band*inner*outer*mix(turbulence,filaments,.48);
 
-        vec3 night = vec3(0.018, 0.021, 0.018);
-        vec3 gold = vec3(0.706, 0.529, 0.196);
-        vec3 green = vec3(0.11, 0.45, 0.34);
-        vec3 warm = vec3(0.86, 0.68, 0.34);
+        /* Approaching side is hotter/brighter; receding side falls away. */
+        float doppler=smoothstep(-.9,.85,cos(a+.11));
+        float front=smoothstep(-.018,.045,d.y);
+        vec3 diskCol=mix(green*.55,gold,.70);
+        diskCol=mix(diskCol,hot,doppler*.62);
+        col+=diskCol*disk*(.48+1.15*doppler)*(.74+.44*u_energy);
 
-        vec3 col = night;
+        /* Lensed rear disk arcs above/below the shadow. */
+        float rearArc=exp(-pow((lr-H*1.34)/.030,2.))*smoothstep(.02,.24,abs(p.y))*smoothstep(.36,.02,abs(p.y));
+        rearArc*=.45+.55*fbm(vec2(a*5.+t,lr*35.));
+        col+=mix(gold,hot,.45)*rearArc*(.35+.22*u_energy);
 
-        vec2 starUv = uv * 34.0;
-        float stars = step(0.988, hash21(floor(starUv)));
-        float twinkle = 0.55 + 0.45 * sin(time * 5.0 + hash21(floor(starUv)) * 20.0);
-        float starFade = smoothstep(0.35, 1.15, r);
-        col += stars * twinkle * starFade * vec3(0.33,0.38,0.34);
+        col+=hot*photon*(1.15+.32*u_energy);
+        col+=gold*photon2*(.34+.20*u_energy);
+        col+=green*lensHalo*(.035+.08*u_discovery);
 
-        float lens = 0.055 / max(r, 0.055);
-        vec2 warped = p * rot(lens * 0.24 + sin(angle * 3.0 + time) * 0.008);
-        float wr = length(warped);
+        /* Irregular darkness around the horizon avoids the portal-ring look. */
+        float edgeNoise=(fbm(vec2(a*3.1,t*.15))-.5)*.008;
+        float shadow=1.-smoothstep(H*.78+edgeNoise,H*1.01+edgeNoise,lr);
+        col*=1.-shadow*.9995;
+        float core=1.-smoothstep(H*.66,H*.79,lr);
+        col=mix(col,vec3(0.),core);
 
-        float horizon = 0.145;
-        float photon = exp(-pow((wr - horizon * 1.20) / 0.012, 2.0));
-        float photonHalo = exp(-pow((wr - horizon * 1.31) / 0.032, 2.0));
-        float outerLens = exp(-pow((wr - horizon * 1.70) / 0.075, 2.0));
-
-        vec2 discP = warped * rot(-0.16);
-        discP.y *= 5.1;
-        float discR = length(discP);
-        float discMask = smoothstep(0.62, 0.18, discR) * smoothstep(horizon * 0.88, horizon * 1.08, wr);
-        float band = exp(-pow(discP.y / 0.027, 2.0)) + 0.34 * exp(-pow(discP.y / 0.068, 2.0));
-        float texture = 0.50 + 0.50 * noise(vec2(discR * 23.0 - time * 1.8, angle * 2.7));
-        float swirl = 0.55 + 0.45 * sin(angle * 5.0 - time * 2.2 + discR * 31.0);
-        float accretion = band * discMask * mix(texture, swirl, 0.45);
-
-        float front = smoothstep(-0.025, 0.05, discP.y);
-        vec3 discColor = mix(green, gold, 0.72 + 0.20 * sin(angle + time));
-        discColor = mix(discColor, warm, front * 0.28);
-        col += discColor * accretion * (0.76 + 0.86 * u_energy);
-        col += vec3(1.0,0.86,0.60) * photon * (0.78 + 0.34 * u_energy);
-        col += gold * photonHalo * (0.22 + 0.18 * u_energy);
-        col += green * outerLens * (0.045 + 0.10 * u_discovery);
-
-        float shadow = 1.0 - smoothstep(horizon * 0.76, horizon, wr);
-        col *= 1.0 - shadow * 0.999;
-        float blackCore = 1.0 - smoothstep(horizon * 0.66, horizon * 0.76, wr);
-        col = mix(col, vec3(0.0), blackCore);
-
-        float bloom = exp(-r * 4.8) * (0.025 + 0.03 * u_energy);
-        col += mix(green, gold, 0.55) * bloom;
-
-        float vignette = smoothstep(1.15, 0.22, length(uv * vec2(0.86, 1.0)));
-        col *= mix(0.34, 1.0, vignette);
-
-        float scrollLift = 0.94 + 0.06 * smoothstep(0.12, 0.56, u_scroll);
-        col *= scrollLift;
-
-        gl_FragColor = vec4(col, 0.96);
+        /* Local bloom is asymmetric and restrained. */
+        float bloom=exp(-r*5.4)*(.018+.025*u_energy);
+        col+=mix(green,gold,.58)*bloom;
+        float vignette=smoothstep(1.12,.18,length(uv*vec2(.82,1.)));
+        col*=mix(.24,1.,vignette);
+        col*=.93+.07*smoothstep(.12,.56,u_scroll);
+        gl_FragColor=vec4(col,.98);
       }
     `;
 
