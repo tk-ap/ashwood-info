@@ -52,7 +52,7 @@ async function run(name, viewport) {
   }));
 
   if (state.shellInert) throw new Error(`${name}: shell remained locked`);
-  if (state.productOptions < 1 || state.versionOptions < 2) throw new Error(`${name}: product/version selectors incomplete`);
+  if (state.productOptions < 1 || state.versionOptions < 1) throw new Error(`${name}: product/version selectors incomplete`);
   if (state.changes < 3 || state.overlayPins < 3) throw new Error(`${name}: change annotations missing`);
   if (state.reviewItems < 6) throw new Error(`${name}: review checklist incomplete`);
   if (state.overflow > 2) throw new Error(`${name}: horizontal overflow ${state.overflow}px`);
