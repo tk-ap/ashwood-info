@@ -13,11 +13,10 @@ async function exercise(name, contextOptions, out) {
 
   await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
 
-  const height = await page.evaluate(() => document.documentElement.scrollHeight);
-  const step = Math.max(320, Math.floor((await page.evaluate(() => innerHeight)) * 0.72));
-  for (let y = 0; y < height; y += step) {
-    await page.evaluate(y => scrollTo(0, y), y);
-    await page.waitForTimeout(90);
+  const revealCount = await page.locator(".v3-reveal").count();
+  for (let i = 0; i < revealCount; i++) {
+    await page.locator(".v3-reveal").nth(i).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(160);
   }
   await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
   await page.waitForTimeout(250);
