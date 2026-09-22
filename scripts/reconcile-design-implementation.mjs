@@ -109,10 +109,14 @@ function reconcile() {
       const pr = gh(`repos/${repo}/pulls/${number}`);
       return pr
         ? { number, url: pr.html_url, title: pr.title, state: pr.state, merged: Boolean(pr.merged), mergeCommit: pr.merge_commit_sha || null, mergedAt: pr.merged_at, headRef: pr.head?.ref || null }
-        : { number, url: `https://github.com/${repo}/pull/${number}`, state: "unknown", merged: false, mergeCommit: null };
+        : { number, url: `https://github.com/${repo}/pull/${number}`, state: "unknown", unavailable: true, merged: false, mergeCommit: null };
     });
     const main = repo ? gh(`repos/${repo}/commits/HEAD`)?.sha || null : null;
-    const commitsOnMain = (decision.impl?.commits || []).map(sha => ({ sha, onMain: Boolean(contains(repo, sha, main)) }));
+    const commitsOnMain = (decision.impl?.commits || []).map(sha => {
+      const exists = Boolean(gh(`repos/${repo}/commits/${sha}`)?.sha);
+      // onMain stays null (unknown) when GitHub cannot answer; it is never coerced to a claim.
+      return { sha, exists, onMain: exists && main ? contains(repo, sha, main) : null };
+    });
 
     const live = decision.live?.kind === "agentos-runtime" ? { revision: null, source: "agentos-runtime", note: "Awaits the governed combined AgentOS runtime activation." }
       : repo ? liveRevision(decision.live) : { revision: null, source: "none" };

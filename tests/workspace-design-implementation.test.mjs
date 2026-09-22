@@ -15,10 +15,22 @@ test("each lifecycle state is distinct and derived from evidence", () => {
   assert.equal(deriveLifecycle(decision()).state, "discussed");
   assert.equal(deriveLifecycle(decision({ design_refs: [{ number: 1 }] })).state, "designed");
   assert.equal(deriveLifecycle(decision(), { prs: [{ number: 1, merged: false }] }).state, "built", "an open PR is built, not merged");
-  assert.equal(deriveLifecycle(decision(), { commitsOnMain: [{ sha: "c", onMain: false }] }).state, "built");
+  assert.equal(deriveLifecycle(decision(), { commitsOnMain: [{ sha: "c", exists: true, onMain: false }] }).state, "built");
   assert.equal(deriveLifecycle(decision(), merged).state, "merged", "a merge without live evidence is not deployed");
   assert.equal(deriveLifecycle(decision(), { ...merged, live: { containsAll: null } }).state, "merged");
   assert.equal(deriveLifecycle(decision(), { ...merged, live: { containsAll: true } }).state, "deployed");
+});
+
+test("failed evidence lookups never raise the state (Codex review, #150)", () => {
+  const prDown = deriveLifecycle(decision(), { prs: [{ number: 1, state: "unknown", unavailable: true, merged: false }] });
+  assert.equal(prDown.state, "discussed");
+  assert.equal(prDown.evidenceUnavailable, true);
+  const missing = deriveLifecycle(decision({ design_refs: [{ number: 2 }] }), { commitsOnMain: [{ sha: "c", exists: false, onMain: null }] });
+  assert.equal(missing.state, "designed", "keeps the lower evidenced state");
+  const ancestryUnknown = deriveLifecycle(decision(), { commitsOnMain: [{ sha: "c", exists: true, onMain: null }] });
+  assert.equal(ancestryUnknown.state, "built", "the commit exists, but merged is not claimed");
+  const partial = deriveLifecycle(decision(), { prs: [{ number: 1, merged: true, state: "closed" }, { number: 2, state: "unknown", unavailable: true }], live: { containsAll: true } });
+  assert.equal(partial.state, "built", "one unavailable PR blocks merged and deployed");
 });
 
 test("visually verified requires a record contained in the live revision, with no later changes", () => {

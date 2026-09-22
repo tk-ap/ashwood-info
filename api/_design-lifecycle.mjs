@@ -34,10 +34,16 @@ export const STATE_LABELS = {
 export function deriveLifecycle(decision, facts = {}) {
   const prs = facts.prs || [];
   const commits = facts.commitsOnMain || [];
-  const hasImplementation = prs.length > 0 || commits.length > 0;
-  const allMerged = hasImplementation
-    && prs.every(pr => pr.merged)
-    && commits.every(c => c.onMain);
+  // Evidence counts only when it was actually retrieved. A failed GitHub lookup
+  // (unavailable PR, commit that could not be found, ancestry that could not be
+  // checked) never raises the state; it is surfaced as evidenceUnavailable instead.
+  const prKnown = pr => pr && pr.unavailable !== true && pr.state !== "unknown";
+  const commitKnown = c => c && c.exists === true;
+  const evidenceUnavailable = prs.some(pr => !prKnown(pr)) || commits.some(c => !commitKnown(c) || c.onMain === null || c.onMain === undefined);
+  const hasImplementation = prs.some(prKnown) || commits.some(commitKnown);
+  const allMerged = hasImplementation && !evidenceUnavailable
+    && prs.every(pr => pr.merged === true)
+    && commits.every(c => c.onMain === true);
 
   let state = "discussed";
   if (decision.design_refs?.length || facts.designRefs) state = "designed";
@@ -63,6 +69,7 @@ export function deriveLifecycle(decision, facts = {}) {
     verification,          // none | not-live | different-revision | reverify | current
     blocked,
     stale: Boolean(decision.stale),
+    evidenceUnavailable,
     unfinished: state !== "verified" && !decision.stale,
   };
 }

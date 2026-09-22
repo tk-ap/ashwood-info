@@ -48,6 +48,7 @@ export function nextStep(item) {
   const l = item.lifecycle || {};
   if (l.stale) return "Superseded. Kept for the record; do not revive.";
   if (item.blocker) return item.blocker;
+  if (l.evidenceUnavailable) return "Some evidence could not be retrieved at the last sync, so this shows only what was confirmed.";
   switch (l.state) {
     case "discussed": return "Agreed, not designed or built yet.";
     case "designed": return item.design_refs?.some(r => r.kind === "prototype")
@@ -118,7 +119,7 @@ function evidence(item) {
   ];
   if (f.prs?.length) rows.push(["Pull requests", el("span", {}, f.prs.map((pr, i) => [i ? ", " : "",
     link(pr.url, `#${pr.number} ${pr.merged ? "merged" : pr.state}`)]))]);
-  if (f.commitsOnMain?.length) rows.push(["Commits", el("span", { text: f.commitsOnMain.map(c => `${short(c.sha)} ${c.onMain ? "on main" : "not on main"}`).join(", ") })]);
+  if (f.commitsOnMain?.length) rows.push(["Commits", el("span", { text: f.commitsOnMain.map(c => `${short(c.sha)} ${!c.exists ? "not found on GitHub" : c.onMain === true ? "on main" : c.onMain === false ? "not on main" : "ancestry unknown"}`).join(", ") })]);
   if (item.design_refs?.length) rows.push(["Design refs", el("span", {}, item.design_refs.map((r, i) => [i ? ", " : "",
     link(`https://github.com/${r.repo}/${r.kind === "issue" ? "issues" : "pull"}/${r.number}`, `${r.repo.split("/")[1]} #${r.number} (${r.kind})`)]))]);
   if (item.live?.url) rows.push(["Production", link(item.live.url, item.live.url.replace(/^https?:\/\//, ""))]);
