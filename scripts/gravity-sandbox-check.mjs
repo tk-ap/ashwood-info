@@ -12,6 +12,18 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   await page.goto(base, { waitUntil: "networkidle", timeout: 60000 });
   await page.waitForSelector("body.ashwood-gravity-ready", { timeout: 15000 });
 
+  const source = await page.evaluate(async () => {
+    const text = await fetch("/gravity-renderer.js", { cache: "no-store" }).then(r => r.text());
+    return {
+      sharedFlow: text.includes("gravityFlow("),
+      fluxFilament: text.includes("fluxFilament("),
+      fluxMatter: text.includes("Flux-derived matter")
+    };
+  });
+  if (!source.sharedFlow || !source.fluxFilament || !source.fluxMatter) {
+    throw new Error(`${name}: shared gravitational flux field is not active`);
+  }
+
   const initial = await page.evaluate(() => {
     const canvas = document.querySelector("[data-gravity-canvas]");
     const hero = document.querySelector(".v3-hero");
