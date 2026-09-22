@@ -6,6 +6,7 @@ const html = await readFile(new URL("../workspace/index.html", import.meta.url),
 const views = await readFile(new URL("../workspace/views.mjs", import.meta.url), "utf8");
 const operator = await readFile(new URL("../workspace/operator-console.mjs", import.meta.url), "utf8");
 const today = await readFile(new URL("../workspace/today.mjs", import.meta.url), "utf8");
+const operatorCss = await readFile(new URL("../workspace/operator-console.css", import.meta.url), "utf8");
 
 test("Operator is a first-class Workspace view and primary command surface", () => {
   assert.match(html, /data-workspace-nav="operator"/);
@@ -36,4 +37,9 @@ test("Operator renders outcome evidence and sends canonical owner decisions", ()
   assert.match(operator, /data-owner-decision/);
   assert.match(operator, /observed_snapshot/);
   assert.match(operator, /Independent review/);
+});
+
+
+test("Operator owner decisions keep phone-sized tap targets", () => {
+  assert.match(operatorCss, /\.operator-decision__actions button\{[^}]*min-width:44px;[^}]*min-height:44px;/);
 });
