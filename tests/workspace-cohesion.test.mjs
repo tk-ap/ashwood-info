@@ -105,7 +105,7 @@ test('What matters now is scoped to Today while full activity lives in Build', a
   const source = await readFile(viewsPath, 'utf8');
   assert.match(source, /today:[\s\S]*"\.actual-priorities"/);
   assert.match(source, /build:[\s\S]*"\.ecosystem-feed"/);
-  assert.doesNotMatch(source, /activity: \\[/);
+  assert.doesNotMatch(source, /activity:\s*\[/);
 });
 
 
