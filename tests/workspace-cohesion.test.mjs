@@ -87,3 +87,13 @@ test('ELITK engine is reversible, persistent, and observes data loaded after the
   assert.match(source, /attributes:true/);
   assert.match(source, /ELITK ON · Show original/);
 });
+
+
+test('Owner Constellation belongs only to Evidence', async () => {
+  const source = await readFile(viewsPath, 'utf8');
+  assert.match(source, /evidence:[\s\S]*"#owner-intelligence"/);
+  for (const view of ['today','build','work','activity','self']) {
+    const block = source.match(new RegExp(view + ': \\[([\\s\\S]*?)\\n  \\]'))?.[1] || '';
+    assert.doesNotMatch(block, /#owner-intelligence/, 'Owner Constellation must not appear in ' + view);
+  }
+});
