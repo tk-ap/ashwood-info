@@ -97,3 +97,13 @@ test('Owner Constellation belongs only to Evidence', async () => {
     assert.doesNotMatch(block, /#owner-intelligence/, 'Owner Constellation must not appear in ' + view);
   }
 });
+
+
+test('What matters now is scoped to Activity rather than every Workspace view', async () => {
+  const source = await readFile(viewsPath, 'utf8');
+  assert.match(source, /activity:[\s\S]*"\.actual-priorities"/);
+  for (const view of ['today','build','work','evidence','self']) {
+    const block = source.match(new RegExp(view + ': \\[([\\s\\S]*?)\\n  \\]'))?.[1] || '';
+    assert.doesNotMatch(block, /\.actual-priorities/, 'What matters now must not appear in ' + view);
+  }
+});
