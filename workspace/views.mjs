@@ -60,6 +60,7 @@ const GROUPS = {
     "#sprint-directive",
     "#design-implementation",
     "#deployment-budget",
+    ".sandbox-environments",
     "#agentos-board-section",
     "#build",
     "#ashwood-drop",
