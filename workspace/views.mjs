@@ -18,6 +18,7 @@ const VIEW_META = {
     deck: "Products, active workstreams, governed execution, and the systems moving them forward.",
     eyebrow: "Operating the portfolio",
     tools: [
+      {label:"Sandbox Studio", href:"/workspace/sandbox/"},
       {label:"Design implementation", href:"#design-implementation"},
       {label:"Build logs", href:"/workspace/build-logs/"},
       {label:"Review checklist", href:"/workspace/v3-playtest/"}
