@@ -28,3 +28,12 @@ test("owner directives are submitted to the persistent operator thread", () => {
   assert.match(today, /thread_id:"operator:primary"/);
   assert.match(today, /ashwood:operator-command-submitted/);
 });
+
+test("Operator renders outcome evidence and sends canonical owner decisions", () => {
+  assert.match(operator, /Outcome & evidence/);
+  assert.match(operator, /metadata\.owner_decision/);
+  assert.match(operator, /submit_owner_decision/);
+  assert.match(operator, /data-owner-decision/);
+  assert.match(operator, /observed_snapshot/);
+  assert.match(operator, /Independent review/);
+});
