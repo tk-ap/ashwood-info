@@ -77,6 +77,15 @@ export const EXACT_TRANSLATIONS = new Map([
   ["Saturn frame", "Long-term life frame"],
   ["The recorded six-check variant", "The saved six-question version"],
   ["Career Ops", "Job search"],
+  ["Design Implementation", "Design changes and whether they are really live"],
+  ["21st.dev design batch · #149", "The agreed design improvements"],
+  ["What we agreed, what is in code, merged, live, and actually checked on production.", "Each design change we agreed on, and how far it has really got."],
+  ["In code", "Written"],
+  ["Merged", "Accepted into the product"],
+  ["Checked live", "Checked on the real site"],
+  ["Unfinished", "Not done yet"],
+  ["Stale", "Out of date"],
+  ["Stale and superseded work", "Old work that was replaced"],
   ["Income & opportunity", "Income and job opportunities"],
   ["Inbox continuity", "Email follow-up"],
   ["Application email monitor", "Application email updates"],
@@ -388,12 +397,19 @@ function start() {
     if (applying) return;
     let shouldSync = false;
     for (const record of records) {
+      // MutationObserver callbacks run after `applying` has been reset, so ELITK also
+      // sees the rewrites it made itself. Treating those as new source text replaced the
+      // stored original with the translation, and toggling off then "restored" the
+      // translation. Only genuinely new text (not what ELITK wrote) resets the source.
       if (record.type === "characterData") {
-        if (active) transformTextNode(record.target, true);
+        const state = textState.get(record.target);
+        if (active && !(state && record.target.data === state.transformed)) transformTextNode(record.target, true);
         continue;
       }
       if (record.type === "attributes") {
-        if (active) transformAttributes(record.target, true);
+        const state = attrState.get(record.target)?.get(record.attributeName);
+        const current = record.target.getAttribute?.(record.attributeName);
+        if (active && !(state && current === state.transformed)) transformAttributes(record.target, true);
         continue;
       }
       for (const node of record.addedNodes) {

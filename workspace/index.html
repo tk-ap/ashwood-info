@@ -20,9 +20,10 @@
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
   <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260921-workcanvas3" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
+  <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
-  <script type="module" src="/workspace/app.js?v=20260920-authrefresh1"></script>
+  <script type="module" src="/workspace/app.js?v=20260921-menufix1"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260920-feed1"></script>
   <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
@@ -30,10 +31,11 @@
   <script type="module" src="/workspace/agentos-board.mjs?v=20260921-refreshsnapshot1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/deployment-budget.mjs?v=20260921-agentos1"></script>
-  <script type="module" src="/workspace/views.mjs?v=20260921-deploytracker1"></script>
+  <script type="module" src="/workspace/design-implementation.mjs?v=20260921-design149"></script>
+  <script type="module" src="/workspace/views.mjs?v=20260921-design149"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260920-inlinework1"></script>
   <script type="module" src="/workspace/network.mjs?v=20260921-networkops1"></script>
-  <script type="module" src="/workspace/elitk-page.mjs?v=20260921-togglefix1?v=20260920-inlineelitk1"></script>
+  <script type="module" src="/workspace/elitk-page.mjs?v=20260921-restorefix1"></script>
   <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
@@ -167,6 +169,24 @@
         <p class="section-kicker">Accepted sprint directives</p>
         <div class="ailhat-sprint-history" id="ailhat-sprint-history" aria-live="polite"></div>
       </div>
+    </section>
+
+    <section class="design-impl" id="design-implementation" aria-labelledby="design-impl-title">
+      <div class="section-heading-row design-impl-head">
+        <div>
+          <p class="section-kicker">21st.dev design batch · #149</p>
+          <h2 id="design-impl-title">Design Implementation</h2>
+          <p class="design-impl-deck">What we agreed, what is in code, merged, live, and actually checked on production.</p>
+        </div>
+        <p class="design-impl-reconciled" id="design-impl-reconciled" aria-live="polite">Loading design status…</p>
+      </div>
+      <div class="design-impl-summary" id="design-impl-summary" role="group" aria-label="Filter design items by state"></div>
+      <div class="design-impl-list" id="design-impl-list" aria-live="polite"><p class="design-impl-empty">Loading design status…</p></div>
+      <details class="design-impl-stale" id="design-impl-stale">
+        <summary>Stale and superseded work</summary>
+        <ul id="design-impl-stale-list"></ul>
+      </details>
+      <p class="section-note">Derived from GitHub, the revision each production domain actually serves, and visual checks recorded on ashwood-info#149. Read-only; nothing here marks work complete by hand.</p>
     </section>
 
     <section class="deployment-budget" id="deployment-budget" aria-labelledby="deployment-budget-title">

@@ -10,6 +10,7 @@ const VIEW_META = {
     deck: "Products, active workstreams, governed execution, and the systems moving them forward.",
     eyebrow: "Operating the portfolio",
     tools: [
+      {label:"Design implementation", href:"#design-implementation"},
       {label:"Build logs", href:"/workspace/build-logs/"},
       {label:"Review checklist", href:"/workspace/v3-playtest/"}
     ]
@@ -51,6 +52,7 @@ const GROUPS = {
   ],
   build: [
     "#sprint-directive",
+    "#design-implementation",
     "#deployment-budget",
     "#agentos-board-section",
     "#build",
@@ -83,6 +85,7 @@ const VIEW_FOR_HASH = {
   today:"today",
   build:"build",
   "agentos-board-section":"build",
+  "design-implementation":"build",
   "ashwood-drop":"build",
   work:"work",
   network:"network",
@@ -192,7 +195,7 @@ function renderUtility(view){
   utility.classList.add("workspace-view-section");
 }
 
-function setView(view, {updateHash=true, focus=false} = {}){
+function setView(view, {updateHash=true, focus=false, anchor=null} = {}){
   if (!VIEW_META[view]) view = "today";
   document.body.dataset.workspaceCurrentView = view;
   document.querySelectorAll(".workspace-view-section[data-workspace-view]").forEach(node => {
@@ -207,7 +210,21 @@ function setView(view, {updateHash=true, focus=false} = {}){
   renderUtility(view);
   if (updateHash && location.hash !== "#" + view) history.replaceState(null,"","#" + view);
   if (focus) q("#workspace-title")?.focus?.({preventScroll:true});
-  window.scrollTo({top:0,behavior:"smooth"});
+  // A hash naming a section (e.g. #design-implementation) opens its view and then lands
+  // on that section, instead of scrolling back to the top of the view.
+  const target = anchor && document.getElementById(anchor);
+  if (target) {
+    // Sections above keep growing as their data arrives, so land again once layout settles.
+    const land = () => target.scrollIntoView({behavior:"instant", block:"start"});
+    requestAnimationFrame(land);
+    setTimeout(() => { if (location.hash === "#" + anchor) land(); }, 900);
+  }
+  else window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function hashAnchor(){
+  const raw = location.hash.replace(/^#/,"");
+  return raw && !VIEW_META[raw] && VIEW_FOR_HASH[raw] ? raw : null;
 }
 
 function initialView(){
@@ -222,14 +239,14 @@ function bindNavigation(){
       setView(link.dataset.workspaceNav);
     });
   });
-  window.addEventListener("hashchange", () => setView(initialView(), {updateHash:false}));
+  window.addEventListener("hashchange", () => setView(initialView(), {updateHash:false, anchor:hashAnchor()}));
 }
 
 function start(){
   assignSections();
   bindNavigation();
   document.body.dataset.workspaceViewReady = "true";
-  setView(initialView(), {updateHash:false});
+  setView(initialView(), {updateHash:false, anchor:hashAnchor()});
 }
 
 start();

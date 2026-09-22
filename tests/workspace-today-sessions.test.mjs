@@ -28,7 +28,7 @@ test('private AgentOS views reload immediately after Workspace unlock', async ()
 test('Workspace cache-busts the fixed autonomous-session scripts', async () => {
   const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
   assert.match(html, /today\.mjs\?v=20260920-sessions1/);
-  assert.match(html, /app\.js\?v=20260920-authrefresh1/);
+  assert.match(html, /app\.js\?v=20260921-menufix1/);
   assert.match(html, /agentos-board\.mjs\?v=20260921-refreshsnapshot1/);
   assert.match(html, /agentos-board\.css\?v=20260920-operatorviews1/);
 });
