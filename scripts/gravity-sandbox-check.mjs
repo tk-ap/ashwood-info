@@ -48,6 +48,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       cosmosInField: Boolean(document.querySelector(".v3-field .ashwood-site-cosmos")),
       cosmosPosition: getComputedStyle(document.querySelector("[data-site-cosmos]")).position,
       cosmosPhase: body.dataset.cosmosPhase || null,
+      cosmosZone: body.dataset.cosmosZone || null,
+      cameraScale: getComputedStyle(document.documentElement).getPropertyValue("--cosmos-base-scale").trim(),
       fieldWidth: document.querySelector(".v3-field")?.getBoundingClientRect().width || 0,
       viewportWidth: innerWidth,
       hintDisplay: getComputedStyle(document.querySelector(".v3-field__hint")).display,
@@ -68,6 +70,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (initial.cosmosInField) throw new Error(`${name}: authored universe is still owned by the Instinct field`);
   if (initial.cosmosPosition !== "fixed") throw new Error(`${name}: site cosmos is not persistent/fixed`);
   if (!["ambient","instinct","afterglow"].includes(initial.cosmosPhase)) throw new Error(`${name}: site cosmos phase is missing`);
+  if (!["hero","instinct","evidence","depth"].includes(initial.cosmosZone)) throw new Error(`${name}: dimensional zone is missing`);
+  if (!initial.cameraScale) throw new Error(`${name}: restrained camera variables were not initialized`);
   if (initial.fieldWidth < initial.viewportWidth * 0.98) throw new Error(`${name}: Instinct activation layer is not full bleed`);
   if (initial.hintDisplay !== "none" || initial.resetDisplay !== "none") throw new Error(`${name}: legacy discovery chrome is still visible`);
   if (initial.docLauncherDisplay !== "none" && initial.docLauncherDisplay !== "missing") throw new Error(`${name}: persistent Doc launcher leaked into V4`);
@@ -83,6 +87,7 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
     canvasWidth: document.querySelector("[data-gravity-canvas]")?.width || 0,
     thinkingExists: Boolean(document.querySelector("#thinking")),
     cosmosPhase: document.body.dataset.cosmosPhase || null,
+    cosmosZone: document.body.dataset.cosmosZone || null,
     pageHeight: document.documentElement.scrollHeight,
     viewportHeight: innerHeight
   }));
@@ -90,8 +95,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (!after.ready || !after.thinkingExists || after.pageHeight < after.viewportHeight * 2) {
     throw new Error(`${name}: page composition regressed`);
   }
-  if (after.cosmosPhase !== "instinct") {
-    throw new Error(`${name}: Instinct did not activate the site-level cosmos (${after.cosmosPhase})`);
+  if (after.cosmosPhase !== "instinct" || after.cosmosZone !== "instinct") {
+    throw new Error(`${name}: Instinct did not become the closest-encounter zone (${after.cosmosPhase}/${after.cosmosZone})`);
   }
   if (pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join(" | ")}`);
 
