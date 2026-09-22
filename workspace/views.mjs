@@ -164,7 +164,7 @@ function renderTools(view){
   });
 }
 
-function renderIntro(view){
+function syncDataHero(view){\n  const hero = q("#workspace-view-data-hero");\n  if (!hero) return;\n  hero.hidden = !["work","network"].includes(view);\n  hero.dataset.heroView = view;\n}\n\nfunction renderIntro(view){
   const meta = VIEW_META[view] || VIEW_META.today;
   const title = q("#workspace-title");
   const deck = q("#workspace-view-deck");
