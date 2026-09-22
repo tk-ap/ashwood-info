@@ -22,8 +22,22 @@
     renderer.setPointer({ x, y, active: 1 });
     field.style.setProperty("--gravity-pointer-x", `${x * 100}%`);
     field.style.setProperty("--gravity-pointer-y", `${y * 100}%`);
+    // Bodies move at different depths; the black hole remains visually anchored.
+    field.querySelectorAll(".v3-hotspot").forEach((body, index) => {
+      const depth = [0.45, 0.72, 0.55, 0.82, 0.38, 0.64][index] || 0.5;
+      const dx = (x - 0.5) * -18 * depth;
+      const dy = (y - 0.5) * -12 * depth;
+      body.style.setProperty("--orbit-x", `${dx.toFixed(2)}px`);
+      body.style.setProperty("--orbit-y", `${dy.toFixed(2)}px`);
+    });
   };
-  const onLeave = () => renderer.setPointer({ x: 0.5, y: 0.5, active: 0 });
+  const onLeave = () => {
+    renderer.setPointer({ x: 0.5, y: 0.5, active: 0 });
+    field.querySelectorAll(".v3-hotspot").forEach((body) => {
+      body.style.setProperty("--orbit-x", "0px");
+      body.style.setProperty("--orbit-y", "0px");
+    });
+  };
 
   if (!reduced && matchMedia("(hover:hover) and (pointer:fine)").matches) {
     field.addEventListener("pointermove", onPointer, { passive: true });
