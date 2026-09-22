@@ -64,7 +64,7 @@
 .operator-decision strong{font-size:11px}
 .operator-decision p{margin-top:4px!important;color:#929292;font-size:11px}
 .operator-decision__actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
-.operator-decision__actions button{border:1px solid rgba(255,255,255,.16);background:transparent;color:inherit;padding:7px 9px;border-radius:8px;font-size:10px;cursor:pointer}
+.operator-decision__actions button{min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.16);background:transparent;color:inherit;padding:9px 12px;border-radius:8px;font-size:10px;cursor:pointer}
 .operator-decision__actions button:first-child{border-color:rgba(112,181,143,.35)}
 .operator-decision__actions button:disabled{opacity:.45;cursor:default}
 .operator-decision>small{display:block;margin-top:8px;color:#777}
