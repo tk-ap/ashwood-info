@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/workspace/sprint.css?v=20260921-sprint1" />
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
   <link rel="stylesheet" href="/workspace/sandbox-environments.css?v=20260922-env1" />
+  <link rel="stylesheet" href="/workspace/operator-console.css?v=20260922-operator1" />
   <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260921-workcanvas3" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
   <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
@@ -33,6 +34,7 @@
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/deployment-budget.mjs?v=20260921-agentos1"></script>
   <script type="module" src="/workspace/sandbox-environments.mjs?v=20260922-env1"></script>
+  <script type="module" src="/workspace/operator-console.mjs?v=20260922-operator1"></script>
   <script type="module" src="/workspace/design-implementation.mjs?v=20260921-design149"></script>
   <script type="module" src="/workspace/views.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260922-design153"></script>
@@ -66,6 +68,7 @@
     </header>
 
     <nav class="workspace-section-nav" aria-label="Workspace views">
+      <a href="#operator" data-workspace-nav="operator">Operator</a>
       <a href="#today" data-workspace-nav="today">Today</a>
       <a href="#build" data-workspace-nav="build">Build</a>
       <a href="#career" data-workspace-nav="career">Career</a>
@@ -83,6 +86,46 @@
       <div class="workspace-view-data-hero" id="workspace-view-data-hero" aria-live="polite" hidden></div>
     </section>
 
+    <section class="operator-console" id="operator" aria-labelledby="operator-title">
+      <div class="operator-console__head">
+        <div>
+          <p class="section-kicker">Operator · primary command surface</p>
+          <h2 id="operator-title">Talk to the system.</h2>
+          <p class="operator-console__lede">Direct AgentOS from here. Worker apps stay behind the system unless a diagnostic or local action genuinely needs you.</p>
+        </div>
+        <div class="operator-console__state" aria-live="polite">
+          <span id="operator-ingress-state">Ingress · checking</span>
+          <span id="operator-active-state">0 active</span>
+        </div>
+      </div>
+
+      <form class="today-command-form operator-command-form" id="today-command-form">
+        <label class="today-command-label" for="today-command-input">What do you want the ecosystem to do?</label>
+        <div class="today-command-row">
+          <input id="today-command-input" name="command" type="text" autocomplete="off" placeholder="Review the latest ALVIRA sandbox and fix the mobile hero if needed…" />
+          <button type="submit">Send to AgentOS</button>
+        </div>
+        <p class="today-command-note" id="today-command-note">Your message is durable owner intent, not execution authority. AgentOS routes it; ledgato and the normal lifecycle still govern consequential work.</p>
+      </form>
+
+      <div class="operator-console__layout">
+        <div class="operator-thread" id="operator-thread" aria-live="polite">
+          <p class="operator-thread__empty">Loading your AgentOS thread…</p>
+        </div>
+        <aside class="operator-context" aria-labelledby="operator-context-title">
+          <p class="section-kicker">System context</p>
+          <h3 id="operator-context-title">What happens after Send</h3>
+          <ol>
+            <li>ASHWOOD stores the directive.</li>
+            <li>AgentOS claims and routes it.</li>
+            <li>Governance is checked before directed execution.</li>
+            <li>The assigned work and next gate return here.</li>
+          </ol>
+          <p class="operator-context__fallback">Codex, Claude, Hermes and other worker surfaces are fallback/diagnostic tools—not the intended everyday interface.</p>
+        </aside>
+      </div>
+    </section>
+
     <section class="today-command-center" id="today" aria-labelledby="today-title">
       <div class="today-head">
         <div>
@@ -91,15 +134,6 @@
         </div>
         <p class="today-head__status" id="today-status" aria-live="polite">Reading canonical workstreams…</p>
       </div>
-
-      <form class="today-command-form" id="today-command-form">
-        <label class="today-command-label" for="today-command-input">Capture or direct your attention</label>
-        <div class="today-command-row">
-          <input id="today-command-input" name="command" type="text" autocomplete="off" placeholder="Get the ALVIRA investor page ready for outreach…" />
-          <button type="submit">Capture</button>
-        </div>
-        <p class="today-command-note" id="today-command-note">Commands enter AgentOS as owner directives. Routing remains reviewable, and ledgato must ALLOW the governed dispatch before directed work can enter the execution queue.</p>
-      </form>
 
       <div class="today-grid">
         <article class="today-panel" aria-labelledby="today-owner-title">
@@ -660,6 +694,7 @@
   </main>
 
   <nav class="workspace-mobile-nav" aria-label="Workspace views">
+    <a href="#operator" data-workspace-nav="operator">Operator</a>
     <a href="#today" data-workspace-nav="today">Today</a>
     <a href="#build" data-workspace-nav="build">Build</a>
     <a href="#career" data-workspace-nav="career">Career</a>
