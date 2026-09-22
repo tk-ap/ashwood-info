@@ -101,6 +101,23 @@
       float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash21(i),hash21(i+vec2(1.,0.)),f.x),mix(hash21(i+vec2(0.,1.)),hash21(i+vec2(1.,1.)),f.x),f.y);}
       float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(13.1,7.7);a*=.5;}return v;}
       mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+      /* V4.3: one gravitational flow field drives disk, matter, lensing and environmental motion. */
+      vec2 gravityFlow(vec2 p,float time,float energy){
+        float r=max(length(p),.012);
+        vec2 radial=p/r;
+        vec2 tangent=vec2(-radial.y,radial.x);
+        float spin=(.018+.022*energy)/max(r*.72,.055);
+        float infall=.006/max(r*r+.028,.04);
+        float wobble=(fbm(vec2(atan(p.y,p.x)*2.4-time*.13,r*18.-time*.22))-.5)*.014;
+        return tangent*spin-radial*infall+tangent*wobble;
+      }
+      float fluxFilament(vec2 p,float time,float seed){
+        float r=length(p);
+        float a=atan(p.y,p.x);
+        float spiral=a+r*(15.+seed*3.)-time*(.55+seed*.09);
+        float thread=pow(.5+.5*cos(spiral*3.+fbm(vec2(r*23.,a*2.))*4.),10.);
+        return thread*smoothstep(.74,.15,r)*smoothstep(.12,.20,r);
+      }
 
       void main(){
         vec2 frag=gl_FragCoord.xy;
@@ -111,6 +128,10 @@
         float r=length(p);
         float a=atan(p.y,p.x);
         float t=u_time*(.08+.08*u_energy);
+        vec2 flow=gravityFlow(p,u_time,u_energy);
+        vec2 advected=p-flow*(.58+.42*u_energy);
+        float ar=length(advected);
+        float aa=atan(advected.y,advected.x);
 
         vec3 night=vec3(.004,.006,.005);
         vec3 gold=vec3(.74,.52,.20);
@@ -125,7 +146,7 @@
 
         /* Strong-field lensing: bend coordinates increasingly toward the photon region. */
         float bend=.020/max(r*r,.010);
-        vec2 lp=p*rot(bend*.15);
+        vec2 lp=advected*rot(bend*.15);
         lp += normalize(p+vec2(.0001))*bend*.010;
         float lr=length(lp);
 
@@ -141,12 +162,12 @@
         float band=exp(-pow(d.y/.022,2.))+0.42*exp(-pow(d.y/.052,2.))+0.13*exp(-pow(d.y/.105,2.));
         float inner=smoothstep(H*.96,H*1.12,lr);
         float outer=1.-smoothstep(.58,.78,dr);
-        float turbulence=fbm(vec2(dr*31.-t*1.8,a*3.2+t*.35));
-        float filaments=.42+.58*pow(abs(sin(a*8.-dr*49.+t*2.2)),3.);
-        float disk=band*inner*outer*mix(turbulence,filaments,.48);
+        float turbulence=fbm(vec2(dr*31.-u_time*.23,aa*3.2+u_time*.045));
+        float filaments=.32+.68*max(fluxFilament(advected,u_time,.2),fluxFilament(advected,u_time,.8));
+        float disk=band*inner*outer*mix(turbulence,filaments,.62);
 
         /* Approaching side is hotter/brighter; receding side falls away. */
-        float doppler=smoothstep(-.9,.85,cos(a+.11));
+        float doppler=smoothstep(-.9,.85,cos(aa+.11));
         float front=smoothstep(-.018,.045,d.y);
         vec3 diskCol=mix(green*.55,gold,.70);
         diskCol=mix(diskCol,hot,doppler*.62);
@@ -154,15 +175,23 @@
 
         /* Lensed rear disk arcs above/below the shadow. */
         float rearArc=exp(-pow((lr-H*1.34)/.030,2.))*smoothstep(.02,.24,abs(p.y))*smoothstep(.36,.02,abs(p.y));
-        rearArc*=.45+.55*fbm(vec2(a*5.+t,lr*35.));
+        rearArc*=.45+.55*fbm(vec2(aa*5.+u_time*.055,lr*35.));
         col+=mix(gold,hot,.45)*rearArc*(.35+.22*u_energy);
 
         col+=hot*photon*(1.15+.32*u_energy);
         col+=gold*photon2*(.34+.20*u_energy);
         col+=green*lensHalo*(.035+.08*u_discovery);
 
+        /* Sparse Flux-derived matter shares the exact same velocity field as the accretion flow. */
+        vec2 fp=advected*vec2(1.,2.35);
+        float fluxA=fluxFilament(fp,u_time,.35);
+        float fluxB=fluxFilament(fp*rot(.38),u_time,.73);
+        float flux=(fluxA*.72+fluxB*.42)*smoothstep(.72,.18,ar);
+        float grains=step(.91,noise(floor((fp+flow*2.)*72.)))*flux;
+        col+=mix(green*.62,hot,.38+doppler*.25)*(flux*.065+grains*.16)*(.55+.45*u_energy);
+
         /* Irregular darkness around the horizon avoids the portal-ring look. */
-        float edgeNoise=(fbm(vec2(a*3.1,t*.15))-.5)*.008;
+        float edgeNoise=(fbm(vec2(aa*3.1,u_time*.012))-.5)*.008;
         float shadow=1.-smoothstep(H*.78+edgeNoise,H*1.01+edgeNoise,lr);
         col*=1.-shadow*.9995;
         float core=1.-smoothstep(H*.66,H*.79,lr);
