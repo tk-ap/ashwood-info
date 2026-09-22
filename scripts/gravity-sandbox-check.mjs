@@ -17,11 +17,15 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
     return {
       sharedFlow: text.includes("gravityFlow("),
       fluxFilament: text.includes("fluxFilament("),
-      fluxMatter: text.includes("Flux-derived matter")
+      fluxMatter: text.includes("Flux-derived matter"),
+      motionGated: text.includes("float motionGate=0.0;")
     };
   });
   if (!source.sharedFlow || !source.fluxFilament || !source.fluxMatter) {
-    throw new Error(`${name}: shared gravitational flux field is not active`);
+    throw new Error(`${name}: shared gravitational flux field is missing`);
+  }
+  if (!source.motionGated) {
+    throw new Error(`${name}: Flux motion gate reopened before authored still approval`);
   }
 
   const initial = await page.evaluate(() => {
@@ -39,6 +43,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       canvasInField: Boolean(document.querySelector(".v3-field > [data-gravity-canvas]")),
       heroContainsCanvas: Boolean(document.querySelector(".v3-hero [data-gravity-canvas]")),
       fieldBackground: getComputedStyle(document.querySelector(".v3-field")).backgroundColor,
+      authoredLayers: document.querySelectorAll(".ashwood-cosmos__authored").length,
+      authoredLoaded: Array.from(document.querySelectorAll(".ashwood-cosmos__authored")).every(img => img.complete && img.naturalWidth > 1000),
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
     };
   });
@@ -49,7 +55,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (initial.canvasWidth < 10 || initial.canvasHeight < 10) {
     throw new Error(`${name}: canvas did not size`);
   }
-  if (initial.cssOpacity === "0") throw new Error(`${name}: canvas stayed hidden`);
+  if (Number(initial.cssOpacity) > 0.05) throw new Error(`${name}: procedural canvas is painting over authored still (${initial.cssOpacity})`);
+  if (initial.authoredLayers !== 3 || !initial.authoredLoaded) throw new Error(`${name}: authored HiFi environment did not load as three depth plates`);
   if (initial.pointerEvents !== "none") throw new Error(`${name}: canvas intercepted input`);
   if (!initial.canvasInField || initial.heroContainsCanvas) throw new Error(`${name}: Gravity is not isolated to Instinct field`);
   if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);

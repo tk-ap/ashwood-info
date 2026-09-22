@@ -533,3 +533,100 @@ background-size:173px 149px,229px 191px,281px 233px,317px 269px}
 .ashwood-gravity-canvas{z-index:1!important}
 .v3-field__ambient,.v3-field__hint,.v3-hotspot,.v3-signal-card,.ashwood-doc-anomaly{z-index:3}
 @media (prefers-reduced-motion:reduce){.ashwood-cosmos__nebula{filter:blur(24px) contrast(1.25)}}
+
+
+/* V4.6 — authored HiFi environment.
+   The downloaded authored frame is now the visual source of truth.
+   It is duplicated into depth/material plates so later motion can be reconstructed
+   locally without moving the whole image. Flux and Doc motion remain gated. */
+.ashwood-cosmos{
+  background:#000;
+  perspective:1100px;
+  transform-style:preserve-3d;
+}
+.ashwood-cosmos__authored{
+  position:absolute;
+  inset:-2.5%;
+  width:105%;
+  height:105%;
+  max-width:none;
+  object-fit:cover;
+  object-position:50% 50%;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+  transform-origin:50% 50%;
+  backface-visibility:hidden;
+}
+.ashwood-cosmos__authored--far{
+  z-index:0;
+  opacity:1;
+  filter:brightness(.90) contrast(1.10) saturate(.94);
+}
+.ashwood-cosmos__authored--gravity{
+  z-index:1;
+  opacity:.72;
+  filter:brightness(1.05) contrast(1.16) saturate(1.04);
+  mix-blend-mode:screen;
+  -webkit-mask-image:radial-gradient(ellipse 34% 43% at 50% 51%,#000 0 43%,rgba(0,0,0,.92) 58%,transparent 79%);
+  mask-image:radial-gradient(ellipse 34% 43% at 50% 51%,#000 0 43%,rgba(0,0,0,.92) 58%,transparent 79%);
+}
+.ashwood-cosmos__authored--foreground{
+  z-index:2;
+  opacity:.24;
+  filter:contrast(1.13) saturate(.92);
+  -webkit-mask-image:
+    linear-gradient(180deg,transparent 0 50%,rgba(0,0,0,.35) 64%,#000 100%),
+    radial-gradient(ellipse 82% 58% at 50% 50%,transparent 0 55%,#000 88%);
+  mask-image:
+    linear-gradient(180deg,transparent 0 50%,rgba(0,0,0,.35) 64%,#000 100%),
+    radial-gradient(ellipse 82% 58% at 50% 50%,transparent 0 55%,#000 88%);
+  -webkit-mask-composite:source-over;
+  mask-composite:add;
+}
+.ashwood-cosmos__deep,
+.ashwood-cosmos__nebula,
+.ashwood-cosmos__debris,
+.ashwood-cosmos__horizon{display:none!important}
+
+.ashwood-gravity-ready .v3-field .ashwood-gravity-canvas{opacity:0!important}
+.v3-field::before,
+.v3-field::after,
+.v3-field .v3-field__ambient::before,
+.v3-field .v3-field__ambient::after{opacity:0!important}
+
+.v3-hotspot--signal{left:13%;top:24%}
+.v3-hotspot--friction{left:82%;top:17%}
+.v3-hotspot--translation{left:88%;top:64%}
+.v3-hotspot--systems{left:22%;top:61%}
+.v3-hotspot--adaptation{left:68%;top:78%}
+.v3-hotspot--synthesis{left:40%;top:31%}
+
+.v3-field__ambient{
+  background:
+    radial-gradient(circle at 50% 51%,transparent 0 20%,rgba(255,214,139,.018) 34%,transparent 54%),
+    linear-gradient(180deg,rgba(0,0,0,.03),rgba(0,0,0,.16))!important;
+}
+.v3-field__hint{
+  top:auto;
+  bottom:6%;
+  transform:translateX(-50%);
+  color:rgba(241,238,230,.28);
+}
+.v3-field .ashwood-doc-anomaly{opacity:0!important;transform:none!important}
+
+@media(max-width:620px){
+  .ashwood-cosmos__authored{
+    inset:-1% -24%;
+    width:148%;
+    height:102%;
+    object-position:50% 50%;
+  }
+  .ashwood-cosmos__authored--gravity{
+    -webkit-mask-image:radial-gradient(ellipse 39% 40% at 50% 51%,#000 0 43%,rgba(0,0,0,.9) 60%,transparent 82%);
+    mask-image:radial-gradient(ellipse 39% 40% at 50% 51%,#000 0 43%,rgba(0,0,0,.9) 60%,transparent 82%);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .ashwood-cosmos__authored{transform:none!important}
+}
