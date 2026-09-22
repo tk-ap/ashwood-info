@@ -714,3 +714,169 @@ background-size:173px 149px,229px 191px,281px 233px,317px 269px}
   .v3-hotspot--synthesis{left:31%;top:82%}
   .v3-hotspot.is-found span{opacity:.35!important}
 }
+
+
+/* V4.8 — site-level dimensional environment.
+   The authored universe belongs to ASHWOOD itself, not to the Instinct section.
+   Instinct is now an activation layer inside that persistent environment.
+   Flux, parallax, lensing animation, and Doc motion remain gated. */
+body.ashwood-home-native{
+  background:#020302;
+}
+.ashwood-site-cosmos{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  background:#000;
+  isolation:isolate;
+}
+.ashwood-site-cosmos__plate{
+  position:absolute;
+  inset:-3%;
+  width:106%;
+  height:106%;
+  max-width:none;
+  object-fit:cover;
+  object-position:50% 50%;
+  user-select:none;
+  -webkit-user-drag:none;
+  transform-origin:50% 50%;
+}
+.ashwood-site-cosmos__plate--base{
+  z-index:0;
+  opacity:.22;
+  filter:brightness(.42) contrast(1.06) saturate(.90);
+}
+.ashwood-site-cosmos__plate--gravity{
+  z-index:1;
+  opacity:.035;
+  mix-blend-mode:screen;
+  filter:brightness(.9) contrast(1.04) saturate(1.02);
+  -webkit-mask-image:radial-gradient(ellipse 42% 48% at 50% 45%,#000 0 44%,rgba(0,0,0,.92) 60%,transparent 82%);
+  mask-image:radial-gradient(ellipse 42% 48% at 50% 45%,#000 0 44%,rgba(0,0,0,.92) 60%,transparent 82%);
+}
+.ashwood-site-cosmos__plate--foreground{
+  z-index:2;
+  opacity:.025;
+  filter:contrast(1.06);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0 48%,rgba(0,0,0,.55) 70%,#000 100%);
+  mask-image:linear-gradient(180deg,transparent 0 48%,rgba(0,0,0,.55) 70%,#000 100%);
+}
+.ashwood-site-cosmos__veil{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  background:
+    linear-gradient(180deg,rgba(1,2,1,.78) 0%,rgba(1,2,1,.58) 19%,rgba(1,2,1,.30) 42%,rgba(1,2,1,.23) 62%,rgba(1,2,1,.55) 82%,rgba(1,2,1,.78) 100%),
+    radial-gradient(ellipse at 50% 46%,transparent 0 27%,rgba(0,0,0,.10) 58%,rgba(0,0,0,.40) 100%);
+}
+body[data-cosmos-phase="ambient"] .ashwood-site-cosmos__plate--base{
+  opacity:.22;
+  filter:brightness(.42) contrast(1.06) saturate(.90);
+}
+body[data-cosmos-phase="ambient"] .ashwood-site-cosmos__veil{
+  opacity:1;
+}
+body[data-cosmos-phase="instinct"] .ashwood-site-cosmos__plate--base{
+  opacity:1;
+  filter:brightness(.92) contrast(1.04) saturate(.98);
+}
+body[data-cosmos-phase="instinct"] .ashwood-site-cosmos__plate--gravity{opacity:.11}
+body[data-cosmos-phase="instinct"] .ashwood-site-cosmos__plate--foreground{opacity:.055}
+body[data-cosmos-phase="instinct"] .ashwood-site-cosmos__veil{
+  opacity:.28;
+  background:
+    linear-gradient(180deg,rgba(1,2,1,.34) 0%,rgba(1,2,1,.10) 24%,rgba(1,2,1,.02) 46%,rgba(1,2,1,.06) 72%,rgba(1,2,1,.34) 100%),
+    radial-gradient(ellipse at 50% 46%,transparent 0 36%,rgba(0,0,0,.08) 72%,rgba(0,0,0,.30) 100%);
+}
+body[data-cosmos-phase="afterglow"] .ashwood-site-cosmos__plate--base{
+  opacity:.34;
+  filter:brightness(.50) contrast(1.04) saturate(.90);
+}
+body[data-cosmos-phase="afterglow"] .ashwood-site-cosmos__veil{opacity:.88}
+
+/* Keep the page above the persistent environment without rebuilding each section as a panel. */
+body.ashwood-home-native > .v3-mast,
+body.ashwood-home-native > main{
+  position:relative;
+  z-index:2;
+}
+body.ashwood-home-native > main{
+  background:transparent;
+}
+.v3-thinking-stage,
+.v3-thinking-stage .v3-shell{
+  background:transparent!important;
+}
+.v3-thinking-stage{
+  overflow:visible;
+}
+.v3-thinking__intro{
+  position:relative;
+  z-index:4;
+  padding-bottom:clamp(20px,4vw,54px);
+  text-shadow:0 2px 30px rgba(0,0,0,.68);
+}
+
+/* Instinct is now semantic/interactive space, not a visual container. */
+.v3-field{
+  width:100vw!important;
+  max-width:none!important;
+  min-height:100svh!important;
+  margin:0 calc(50% - 50vw)!important;
+  border:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  isolation:isolate;
+}
+.v3-field .ashwood-cosmos{display:none!important}
+.ashwood-gravity-ready .v3-field .ashwood-gravity-canvas{opacity:0!important}
+
+/* Long atmospheric continuity removes the image/section seam while preserving copy legibility. */
+.v3-thinking-stage::before,
+.v3-thinking-stage::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:0;
+  right:0;
+  height:min(32svh,340px);
+  pointer-events:none;
+}
+.v3-thinking-stage::before{
+  top:0;
+  background:linear-gradient(180deg,rgba(2,3,2,.72),rgba(2,3,2,.24) 58%,transparent);
+}
+.v3-thinking-stage::after{
+  bottom:0;
+  background:linear-gradient(0deg,rgba(2,3,2,.72),rgba(2,3,2,.20) 58%,transparent);
+}
+.v3-field__ambient,.v3-field__hint,.v3-hotspot,.v3-signal-card,.ashwood-doc-anomaly{
+  position:absolute;
+  z-index:4;
+}
+
+/* Keep the black hole uncontested; markers resolve only near natural formations. */
+.v3-hotspot--signal{left:14%;top:12%}
+.v3-hotspot--friction{left:82%;top:17%}
+.v3-hotspot--translation{left:91%;top:43%}
+.v3-hotspot--systems{left:10%;top:66%}
+.v3-hotspot--adaptation{left:66%;top:82%}
+.v3-hotspot--synthesis{left:24%;top:87%}
+
+@media(max-width:620px){
+  .ashwood-site-cosmos__plate{
+    inset:0 -23%;
+    width:146%;
+    height:100%;
+    object-position:50% 50%;
+  }
+  .v3-thinking-stage::before,
+  .v3-thinking-stage::after{height:22svh}
+  .v3-field{min-height:88svh!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .ashwood-site-cosmos__plate{transform:none!important}
+}
