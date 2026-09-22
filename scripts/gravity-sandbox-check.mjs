@@ -46,10 +46,11 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
     ready: document.body.classList.contains("ashwood-gravity-ready"),
     canvasWidth: document.querySelector("[data-gravity-canvas]")?.width || 0,
     thinkingExists: Boolean(document.querySelector("#thinking")),
-    pageHeight: document.documentElement.scrollHeight
+    pageHeight: document.documentElement.scrollHeight,
+    viewportHeight: innerHeight
   }));
 
-  if (!after.ready || !after.thinkingExists || after.pageHeight < innerHeight * 2) {
+  if (!after.ready || !after.thinkingExists || after.pageHeight < after.viewportHeight * 2) {
     throw new Error(`${name}: page composition regressed`);
   }
   if (pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join(" | ")}`);
