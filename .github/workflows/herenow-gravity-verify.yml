@@ -24,7 +24,7 @@ jobs:
 
       - name: Capture mobile baseline
         run: |
-          npx -y playwright@1.55.0 screenshot             --device="iPhone 15"             --full-page             https://mighty-yoga-pgph.here.now/             herenow-mobile.png
+          npx -y playwright@1.55.0 screenshot             --device="Pixel 7"             --full-page             https://mighty-yoga-pgph.here.now/             herenow-mobile.png
 
       - name: Upload baseline screenshots
         uses: actions/upload-artifact@v4
