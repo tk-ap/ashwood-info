@@ -43,8 +43,11 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       canvasInField: Boolean(document.querySelector(".v3-field > [data-gravity-canvas]")),
       heroContainsCanvas: Boolean(document.querySelector(".v3-hero [data-gravity-canvas]")),
       fieldBackground: getComputedStyle(document.querySelector(".v3-field")).backgroundColor,
-      authoredLayers: document.querySelectorAll(".ashwood-cosmos__authored").length,
-      authoredLoaded: Array.from(document.querySelectorAll(".ashwood-cosmos__authored")).every(img => img.complete && img.naturalWidth > 1000),
+      authoredLayers: document.querySelectorAll(".ashwood-site-cosmos__plate").length,
+      authoredLoaded: Array.from(document.querySelectorAll(".ashwood-site-cosmos__plate")).every(img => img.complete && img.naturalWidth > 1000),
+      cosmosInField: Boolean(document.querySelector(".v3-field .ashwood-site-cosmos")),
+      cosmosPosition: getComputedStyle(document.querySelector("[data-site-cosmos]")).position,
+      cosmosPhase: body.dataset.cosmosPhase || null,
       fieldWidth: document.querySelector(".v3-field")?.getBoundingClientRect().width || 0,
       viewportWidth: innerWidth,
       hintDisplay: getComputedStyle(document.querySelector(".v3-field__hint")).display,
@@ -61,8 +64,11 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
     throw new Error(`${name}: canvas did not size`);
   }
   if (Number(initial.cssOpacity) > 0.05) throw new Error(`${name}: procedural canvas is painting over authored still (${initial.cssOpacity})`);
-  if (initial.authoredLayers !== 3 || !initial.authoredLoaded) throw new Error(`${name}: authored HiFi environment did not load as three depth plates`);
-  if (initial.fieldWidth < initial.viewportWidth * 0.98) throw new Error(`${name}: authored environment is not full bleed`);
+  if (initial.authoredLayers !== 3 || !initial.authoredLoaded) throw new Error(`${name}: global authored HiFi environment did not load as three depth plates`);
+  if (initial.cosmosInField) throw new Error(`${name}: authored universe is still owned by the Instinct field`);
+  if (initial.cosmosPosition !== "fixed") throw new Error(`${name}: site cosmos is not persistent/fixed`);
+  if (!["ambient","instinct","afterglow"].includes(initial.cosmosPhase)) throw new Error(`${name}: site cosmos phase is missing`);
+  if (initial.fieldWidth < initial.viewportWidth * 0.98) throw new Error(`${name}: Instinct activation layer is not full bleed`);
   if (initial.hintDisplay !== "none" || initial.resetDisplay !== "none") throw new Error(`${name}: legacy discovery chrome is still visible`);
   if (initial.docLauncherDisplay !== "none" && initial.docLauncherDisplay !== "missing") throw new Error(`${name}: persistent Doc launcher leaked into V4`);
   if (initial.pointerEvents !== "none") throw new Error(`${name}: canvas intercepted input`);
