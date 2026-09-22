@@ -23,6 +23,17 @@
   let playing = false;
   const clamp = (v) => Math.max(0, Math.min(1, v));
 
+  const syncCosmosPhase = () => {
+    if (!thinkingStage || !siteCosmos) return;
+    const rect = thinkingStage.getBoundingClientRect();
+    let phase = "ambient";
+    if (rect.bottom <= innerHeight * 0.12) phase = "afterglow";
+    else if (rect.top <= innerHeight * 0.72 && rect.bottom >= innerHeight * 0.22) phase = "instinct";
+    document.body.dataset.cosmosPhase = phase;
+    siteCosmos.dataset.phase = phase;
+  };
+  syncCosmosPhase();
+
   renderer.ready.then(({ mode } = {}) => {
     document.body.classList.add("ashwood-gravity-active", "ashwood-gravity-ready");
     document.body.dataset.gravityMode = mode || "unknown";
@@ -117,10 +128,15 @@
     refreshRect();
     renderer.resize();
     syncScroll();
+    syncCosmosPhase();
   };
   window.addEventListener("resize", onResize, { passive: true });
-  window.addEventListener("scroll", syncScroll, { passive: true });
+  window.addEventListener("scroll", () => {
+    syncScroll();
+    syncCosmosPhase();
+  }, { passive: true });
   syncScroll();
+  syncCosmosPhase();
 
   window.addEventListener("pagehide", () => renderer.dispose(), { once: true });
 })();
