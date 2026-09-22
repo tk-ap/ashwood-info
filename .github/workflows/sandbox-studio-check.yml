@@ -1,0 +1,44 @@
+name: Sandbox Studio browser proof
+
+on:
+  pull_request:
+    paths:
+      - "workspace/sandbox/**"
+      - "workspace/sandbox-studio.*"
+      - "data/sandbox-review-manifest.json"
+      - "api/workspace-sandbox-review.mjs"
+      - "api/workspace-state.mjs"
+      - "scripts/sandbox-studio-check.mjs"
+      - ".github/workflows/sandbox-studio-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4173 >/tmp/ashwood-studio-http.log 2>&1 &
+          echo $! > /tmp/ashwood-studio-http.pid
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/workspace/sandbox/ >/dev/null && exit 0
+            sleep 1
+          done
+          exit 1
+      - run: node scripts/sandbox-studio-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sandbox-studio-browser-proof
+          path: .sandbox/studio-proof
+          if-no-files-found: warn
+          retention-days: 2
