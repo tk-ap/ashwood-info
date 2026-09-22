@@ -1,42 +1,45 @@
 (() => {
-  const hero = document.querySelector(".v3-hero");
+  const field = document.querySelector(".v3-field");
   const canvas = document.querySelector("[data-gravity-canvas]");
-  if (!hero || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
+  if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const renderer = window.createAshwoodGravityRenderer({ canvas, reducedMotion: reduced });
-  let heroRect = hero.getBoundingClientRect();
+  let fieldRect = field.getBoundingClientRect();
   let playing = false;
 
   renderer.ready.then(({ mode } = {}) => {
     document.body.classList.add("ashwood-gravity-active", "ashwood-gravity-ready");
     document.body.dataset.gravityMode = mode || "unknown";
+    field.dataset.gravityReady = "true";
   }).catch(() => {
     document.body.classList.add("ashwood-gravity-fallback");
   });
 
-  const refreshRect = () => { heroRect = hero.getBoundingClientRect(); };
+  const refreshRect = () => { fieldRect = field.getBoundingClientRect(); };
+
   const onPointer = (event) => {
-    const x = (event.clientX - heroRect.left) / Math.max(heroRect.width, 1);
-    const y = (event.clientY - heroRect.top) / Math.max(heroRect.height, 1);
+    const x = (event.clientX - fieldRect.left) / Math.max(fieldRect.width, 1);
+    const y = (event.clientY - fieldRect.top) / Math.max(fieldRect.height, 1);
     const active = x >= 0 && x <= 1 && y >= 0 && y <= 1 ? 1 : 0;
     renderer.setPointer({ x, y, active });
+    field.style.setProperty("--gravity-pointer-x", `${clamp01(x) * 100}%`);
+    field.style.setProperty("--gravity-pointer-y", `${clamp01(y) * 100}%`);
   };
+
+  const clamp01 = (value) => Math.max(0, Math.min(1, value));
   const onLeave = () => renderer.setPointer({ x: 0.5, y: 0.5, active: 0 });
 
   if (!reduced && matchMedia("(hover:hover) and (pointer:fine)").matches) {
-    window.addEventListener("pointermove", onPointer, { passive: true });
-    hero.addEventListener("pointerleave", onLeave, { passive: true });
+    field.addEventListener("pointermove", onPointer, { passive: true });
+    field.addEventListener("pointerleave", onLeave, { passive: true });
   }
 
   const syncScroll = () => {
-    const total = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
-    const globalProgress = scrollY / total;
-    const heroProgress = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(hero.offsetHeight, innerHeight)));
-    renderer.setScroll(Math.max(globalProgress * 0.28, heroProgress));
-    if (heroProgress < 0.86) renderer.setChapter("identity");
-    else if (document.querySelector("#thinking")?.getBoundingClientRect().top < innerHeight * 0.7) renderer.setChapter("instinct");
-    else renderer.setChapter("evidence");
+    const rect = field.getBoundingClientRect();
+    const approach = clamp01((innerHeight - rect.top) / Math.max(innerHeight + rect.height, 1));
+    renderer.setScroll(approach);
+    renderer.setChapter("instinct");
   };
 
   const readDiscovery = () => {
@@ -48,14 +51,22 @@
     }
   };
 
-  renderer.setDiscovery(readDiscovery());
+  const syncDiscovery = () => {
+    const found = readDiscovery();
+    renderer.setDiscovery(found);
+    field.dataset.discoveryCount = String(found.length);
+  };
+
+  syncDiscovery();
   document.querySelectorAll(".v3-hotspot").forEach((node) => {
-    node.addEventListener("click", () => {
-      requestAnimationFrame(() => renderer.setDiscovery(readDiscovery()));
-    });
+    node.addEventListener("click", () => requestAnimationFrame(syncDiscovery));
   });
 
-  const syncAudio = () => renderer.setAudioEnergy(playing ? 1 : 0);
+  const syncAudio = () => {
+    renderer.setAudioEnergy(playing ? 1 : 0);
+    field.classList.toggle("is-audio-energized", playing);
+  };
+
   const bindAudio = (player) => {
     if (!player || player.dataset.gravityBound) return;
     player.dataset.gravityBound = "true";
