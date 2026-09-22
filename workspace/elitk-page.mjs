@@ -413,7 +413,7 @@ function start() {
         continue;
       }
       for (const node of record.addedNodes) {
-        if (node.nodeType === Node.ELEMENT_NODE && node.matches?.("[data-elitk-toggle]")) shouldSync = true;
+        if (node.nodeType === Node.ELEMENT_NODE && (node.matches?.("[data-elitk-toggle]") || node.querySelector?.("[data-elitk-toggle]"))) shouldSync = true;
         if (active) walk(node);
       }
     }
