@@ -60,6 +60,10 @@ test('owner command is durably queued and visible to the owner', async t => {
   assert.equal(visible.body.commands.length, 1);
   assert.equal(visible.body.commands[0].command_text, 'Get the ALVIRA investor page ready for outreach');
   assert.equal(visible.body.commands[0].status, 'queued');
+  assert.equal(visible.body.commands[0].command_kind, 'owner_command');
+  assert.equal(visible.body.commands[0].payload.schema, 'workspace.owner-command/v1');
+  assert.equal(visible.body.commands[0].payload.thread_id, 'operator:primary');
+  assert.equal(visible.body.commands[0].payload.surface, 'operator');
 });
 
 test('runtime can claim a command without receiving the owner browser session', async t => {
