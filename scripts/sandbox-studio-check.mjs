@@ -58,6 +58,7 @@ async function run(name, viewport) {
   if (errors.length) throw new Error(`${name}: page error ${errors[0]}`);
 
   await page.locator('[data-viewport="mobile"]').click();
+  await page.waitForTimeout(350);
   const mobileFrameWidth = await page.locator(".sandbox-frame-shell").evaluate(node => node.getBoundingClientRect().width);
   if (mobileFrameWidth > 400.5) throw new Error(`${name}: mobile preview width ${mobileFrameWidth}`);
 
