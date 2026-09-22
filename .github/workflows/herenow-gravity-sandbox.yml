@@ -1,0 +1,39 @@
+name: here.now Gravity sandbox
+
+on:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: herenow-gravity-sandbox
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out sandbox source
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Publish public-home parity sandbox
+        run: node scripts/herenow-publish-sandbox.mjs
+
+      - name: Preserve sandbox claim credentials
+        uses: actions/upload-artifact@v4
+        with:
+          name: herenow-gravity-sandbox-result
+          path: .sandbox/herenow-result.json
+          if-no-files-found: error
+          retention-days: 1
