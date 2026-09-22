@@ -424,3 +424,49 @@
 @media(prefers-reduced-motion:reduce){
   .v3-field .ashwood-doc-anomaly{display:none}
 }
+
+
+/* V4.2 / six phenomena, not six planets.
+   Preserve the same semantic hit targets while making each discovery materially distinct. */
+.v3-hotspot--signal{--body-size:24px}
+.v3-hotspot--signal::before{
+  border-radius:50% 44% 52% 46%;
+  box-shadow:-7px -4px 18px rgba(91,178,139,.18),12px 8px 30px rgba(180,135,50,.04)!important;
+}
+.v3-hotspot--signal::after{width:250%;height:22%;opacity:.12;transform:translate(-50%,-50%) rotate(-32deg)}
+
+.v3-hotspot--friction{--body-size:72px}
+.v3-hotspot--friction::before{
+  border-radius:47% 53% 46% 54%;
+  filter:contrast(1.15);
+  box-shadow:inset -24px -18px 31px rgba(0,0,0,.93),inset 4px 2px 8px rgba(235,188,105,.05),0 0 28px rgba(175,102,48,.07)!important;
+}
+.v3-hotspot--friction::after{width:136%;height:31%;border-style:solid;opacity:.055;transform:translate(-50%,-50%) rotate(23deg)}
+
+.v3-hotspot--translation{--body-size:38px}
+.v3-hotspot--translation::before{
+  box-shadow:inset -14px -11px 22px rgba(0,0,0,.88),-6px -2px 16px rgba(81,171,142,.14),0 0 32px rgba(81,171,142,.09)!important;
+}
+.v3-hotspot--translation::after{width:215%;height:27%;opacity:.18;border-color:rgba(105,183,151,.18);transform:translate(-50%,-50%) rotate(-9deg)}
+
+.v3-hotspot--systems{--body-size:86px}
+.v3-hotspot--systems::before{
+  box-shadow:inset -29px -22px 38px rgba(0,0,0,.94),inset 4px 3px 9px rgba(255,221,151,.035),0 0 30px rgba(180,135,50,.045)!important;
+}
+.v3-hotspot--systems::after{width:205%;height:26%;opacity:.31;border-color:rgba(201,169,102,.13);box-shadow:0 0 0 7px rgba(180,135,50,.012),0 0 0 15px rgba(89,159,126,.008)}
+
+.v3-hotspot--adaptation{--body-size:18px}
+.v3-hotspot--adaptation::before{
+  box-shadow:inset -6px -5px 10px rgba(0,0,0,.82),0 0 18px rgba(75,181,139,.18)!important;
+}
+.v3-hotspot--adaptation::after{width:310%;height:74%;opacity:.13;border-style:dashed;transform:translate(-50%,-50%) rotate(-38deg)}
+
+.v3-hotspot--synthesis{--body-size:48px}
+.v3-hotspot--synthesis::before{
+  border-radius:54% 46% 57% 43%;
+  box-shadow:inset -17px -14px 25px rgba(0,0,0,.9),7px 2px 22px rgba(190,149,77,.07),-8px -3px 18px rgba(78,153,126,.08)!important;
+}
+.v3-hotspot--synthesis::after{width:185%;height:35%;opacity:.22;border-color:rgba(93,161,132,.14);transform:translate(-50%,-50%) rotate(7deg)}
+
+/* The old assistant UI must never leak into this sandbox even if another legacy runtime injects it. */
+.v3-doc,.v3-doc-panel,[data-doctor-bird],[data-doc-character],.doctor-bird,.doc-character{display:none!important}
