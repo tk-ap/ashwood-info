@@ -29,8 +29,7 @@ function renderSummary(){
   ];
   const markup=cards.map(([v,l])=>`<article><strong>${v}</strong><span>${l}</span></article>`).join('');
   $('#network-summary').innerHTML=markup;
-  const hero=$('#workspace-view-data-hero');
-  if(hero) hero.innerHTML='<p class="section-kicker">Network · live relationship state</p><div class="workspace-data-hero-grid">'+markup+'</div>';
+
 }
 
 function renderList(){
