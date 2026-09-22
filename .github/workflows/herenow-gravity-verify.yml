@@ -15,16 +15,17 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Install Playwright Chromium
-        run: npx -y playwright@1.55.0 install --with-deps chromium
+      - name: Check out verification code
+        uses: actions/checkout@v4
 
-      - name: Capture desktop baseline
-        run: |
-          npx -y playwright@1.55.0 screenshot             --device="Desktop Chrome"             --full-page             https://mighty-yoga-pgph.here.now/             herenow-desktop.png
+      - name: Install Playwright package
+        run: npm install --no-save playwright@1.55.0
 
-      - name: Capture mobile baseline
-        run: |
-          npx -y playwright@1.55.0 screenshot             --device="Pixel 7"             --full-page             https://mighty-yoga-pgph.here.now/             herenow-mobile.png
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Exercise and capture baseline
+        run: node scripts/herenow-visual-check.mjs
 
       - name: Upload baseline screenshots
         uses: actions/upload-artifact@v4
