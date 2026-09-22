@@ -64,3 +64,25 @@
 
 /* Compact 21st.dev-inspired board density: fit the whole board to the viewport without a nested horizontal scroller. */
 @media(min-width:901px){.agentos-board-card{padding:12px 10px}.agentos-board-card h4{font-size:clamp(11px,1vw,15px)}.agentos-board-card__detail,.agentos-board-card__why{font-size:10px}.agentos-board-card dl{grid-template-columns:1fr;gap:6px}.agentos-board-card__footer{display:grid;gap:6px}.agentos-board-lane>header{padding:11px 9px}.agentos-board-card__badges{gap:3px}.agentos-board-card__domain,.agentos-board-card__product,.agentos-board-card__priority,.agentos-board-card__type{padding:2px 4px;font-size:6px}}
+
+
+/* #184 governed movement: affordance only. Canonical state changes after AgentOS confirms. */
+.agentos-board-card[draggable="true"] { cursor: grab; }
+.agentos-board-card.is-dragging { opacity: .45; }
+.agentos-board-card.is-transition-pending { opacity: .62; pointer-events: none; }
+.agentos-board-card.is-transition-pending::after {
+  content: "Waiting for AgentOS…";
+  display: block;
+  margin-top: .65rem;
+  font-size: .72rem;
+  letter-spacing: .04em;
+  opacity: .72;
+}
+.agentos-board-lane.is-valid-drop {
+  outline: 1px dashed currentColor;
+  outline-offset: -4px;
+}
+.agentos-board-lane.is-drop-hover {
+  outline-style: solid;
+  transform: translateY(-1px);
+}
