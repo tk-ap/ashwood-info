@@ -1,33 +1,28 @@
 (() => {
   const field = document.querySelector(".v3-field");
-  const canvas = document.querySelector("[data-gravity-canvas]");
+  const canvas = field?.querySelector("[data-gravity-canvas]");
   if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const renderer = window.createAshwoodGravityRenderer({ canvas, reducedMotion: reduced });
   let fieldRect = field.getBoundingClientRect();
   let playing = false;
+  const clamp = (v) => Math.max(0, Math.min(1, v));
 
   renderer.ready.then(({ mode } = {}) => {
     document.body.classList.add("ashwood-gravity-active", "ashwood-gravity-ready");
     document.body.dataset.gravityMode = mode || "unknown";
     field.dataset.gravityReady = "true";
-  }).catch(() => {
-    document.body.classList.add("ashwood-gravity-fallback");
-  });
+  }).catch(() => document.body.classList.add("ashwood-gravity-fallback"));
 
   const refreshRect = () => { fieldRect = field.getBoundingClientRect(); };
-
   const onPointer = (event) => {
-    const x = (event.clientX - fieldRect.left) / Math.max(fieldRect.width, 1);
-    const y = (event.clientY - fieldRect.top) / Math.max(fieldRect.height, 1);
-    const active = x >= 0 && x <= 1 && y >= 0 && y <= 1 ? 1 : 0;
-    renderer.setPointer({ x, y, active });
-    field.style.setProperty("--gravity-pointer-x", `${clamp01(x) * 100}%`);
-    field.style.setProperty("--gravity-pointer-y", `${clamp01(y) * 100}%`);
+    const x = clamp((event.clientX - fieldRect.left) / Math.max(fieldRect.width, 1));
+    const y = clamp((event.clientY - fieldRect.top) / Math.max(fieldRect.height, 1));
+    renderer.setPointer({ x, y, active: 1 });
+    field.style.setProperty("--gravity-pointer-x", `${x * 100}%`);
+    field.style.setProperty("--gravity-pointer-y", `${y * 100}%`);
   };
-
-  const clamp01 = (value) => Math.max(0, Math.min(1, value));
   const onLeave = () => renderer.setPointer({ x: 0.5, y: 0.5, active: 0 });
 
   if (!reduced && matchMedia("(hover:hover) and (pointer:fine)").matches) {
@@ -37,20 +32,19 @@
 
   const syncScroll = () => {
     const rect = field.getBoundingClientRect();
-    const approach = clamp01((innerHeight - rect.top) / Math.max(innerHeight + rect.height, 1));
+    const approach = clamp((innerHeight - rect.top) / Math.max(innerHeight + rect.height, 1));
     renderer.setScroll(approach);
     renderer.setChapter("instinct");
   };
 
   const readDiscovery = () => {
     try {
-      const raw = JSON.parse(localStorage.getItem("ashwood.v3.discovery") || "[]");
-      return Array.isArray(raw) ? raw : [];
+      const value = JSON.parse(localStorage.getItem("ashwood.v3.discovery") || "[]");
+      return Array.isArray(value) ? value : [];
     } catch (_) {
       return [];
     }
   };
-
   const syncDiscovery = () => {
     const found = readDiscovery();
     renderer.setDiscovery(found);
@@ -66,7 +60,6 @@
     renderer.setAudioEnergy(playing ? 1 : 0);
     field.classList.toggle("is-audio-energized", playing);
   };
-
   const bindAudio = (player) => {
     if (!player || player.dataset.gravityBound) return;
     player.dataset.gravityBound = "true";
@@ -81,13 +74,13 @@
   const existingAudio = document.querySelector(".ashwood-audio");
   if (existingAudio) bindAudio(existingAudio);
   else {
-    const audioObserver = new MutationObserver(() => {
+    const observer = new MutationObserver(() => {
       const player = document.querySelector(".ashwood-audio");
       if (!player) return;
       bindAudio(player);
-      audioObserver.disconnect();
+      observer.disconnect();
     });
-    audioObserver.observe(document.body, { childList: true });
+    observer.observe(document.body, { childList: true });
   }
 
   const onResize = () => {
@@ -95,7 +88,6 @@
     renderer.resize();
     syncScroll();
   };
-
   window.addEventListener("resize", onResize, { passive: true });
   window.addEventListener("scroll", syncScroll, { passive: true });
   syncScroll();
