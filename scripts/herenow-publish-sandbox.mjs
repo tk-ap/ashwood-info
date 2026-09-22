@@ -6,6 +6,9 @@ const ROOT = process.cwd();
 const CLIENT = "chatgpt/github-actions";
 const RESULT_DIR = path.join(ROOT, ".sandbox");
 const RESULT_PATH = path.join(RESULT_DIR, "herenow-result.json");
+const API_KEY = (process.env.HERENOW_API_KEY || "").trim();
+const TARGET_SLUG = (process.env.HERENOW_TARGET_SLUG || "").trim();
+const AUTHENTICATED_UPDATE = Boolean(API_KEY && TARGET_SLUG);
 
 const publicDirs = new Set([
   "assets",
@@ -121,6 +124,14 @@ async function buildManifest(files) {
   return manifest;
 }
 
+function hereNowHeaders(extra = {}) {
+  return {
+    "X-HereNow-Client": CLIENT,
+    ...(API_KEY ? { Authorization: `Bearer ${API_KEY}` } : {}),
+    ...extra
+  };
+}
+
 async function fetchJson(url, options = {}) {
   const response = await fetch(url, options);
   const text = await response.text();
@@ -183,22 +194,41 @@ async function main() {
 
   console.log(`Preparing ASHWOOD public-home sandbox: ${manifest.length} files / ${Math.round(totalBytes / 1024 / 1024)} MiB`);
 
-  const createResponse = await fetchJson("https://here.now/api/v1/publish", {
-    method: "POST",
-    headers: {
-      "X-HereNow-Client": CLIENT,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      files: manifest,
-      ttlSeconds: 86400,
-      displayName: "ASHWOOD / GRAVITY — parity sandbox",
-      displayDescription: "Temporary parity baseline for the ASHWOOD public-home Gravity interaction prototype."
-    })
-  });
+  let createResponse;
+  let previousVersionId = null;
 
-  if (!createResponse.claimUrl || !createResponse.claimToken) {
-    throw new Error("Anonymous here.now publish did not return the required claim credentials");
+  if (AUTHENTICATED_UPDATE) {
+    const current = await fetchJson(`https://here.now/api/v1/publish/${encodeURIComponent(TARGET_SLUG)}`, {
+      headers: hereNowHeaders()
+    });
+    previousVersionId = current.currentVersionId || null;
+    if (!previousVersionId) {
+      throw new Error("Owned here.now sandbox did not return currentVersionId; refusing unchecked overwrite");
+    }
+
+    createResponse = await fetchJson(`https://here.now/api/v1/publish/${encodeURIComponent(TARGET_SLUG)}`, {
+      method: "PUT",
+      headers: hereNowHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        files: manifest,
+        baseVersionId: previousVersionId
+      })
+    });
+  } else {
+    createResponse = await fetchJson("https://here.now/api/v1/publish", {
+      method: "POST",
+      headers: hereNowHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        files: manifest,
+        ttlSeconds: 86400,
+        displayName: "ASHWOOD / GRAVITY — parity sandbox",
+        displayDescription: "Temporary parity baseline for the ASHWOOD public-home Gravity interaction prototype."
+      })
+    });
+
+    if (!createResponse.claimUrl || !createResponse.claimToken) {
+      throw new Error("Anonymous here.now publish did not return the required claim credentials");
+    }
   }
 
   await uploadFiles(createResponse, manifestByPath);
@@ -209,10 +239,7 @@ async function main() {
 
   const finalizeResponse = await fetchJson(finalizeUrl, {
     method: "POST",
-    headers: {
-      "X-HereNow-Client": CLIENT,
-      "Content-Type": "application/json"
-    },
+    headers: hereNowHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ versionId })
   });
 
@@ -233,11 +260,20 @@ async function main() {
     throw new Error(`Sandbox verification failed: ${JSON.stringify(paritySignals)}`);
   }
 
+  if (AUTHENTICATED_UPDATE) {
+    const publishStatus = finalizeResponse.publishStatus || {};
+    if (publishStatus.persistence && publishStatus.persistence !== "permanent") {
+      throw new Error(`Owned sandbox finalize did not report permanent persistence: ${JSON.stringify(publishStatus)}`);
+    }
+  }
+
   const result = {
+    mode: AUTHENTICATED_UPDATE ? "owned-update" : "anonymous-create",
     siteUrl,
     slug: finalizeResponse.slug || createResponse.slug,
-    claimUrl: createResponse.claimUrl,
-    claimToken: createResponse.claimToken,
+    claimUrl: AUTHENTICATED_UPDATE ? null : createResponse.claimUrl,
+    claimToken: AUTHENTICATED_UPDATE ? null : createResponse.claimToken,
+    previousVersionId,
     expiresAt: createResponse.expiresAt || finalizeResponse?.publishStatus?.expiresAt || null,
     currentVersionId: finalizeResponse.currentVersionId || versionId,
     publishStatus: finalizeResponse.publishStatus || null,
@@ -253,7 +289,7 @@ async function main() {
   await fs.writeFile(RESULT_PATH, JSON.stringify(result, null, 2) + "\n", { mode: 0o600 });
 
   // Do not print claimToken or claimUrl into public Actions logs.
-  console.log(`Sandbox finalized and verified. Slug: ${result.slug}; version: ${result.currentVersionId}`);
+  console.log(`Sandbox finalized and verified. Mode: ${result.mode}; slug: ${result.slug}; version: ${result.currentVersionId}`);
   console.log(`Parity signals: ${JSON.stringify(paritySignals)}`);
 }
 
