@@ -880,3 +880,128 @@ body.ashwood-home-native > main{
 @media(prefers-reduced-motion:reduce){
   .ashwood-site-cosmos__plate{transform:none!important}
 }
+
+
+/* V4.9 — dimensional zoning + restrained camera journey.
+   One universe persists across the page. Chapters alter occlusion, exposure, and
+   viewpoint so content occupies the space rather than double-exposing over it.
+   This is scroll composition only; Flux/lensing/plasma animation remains gated. */
+.ashwood-site-cosmos__plate{
+  will-change:transform,opacity,filter;
+  transition:opacity 520ms ease,filter 520ms ease;
+}
+.ashwood-site-cosmos__plate--base{
+  transform:translate3d(var(--cosmos-base-x,0px),var(--cosmos-base-y,0px),0) scale(var(--cosmos-base-scale,1.04));
+}
+.ashwood-site-cosmos__plate--gravity{
+  transform:translate3d(var(--cosmos-gravity-x,0px),var(--cosmos-gravity-y,0px),0) scale(var(--cosmos-gravity-scale,1.025));
+}
+.ashwood-site-cosmos__plate--foreground{
+  transform:translate3d(var(--cosmos-foreground-x,0px),var(--cosmos-foreground-y,0px),0) scale(var(--cosmos-foreground-scale,1.055));
+}
+
+/* HERO / approach: the portrait remains primary; the universe is sensed around it. */
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__plate--base{
+  opacity:.42;
+  filter:brightness(.48) contrast(1.05) saturate(.88);
+}
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__plate--gravity{opacity:.035}
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__plate--foreground{opacity:.02}
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__veil{
+  opacity:.94;
+  background:
+    linear-gradient(90deg,rgba(1,2,1,.70) 0%,rgba(1,2,1,.48) 34%,rgba(1,2,1,.18) 61%,rgba(1,2,1,.36) 100%),
+    linear-gradient(180deg,rgba(1,2,1,.60),rgba(1,2,1,.16) 52%,rgba(1,2,1,.48));
+}
+.v3-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 62% 82% at 24% 48%,rgba(0,0,0,.78) 0%,rgba(0,0,0,.46) 48%,transparent 78%),
+    linear-gradient(90deg,rgba(0,0,0,.34),transparent 64%);
+}
+.v3-hero__copy,.v3-hero__image{position:relative;z-index:1}
+.ashwood-gravity-active .v3-hero__image img{
+  opacity:.98;
+  filter:saturate(.90) contrast(1.03) brightness(.96);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 5%,rgba(0,0,0,.82) 16%,#000 27%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 5%,rgba(0,0,0,.82) 16%,#000 27%,#000 100%);
+}
+
+/* INSTINCT / closest encounter: maximum environmental clarity, minimal veil. */
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--base{
+  opacity:1;
+  filter:brightness(.94) contrast(1.04) saturate(.98);
+}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity{opacity:.105}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{opacity:.05}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__veil{opacity:.22}
+
+/* WORK / drift past: the universe persists but yields to evidence. */
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__plate--base{
+  opacity:.62;
+  filter:brightness(.62) contrast(1.03) saturate(.88);
+}
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__plate--gravity{opacity:.045}
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__plate--foreground{opacity:.025}
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__veil{
+  opacity:.72;
+  background:
+    linear-gradient(180deg,rgba(1,2,1,.36),rgba(1,2,1,.18) 36%,rgba(1,2,1,.28) 68%,rgba(1,2,1,.58)),
+    radial-gradient(ellipse 58% 45% at 26% 24%,rgba(0,0,0,.50),transparent 72%);
+}
+.v3-evidence{
+  position:relative;
+  isolation:isolate;
+  background:transparent!important;
+}
+.v3-evidence::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(2,3,2,.32),transparent 18%,transparent 72%,rgba(2,3,2,.44)),
+    radial-gradient(ellipse 62% 30% at 31% 12%,rgba(0,0,0,.52),transparent 72%);
+}
+.v3-evidence > *{position:relative;z-index:1}
+.v3-evidence__lead{
+  text-shadow:0 2px 34px rgba(0,0,0,.78);
+}
+.v3-photo-stage{
+  box-shadow:0 28px 90px rgba(0,0,0,.24);
+}
+
+/* DEPTH / recede: preserve the world, lower its visual claim. */
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--base{
+  opacity:.36;
+  filter:brightness(.46) contrast(1.02) saturate(.82);
+}
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--gravity,
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--foreground{opacity:.015}
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__veil{
+  opacity:.90;
+  background:linear-gradient(180deg,rgba(1,2,1,.50),rgba(1,2,1,.66));
+}
+
+@media(max-width:900px){
+  .v3-hero::before{
+    background:
+      linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.58) 58%,rgba(0,0,0,.72) 100%);
+  }
+  .ashwood-gravity-active .v3-hero__image img{
+    opacity:.97;
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 82%,rgba(0,0,0,.72) 94%,transparent 100%);
+    mask-image:linear-gradient(180deg,#000 0%,#000 82%,rgba(0,0,0,.72) 94%,transparent 100%);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .ashwood-site-cosmos__plate{
+    transform:none!important;
+    transition:none!important;
+  }
+}
