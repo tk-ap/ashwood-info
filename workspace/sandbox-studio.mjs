@@ -78,7 +78,9 @@ function renderProductOptions() {
   select.innerHTML = products.map((item) =>
     `<option value="${escapeHtml(item.product_key)}">${escapeHtml(item.label || item.product_key)}</option>`
   ).join("");
-  product = products[0] || null;
+  const requested = new URLSearchParams(location.search).get("product");
+  product = products.find((item) => item.product_key === requested) || products[0] || null;
+  if (product) select.value = product.product_key;
 }
 
 function renderVersionOptions(preferred = null) {
