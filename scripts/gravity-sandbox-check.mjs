@@ -42,9 +42,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (!initial.canvasInField || initial.heroContainsCanvas) throw new Error(`${name}: Gravity is not isolated to Instinct field`);
   if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);
 
-  await page.mouse.move(1100, 360).catch(() => {});
-  await page.evaluate(() => scrollTo(0, Math.min(innerHeight * 0.9, document.documentElement.scrollHeight)));
-  await page.waitForTimeout(reducedMotion === "reduce" ? 150 : 450);
+  await page.evaluate(() => document.querySelector(".v3-field")?.scrollIntoView({ block: "center" }));
+  await page.waitForTimeout(reducedMotion === "reduce" ? 180 : 520);
 
   const after = await page.evaluate(() => ({
     ready: document.body.classList.contains("ashwood-gravity-ready"),
