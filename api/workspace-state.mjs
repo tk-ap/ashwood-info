@@ -392,6 +392,39 @@ export default async function handler(req, res) {
       return json(res, 202, { ok:true, existing:false, id, status:'queued' });
     }
 
+    if (action === 'submit_owner_decision') {
+      await ensureCommandTable(sql);
+      const taskId = String(body.task_id || '').trim().slice(0, 250);
+      const cardId = String(body.card_id || '').trim().slice(0, 250);
+      const decision = String(body.decision || '').trim().toLowerCase();
+      const observedSnapshot = body.observed_snapshot == null
+        ? null
+        : String(body.observed_snapshot).trim().slice(0, 250);
+      const allowed = new Set(['accept','pause','approve','deny','resume']);
+      if (!taskId || !cardId || !allowed.has(decision)) {
+        return json(res, 400, { ok:false, error:'Invalid owner decision request' });
+      }
+      const payload = {
+        schema:'workspace.owner-decision/v1',
+        thread_id:'operator:primary',
+        task_id:taskId,
+        card_id:cardId,
+        decision,
+        observed_snapshot:observedSnapshot,
+        surface:'operator',
+      };
+      const fingerprint = sha256(JSON.stringify(payload));
+      const existing = await sql`SELECT id,status,payload,governance,error FROM workspace_commands
+        WHERE content_hash = ${fingerprint} LIMIT 1`;
+      if (existing[0]) return json(res, 200, { ok:true, existing:true, decision:existing[0] });
+      const id = 'owner-decision:' + crypto.randomUUID();
+      const commandText = `Owner ${decision} decision for AgentOS task ${taskId}`;
+      await sql`INSERT INTO workspace_commands
+        (id,command_text,command_kind,payload,content_hash,status,source)
+        VALUES(${id},${commandText},'owner_decision',${JSON.stringify(payload)}::jsonb,${fingerprint},'queued','workspace')`;
+      return json(res, 202, { ok:true, existing:false, id, status:'queued', decision:payload });
+    }
+
     if (action === 'submit_command') {
       await ensureCommandTable(sql);
       const text = String(body.command || '').trim().slice(0, 2000);
