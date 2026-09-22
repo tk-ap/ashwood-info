@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260922-fitboard1" />
   <link rel="stylesheet" href="/workspace/sprint.css?v=20260921-sprint1" />
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
+  <link rel="stylesheet" href="/workspace/sandbox-environments.css?v=20260922-env1" />
   <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260921-workcanvas3" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
   <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
@@ -31,6 +32,7 @@
   <script type="module" src="/workspace/agentos-board.mjs?v=20260922-dragcontract1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/deployment-budget.mjs?v=20260921-agentos1"></script>
+  <script type="module" src="/workspace/sandbox-environments.mjs?v=20260922-env1"></script>
   <script type="module" src="/workspace/design-implementation.mjs?v=20260921-design149"></script>
   <script type="module" src="/workspace/views.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260922-design153"></script>
@@ -269,6 +271,19 @@
       </div>
       <div class="workstream-list is-loading" id="workstream-list" aria-live="polite">
         <p class="workstream-empty"><strong>Loading active workstreams…</strong><span>Checking the private canonical projection.</span></p>
+      </div>
+    </section>
+
+    <section class="workstreams sandbox-environments" aria-labelledby="sandbox-environments-title">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker">Environment continuity</p>
+          <h2 id="sandbox-environments-title">Production and sandboxes</h2>
+        </div>
+        <p class="section-note"><span id="sandbox-environment-status">Loading environment projection…</span> · Static-first preview identity is shown separately from production state.</p>
+      </div>
+      <div class="sandbox-environment-list" id="sandbox-environment-list" aria-live="polite">
+        <p class="workstream-empty"><strong>Loading sandbox environments…</strong><span>Reading the static AgentOS environment projection.</span></p>
       </div>
     </section>
 
