@@ -87,7 +87,7 @@ function renderHeader() {
   const markup = cards.map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
   $('#career-summary').innerHTML = markup;
   const hero = $('#workspace-view-data-hero');
-  if (hero) hero.innerHTML = '<p class="section-kicker">Work · live career state</p><div class="workspace-data-hero-grid">' + markup + '</div>';
+  if (hero) hero.innerHTML = '<p class="section-kicker">Work · live career state · relationships below</p><div class="workspace-data-hero-grid">' + markup + '</div>';
 }
 
 function renderApplications() {
