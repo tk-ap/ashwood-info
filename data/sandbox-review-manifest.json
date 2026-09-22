@@ -1,6 +1,6 @@
 {
   "schema": "ashwood.sandbox-review-manifest/v1",
-  "generated_at": "2026-09-22T18:14:00Z",
+  "generated_at": "2026-09-22T19:30:30Z",
   "products": [
     {
       "product_key": "ashwood",
@@ -9,17 +9,10 @@
       "stable": {
         "url": "https://mighty-yoga-pgph.here.now/",
         "slug": "mighty-yoga-pgph",
-        "version_id": "01M34Z9SBZS6MN1TGMZFT2KR7Y",
-        "source_ref": "0065f2aae3e8fecf11b833846ce7653885ef4335",
+        "version_id": "01M359HV4JJ4JKVWBRM2EXBAKM",
+        "source_ref": "479e51466a9244af3c8a606921232de730df7da4",
         "state": "stable",
-        "note": "Parity baseline. No user-facing delta is annotated on this stable version."
-      },
-      "latest_candidate": {
-        "url": "https://russet-birch-vngq.here.now/",
-        "version_id": "01M351W2EZ3YWEVKCWBS5GDZW2",
-        "source_ref": "85f38e8901e6046201f17ac6390b1f703b90d537",
-        "state": "temporary_candidate",
-        "note": "Gravity v2 visual candidate. Use for review until the owned stable sandbox can be updated through the owner here.now credential.",
+        "note": "Owned permanent Gravity sandbox. Updated in place through the authenticated here.now owner connection.",
         "changes": [
           {
             "id": "gravity-hero",
@@ -27,7 +20,7 @@
             "scope": "Homepage · Hero",
             "detail": "Gravity canvas was removed from the identity hero; the portrait fade remains.",
             "verification": "Desktop, mobile and reduced-motion proof passed.",
-            "source_ref": "85f38e8901e6046201f17ac6390b1f703b90d537"
+            "source_ref": "479e51466a9244af3c8a606921232de730df7da4"
           },
           {
             "id": "gravity-instinct",
@@ -35,7 +28,7 @@
             "scope": "Homepage · The instinct",
             "detail": "The black-hole renderer now belongs to the Instinct discovery field and the six thinking signals sit around it.",
             "verification": "Instinct-only renderer mount passed; hero contains no Gravity canvas.",
-            "source_ref": "85f38e8901e6046201f17ac6390b1f703b90d537"
+            "source_ref": "479e51466a9244af3c8a606921232de730df7da4"
           },
           {
             "id": "gravity-clarity",
@@ -43,7 +36,7 @@
             "scope": "Homepage · The instinct",
             "detail": "Harder black core, brighter photon ring and thinner/brighter accretion plane improve immediate legibility.",
             "verification": "Visual mobile capture inspected before publish.",
-            "source_ref": "85f38e8901e6046201f17ac6390b1f703b90d537"
+            "source_ref": "479e51466a9244af3c8a606921232de730df7da4"
           }
         ]
       },
