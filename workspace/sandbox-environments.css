@@ -1,0 +1,18 @@
+.sandbox-environments{border-top:1px solid var(--line);padding-top:clamp(34px,5vw,64px)}
+.sandbox-environments-list{display:grid;gap:12px}
+.sandbox-environment-card{border:1px solid var(--line);background:color-mix(in srgb,var(--paper) 96%,transparent);padding:18px}
+.sandbox-environment-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.sandbox-environment-card__head h3{margin:0;font-size:20px;font-weight:500;letter-spacing:-.02em}
+.sandbox-environment-status{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font:700 9px/1 Arial,sans-serif;letter-spacing:.1em;color:var(--muted)}
+.sandbox-environment-status[data-state="live"]{color:var(--ink);border-color:color-mix(in srgb,var(--ashwood-field-green,#009b3a) 45%,var(--line))}
+.sandbox-environment-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:16px;background:var(--line);border:1px solid var(--line)}
+.sandbox-environment-grid>div{display:flex;min-width:0;flex-direction:column;gap:5px;background:var(--paper);padding:13px}
+.sandbox-environment-grid small{font:600 9px/1 Arial,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.sandbox-environment-grid strong{overflow:hidden;text-overflow:ellipsis;font-size:12px;white-space:nowrap}
+.sandbox-environment-grid span{color:var(--muted);font-size:10px;line-height:1.35}
+.sandbox-environment-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sandbox-environment-actions a,.sandbox-environment-actions button{min-height:34px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:0 11px;font:600 10px/1 Arial,sans-serif;letter-spacing:.04em;text-decoration:none;display:inline-flex;align-items:center;cursor:pointer}
+.sandbox-environment-actions button:hover,.sandbox-environment-actions button:focus-visible,.sandbox-environment-actions a:hover,.sandbox-environment-actions a:focus-visible{border-color:var(--ink)}
+.sandbox-environment-actions button:disabled{opacity:.5;cursor:wait}
+@media(max-width:900px){.sandbox-environment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.sandbox-environment-card__head{flex-direction:column}.sandbox-environment-grid{grid-template-columns:1fr}.sandbox-environment-actions>*{flex:1 1 calc(50% - 8px);justify-content:center}}
