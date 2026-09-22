@@ -4,7 +4,7 @@
   if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const stillFrameGate = true; // V4.6: authored frame must pass visual review before motion resumes.
+  const stillFrameGate = true; // V4.8: global authored environment must pass before local motion resumes.\n  const thinkingStage = document.querySelector("#thinking");\n  const siteCosmos = document.querySelector("[data-site-cosmos]");
 
   // Public Doc is an optical anomaly, not a mascot or persistent assistant control.
   const docAnomaly = document.createElement("span");
