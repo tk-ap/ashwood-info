@@ -21,12 +21,15 @@ function counts(){
 
 function renderSummary(){
   const c=counts();
-  $('#network-summary').innerHTML=[
+  const cards=[
     [c.active,'active relationships'],
     [c.conversations,'live conversations'],
     [c.invites,'invite / referral'],
     [c.due,'need action']
-  ].map(([v,l])=>`<article><strong>${v}</strong><span>${l}</span></article>`).join('');
+  ];
+  const markup=cards.map(([v,l])=>`<article><strong>${v}</strong><span>${l}</span></article>`).join('');
+  $('#network-summary').innerHTML=markup;
+
 }
 
 function renderList(){

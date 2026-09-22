@@ -13,7 +13,7 @@ const productionReviewPath = new URL('../workspace/v3-playtest/index.html', impo
 
 test('workspace exposes exactly six primary views on desktop and mobile', async () => {
   const html = await readFile(htmlPath, 'utf8');
-  for (const view of ['today','build','work','network','evidence','self']) {
+  for (const view of ['today','build','work','activity','evidence','self']) {
     const matches = html.match(new RegExp('data-workspace-nav="' + view + '"', 'g')) || [];
     assert.equal(matches.length, 2, view + ' should exist once in desktop nav and once in mobile nav');
   }

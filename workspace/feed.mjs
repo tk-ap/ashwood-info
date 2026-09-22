@@ -131,6 +131,15 @@ function render() {
     : '<p class="ecosystem-feed__empty"><strong>Nothing needs attention right now.</strong><span>Ordinary observations age out automatically; blockers, approval requests, and anything you explicitly keep in focus stay visible.</span></p>';
 
   host.innerHTML = `
+    <div class="activity-summary" aria-label="Activity status">
+      <article data-tone="attention"><strong>${active.length}</strong><span>need attention</span></article>
+      <article data-tone="quiet"><strong>${ignored.length}</strong><span>aged out</span></article>
+      <article data-tone="done"><strong>${archive.length}</strong><span>resolved / archived</span></article>
+      <article data-tone="signal"><strong>${monitoring.filter(item => item.needs_review).length}</strong><span>sources to review</span></article>
+    </div>
+    <div class="activity-flow" aria-label="Ecosystem operating flow">
+      <span>Signal</span><i>→</i><span>Review</span><i>→</i><span>Decision</span><i>→</i><span>Outcome</span>
+    </div>
     <div class="ecosystem-feed__active">${activeHtml}</div>
     ${bucketHtml('Not acted on', ignored, 'ignored', `Ordinary signals leave the main view after ${activeDays} days without action. Restore one if it turns out to matter.`)}
     ${monitoringHtml()}

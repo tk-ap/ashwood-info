@@ -21,10 +21,10 @@ const VIEW_META = {
     eyebrow: "Professional motion",
     tools: []
   },
-  network: {
-    title: "Network.",
-    deck: "Sponsors, design partners, collaborators, and the relationships that can move the work.",
-    eyebrow: "Relationships and outbound",
+  activity: {
+    title: "Activity.",
+    deck: "What the ecosystem changed, what needs attention, and what is waiting on you.",
+    eyebrow: "Execution, decisions, and signals",
     tools: []
   },
   evidence: {
@@ -60,14 +60,14 @@ const GROUPS = {
     "details.ecosystem"
   ],
   work: [
-    "#work"
-  ],
-  network: [
+    "#work",
     "#network"
+  ],
+  activity: [
+    ".ecosystem-feed"
   ],
   evidence: [
     "#owner-intelligence",
-    ".ecosystem-feed",
     "details.pulse",
     "details.workspace-connections",
     "#evidence-panel",
@@ -88,7 +88,8 @@ const VIEW_FOR_HASH = {
   "design-implementation":"build",
   "ashwood-drop":"build",
   work:"work",
-  network:"network",
+  network:"work",
+  activity:"activity",
   evidence:"evidence",
   "evidence-panel":"evidence",
   self:"self",
@@ -164,6 +165,13 @@ function renderTools(view){
   });
 }
 
+function syncDataHero(view){
+  const hero = q("#workspace-view-data-hero");
+  if (!hero) return;
+  hero.hidden = view !== "work";
+  hero.dataset.heroView = view;
+}
+
 function renderIntro(view){
   const meta = VIEW_META[view] || VIEW_META.today;
   const title = q("#workspace-title");
@@ -173,6 +181,7 @@ function renderIntro(view){
   if (deck) deck.textContent = meta.deck;
   if (eyebrow) eyebrow.textContent = meta.eyebrow;
   renderTools(view);
+  syncDataHero(view);
 }
 
 function renderUtility(view){
@@ -184,7 +193,7 @@ function renderUtility(view){
   const copy = {
     build:"<strong>Build is the execution view.</strong> AgentOS state is mirrored here; authority remains in AgentOS and ledgato.",
     work:"<strong>Work is the professional view.</strong> Keep career motion and public artifacts separate from product execution.",
-    network:"<strong>Network is the relationship control center.</strong> Sponsorship, invitations, referrals, collaborators, introductions, and design partners enter here; payment is only one possible relationship.",
+    activity:"<strong>Activity is the operating stream.</strong> See what changed, what needs review, and what the ecosystem is asking you to decide.",
     evidence:"<strong>Evidence is the record.</strong> Use it to verify claims, inspect signals, and trace why priorities changed.",
     self:"<strong>Self is your decision context.</strong> Define what matters, test it against evidence, compare real paths, and let the result shape Today without turning reflection into fact."
   };
