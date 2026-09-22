@@ -5,6 +5,7 @@ on:
     paths:
       - "gravity-renderer.js"
       - "gravity-sandbox.js"
+      - "scripts/herenow-publish-sandbox.mjs"
       - ".github/workflows/gravity-syntax-check.yml"
   workflow_dispatch:
 permissions:
@@ -20,3 +21,4 @@ jobs:
       - run: |
           node --check gravity-renderer.js
           node --check gravity-sandbox.js
+          node --check scripts/herenow-publish-sandbox.mjs
