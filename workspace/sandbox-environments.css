@@ -12,7 +12,7 @@
 .sandbox-environment-grid strong{display:block;margin-top:4px;font-size:12px;font-weight:600}
 .sandbox-environment-grid p{margin:9px 0 0;font-size:11px}
 .sandbox-environment-grid a{color:inherit}
-.sandbox-primary-link{font-weight:650}
+.sandbox-primary-link{display:inline-flex;min-height:44px;align-items:center;margin-top:6px;padding:8px 10px;border:1px solid rgba(255,255,255,.12);border-radius:8px;font-weight:650}
 .sandbox-unassigned{color:#6f6f6f}
 .sandbox-environment-meta{display:flex;flex-wrap:wrap;gap:7px 13px;margin-top:17px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);font-size:9px;color:#777;overflow-wrap:anywhere}
 @media(max-width:620px){.sandbox-environment-list{grid-template-columns:1fr}.sandbox-environment-grid{grid-template-columns:1fr}.sandbox-environment-card{padding:16px}}
