@@ -149,6 +149,33 @@ test('foreign-origin browser command submission is rejected', async t => {
 });
 
 
+
+test('owner decisions are durably queued, deduped, and bound to the observed review card', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const body = {
+    action:'submit_owner_decision',
+    task_id:'task-7',
+    card_id:'card-7',
+    decision:'approve',
+    observed_snapshot:'snap-7',
+  };
+  const first = await f.call({ method:'POST', owner:true, body });
+  assert.equal(first.statusCode, 202);
+  assert.equal(first.body.status, 'queued');
+
+  const duplicate = await f.call({ method:'POST', owner:true, body });
+  assert.equal(duplicate.statusCode, 200);
+  assert.equal(duplicate.body.existing, true);
+
+  const visible = await f.call({ owner:true, query:{ view:'commands' } });
+  const row = visible.body.commands.find(item => item.id === first.body.id);
+  assert.equal(row.command_kind, 'owner_decision');
+  assert.equal(row.payload.schema, 'workspace.owner-decision/v1');
+  assert.equal(row.payload.task_id, 'task-7');
+  assert.equal(row.payload.card_id, 'card-7');
+  assert.equal(row.payload.observed_snapshot, 'snap-7');
+});
+
 test('Kanban transition is durably queued, deduped, and queryable after a new request', async t => {
   const f = await fixture(); t.after(() => f.db.close());
   const body = {
