@@ -1,0 +1,41 @@
+name: update permanent Gravity sandbox
+
+on:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+    paths:
+      - "gravity-permanent.trigger"
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HERENOW_TARGET_SLUG: mighty-yoga-pgph
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Require authenticated here.now secret
+        run: |
+          if [ -z "$HERENOW_API_KEY" ]; then
+            echo "HERENOW_API_KEY is not configured; refusing to create another anonymous site."
+            exit 1
+          fi
+      - name: Validate publisher syntax
+        run: node --check scripts/herenow-publish-sandbox.mjs
+      - name: Update permanent Gravity sandbox
+        run: node scripts/herenow-publish-sandbox.mjs
+      - name: Preserve update result
+        uses: actions/upload-artifact@v4
+        with:
+          name: herenow-gravity-permanent-result
+          path: .sandbox/herenow-result.json
+          if-no-files-found: error
+          retention-days: 1
