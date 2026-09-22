@@ -7,7 +7,7 @@ await fs.mkdir(OUT, { recursive:true });
 
 async function run(name, viewport) {
   const browser = await chromium.launch({ headless:true });
-  const page = await browser.newPage({ viewportSize:viewport });
+  const page = await browser.newPage({ viewport });
   const submitted = [];
 
   await page.route("**/api/workspace-auth", async route => {
