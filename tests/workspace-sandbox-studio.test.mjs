@@ -19,13 +19,14 @@ test("Sandbox Studio is static-first and keeps visual review separate from produ
   assert.match(studio, /workspace-sandbox-review/);
 });
 
-test("ASHWOOD manifest identifies stable sandbox separately from temporary visual candidate", () => {
+test("ASHWOOD manifest promotes the reviewed visual candidate into the owned stable sandbox", () => {
   const ashwood = manifest.products.find((item) => item.product_key === "ashwood");
   assert.ok(ashwood);
   assert.equal(ashwood.stable.slug, "mighty-yoga-pgph");
   assert.equal(ashwood.stable.state, "stable");
-  assert.equal(ashwood.latest_candidate.state, "temporary_candidate");
-  assert.ok(ashwood.latest_candidate.changes.length >= 3);
+  assert.equal(ashwood.latest_candidate, undefined);
+  assert.ok(ashwood.stable.changes.length >= 3);
+  assert.equal(ashwood.stable.version_id, "01M359HV4JJ4JKVWBRM2EXBAKM");
   assert.ok(ashwood.review_items.some((item) => item.id === "mobile"));
   assert.ok(ashwood.review_items.some((item) => item.id === "production-boundary"));
 });
