@@ -164,7 +164,14 @@ function renderTools(view){
   });
 }
 
-function syncDataHero(view){\n  const hero = q("#workspace-view-data-hero");\n  if (!hero) return;\n  hero.hidden = !["work","network"].includes(view);\n  hero.dataset.heroView = view;\n}\n\nfunction renderIntro(view){
+function syncDataHero(view){
+  const hero = q("#workspace-view-data-hero");
+  if (!hero) return;
+  hero.hidden = !["work","network"].includes(view);
+  hero.dataset.heroView = view;
+}
+
+function renderIntro(view){
   const meta = VIEW_META[view] || VIEW_META.today;
   const title = q("#workspace-title");
   const deck = q("#workspace-view-deck");
@@ -173,6 +180,7 @@ function syncDataHero(view){\n  const hero = q("#workspace-view-data-hero");\n  
   if (deck) deck.textContent = meta.deck;
   if (eyebrow) eyebrow.textContent = meta.eyebrow;
   renderTools(view);
+  syncDataHero(view);
 }
 
 function renderUtility(view){
