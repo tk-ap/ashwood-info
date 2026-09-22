@@ -45,6 +45,11 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       fieldBackground: getComputedStyle(document.querySelector(".v3-field")).backgroundColor,
       authoredLayers: document.querySelectorAll(".ashwood-cosmos__authored").length,
       authoredLoaded: Array.from(document.querySelectorAll(".ashwood-cosmos__authored")).every(img => img.complete && img.naturalWidth > 1000),
+      fieldWidth: document.querySelector(".v3-field")?.getBoundingClientRect().width || 0,
+      viewportWidth: innerWidth,
+      hintDisplay: getComputedStyle(document.querySelector(".v3-field__hint")).display,
+      resetDisplay: getComputedStyle(document.querySelector(".v3-field__reset")).display,
+      docLauncherDisplay: document.querySelector(".ashwood-doc-editorial-launcher") ? getComputedStyle(document.querySelector(".ashwood-doc-editorial-launcher")).display : "missing",
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
     };
   });
@@ -57,6 +62,9 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   }
   if (Number(initial.cssOpacity) > 0.05) throw new Error(`${name}: procedural canvas is painting over authored still (${initial.cssOpacity})`);
   if (initial.authoredLayers !== 3 || !initial.authoredLoaded) throw new Error(`${name}: authored HiFi environment did not load as three depth plates`);
+  if (initial.fieldWidth < initial.viewportWidth * 0.98) throw new Error(`${name}: authored environment is not full bleed`);
+  if (initial.hintDisplay !== "none" || initial.resetDisplay !== "none") throw new Error(`${name}: legacy discovery chrome is still visible`);
+  if (initial.docLauncherDisplay !== "none" && initial.docLauncherDisplay !== "missing") throw new Error(`${name}: persistent Doc launcher leaked into V4`);
   if (initial.pointerEvents !== "none") throw new Error(`${name}: canvas intercepted input`);
   if (!initial.canvasInField || initial.heroContainsCanvas) throw new Error(`${name}: Gravity is not isolated to Instinct field`);
   if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);
