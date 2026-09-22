@@ -150,6 +150,31 @@ test('foreign-origin browser command submission is rejected', async t => {
 
 
 
+
+test('sandbox change requests enter the primary Operator thread with version lineage', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const body = {
+    action:'submit_sandbox_change_request',
+    product_key:'ashwood',
+    sandbox_url:'https://mighty-yoga-pgph.here.now/',
+    version_id:'version-1',
+    source_ref:'abc123',
+    change_id:'gravity-instinct',
+    request_text:'Make the black hole clearer on small iPhones.',
+  };
+  const first = await f.call({ method:'POST', owner:true, body });
+  assert.equal(first.statusCode, 202);
+  assert.equal(first.body.thread_id, 'operator:primary');
+
+  const visible = await f.call({ owner:true, query:{ view:'commands' } });
+  const row = visible.body.commands.find(item => item.id === first.body.id);
+  assert.equal(row.command_kind, 'owner_command');
+  assert.equal(row.payload.schema, 'workspace.sandbox-change-request/v1');
+  assert.equal(row.payload.thread_id, 'operator:primary');
+  assert.equal(row.payload.change_id, 'gravity-instinct');
+  assert.match(row.command_text, /do not infer production deployment authority/i);
+});
+
 test('owner decisions are durably queued, deduped, and bound to the observed review card', async t => {
   const f = await fixture(); t.after(() => f.db.close());
   const body = {
