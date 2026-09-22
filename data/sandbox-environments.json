@@ -1,0 +1,97 @@
+{
+  "schema": "ashwood.sandbox-environments/v1",
+  "contract_ref": "agent-os/contracts/v0/sandbox-environment.schema.yaml",
+  "projection": "static",
+  "generated_at": "2026-09-22T19:30:30Z",
+  "note": "Human-facing environment continuity only. Sandbox verification never implies production deployment.",
+  "products": [
+    {
+      "product_key": "ashwood",
+      "label": "ASHWOOD",
+      "repository": "tk-ap/ashwood-info",
+      "production": {
+        "provider": "vercel",
+        "url": "https://ashwood-info.vercel.app/",
+        "state": "configured"
+      },
+      "sandbox": {
+        "provider": "here-now",
+        "connection_ref": "owner:provider:here-now",
+        "lifecycle": "live",
+        "static_primary": true,
+        "url": "https://mighty-yoga-pgph.here.now/",
+        "slug": "mighty-yoga-pgph",
+        "current_version_id": "01M359HV4JJ4JKVWBRM2EXBAKM",
+        "source_ref": "479e51466a9244af3c8a606921232de730df7da4",
+        "verification": {
+          "state": "passed",
+          "evidence_ref": "github-actions:35774173010"
+        }
+      }
+    },
+    {
+      "product_key": "alvira-meos",
+      "label": "ALVIRA",
+      "repository": "tk-ap/ALVIRA",
+      "production": {
+        "provider": "vercel",
+        "url": "https://alviratech.vercel.app/",
+        "state": "configured"
+      },
+      "sandbox": {
+        "provider": "here-now",
+        "connection_ref": "owner:provider:here-now",
+        "lifecycle": "unassigned",
+        "static_primary": true
+      }
+    },
+    {
+      "product_key": "ailhat",
+      "label": "ailhat",
+      "repository": "tk-ap/ailhat",
+      "production": {
+        "provider": "vercel",
+        "url": "https://ailhat.vercel.app/",
+        "state": "configured"
+      },
+      "sandbox": {
+        "provider": "here-now",
+        "connection_ref": "owner:provider:here-now",
+        "lifecycle": "unassigned",
+        "static_primary": true
+      }
+    },
+    {
+      "product_key": "ledgato",
+      "label": "ledgato",
+      "repository": "tk-ap/ledgato",
+      "production": {
+        "provider": "vercel",
+        "url": "https://ledgato.vercel.app/",
+        "state": "configured"
+      },
+      "sandbox": {
+        "provider": "here-now",
+        "connection_ref": "owner:provider:here-now",
+        "lifecycle": "unassigned",
+        "static_primary": true
+      }
+    },
+    {
+      "product_key": "agent-control",
+      "label": "Agent Control",
+      "repository": null,
+      "production": {
+        "provider": "vercel",
+        "url": "https://agent-availability.vercel.app/",
+        "state": "configured"
+      },
+      "sandbox": {
+        "provider": "here-now",
+        "connection_ref": "owner:provider:here-now",
+        "lifecycle": "unassigned",
+        "static_primary": true
+      }
+    }
+  ]
+}
