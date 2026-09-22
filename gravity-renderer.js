@@ -151,9 +151,9 @@
         float lr=length(lp);
 
         float H=.142;
-        float photon=exp(-pow((lr-H*1.10)/.008,2.));
-        float photon2=exp(-pow((lr-H*1.24)/.020,2.));
-        float lensHalo=exp(-pow((lr-H*1.48)/.060,2.));
+        float photon=exp(-pow((lr-H*1.10)/.006,2.));
+        float photon2=exp(-pow((lr-H*1.24)/.014,2.));
+        float lensHalo=exp(-pow((lr-H*1.48)/.045,2.));
 
         /* Inclined accretion flow with turbulent radial texture and Doppler asymmetry. */
         vec2 d=lp*rot(-.11);
@@ -178,8 +178,8 @@
         rearArc*=.45+.55*fbm(vec2(aa*5.+u_time*.055,lr*35.));
         col+=mix(gold,hot,.45)*rearArc*(.35+.22*u_energy);
 
-        col+=hot*photon*(1.15+.32*u_energy);
-        col+=gold*photon2*(.34+.20*u_energy);
+        col+=hot*photon*(1.62+.38*u_energy);
+        col+=gold*photon2*(.48+.22*u_energy);
         col+=green*lensHalo*(.035+.08*u_discovery);
 
         /* Sparse Flux-derived matter shares the exact same velocity field as the accretion flow. */
@@ -194,7 +194,7 @@
         float edgeNoise=(fbm(vec2(aa*3.1,u_time*.012))-.5)*.008;
         float shadow=1.-smoothstep(H*.78+edgeNoise,H*1.01+edgeNoise,lr);
         col*=1.-shadow*.9995;
-        float core=1.-smoothstep(H*.66,H*.79,lr);
+        float core=1.-smoothstep(H*.64,H*.82,lr);
         col=mix(col,vec3(0.),core);
 
         /* Local bloom is asymmetric and restrained. */
