@@ -11,15 +11,16 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, width, height);
 
-      const cx = width * (0.7 + (state.pointer.x - 0.5) * 0.035);
-      const cy = height * (0.43 + (state.pointer.y - 0.5) * 0.025);
-      const radius = Math.min(width, height) * 0.17;
+      const cx = width * (0.5 + (state.pointer.x - 0.5) * 0.028 * state.pointer.active);
+      const cy = height * (0.5 + (state.pointer.y - 0.5) * 0.020 * state.pointer.active);
+      const radius = Math.min(width, height) * 0.145;
 
       const glow = ctx.createRadialGradient(cx, cy, radius * 0.28, cx, cy, radius * 2.9);
-      glow.addColorStop(0, "rgba(0,0,0,0)");
-      glow.addColorStop(0.34, "rgba(0,0,0,.84)");
-      glow.addColorStop(0.43, "rgba(180,135,50,.22)");
-      glow.addColorStop(0.5, "rgba(40,150,120,.12)");
+      glow.addColorStop(0, "rgba(0,0,0,1)");
+      glow.addColorStop(0.31, "rgba(0,0,0,1)");
+      glow.addColorStop(0.37, "rgba(255,224,158,.72)");
+      glow.addColorStop(0.43, "rgba(180,135,50,.30)");
+      glow.addColorStop(0.58, "rgba(40,150,120,.11)");
       glow.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, width, height);
@@ -27,17 +28,23 @@
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(-0.18);
-      ctx.scale(1, 0.26);
-      ctx.strokeStyle = `rgba(180,135,50,${0.20 + state.energy * 0.25})`;
-      ctx.lineWidth = Math.max(1, radius * 0.035);
+      ctx.scale(1, 0.21);
+      ctx.strokeStyle = `rgba(255,218,138,${0.62 + state.energy * 0.24})`;
+      ctx.lineWidth = Math.max(3, radius * 0.085);
       ctx.beginPath();
-      ctx.arc(0, 0, radius * 1.7, 0, Math.PI * 2);
+      ctx.arc(0, 0, radius * 1.82, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
 
-      ctx.fillStyle = "rgba(0,0,0,.94)";
+      ctx.strokeStyle = "rgba(255,238,196,.88)";
+      ctx.lineWidth = Math.max(1.5, radius * 0.025);
       ctx.beginPath();
-      ctx.arc(cx, cy, radius * 0.72, 0, Math.PI * 2);
+      ctx.arc(cx, cy, radius * 1.03, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(0,0,0,1)";
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.82, 0, Math.PI * 2);
       ctx.fill();
     };
 
@@ -118,9 +125,8 @@
         vec2 uv = (frag - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
         float aspect = u_resolution.x / max(u_resolution.y, 1.0);
 
-        vec2 pointerShift = (u_pointer.xy - 0.5) * vec2(0.055 * aspect, 0.045) * u_pointer.z;
-        vec2 center = vec2(0.34 * aspect, 0.05) + pointerShift;
-        vec2 p = uv - center;
+        vec2 pointerShift = (u_pointer.xy - 0.5) * vec2(0.035 * aspect, 0.026) * u_pointer.z;
+        vec2 p = uv - pointerShift;
 
         float r = length(p);
         float angle = atan(p.y, p.x);
@@ -143,15 +149,16 @@
         vec2 warped = p * rot(lens * 0.24 + sin(angle * 3.0 + time) * 0.008);
         float wr = length(warped);
 
-        float horizon = 0.16;
-        float photon = exp(-pow((wr - horizon * 1.22) / 0.022, 2.0));
-        float outerLens = exp(-pow((wr - horizon * 1.62) / 0.065, 2.0));
+        float horizon = 0.145;
+        float photon = exp(-pow((wr - horizon * 1.20) / 0.012, 2.0));
+        float photonHalo = exp(-pow((wr - horizon * 1.31) / 0.032, 2.0));
+        float outerLens = exp(-pow((wr - horizon * 1.70) / 0.075, 2.0));
 
         vec2 discP = warped * rot(-0.16);
-        discP.y *= 4.1;
+        discP.y *= 5.1;
         float discR = length(discP);
         float discMask = smoothstep(0.62, 0.18, discR) * smoothstep(horizon * 0.88, horizon * 1.08, wr);
-        float band = exp(-pow(discP.y / 0.033, 2.0));
+        float band = exp(-pow(discP.y / 0.027, 2.0)) + 0.34 * exp(-pow(discP.y / 0.068, 2.0));
         float texture = 0.50 + 0.50 * noise(vec2(discR * 23.0 - time * 1.8, angle * 2.7));
         float swirl = 0.55 + 0.45 * sin(angle * 5.0 - time * 2.2 + discR * 31.0);
         float accretion = band * discMask * mix(texture, swirl, 0.45);
@@ -159,12 +166,15 @@
         float front = smoothstep(-0.025, 0.05, discP.y);
         vec3 discColor = mix(green, gold, 0.72 + 0.20 * sin(angle + time));
         discColor = mix(discColor, warm, front * 0.28);
-        col += discColor * accretion * (0.34 + 0.72 * u_energy);
-        col += gold * photon * (0.16 + 0.24 * u_energy);
-        col += green * outerLens * (0.035 + 0.07 * u_discovery);
+        col += discColor * accretion * (0.76 + 0.86 * u_energy);
+        col += vec3(1.0,0.86,0.60) * photon * (0.78 + 0.34 * u_energy);
+        col += gold * photonHalo * (0.22 + 0.18 * u_energy);
+        col += green * outerLens * (0.045 + 0.10 * u_discovery);
 
-        float shadow = 1.0 - smoothstep(horizon * 0.72, horizon, wr);
-        col *= 1.0 - shadow * 0.985;
+        float shadow = 1.0 - smoothstep(horizon * 0.76, horizon, wr);
+        col *= 1.0 - shadow * 0.999;
+        float blackCore = 1.0 - smoothstep(horizon * 0.66, horizon * 0.76, wr);
+        col = mix(col, vec3(0.0), blackCore);
 
         float bloom = exp(-r * 4.8) * (0.025 + 0.03 * u_energy);
         col += mix(green, gold, 0.55) * bloom;
@@ -172,11 +182,8 @@
         float vignette = smoothstep(1.15, 0.22, length(uv * vec2(0.86, 1.0)));
         col *= mix(0.34, 1.0, vignette);
 
-        float fadeLeft = smoothstep(-0.74 * aspect, -0.05 * aspect, uv.x);
-        col *= mix(0.28, 1.0, fadeLeft);
-
-        float scrollDim = 1.0 - smoothstep(0.12, 0.42, u_scroll) * 0.44;
-        col *= scrollDim;
+        float scrollLift = 0.94 + 0.06 * smoothstep(0.12, 0.56, u_scroll);
+        col *= scrollLift;
 
         gl_FragColor = vec4(col, 0.96);
       }
