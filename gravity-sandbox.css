@@ -339,3 +339,88 @@
 @media(prefers-reduced-motion:reduce){
   .v3-hotspot{--orbit-x:0px!important;--orbit-y:0px!important}
 }
+
+
+/* V4.1 / DOC ANOMALY + gravitational material
+   Doc is not a resident object or assistant widget. Public Doc is inferred through
+   impossible behavior in the field: absent -> sensed -> glimpsed -> understood. */
+.v3-field{overflow:hidden}
+.v3-field::marker{display:none}
+
+/* De-emphasize the six bodies as UI controls. Labels resolve only through discovery. */
+.v3-hotspot{background:transparent!important;border:0!important}
+.v3-hotspot span{opacity:.08!important;transition:opacity .55s ease,letter-spacing .55s ease}
+.v3-hotspot:hover span,.v3-hotspot:focus-visible span,.v3-hotspot.is-near span{opacity:.38!important}
+.v3-hotspot.is-found span{opacity:.78!important;letter-spacing:.22em}
+
+/* Bodies are mostly shadow and atmosphere rather than gold-ring buttons. */
+.v3-hotspot::before{
+  background:
+    radial-gradient(circle at 27% 24%,rgba(255,241,207,.36) 0 2%,transparent 8%),
+    radial-gradient(circle at 31% 29%,var(--body-light) 0 4%,var(--body-mid) 20%,var(--body-dark) 61%,#010201 100%)!important;
+  box-shadow:
+    inset -15px -12px 24px rgba(0,0,0,.86),
+    inset 3px 2px 8px rgba(255,226,164,.05),
+    -5px -4px 13px rgba(222,194,130,.06),
+    0 0 24px var(--body-atmosphere)!important;
+}
+.v3-hotspot::after{opacity:.13}
+.v3-hotspot--friction::after{opacity:.07}
+.v3-hotspot--systems::after{opacity:.25}
+.v3-hotspot--adaptation::after{opacity:.09}
+.v3-hotspot--synthesis::after{opacity:.17}
+
+/* Doc trace: no bird asset, face, mascot or persistent control. The trace is generated
+   from light/lensing language and only becomes perceptible after field interaction. */
+.v3-field__ambient{overflow:hidden}
+.v3-field__ambient::marker{display:none}
+.v3-field.is-awake .v3-field__ambient{
+  background:
+    radial-gradient(circle at var(--gravity-pointer-x) var(--gravity-pointer-y),rgba(255,255,255,.024),transparent 14%),
+    radial-gradient(ellipse at 17% 76%,rgba(72,166,121,.055),transparent 7%),
+    radial-gradient(circle at 50% 50%,transparent 0 14%,rgba(180,135,50,.04) 21%,transparent 36%)!important;
+}
+.v3-field.is-awake .v3-field__ambient::after{
+  border-style:solid;
+  border-color:rgba(89,159,126,.06);
+  filter:blur(.2px);
+}
+
+/* One brief iridescent discontinuity: read as optical anomaly, never as a literal bird. */
+.v3-field .ashwood-doc-anomaly{
+  position:absolute;
+  z-index:3;
+  left:11%;
+  top:72%;
+  width:clamp(38px,5vw,62px);
+  height:2px;
+  opacity:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(81,164,123,.48),rgba(202,158,85,.34),transparent);
+  box-shadow:0 0 12px rgba(81,164,123,.12);
+  transform:rotate(-19deg) scaleX(.55);
+  transform-origin:center;
+  transition:opacity .8s ease,transform 1.2s cubic-bezier(.2,.75,.25,1);
+}
+.v3-field.is-awake .ashwood-doc-anomaly.is-glimpsed{
+  opacity:.48;
+  transform:rotate(-7deg) translate3d(22px,-13px,0) scaleX(1);
+}
+.v3-field .ashwood-doc-anomaly::after{
+  content:"";
+  position:absolute;
+  right:8%;
+  top:-3px;
+  width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle,rgba(215,184,111,.42),rgba(77,161,122,.13) 45%,transparent 72%);
+  filter:blur(.35px);
+}
+
+@media(max-width:620px){
+  .v3-hotspot span{opacity:.06!important}
+  .v3-hotspot.is-found span{opacity:.68!important}
+  .v3-field .ashwood-doc-anomaly{left:8%;top:76%;width:36px}
+}
+@media(prefers-reduced-motion:reduce){
+  .v3-field .ashwood-doc-anomaly{display:none}
+}
