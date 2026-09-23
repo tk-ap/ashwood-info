@@ -215,7 +215,7 @@
         float fluxB=fluxFilament(fp*rot(.38),localTime,.73);
         float flux=(fluxA*.72+fluxB*.42)*smoothstep(.72,.18,ar);
         float grains=step(.91,noise(floor((fp+flow*2.)*72.)))*flux;
-        col+=mix(green*.62,hot,.38+doppler*.25)*(flux*.065+grains*.16)*(.55+.45*u_energy);
+        col+=mix(green*.62,hot,.38+beaming*.25)*(flux*.065+grains*.16)*(.55+.45*u_energy);
 
         /* Irregular darkness around the horizon avoids the portal-ring look. */
         float edgeNoise=(fbm(vec2(aa*3.1,localTime*.012))-.5)*.005;
