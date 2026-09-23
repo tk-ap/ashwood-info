@@ -1,6 +1,6 @@
 {
   "schema": "ashwood.sandbox-review-manifest/v1",
-  "generated_at": "2026-09-22T19:30:30Z",
+  "generated_at": "2026-09-23T19:15:00Z",
   "products": [
     {
       "product_key": "ashwood",
@@ -70,6 +70,110 @@
           "id": "production-boundary",
           "label": "Sandbox stays distinct from production",
           "detail": "A sandbox PASS does not imply production deployment or production verification."
+        }
+      ]
+    },
+    {
+      "product_key": "ailhat",
+      "label": "ailhat",
+      "provider": "here-now",
+      "stable": {
+        "url": "https://wintry-truffle-pf6f.here.now/",
+        "slug": "wintry-truffle-pf6f",
+        "version_id": "01M37Q51N93Z6E4Z95C4A8BNMF",
+        "source_ref": "710f523dc48381b1a33312ae5232aa0c4e8fbb09",
+        "state": "stable",
+        "note": "Static UI only: database, sign-in and API features are unavailable and not simulated. Built from review branch sandbox/review (main plus PRs #72, #73, #56). PR #7 was left out: it conflicts with the current navigation and needs a rebase.",
+        "changes": [
+          {
+            "id": "portfolio-reorder",
+            "label": "Portfolio grid reorders across the whole grid",
+            "scope": "Portfolio",
+            "detail": "PR #72: reorder across the whole grid, remember the order.",
+            "verification": "Included and prerendered. Dragging and saved order were not exercised in a browser; saving needs the backend.",
+            "source_ref": "710f523dc48381b1a33312ae5232aa0c4e8fbb09"
+          },
+          {
+            "id": "owner-sandbox-environments",
+            "label": "Owner view projects Workspace sandbox environments",
+            "scope": "Owner",
+            "detail": "PR #73: the owner page reads the Workspace sandbox environment projection.",
+            "verification": "Included and prerendered. The projection needs the backend, so the static sandbox shows the unavailable state.",
+            "source_ref": "710f523dc48381b1a33312ae5232aa0c4e8fbb09"
+          },
+          {
+            "id": "market-signal-routing",
+            "label": "Market signal: model routing note",
+            "scope": "Docs and data",
+            "detail": "PR #56: adds a market-signal doc and data file. No visible UI change.",
+            "verification": "Merged cleanly; docs and data only.",
+            "source_ref": "710f523dc48381b1a33312ae5232aa0c4e8fbb09"
+          }
+        ]
+      },
+      "review_items": [
+        {
+          "id": "portfolio-reorder",
+          "label": "Reordering feels right",
+          "detail": "Drag a card across the grid. Saving the order will not work here (no backend), so judge the interaction only."
+        },
+        {
+          "id": "owner-environments",
+          "label": "Owner page lists environments sensibly",
+          "detail": "Confirm the layout and the empty or unavailable state read clearly."
+        },
+        {
+          "id": "pr7-disposition",
+          "label": "Decide on PR #7 (Capacity and Allocation)",
+          "detail": "Stale since Aug 24 and conflicts with today's navigation. Rebase it, redesign it, or close it."
+        }
+      ]
+    },
+    {
+      "product_key": "ledgato",
+      "label": "LEDGATo",
+      "provider": "here-now",
+      "stable": {
+        "url": "https://karma-plover-ntkb.here.now/",
+        "slug": "karma-plover-ntkb",
+        "version_id": "01M37P6JRW4708PCFPGP0GZ25A",
+        "source_ref": "43ede56446b09c5de95fe068d195951be95343f0",
+        "state": "stable",
+        "note": "Static UI only. The open ready PRs (#44, #45) change the Python engine and docs, not the web app, so this UI is identical to main. Their evidence is the engine test run below.",
+        "changes": [
+          {
+            "id": "adversarial-campaign",
+            "label": "Adversarial campaign enforcement",
+            "scope": "Engine",
+            "detail": "PR #44: orthogonal trust-domain layer for adversarial campaigns.",
+            "verification": "Engine test suite on the combined branch sandbox/review: 222 passed, 4 skipped. No UI change.",
+            "source_ref": "7d52b2be415b572fb12606b311634b9b6a8baca7"
+          },
+          {
+            "id": "pilot-docs",
+            "label": "Pilot GitHub enforcement offer and readiness audit",
+            "scope": "Docs",
+            "detail": "PR #45: docs for issues #31 and #32.",
+            "verification": "Docs only; merged cleanly with #44.",
+            "source_ref": "7d52b2be415b572fb12606b311634b9b6a8baca7"
+          }
+        ]
+      },
+      "review_items": [
+        {
+          "id": "disposition-44-45",
+          "label": "Disposition of PRs #44 and #45",
+          "detail": "The board lists both as orphaned. They merge cleanly and the engine tests pass; decide whether they go to main."
+        },
+        {
+          "id": "stale-prs",
+          "label": "Stale PRs #11, #7, #1",
+          "detail": "#11 conflicts and fails CI; #7 fails CI; #1 conflicts. Left out of the review branch."
+        },
+        {
+          "id": "redesign-42",
+          "label": "Redesign issue #42 has no PR yet",
+          "detail": "The only UI item on the board for LEDGATo is the immersive control-plane redesign; nothing to review yet."
         }
       ]
     }

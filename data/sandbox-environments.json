@@ -70,12 +70,14 @@
         "static_primary": true,
         "url": "https://wintry-truffle-pf6f.here.now/",
         "slug": "wintry-truffle-pf6f",
-        "current_version_id": "01M37P8NE53VDRFK3A1D4DXWZB",
-        "source_ref": "4a2b5f1294150c11d5b2dd0cf7c62116225c766f",
+        "current_version_id": "01M37Q51N93Z6E4Z95C4A8BNMF",
+        "source_ref": "710f523dc48381b1a33312ae5232aa0c4e8fbb09",
         "verification": {
           "state": "pending"
         },
-        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable."
+        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable.",
+        "previous_version_id": "01M37P8NE53VDRFK3A1D4DXWZB",
+        "source_note": "Source is branch sandbox/review (main plus PRs #72, #73, #56), not main."
       }
     },
     {
@@ -95,11 +97,12 @@
         "url": "https://karma-plover-ntkb.here.now/",
         "slug": "karma-plover-ntkb",
         "current_version_id": "01M37P6JRW4708PCFPGP0GZ25A",
-        "source_ref": "847e120962aed265ddae51f4767aed8f8f7291c0",
+        "source_ref": "43ede56446b09c5de95fe068d195951be95343f0",
         "verification": {
           "state": "pending"
         },
-        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable."
+        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable.",
+        "source_note": "Web UI is unchanged by the review branch (sandbox/review adds engine and docs only)."
       }
     },
     {
