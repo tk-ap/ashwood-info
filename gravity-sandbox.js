@@ -29,6 +29,15 @@
   const evidenceStage = document.querySelector("#evidence");
   const depthStage = document.querySelector("#depth");
 
+  const getInstinctMotionStrength = (zone = document.body.dataset.cosmosZone) => {
+    if (reduced || zone !== "instinct" || !thinkingStage) return 0;
+    const rect = thinkingStage.getBoundingClientRect();
+    const viewportCenter = innerHeight * 0.5;
+    const sectionCenter = rect.top + rect.height * 0.5;
+    const distance = Math.abs(sectionCenter - viewportCenter);
+    return clamp(1 - distance / Math.max(rect.height * 0.62, innerHeight * 0.75));
+  };
+
   const setCamera = (progress, zone) => {
     if (!siteCosmos) return;
     const p = clamp(progress);
@@ -36,7 +45,7 @@
     const evidenceDrift = zone === "evidence" ? 1 : 0;
     const depthDrift = zone === "depth" ? 1 : 0;
 
-    // V4.10 restraint: depth should register subconsciously, never as a parallax demo.
+    // V4.12: camera remains restrained; physical motion belongs to the Instinct renderer.
     const baseX = (-1.5 * p) + (evidenceDrift * -0.8) + (depthDrift * -1.5);
     const baseY = (-3 * p) + (instinctPull * 1.2) + (depthDrift * -1);
     const gravityX = (-2.8 * p) + (evidenceDrift * -1.2) + (depthDrift * -2);
@@ -93,6 +102,8 @@
     document.body.dataset.cosmosZone = zone;
     siteCosmos.dataset.phase = phase;
     siteCosmos.dataset.zone = zone;
+    renderer.setZoneActive(zone === "instinct" ? 1 : 0);
+    renderer.setMotionStrength(getInstinctMotionStrength(zone));
     setCamera(progress, zone);
   };
   syncCosmosPhase();
