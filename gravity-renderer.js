@@ -54,7 +54,8 @@
   window.createAshwoodGravityRenderer = function createAshwoodGravityRenderer({
     canvas,
     reducedMotion = false,
-    dprCap = 1.5
+    dprCap = 1.5,
+    imageSrc = "/assets/v4/ashwood-black-hole-environment.png?v=20260922-lens2"
   } = {}) {
     if (!canvas) throw new Error("Gravity renderer requires a canvas");
 
@@ -71,6 +72,8 @@
       chapter: 0,
       motionStrength: 0,
       zoneActive: 0,
+      imageAspect: 1.5,
+      textureReady: 0,
       start: performance.now(),
       raf: 0
     };
@@ -79,6 +82,7 @@
     let fallback = null;
     let program = null;
     let buffer = null;
+    let texture = null;
     let loc = {};
     let observer = null;
 
@@ -100,6 +104,9 @@
       uniform float u_chapter;
       uniform float u_motion_strength;
       uniform float u_zone_active;
+      uniform sampler2D u_image;
+      uniform float u_image_aspect;
+      uniform float u_texture_ready;
 
       #define PI 3.14159265359
       float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
@@ -137,7 +144,7 @@
         /* V4.12: the renderer evolves only during the Instinct encounter.
            Scroll proximity controls strength; reduced-motion freezes u_time. */
         float motionGate=clamp(u_zone_active*u_motion_strength,0.0,1.0);
-        float localTime=u_time*(.18+.10*u_energy)*motionGate;
+        float localTime=u_time*(.42+.12*u_energy)*motionGate;
         float t=localTime;
         vec2 flow=gravityFlow(p,localTime,u_energy)*motionGate;
         vec2 advected=p-flow*(.58+.42*u_energy);
@@ -223,7 +230,35 @@
         float vignette=smoothstep(1.12,.18,length(uv*vec2(.82,1.)));
         col*=mix(.24,1.,vignette);
         col*=.93+.07*smoothstep(.12,.56,u_scroll);
-        gl_FragColor=vec4(col,.98);
+
+        /* V4.13 visibility correction:
+           animate the authored image itself, not merely a procedural glow laid over it.
+           Differential rotation shears the source texture around the horizon while the
+           true shadow remains untouched. */
+        float authoredInner=smoothstep(H*.98,H*1.30,r);
+        float authoredOuter=1.-smoothstep(.34,.56,r);
+        float authoredMask=authoredInner*authoredOuter*motionGate;
+        float differentialRotation=(.045/max(r,.16))*localTime*authoredMask;
+        float shearWave=sin(aa*5.0-r*29.0+localTime*.74)*.0045*authoredMask;
+        vec2 tangent=normalize(vec2(-p.y,p.x)+vec2(.00001));
+        vec2 warpedP=rot(-differentialRotation)*p+tangent*shearWave;
+
+        vec2 warpedScreen=.5+warpedP*(min(u_resolution.x,u_resolution.y)/u_resolution.xy);
+        vec2 texUv=warpedScreen-.5;
+        float viewAspect=u_resolution.x/max(u_resolution.y,1.);
+        if(viewAspect>u_image_aspect){
+          texUv.y*=u_image_aspect/viewAspect;
+        }else{
+          texUv.x*=viewAspect/u_image_aspect;
+        }
+        texUv+=.5;
+        vec3 authored=texture2D(u_image,clamp(texUv,vec2(.001),vec2(.999))).rgb;
+
+        float authoredAlpha=authoredMask*u_texture_ready*(.72+.20*beaming);
+        vec3 authoredLit=authored+col*(.12+.10*beaming);
+        vec3 finalColor=mix(col,authoredLit,authoredAlpha);
+        float finalAlpha=max(.10*motionGate,authoredAlpha);
+        gl_FragColor=vec4(finalColor,finalAlpha);
       }
     `;
 
@@ -276,7 +311,33 @@
       loc.chapter = gl.getUniformLocation(program, "u_chapter");
       loc.motionStrength = gl.getUniformLocation(program, "u_motion_strength");
       loc.zoneActive = gl.getUniformLocation(program, "u_zone_active");
+      loc.image = gl.getUniformLocation(program, "u_image");
+      loc.imageAspect = gl.getUniformLocation(program, "u_image_aspect");
+      loc.textureReady = gl.getUniformLocation(program, "u_texture_ready");
       return true;
+    };
+
+    const loadAuthoredTexture = () => {
+      if (!gl || !imageSrc) return;
+      const image = new Image();
+      image.decoding = "async";
+      image.onload = () => {
+        if (!gl || state.disposed) return;
+        if (texture) gl.deleteTexture(texture);
+        texture = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        state.imageAspect = image.naturalWidth / Math.max(image.naturalHeight, 1);
+        state.textureReady = 1;
+      };
+      image.onerror = () => { state.textureReady = 0; };
+      image.src = imageSrc;
     };
 
     const resize = () => {
@@ -313,6 +374,13 @@
         gl.uniform1f(loc.chapter, state.chapter);
         gl.uniform1f(loc.motionStrength, state.motionStrength);
         gl.uniform1f(loc.zoneActive, state.zoneActive);
+        gl.uniform1f(loc.imageAspect, state.imageAspect);
+        gl.uniform1f(loc.textureReady, state.textureReady);
+        if (texture) {
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+        }
+        gl.uniform1i(loc.image, 0);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       } else if (fallback) {
         fallback.draw();
@@ -343,6 +411,7 @@
     canvas.addEventListener("webglcontextrestored", () => {
       try {
         initWebGL();
+        loadAuthoredTexture();
         start();
       } catch (_) {
         gl = null;
@@ -359,6 +428,7 @@
 
     try {
       if (!initWebGL()) fallback = create2DFallback(canvas, state);
+      else loadAuthoredTexture();
     } catch (error) {
       console.warn("[ASHWOOD / GRAVITY] WebGL unavailable; using composed fallback.", error);
       gl = null;
@@ -409,6 +479,7 @@
         if (gl) {
           if (buffer) gl.deleteBuffer(buffer);
           if (program) gl.deleteProgram(program);
+          if (texture) gl.deleteTexture(texture);
         }
       }
     };
