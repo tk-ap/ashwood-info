@@ -1,8 +1,10 @@
 {
   "private": true,
   "dependencies": {
+    "@junhoyeo/blackhole": "^1.0.2",
     "@neondatabase/serverless": "^1.0.1",
-    "@vercel/blob": "^2.8.0"
+    "@vercel/blob": "^2.8.0",
+    "three": "^0.180.0"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8"
