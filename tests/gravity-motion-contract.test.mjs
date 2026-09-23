@@ -14,7 +14,8 @@ test("gravity shader has no undefined Doppler reference", () => {
 });
 
 test("mobile hero animates before Instinct scroll, respecting reduced motion", () => {
-  assert.match(runtime, /if \(reduced\) return 0;/);
+  assert.match(runtime, /const reduced = matchMedia/);
+  assert.match(runtime, /const motionStrength = reduced \? 0/);
   assert.match(runtime, /heroStrength/);
   assert.match(runtime, /instinctStrength/);
   assert.match(runtime, /--gravity-scene-opacity/);

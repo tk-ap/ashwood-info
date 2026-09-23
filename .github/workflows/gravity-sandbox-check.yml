@@ -31,6 +31,14 @@ jobs:
           done
           cat /tmp/gravity-http.log
           exit 1
+      - name: Enforce scene-mounting contract
+        run: node --test tests/gravity-motion-contract.test.mjs
+      - name: Enforce integrated Workspace preview boundary
+        run: |
+          node --test tests/workspace-ops-pulse.test.mjs
+          node --check workspace/ops-pulse.mjs
+          curl -fsS http://127.0.0.1:4173/workspace-preview/ | grep -q "Design preview only"
+          node --input-type=module -e "import fs from 'node:fs'; const s=fs.readFileSync('scripts/herenow-publish-sandbox.mjs','utf8').split('const publicDirs')[1].split('const rootExtensions')[0]; if (!s.includes('workspace-preview') || /[\"\']workspace[\"\']/.test(s)) process.exit(1)"
       - name: Exercise Gravity renderer
         run: node scripts/gravity-sandbox-check.mjs
       - name: Preserve proof screenshots

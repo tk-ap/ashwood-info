@@ -84,6 +84,7 @@
           <a href="/dispatch/">Dispatch</a>
           <a href="/ai-from-zero/">AI from Zero</a>
           <a href="/#thinking">The instinct</a>
+          <a href="/workspace-preview/" rel="nofollow">Workspace UI preview</a>
         </div>
         <a class="v3-global-nav__private" href="${workspaceHref}" rel="nofollow" aria-label="Private ASHWOOD workspace">workspace ↗</a>
       </div>

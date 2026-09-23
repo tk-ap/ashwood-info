@@ -26,6 +26,7 @@ const publicDirs = new Set([
   "ai-from-zero",
   "connect",
   "partners",
+  "workspace-preview", // design-only and static; never publish /workspace or /api
   "data"
 ]);
 
