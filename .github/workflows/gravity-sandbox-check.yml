@@ -21,7 +21,7 @@ jobs:
       - name: Install browser tooling
         run: |
           npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
       - name: Start static sandbox server
         run: |
           npx -y http-server . -p 4173 -c-1 > /tmp/gravity-http.log 2>&1 &
