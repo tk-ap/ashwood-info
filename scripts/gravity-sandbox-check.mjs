@@ -23,7 +23,10 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       zoneUniform: text.includes("u_zone_active"),
       photonRing: text.includes("photonRing"),
       beaming: text.includes("beaming"),
-      diskBand: text.includes("diskBand")
+      diskBand: text.includes("diskBand"),
+      authoredTexture: text.includes("sampler2D u_image"),
+      authoredWarp: text.includes("differentialRotation"),
+      textureReady: text.includes("u_texture_ready")
     };
   });
   if (!source.sharedFlow || !source.fluxFilament || !source.fluxMatter) {
@@ -34,6 +37,9 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   }
   if (!source.photonRing || !source.beaming || !source.diskBand) {
     throw new Error(`${name}: NASA-informed accretion structures are missing`);
+  }
+  if (!source.authoredTexture || !source.authoredWarp || !source.textureReady) {
+    throw new Error(`${name}: authored-image motion path is missing`);
   }
 
   const initial = await page.evaluate(() => {
@@ -116,8 +122,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (after.cosmosPhase !== "instinct" || after.cosmosZone !== "instinct") {
     throw new Error(`${name}: Instinct did not become the closest-encounter zone (${after.cosmosPhase}/${after.cosmosZone})`);
   }
-  if (after.canvasOpacity < 0.08 || after.canvasOpacity > 0.35) {
-    throw new Error(`${name}: localized motion overlay is outside restraint bounds (${after.canvasOpacity})`);
+  if (after.canvasOpacity < (reducedMotion === "reduce" ? 0.65 : 0.90) || after.canvasOpacity > 1.0) {
+    throw new Error(`${name}: authored motion layer is not visibly active (${after.canvasOpacity})`);
   }
   if (pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join(" | ")}`);
 
