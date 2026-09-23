@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - ops/herenow-gravity-sandbox
-    paths:
-      - "index.html"
-      - "gravity-*.js"
-      - "gravity-*.css"
-      - "scripts/gravity-sandbox-check.mjs"
-      - ".github/workflows/gravity-sandbox-check.yml"
   workflow_dispatch:
 
 permissions:
@@ -47,3 +41,37 @@ jobs:
           path: gravity-*.png
           if-no-files-found: ignore
           retention-days: 7
+
+  deploy-herenow:
+    needs: verify
+    if: ${{ needs.verify.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HERENOW_TARGET_SLUG: mighty-yoga-pgph
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Require authenticated here.now secret
+        run: |
+          if [ -z "$HERENOW_API_KEY" ]; then
+            echo "HERENOW_API_KEY status: NOT SET"
+            exit 1
+          fi
+          echo "HERENOW_API_KEY status: SET"
+      - name: Validate publisher syntax
+        run: node --check scripts/herenow-publish-sandbox.mjs
+      - name: Publish verified sandbox to here.now
+        run: node scripts/herenow-publish-sandbox.mjs
+      - name: Preserve publish result
+        uses: actions/upload-artifact@v4
+        with:
+          name: herenow-gravity-permanent-result
+          path: .sandbox/herenow-result.json
+          if-no-files-found: error
+          retention-days: 1
