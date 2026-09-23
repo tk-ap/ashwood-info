@@ -6,7 +6,13 @@ export function normalizeMarket(m){
 }
 export async function loadMarkets(fetcher=fetch){
  const url=API+'/markets?series_ticker=KXBTC15M&status=open&limit=30';
- const response=await fetcher(url,{headers:{Accept:'application/json'},cache:'no-store'});
+ let response;
+ try { response=await fetcher(url,{headers:{Accept:'application/json'},cache:'no-store'}); }
+ catch (error) {
+   // here.now proxy is available only after publishing an authenticated site.
+   // A direct CORS/network failure may be recovered by same-origin read-only proxy.
+   response=await fetcher('/api/kalshi-markets?series_ticker=KXBTC15M&status=open&limit=30',{headers:{Accept:'application/json'},cache:'no-store'});
+ }
  if(!response.ok)throw new Error('Kalshi market feed unavailable ('+response.status+')');
  const data=await response.json();
  if(!Array.isArray(data.markets))throw new Error('Unexpected Kalshi response');
