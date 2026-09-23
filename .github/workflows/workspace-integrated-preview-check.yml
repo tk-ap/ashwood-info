@@ -1,0 +1,30 @@
+name: Integrated Workspace preview contract
+on:
+  pull_request:
+    paths:
+      - "workspace/ops-pulse*"
+      - "workspace/index.html"
+      - "workspace-preview/**"
+      - "tests/workspace-ops-pulse.test.mjs"
+      - ".github/workflows/workspace-integrated-preview-check.yml"
+permissions:
+  contents: read
+jobs:
+  preview-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify operational projection semantics
+        run: |
+          node --test tests/workspace-ops-pulse.test.mjs
+          node --check workspace/ops-pulse.mjs
+      - name: Verify UI routes and public boundary
+        run: |
+          test -f workspace-preview/index.html
+          grep -q "Design preview only" workspace-preview/index.html
+          grep -q "ops-pulse.mjs" workspace/index.html
+          node --input-type=module -e 'import fs from "node:fs"; const s=fs.readFileSync("workspace-preview/index.html","utf8"); if (s.includes("/api/workspace-") || s.includes("HERENOW_API_KEY")) process.exit(1);'
