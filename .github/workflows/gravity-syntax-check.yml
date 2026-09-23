@@ -5,6 +5,8 @@ on:
     paths:
       - "gravity-renderer.js"
       - "gravity-sandbox.js"
+      - "gravity-physical.js"
+      - "tests/gravity-physical.test.mjs"
       - "scripts/herenow-publish-sandbox.mjs"
       - ".github/workflows/gravity-syntax-check.yml"
   workflow_dispatch:
@@ -21,4 +23,6 @@ jobs:
       - run: |
           node --check gravity-renderer.js
           node --check gravity-sandbox.js
+          node --check gravity-physical.js
+          node --test tests/gravity-physical.test.mjs
           node --check scripts/herenow-publish-sandbox.mjs
