@@ -128,8 +128,8 @@
         vec2 p=uv-shift;
         float r=length(p);
         float a=atan(p.y,p.x);
-        /* V4.4: reference-first still composition. Motion/Flux is deliberately gated off. */
-        float motionGate=0.0;
+        /* V4.11: localized physical motion is active only for the Instinct renderer. */
+        float motionGate=1.0;
         float t=u_time*(.08+.08*u_energy)*motionGate;
         vec2 flow=gravityFlow(p,u_time*motionGate,u_energy)*motionGate;
         vec2 advected=p-flow*(.58+.42*u_energy);
