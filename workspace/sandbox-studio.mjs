@@ -62,9 +62,14 @@ async function ensureAuth() {
 }
 
 function versionsFor(item) {
+  // Competing design directions published under sub-paths of the same stable site.
+  const variants = (Array.isArray(item.variants) ? item.variants : []).map((variant) => ({
+    ...variant, key:`variant-${variant.id}`, label:`Variant · ${variant.label}`,
+  }));
   return [
     item.stable ? {...item.stable, key:"stable", label:"Stable sandbox"} : null,
     item.latest_candidate ? {...item.latest_candidate, key:"candidate", label:"Latest candidate"} : null,
+    ...variants,
   ].filter(Boolean);
 }
 

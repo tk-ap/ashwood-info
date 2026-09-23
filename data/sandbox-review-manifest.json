@@ -1,6 +1,6 @@
 {
   "schema": "ashwood.sandbox-review-manifest/v1",
-  "generated_at": "2026-09-23T19:15:00Z",
+  "generated_at": "2026-09-23T19:45:00Z",
   "products": [
     {
       "product_key": "ashwood",
@@ -174,6 +174,136 @@
           "id": "redesign-42",
           "label": "Redesign issue #42 has no PR yet",
           "detail": "The only UI item on the board for LEDGATo is the immersive control-plane redesign; nothing to review yet."
+        }
+      ]
+    },
+    {
+      "product_key": "alvira-meos",
+      "label": "ALVIRA",
+      "provider": "here-now",
+      "stable": {
+        "url": "https://mighty-ether-p6cn.here.now/",
+        "slug": "mighty-ether-p6cn",
+        "version_id": "01M37SP3A2PB1NY2A43FJFG577",
+        "source_ref": "0b719f4ee2acad86a12f9138dbd61784f7d902e2",
+        "state": "stable",
+        "note": "Static UI only: sign-in, database, payments and API features are unavailable and not simulated (backend calls answer 503). Base is main plus PRs #158 and #163; each competing design direction is a variant of this site.",
+        "changes": [
+          {
+            "id": "stripe-env-prices",
+            "label": "Stripe price IDs read from environment",
+            "scope": "Checkout",
+            "detail": "PR #158: makes Stripe price IDs env-configurable so checkout can be verified.",
+            "verification": "Merged cleanly. Checkout does nothing in the static sandbox.",
+            "source_ref": "0b719f4ee2acad86a12f9138dbd61784f7d902e2"
+          },
+          {
+            "id": "guest-first-funnel",
+            "label": "Guest-first demo funnel",
+            "scope": "Homepage and funnel",
+            "detail": "PR #163: launch gate for a guest-first demo funnel.",
+            "verification": "Merged cleanly; base site renders in a browser.",
+            "source_ref": "0b719f4ee2acad86a12f9138dbd61784f7d902e2"
+          }
+        ]
+      },
+      "variants": [
+        {
+          "id": "dossier",
+          "label": "Dossier rename",
+          "url": "https://mighty-ether-p6cn.here.now/variants/dossier/",
+          "slug": "mighty-ether-p6cn",
+          "version_id": "01M37SP3A2PB1NY2A43FJFG577",
+          "source_ref": "54d4b9e7c7f18936b279bf8bee3d07376b64079d",
+          "state": "variant",
+          "note": "PR #178 on the base: Dossier as the canonical ALVIRA name (48 files). Merged cleanly.",
+          "changes": [
+            {
+              "id": "dossier-rename",
+              "label": "Dossier is the canonical name",
+              "scope": "Site-wide",
+              "detail": "PR #178.",
+              "verification": "Renders in a browser; internal links stay in the variant.",
+              "source_ref": "54d4b9e7c7f18936b279bf8bee3d07376b64079d"
+            }
+          ]
+        },
+        {
+          "id": "context-portability",
+          "label": "Context portability",
+          "url": "https://mighty-ether-p6cn.here.now/variants/context-portability/",
+          "slug": "mighty-ether-p6cn",
+          "version_id": "01M37SP3A2PB1NY2A43FJFG577",
+          "source_ref": "7d8dc9029499b458f866e6485d343c38afbdb5f7",
+          "state": "variant",
+          "note": "PR #175 on the base: homepage repositioned around context portability. Conflict in the homepage resolved in favour of the PR, so main's one-line claim qualifier is not carried.",
+          "changes": [
+            {
+              "id": "reposition-homepage",
+              "label": "Homepage repositioned around context portability",
+              "scope": "Homepage",
+              "detail": "PR #175.",
+              "verification": "Renders in a browser. Check claim wording: main's qualifier sentence is not in this copy.",
+              "source_ref": "7d8dc9029499b458f866e6485d343c38afbdb5f7"
+            }
+          ]
+        },
+        {
+          "id": "interview-shell",
+          "label": "Interview shell",
+          "url": "https://mighty-ether-p6cn.here.now/variants/interview-shell/",
+          "slug": "mighty-ether-p6cn",
+          "version_id": "01M37SP3A2PB1NY2A43FJFG577",
+          "source_ref": "d9633ed04f88e99169af67364df97c6a4bbd1e5c",
+          "state": "variant",
+          "note": "PR #177 over the interview lab (#168): an immersive interview prototype. 38 files; conflicts resolved in favour of the PR, including its homepage rewrite.",
+          "changes": [
+            {
+              "id": "immersive-interview",
+              "label": "Immersive interview prototype",
+              "scope": "Interview and homepage",
+              "detail": "PR #177 (stacked on #168).",
+              "verification": "Renders in a browser. The interview itself needs the backend and is unavailable here.",
+              "source_ref": "d9633ed04f88e99169af67364df97c6a4bbd1e5c"
+            }
+          ]
+        },
+        {
+          "id": "connect-loop",
+          "label": "Connect loop",
+          "url": "https://mighty-ether-p6cn.here.now/variants/connect-loop/",
+          "slug": "mighty-ether-p6cn",
+          "version_id": "01M37SP3A2PB1NY2A43FJFG577",
+          "source_ref": "0a337792371e62c107f4d062e6b5d1d9c714dfe4",
+          "state": "variant",
+          "note": "PRs #170 and #176 on the base: Connect as the post-interview loop with governed write-back proposals. One copy conflict resolved by hand, keeping main's caveat that the destination still has to retrieve and incorporate the Context.",
+          "changes": [
+            {
+              "id": "connect-write-back",
+              "label": "Connect loop with write-back proposals",
+              "scope": "Bridge",
+              "detail": "PRs #170 and #176.",
+              "verification": "Renders in a browser. Write-back needs the backend and is unavailable here.",
+              "source_ref": "0a337792371e62c107f4d062e6b5d1d9c714dfe4"
+            }
+          ]
+        }
+      ],
+      "review_items": [
+        {
+          "id": "pick-direction",
+          "label": "Choose a direction",
+          "detail": "The four variants compete: Dossier rename, Context portability, Interview shell, Connect loop. Compare them from the version selector and decide which merge and in what order."
+        },
+        {
+          "id": "claim-wording",
+          "label": "Check portability claim wording",
+          "detail": "The Context portability variant does not carry main's one-line qualifier about whether a destination incorporates the Context."
+        },
+        {
+          "id": "left-out",
+          "label": "Left out of every variant",
+          "detail": "#174 (smoke-test tier, not UI, conflicts with #178), #171 (stacked on a stale branch), and 10 older stale PRs listed on the board."
         }
       ]
     }

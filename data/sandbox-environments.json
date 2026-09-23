@@ -2,7 +2,7 @@
   "schema": "ashwood.sandbox-environments/v1",
   "contract_ref": "agent-os/contracts/v0/sandbox-environment.schema.yaml",
   "projection": "static",
-  "generated_at": "2026-09-23T18:30:00Z",
+  "generated_at": "2026-09-23T19:45:00Z",
   "note": "Human-facing environment continuity only. Sandbox verification never implies production deployment.",
   "products": [
     {
@@ -46,12 +46,14 @@
         "static_primary": true,
         "url": "https://mighty-ether-p6cn.here.now/",
         "slug": "mighty-ether-p6cn",
-        "current_version_id": "01M37PB6TPH1J4AM30B3Y9H9TD",
-        "source_ref": "57c59e2d838c948a8c1ee760125b6f1502ea7572",
+        "current_version_id": "01M37SP3A2PB1NY2A43FJFG577",
+        "source_ref": "0b719f4ee2acad86a12f9138dbd61784f7d902e2",
         "verification": {
           "state": "pending"
         },
-        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable."
+        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable.",
+        "previous_version_id": "01M37PB6TPH1J4AM30B3Y9H9TD",
+        "source_note": "Source is branch sandbox/review (main plus PRs #158 and #163). Variants live under /variants/."
       }
     },
     {
