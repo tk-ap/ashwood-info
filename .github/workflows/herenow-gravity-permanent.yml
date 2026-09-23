@@ -1,11 +1,7 @@
-name: update permanent Gravity sandbox
+name: manual permanent Gravity sandbox publish
 
 on:
-  push:
-    branches:
-      - ops/herenow-gravity-sandbox
-    paths:
-      - "gravity-permanent.trigger"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -25,9 +21,10 @@ jobs:
       - name: Require authenticated here.now secret
         run: |
           if [ -z "$HERENOW_API_KEY" ]; then
-            echo "HERENOW_API_KEY is not configured; refusing to create another anonymous site."
+            echo "HERENOW_API_KEY status: NOT SET"
             exit 1
           fi
+          echo "HERENOW_API_KEY status: SET"
       - name: Validate publisher syntax
         run: node --check scripts/herenow-publish-sandbox.mjs
       - name: Update permanent Gravity sandbox
