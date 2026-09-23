@@ -1099,3 +1099,34 @@ body[data-cosmos-zone="depth"] .ashwood-site-cosmos__veil{
   body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--base{opacity:.08}
   .v3-hotspot{opacity:.16!important}
 }
+
+
+/* V4.11 — localized physical motion.
+   The authored frame remains the material source. Motion is reconstructed as
+   restrained gravitational flow over the Instinct encounter only. */
+body[data-cosmos-zone="instinct"].ashwood-gravity-ready .v3-field .ashwood-gravity-canvas{
+  opacity:.20!important;
+  mix-blend-mode:screen;
+  filter:brightness(.84) saturate(.86) contrast(1.02);
+}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity{
+  opacity:.075;
+  animation:ashwood-gravity-breathe 14s ease-in-out infinite alternate;
+}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
+  opacity:.028;
+  animation:ashwood-foreground-drift 18s ease-in-out infinite alternate;
+}
+@keyframes ashwood-gravity-breathe{
+  from{transform:translate3d(var(--cosmos-gravity-x,0px),var(--cosmos-gravity-y,0px),0) scale(var(--cosmos-gravity-scale,1.014))}
+  to{transform:translate3d(calc(var(--cosmos-gravity-x,0px) + 1.5px),calc(var(--cosmos-gravity-y,0px) - 1px),0) scale(calc(var(--cosmos-gravity-scale,1.014) + .004))}
+}
+@keyframes ashwood-foreground-drift{
+  from{transform:translate3d(var(--cosmos-foreground-x,0px),var(--cosmos-foreground-y,0px),0) scale(var(--cosmos-foreground-scale,1.022))}
+  to{transform:translate3d(calc(var(--cosmos-foreground-x,0px) - 2px),calc(var(--cosmos-foreground-y,0px) + 1px),0) scale(calc(var(--cosmos-foreground-scale,1.022) + .003))}
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-cosmos-zone="instinct"].ashwood-gravity-ready .v3-field .ashwood-gravity-canvas{opacity:.12!important}
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity,
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{animation:none!important}
+}
