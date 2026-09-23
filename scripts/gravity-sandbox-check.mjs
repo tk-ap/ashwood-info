@@ -91,7 +91,13 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);
 
   await page.evaluate(() => document.querySelector("#thinking")?.scrollIntoView({ block: "center" }));
-  await page.waitForTimeout(reducedMotion === "reduce" ? 180 : 520);
+  await page.waitForFunction(() => {
+    const body = document.body;
+    const canvas = document.querySelector("[data-gravity-canvas]");
+    if (!canvas) return false;
+    const opacity = Number(getComputedStyle(canvas).opacity);
+    return body.dataset.cosmosZone === "instinct" && opacity >= 0.08;
+  }, null, { timeout: reducedMotion === "reduce" ? 1800 : 3000 });
 
   const after = await page.evaluate(() => ({
     ready: document.body.classList.contains("ashwood-gravity-ready"),
