@@ -4,7 +4,7 @@
   if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const stillFrameGate = true; // V4.10 restraint: only the quiet scroll camera is active; all physical effects and Doc motion remain gated.
+  const interactionGate = true; // V4.11: physical Instinct motion is active; Doc and hotspot orbit motion remain gated.
   const thinkingStage = document.querySelector("#thinking");
   const siteCosmos = document.querySelector("[data-site-cosmos]");
 
@@ -15,7 +15,7 @@
   field.appendChild(docAnomaly);
   let anomalyTimer = 0;
   const glimpseDoc = () => {
-    if (stillFrameGate || reduced || docAnomaly.classList.contains("is-glimpsed")) return;
+    if (interactionGate || reduced || docAnomaly.classList.contains("is-glimpsed")) return;
     window.clearTimeout(anomalyTimer);
     docAnomaly.classList.add("is-glimpsed");
     anomalyTimer = window.setTimeout(() => docAnomaly.classList.remove("is-glimpsed"), 1150);
@@ -112,7 +112,7 @@
     field.style.setProperty("--gravity-pointer-x", `${x * 100}%`);
     field.style.setProperty("--gravity-pointer-y", `${y * 100}%`);
     // V4.6 still-frame gate: preserve future depth behavior without moving the authored composition yet.
-    if (!stillFrameGate) field.querySelectorAll(".v3-hotspot").forEach((body, index) => {
+    if (!interactionGate) field.querySelectorAll(".v3-hotspot").forEach((body, index) => {
       const depth = [0.45, 0.72, 0.55, 0.82, 0.38, 0.64][index] || 0.5;
       const dx = (x - 0.5) * -18 * depth;
       const dy = (y - 0.5) * -12 * depth;
