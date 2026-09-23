@@ -30,7 +30,11 @@
   const depthStage = document.querySelector("#depth");
 
   const getInstinctMotionStrength = (zone = document.body.dataset.cosmosZone) => {
-    if (reduced || zone !== "instinct" || !thinkingStage) return 0;
+    if (reduced) return 0;
+    // The public hero must show motion on touch devices before any scrolling.
+    // Keep hero motion quieter than the full Instinct encounter.
+    if (zone === "hero") return 0.58;
+    if (zone !== "instinct" || !thinkingStage) return 0;
     const rect = thinkingStage.getBoundingClientRect();
     const viewportCenter = innerHeight * 0.5;
     const sectionCenter = rect.top + rect.height * 0.5;
@@ -104,7 +108,7 @@
     document.body.dataset.cosmosZone = zone;
     siteCosmos.dataset.phase = phase;
     siteCosmos.dataset.zone = zone;
-    renderer.setZoneActive(zone === "instinct" ? 1 : 0);
+    renderer.setZoneActive(zone === "instinct" || zone === "hero" ? 1 : 0);
     renderer.setMotionStrength(getInstinctMotionStrength(zone));
     setCamera(progress, zone);
   };
