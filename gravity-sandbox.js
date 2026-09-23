@@ -4,7 +4,7 @@
   if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const stillFrameGate = true; // V4.9: scroll camera only; Flux/lensing/plasma and Doc motion remain gated.
+  const stillFrameGate = true; // V4.10 restraint: only the quiet scroll camera is active; all physical effects and Doc motion remain gated.
   const thinkingStage = document.querySelector("#thinking");
   const siteCosmos = document.querySelector("[data-site-cosmos]");
 
@@ -36,18 +36,17 @@
     const evidenceDrift = zone === "evidence" ? 1 : 0;
     const depthDrift = zone === "depth" ? 1 : 0;
 
-    // Restrained differential movement: enough depth to change viewpoint,
-    // never enough to read as generic parallax.
-    const baseX = (-4 * p) + (evidenceDrift * -3) + (depthDrift * -5);
-    const baseY = (-8 * p) + (instinctPull * 3) + (depthDrift * -3);
-    const gravityX = (-7 * p) + (evidenceDrift * -5) + (depthDrift * -7);
-    const gravityY = (-11 * p) + (instinctPull * 5) + (depthDrift * -4);
-    const foregroundX = (-11 * p) + (evidenceDrift * -7) + (depthDrift * -9);
-    const foregroundY = (-15 * p) + (instinctPull * 7) + (depthDrift * -5);
+    // V4.10 restraint: depth should register subconsciously, never as a parallax demo.
+    const baseX = (-1.5 * p) + (evidenceDrift * -0.8) + (depthDrift * -1.5);
+    const baseY = (-3 * p) + (instinctPull * 1.2) + (depthDrift * -1);
+    const gravityX = (-2.8 * p) + (evidenceDrift * -1.2) + (depthDrift * -2);
+    const gravityY = (-4.2 * p) + (instinctPull * 1.8) + (depthDrift * -1.4);
+    const foregroundX = (-4.5 * p) + (evidenceDrift * -1.8) + (depthDrift * -2.8);
+    const foregroundY = (-6 * p) + (instinctPull * 2.4) + (depthDrift * -1.8);
 
-    const baseScale = zone === "instinct" ? 1.015 : zone === "hero" ? 1.045 : zone === "evidence" ? 1.03 : 1.04;
-    const gravityScale = zone === "instinct" ? 1.02 : zone === "hero" ? 1.035 : 1.03;
-    const foregroundScale = zone === "instinct" ? 1.04 : zone === "hero" ? 1.06 : 1.055;
+    const baseScale = zone === "instinct" ? 1.01 : zone === "hero" ? 1.025 : zone === "evidence" ? 1.018 : 1.02;
+    const gravityScale = zone === "instinct" ? 1.014 : zone === "hero" ? 1.022 : 1.02;
+    const foregroundScale = zone === "instinct" ? 1.022 : zone === "hero" ? 1.03 : 1.026;
 
     const root = document.documentElement.style;
     root.setProperty("--cosmos-base-x", `${baseX.toFixed(2)}px`);
