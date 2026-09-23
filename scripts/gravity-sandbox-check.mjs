@@ -1,9 +1,9 @@
-import { chromium, devices } from "playwright";
+import { chromium, webkit, devices } from "playwright";
 
 const base = process.env.GRAVITY_URL || "http://127.0.0.1:4173/";
 
-async function check(name, options = {}, reducedMotion = "no-preference") {
-  const browser = await chromium.launch({ headless: true });
+async function check(name, options = {}, reducedMotion = "no-preference", browserType = chromium) {
+  const browser = await browserType.launch({ headless: true });
   const context = await browser.newContext({ ...options, reducedMotion });
   const page = await context.newPage();
   const pageErrors = [];
@@ -147,4 +147,5 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
 
 await check("desktop", devices["Desktop Chrome"]);
 await check("mobile", devices["Pixel 7"]);
+await check("mobile-webkit", devices["iPhone 15"], "no-preference", webkit);
 await check("reduced", devices["Desktop Chrome"], "reduce");
