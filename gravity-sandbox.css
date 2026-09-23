@@ -1005,3 +1005,97 @@ body[data-cosmos-zone="depth"] .ashwood-site-cosmos__veil{
     transition:none!important;
   }
 }
+
+
+/* V4.10 — restraint pass.
+   Vast, sparse, cinematic. Instinct gets the extraordinary event; everywhere
+   else the universe yields to portrait, photography, typography, and darkness.
+   Physical effects and Doc motion remain gated. */
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__plate--base{
+  opacity:.16;
+  filter:brightness(.34) contrast(1.04) saturate(.76);
+}
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__plate--gravity,
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__plate--foreground{opacity:0}
+body[data-cosmos-zone="hero"] .ashwood-site-cosmos__veil{
+  opacity:.985;
+  background:
+    radial-gradient(ellipse 72% 88% at 70% 48%,rgba(0,0,0,.10) 0%,rgba(0,0,0,.34) 48%,rgba(0,0,0,.76) 100%),
+    linear-gradient(90deg,rgba(1,2,1,.88) 0%,rgba(1,2,1,.72) 38%,rgba(1,2,1,.42) 68%,rgba(1,2,1,.64) 100%),
+    linear-gradient(180deg,rgba(1,2,1,.76),rgba(1,2,1,.38) 54%,rgba(1,2,1,.74));
+}
+.v3-hero::before{
+  background:
+    radial-gradient(ellipse 68% 88% at 24% 48%,rgba(0,0,0,.90) 0%,rgba(0,0,0,.62) 52%,transparent 84%),
+    linear-gradient(90deg,rgba(0,0,0,.46),transparent 68%);
+}
+
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--base{
+  opacity:.88;
+  filter:brightness(.86) contrast(1.06) saturate(.92);
+}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity{opacity:.055}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{opacity:.018}
+body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__veil{
+  opacity:.38;
+  background:
+    radial-gradient(ellipse 44% 50% at 50% 46%,transparent 0 44%,rgba(0,0,0,.12) 67%,rgba(0,0,0,.54) 100%),
+    linear-gradient(180deg,rgba(1,2,1,.36),rgba(1,2,1,.04) 31%,rgba(1,2,1,.04) 66%,rgba(1,2,1,.46));
+}
+
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__plate--base{
+  opacity:.18;
+  filter:brightness(.34) contrast(1.02) saturate(.68);
+}
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__plate--gravity,
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__plate--foreground{opacity:0}
+body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__veil{
+  opacity:.96;
+  background:
+    radial-gradient(ellipse 66% 34% at 28% 12%,rgba(0,0,0,.74),transparent 76%),
+    linear-gradient(180deg,rgba(1,2,1,.72),rgba(1,2,1,.58) 34%,rgba(1,2,1,.68) 72%,rgba(1,2,1,.86));
+}
+.v3-evidence::before{
+  background:
+    linear-gradient(180deg,rgba(2,3,2,.58),transparent 16%,transparent 74%,rgba(2,3,2,.68)),
+    radial-gradient(ellipse 68% 32% at 30% 10%,rgba(0,0,0,.70),transparent 76%);
+}
+.v3-photo-stage{box-shadow:0 34px 110px rgba(0,0,0,.42)}
+
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--base{
+  opacity:.10;
+  filter:brightness(.26) contrast(1.01) saturate(.58);
+}
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--gravity,
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--foreground{opacity:0}
+body[data-cosmos-zone="depth"] .ashwood-site-cosmos__veil{
+  opacity:.985;
+  background:linear-gradient(180deg,rgba(1,2,1,.82),rgba(1,2,1,.90));
+}
+
+.v3-hotspot{opacity:.12!important;filter:none!important}
+.v3-hotspot::before{
+  width:5px!important;height:5px!important;
+  background:rgba(255,232,180,.74)!important;
+  border-color:rgba(255,244,216,.26)!important;
+  box-shadow:0 0 0 4px rgba(255,205,112,.018),0 0 11px rgba(255,205,112,.07)!important;
+}
+.v3-hotspot::after{opacity:0!important}
+.v3-hotspot span{opacity:0!important}
+.v3-hotspot:hover,.v3-hotspot:focus-visible,.v3-hotspot.is-near{opacity:.72!important}
+.v3-hotspot:hover span,.v3-hotspot:focus-visible span,.v3-hotspot.is-near span{opacity:.58!important}
+.v3-hotspot.is-found{opacity:.30!important}
+.v3-hotspot.is-found span{opacity:.16!important}
+.v3-hotspot:hover::before,.v3-hotspot:focus-visible::before,.v3-hotspot.is-near::before{
+  box-shadow:0 0 0 6px rgba(255,205,112,.035),0 0 18px rgba(255,219,157,.14)!important;
+}
+
+.v3-thinking-stage::before{background:linear-gradient(180deg,rgba(2,3,2,.78),rgba(2,3,2,.22) 62%,transparent)}
+.v3-thinking-stage::after{background:linear-gradient(0deg,rgba(2,3,2,.80),rgba(2,3,2,.20) 62%,transparent)}
+
+@media(max-width:900px){
+  body[data-cosmos-zone="hero"] .ashwood-site-cosmos__plate--base{opacity:.12}
+  body[data-cosmos-zone="evidence"] .ashwood-site-cosmos__plate--base{opacity:.14}
+  body[data-cosmos-zone="depth"] .ashwood-site-cosmos__plate--base{opacity:.08}
+  .v3-hotspot{opacity:.16!important}
+}
