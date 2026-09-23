@@ -69,6 +69,8 @@
       energy: 0.18,
       discovery: 0,
       chapter: 0,
+      motionStrength: 0,
+      zoneActive: 0,
       start: performance.now(),
       raf: 0
     };
@@ -96,21 +98,25 @@
       uniform float u_energy;
       uniform float u_discovery;
       uniform float u_chapter;
+      uniform float u_motion_strength;
+      uniform float u_zone_active;
 
       #define PI 3.14159265359
       float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
       float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash21(i),hash21(i+vec2(1.,0.)),f.x),mix(hash21(i+vec2(0.,1.)),hash21(i+vec2(1.,1.)),f.x),f.y);}
       float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(13.1,7.7);a*=.5;}return v;}
       mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
-      /* V4.3: one gravitational flow field drives disk, matter, lensing and environmental motion. */
+      /* V4.12: NASA-informed differential orbital flow. Motion lives in the
+         accretion material; the wider authored universe remains visually stable. */
       vec2 gravityFlow(vec2 p,float time,float energy){
         float r=max(length(p),.012);
         vec2 radial=p/r;
         vec2 tangent=vec2(-radial.y,radial.x);
-        float spin=(.018+.022*energy)/max(r*.72,.055);
-        float infall=.006/max(r*r+.028,.04);
-        float wobble=(fbm(vec2(atan(p.y,p.x)*2.4-time*.13,r*18.-time*.22))-.5)*.014;
-        return tangent*spin-radial*infall+tangent*wobble;
+        float innerPull=1.-smoothstep(.18,.62,r);
+        float differential=(.010+.020*energy)/max(r*.82,.095);
+        float shear=(fbm(vec2(atan(p.y,p.x)*2.8-time*.045,r*28.-time*.11))-.5)*.005;
+        float infall=.0018*innerPull/max(r*r+.05,.08);
+        return tangent*(differential+shear)-radial*infall;
       }
       float fluxFilament(vec2 p,float time,float seed){
         float r=length(p);
@@ -128,10 +134,12 @@
         vec2 p=uv-shift;
         float r=length(p);
         float a=atan(p.y,p.x);
-        /* V4.11: localized physical motion is active only for the Instinct renderer. */
-        float motionGate=1.0;
-        float t=u_time*(.08+.08*u_energy)*motionGate;
-        vec2 flow=gravityFlow(p,u_time*motionGate,u_energy)*motionGate;
+        /* V4.12: the renderer evolves only during the Instinct encounter.
+           Scroll proximity controls strength; reduced-motion freezes u_time. */
+        float motionGate=clamp(u_zone_active*u_motion_strength,0.0,1.0);
+        float localTime=u_time*(.18+.10*u_energy)*motionGate;
+        float t=localTime;
+        vec2 flow=gravityFlow(p,localTime,u_energy)*motionGate;
         vec2 advected=p-flow*(.58+.42*u_energy);
         float ar=length(advected);
         float aa=atan(advected.y,advected.x);
@@ -154,47 +162,56 @@
         float lr=length(lp);
 
         float H=.142;
-        float photon=exp(-pow((lr-H*1.10)/.006,2.));
-        float photon2=exp(-pow((lr-H*1.24)/.014,2.));
-        float lensHalo=exp(-pow((lr-H*1.48)/.045,2.));
+        /* Separate the true shadow, thin photon ring, and broader lens halo. */
+        float photonRing=exp(-pow((lr-H*1.10)/.0055,2.));
+        float photonEcho=exp(-pow((lr-H*1.24)/.013,2.));
+        float lensHalo=exp(-pow((lr-H*1.48)/.044,2.));
 
         /* Inclined accretion flow with turbulent radial texture and Doppler asymmetry. */
         vec2 d=lp*rot(-.11);
         d.y*=5.8;
         float dr=length(d);
-        float band=exp(-pow(d.y/.022,2.))+0.42*exp(-pow(d.y/.052,2.))+0.13*exp(-pow(d.y/.105,2.));
-        float inner=smoothstep(H*.96,H*1.12,lr);
-        float outer=1.-smoothstep(.58,.78,dr);
-        float turbulence=fbm(vec2(dr*31.-u_time*.23*motionGate,aa*3.2+u_time*.045*motionGate));
-        float filaments=.32+.68*max(fluxFilament(advected,u_time*motionGate,.2),fluxFilament(advected,u_time*motionGate,.8));
-        float disk=band*inner*outer*mix(turbulence,filaments,.62);
+        float diskBand=exp(-pow(d.y/.020,2.))
+          +0.38*exp(-pow(d.y/.050,2.))
+          +0.10*exp(-pow(d.y/.100,2.));
+        float inner=smoothstep(H*.98,H*1.14,lr);
+        float outer=1.-smoothstep(.56,.76,dr);
 
-        /* Approaching side is hotter/brighter; receding side falls away. */
-        float doppler=smoothstep(-.9,.85,cos(aa+.11));
-        float front=smoothstep(-.018,.045,d.y);
-        vec3 diskCol=mix(green*.55,gold,.70);
-        diskCol=mix(diskCol,hot,doppler*.62);
-        col+=diskCol*disk*(.48+1.15*doppler)*(.74+.44*u_energy);
+        /* Bright knots form, stretch with differential rotation, then dissolve.
+           They are continuous gas structure rather than independent particles. */
+        float knotShear=.5+.5*sin(aa*4.0+dr*34.0-localTime*.62);
+        float knotFine=.5+.5*sin(aa*8.0-dr*21.0+localTime*.31);
+        float turbulence=fbm(vec2(dr*29.-localTime*.18,aa*3.4+localTime*.05));
+        float filaments=.30+.70*max(fluxFilament(advected,localTime,.2),fluxFilament(advected,localTime,.8));
+        float knots=mix(knotShear,knotFine,.34)*(.44+.56*turbulence);
+        float disk=diskBand*inner*outer*mix(filaments,knots,.42);
+
+        /* NASA reference behavior: approaching material reads brighter/hotter;
+           the receding side remains present but materially dimmer. */
+        float beaming=.32+.68*smoothstep(-.92,.86,cos(aa+.11));
+        vec3 diskCol=mix(green*.42,gold,.74);
+        diskCol=mix(diskCol,hot,beaming*.68);
+        col+=diskCol*disk*(.34+1.22*beaming)*(.70+.40*u_energy);
 
         /* Lensed rear disk arcs above/below the shadow. */
         float rearArc=exp(-pow((lr-H*1.34)/.030,2.))*smoothstep(.02,.24,abs(p.y))*smoothstep(.36,.02,abs(p.y));
-        rearArc*=.45+.55*fbm(vec2(aa*5.+u_time*.055*motionGate,lr*35.));
-        col+=mix(gold,hot,.45)*rearArc*(.35+.22*u_energy);
+        rearArc*=.48+.52*fbm(vec2(aa*5.+localTime*.055,lr*35.));
+        col+=mix(gold,hot,.45)*rearArc*(.32+.20*u_energy);
 
-        col+=hot*photon*(1.62+.38*u_energy);
-        col+=gold*photon2*(.48+.22*u_energy);
+        col+=hot*photonRing*(1.68+.34*u_energy);
+        col+=gold*photonEcho*(.44+.20*u_energy);
         col+=green*lensHalo*(.035+.08*u_discovery);
 
         /* Sparse Flux-derived matter shares the exact same velocity field as the accretion flow. */
         vec2 fp=advected*vec2(1.,2.35);
-        float fluxA=fluxFilament(fp,u_time*motionGate,.35);
-        float fluxB=fluxFilament(fp*rot(.38),u_time*motionGate,.73);
+        float fluxA=fluxFilament(fp,localTime,.35);
+        float fluxB=fluxFilament(fp*rot(.38),localTime,.73);
         float flux=(fluxA*.72+fluxB*.42)*smoothstep(.72,.18,ar);
         float grains=step(.91,noise(floor((fp+flow*2.)*72.)))*flux;
         col+=mix(green*.62,hot,.38+doppler*.25)*(flux*.065+grains*.16)*(.55+.45*u_energy);
 
         /* Irregular darkness around the horizon avoids the portal-ring look. */
-        float edgeNoise=(fbm(vec2(aa*3.1,u_time*.012*motionGate))-.5)*.008;
+        float edgeNoise=(fbm(vec2(aa*3.1,localTime*.012))-.5)*.005;
         float shadow=1.-smoothstep(H*.78+edgeNoise,H*1.01+edgeNoise,lr);
         col*=1.-shadow*.9995;
         float core=1.-smoothstep(H*.64,H*.82,lr);
@@ -257,6 +274,8 @@
       loc.energy = gl.getUniformLocation(program, "u_energy");
       loc.discovery = gl.getUniformLocation(program, "u_discovery");
       loc.chapter = gl.getUniformLocation(program, "u_chapter");
+      loc.motionStrength = gl.getUniformLocation(program, "u_motion_strength");
+      loc.zoneActive = gl.getUniformLocation(program, "u_zone_active");
       return true;
     };
 
@@ -292,6 +311,8 @@
         gl.uniform1f(loc.energy, state.energy);
         gl.uniform1f(loc.discovery, state.discovery);
         gl.uniform1f(loc.chapter, state.chapter);
+        gl.uniform1f(loc.motionStrength, state.motionStrength);
+        gl.uniform1f(loc.zoneActive, state.zoneActive);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       } else if (fallback) {
         fallback.draw();
@@ -369,6 +390,14 @@
       },
       setAudioEnergy(value = 0) {
         state.energy = clamp(0.18 + value * 0.82);
+        if (state.reducedMotion) render();
+      },
+      setMotionStrength(value = 0) {
+        state.motionStrength = state.reducedMotion ? 0 : clamp(value);
+        if (state.reducedMotion) render();
+      },
+      setZoneActive(value = 0) {
+        state.zoneActive = clamp(value);
         if (state.reducedMotion) render();
       },
       resize,
