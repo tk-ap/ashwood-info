@@ -18,14 +18,14 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       sharedFlow: text.includes("gravityFlow("),
       fluxFilament: text.includes("fluxFilament("),
       fluxMatter: text.includes("Flux-derived matter"),
-      motionGated: text.includes("float motionGate=0.0;")
+      motionActive: text.includes("float motionGate=1.0;")
     };
   });
   if (!source.sharedFlow || !source.fluxFilament || !source.fluxMatter) {
     throw new Error(`${name}: shared gravitational flux field is missing`);
   }
-  if (!source.motionGated) {
-    throw new Error(`${name}: Flux motion gate reopened before authored still approval`);
+  if (!source.motionActive) {
+    throw new Error(`${name}: localized gravitational motion is not active`);
   }
 
   const initial = await page.evaluate(() => {
@@ -91,6 +91,7 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
     thinkingExists: Boolean(document.querySelector("#thinking")),
     cosmosPhase: document.body.dataset.cosmosPhase || null,
     cosmosZone: document.body.dataset.cosmosZone || null,
+    canvasOpacity: Number(getComputedStyle(document.querySelector("[data-gravity-canvas]")).opacity),
     pageHeight: document.documentElement.scrollHeight,
     viewportHeight: innerHeight
   }));
@@ -100,6 +101,9 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   }
   if (after.cosmosPhase !== "instinct" || after.cosmosZone !== "instinct") {
     throw new Error(`${name}: Instinct did not become the closest-encounter zone (${after.cosmosPhase}/${after.cosmosZone})`);
+  }
+  if (after.canvasOpacity < 0.08 || after.canvasOpacity > 0.35) {
+    throw new Error(`${name}: localized motion overlay is outside restraint bounds (${after.canvasOpacity})`);
   }
   if (pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join(" | ")}`);
 
