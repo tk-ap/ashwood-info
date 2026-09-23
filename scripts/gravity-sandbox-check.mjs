@@ -99,15 +99,44 @@ async function check(name, options = {}, reducedMotion = "no-preference", browse
   if (!initial.canvasInField || initial.heroContainsCanvas) throw new Error(`${name}: Gravity is not isolated to Instinct field`);
   if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);
 
-  await page.evaluate(() => document.querySelector("#thinking")?.scrollIntoView({ block: "center" }));
-  await page.waitForFunction(({ reduced }) => {
-    const body = document.body;
-    const canvas = document.querySelector("[data-gravity-canvas]");
-    if (!canvas) return false;
-    const opacity = Number(getComputedStyle(canvas).opacity);
-    const target = reduced ? 0.65 : 0.90;
-    return body.dataset.cosmosZone === "instinct" && opacity >= target;
-  }, { reduced: reducedMotion === "reduce" }, { timeout: 4000 });
+  // Center the actual canvas field; centering the entire Thinking section can
+  // leave its animation below the fold on tall iPhone layouts.
+  await page.evaluate(() => {
+    const field = document.querySelector(".v3-field");
+    const rect = field?.getBoundingClientRect();
+    if (!rect) return;
+    window.scrollTo({ top: window.scrollY + rect.top + (rect.height - window.innerHeight) / 2, behavior: "instant" });
+    window.dispatchEvent(new Event("scroll"));
+  });
+  try {
+    await page.waitForFunction(({ reduced }) => {
+      const body = document.body;
+      const canvas = document.querySelector("[data-gravity-canvas]");
+      if (!canvas) return false;
+      const opacity = Number(getComputedStyle(canvas).opacity);
+      const target = reduced ? 0.65 : 0.90;
+      const rect = canvas.getBoundingClientRect();
+      const visible = rect.top < innerHeight && rect.bottom > 0;
+      return body.dataset.cosmosZone === "instinct" && opacity >= target && visible;
+    }, { reduced: reducedMotion === "reduce" }, { timeout: 8500 });
+  } catch (error) {
+    const diagnostic = await page.evaluate(() => {
+      const canvas = document.querySelector("[data-gravity-canvas]");
+      const field = document.querySelector(".v3-field");
+      const rect = canvas?.getBoundingClientRect();
+      return {
+        zone: document.body.dataset.cosmosZone,
+        phase: document.body.dataset.cosmosPhase,
+        opacity: canvas ? getComputedStyle(canvas).opacity : null,
+        canvasRect: rect ? { top: rect.top, bottom: rect.bottom, height: rect.height } : null,
+        fieldTop: field?.getBoundingClientRect().top,
+        scrollY, viewportHeight: innerHeight,
+        mode: document.body.dataset.gravityMode
+      };
+    });
+    console.error(`${name}: Instinct viewport diagnostic ${JSON.stringify(diagnostic)}`);
+    throw error;
+  }
 
   const after = await page.evaluate(() => ({
     ready: document.body.classList.contains("ashwood-gravity-ready"),
