@@ -2,7 +2,7 @@
   "schema": "ashwood.sandbox-environments/v1",
   "contract_ref": "agent-os/contracts/v0/sandbox-environment.schema.yaml",
   "projection": "static",
-  "generated_at": "2026-09-22T19:30:30Z",
+  "generated_at": "2026-09-23T18:30:00Z",
   "note": "Human-facing environment continuity only. Sandbox verification never implies production deployment.",
   "products": [
     {
@@ -21,12 +21,13 @@
         "static_primary": true,
         "url": "https://mighty-yoga-pgph.here.now/",
         "slug": "mighty-yoga-pgph",
-        "current_version_id": "01M359HV4JJ4JKVWBRM2EXBAKM",
-        "source_ref": "479e51466a9244af3c8a606921232de730df7da4",
+        "current_version_id": "01M37NKCHHN0CTJWC77WKBHFVB",
+        "source_ref": "1117150b07b66269a47e59edfe277a22be674b8e",
         "verification": {
-          "state": "passed",
-          "evidence_ref": "github-actions:35774173010"
-        }
+          "state": "pending"
+        },
+        "previous_version_id": "01M37MK3SQV2WNMGM65ZMT98Z0",
+        "source_note": "Source is branch feature/instinct-physical-blackhole (PR #172), not main."
       }
     },
     {
@@ -41,8 +42,16 @@
       "sandbox": {
         "provider": "here-now",
         "connection_ref": "owner:provider:here-now",
-        "lifecycle": "unassigned",
-        "static_primary": true
+        "lifecycle": "live",
+        "static_primary": true,
+        "url": "https://mighty-ether-p6cn.here.now/",
+        "slug": "mighty-ether-p6cn",
+        "current_version_id": "01M37PB6TPH1J4AM30B3Y9H9TD",
+        "source_ref": "57c59e2d838c948a8c1ee760125b6f1502ea7572",
+        "verification": {
+          "state": "pending"
+        },
+        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable."
       }
     },
     {
@@ -57,8 +66,16 @@
       "sandbox": {
         "provider": "here-now",
         "connection_ref": "owner:provider:here-now",
-        "lifecycle": "unassigned",
-        "static_primary": true
+        "lifecycle": "live",
+        "static_primary": true,
+        "url": "https://wintry-truffle-pf6f.here.now/",
+        "slug": "wintry-truffle-pf6f",
+        "current_version_id": "01M37P8NE53VDRFK3A1D4DXWZB",
+        "source_ref": "4a2b5f1294150c11d5b2dd0cf7c62116225c766f",
+        "verification": {
+          "state": "pending"
+        },
+        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable."
       }
     },
     {
@@ -73,8 +90,16 @@
       "sandbox": {
         "provider": "here-now",
         "connection_ref": "owner:provider:here-now",
-        "lifecycle": "unassigned",
-        "static_primary": true
+        "lifecycle": "live",
+        "static_primary": true,
+        "url": "https://karma-plover-ntkb.here.now/",
+        "slug": "karma-plover-ntkb",
+        "current_version_id": "01M37P6JRW4708PCFPGP0GZ25A",
+        "source_ref": "847e120962aed265ddae51f4767aed8f8f7291c0",
+        "verification": {
+          "state": "pending"
+        },
+        "capabilities": "Static UI only. Sign-in, database, payments and API routes are unavailable."
       }
     },
     {
