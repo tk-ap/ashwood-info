@@ -97,3 +97,16 @@ test("Sandbox Studio keeps primary phone controls at least 44px tall", () => {
   assert.match(studioCss, /\.sandbox-overlay-rail button\{width:44px;height:44px;/);
   assert.match(studioCss, /\.sandbox-request button\{[^}]*min-width:44px;[^}]*min-height:44px;/);
 });
+
+test("Studio version selector lists a product's variants alongside stable and candidate", async () => {
+  const studio = await readFile(new URL("../workspace/sandbox-studio.mjs", import.meta.url), "utf8");
+  assert.match(studio, /item\.variants/);
+  assert.match(studio, /key:`variant-\$\{variant\.id\}`/);
+  const manifest = JSON.parse(await readFile(new URL("../data/sandbox-review-manifest.json", import.meta.url), "utf8"));
+  const alvira = manifest.products.find((product) => product.product_key === "alvira-meos");
+  assert.ok(alvira && alvira.variants.length === 4);
+  for (const variant of alvira.variants) {
+    assert.ok(new URL(variant.url).hostname.endsWith(".here.now"), variant.id);
+    assert.equal(variant.state, "variant");
+  }
+});

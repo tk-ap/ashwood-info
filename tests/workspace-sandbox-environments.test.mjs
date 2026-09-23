@@ -20,12 +20,30 @@ test("sandbox environment projection keeps production and sandbox distinct", () 
   assert.equal(ashwood.sandbox.connection_ref, "owner:provider:here-now");
 });
 
-test("future products are prepared without claiming sandbox deployment", () => {
-  const pending = projection.products.filter((product) => product.product_key !== "ashwood");
-  assert.ok(pending.length >= 3);
-  for (const product of pending) {
-    assert.equal(product.sandbox.lifecycle, "unassigned");
-    assert.equal(product.sandbox.url, undefined);
+test("unassigned products claim no sandbox, and live products carry a stable identity", () => {
+  const others = projection.products.filter((product) => product.product_key !== "ashwood");
+  assert.ok(others.length >= 3);
+  for (const product of others) {
+    const sandbox = product.sandbox;
+    if (sandbox.lifecycle === "unassigned") {
+      assert.equal(sandbox.url, undefined);
+      continue;
+    }
+    assert.equal(sandbox.lifecycle, "live");
+    assert.equal(sandbox.url, `https://${sandbox.slug}.here.now/`);
+    assert.ok(sandbox.current_version_id);
+    assert.ok(sandbox.source_ref);
+    // A live sandbox is not verified until evidence says so, and it is never production.
+    if (sandbox.verification.state === "passed") assert.ok(sandbox.verification.evidence_ref);
+    assert.notEqual(sandbox.url, product.production.url);
+  }
+});
+
+test("the three ecosystem sites each have a live sandbox", () => {
+  for (const key of ["alvira-meos", "ailhat", "ledgato"]) {
+    const product = projection.products.find((entry) => entry.product_key === key);
+    assert.ok(product, key);
+    assert.equal(product.sandbox.lifecycle, "live", key);
   }
 });
 
