@@ -1132,27 +1132,28 @@ body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
 }
 
 
-/* V4.12 — NASA-informed Instinct motion.
-   The authored still remains dominant; only the local gravitational encounter moves. */
+/* V4.13 — authored-image gravitational motion.
+   The canvas now warps the current black-hole image itself inside the local ring.
+   CSS no longer suppresses that motion behind a low-opacity screen blend. */
 body:not([data-cosmos-zone="instinct"]) .ashwood-gravity-canvas{
   opacity:0!important;
 }
 body[data-cosmos-zone="instinct"].ashwood-gravity-ready .v3-field .ashwood-gravity-canvas{
-  opacity:.24!important;
-  mix-blend-mode:screen;
-  filter:brightness(.88) saturate(.82) contrast(1.03);
+  opacity:.96!important;
+  mix-blend-mode:normal;
+  filter:none;
 }
 body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity{
-  opacity:.065;
-  animation:ashwood-gravity-breathe 16s ease-in-out infinite alternate;
+  opacity:.045;
+  animation:ashwood-gravity-breathe 18s ease-in-out infinite alternate;
 }
 body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
-  opacity:.022;
-  animation:ashwood-foreground-drift 22s ease-in-out infinite alternate;
+  opacity:.016;
+  animation:ashwood-foreground-drift 24s ease-in-out infinite alternate;
 }
 @media(prefers-reduced-motion:reduce){
   body[data-cosmos-zone="instinct"].ashwood-gravity-ready .v3-field .ashwood-gravity-canvas{
-    opacity:.12!important;
+    opacity:.72!important;
   }
   body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity,
   body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
