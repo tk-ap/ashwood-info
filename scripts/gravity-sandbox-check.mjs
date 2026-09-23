@@ -97,13 +97,14 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);
 
   await page.evaluate(() => document.querySelector("#thinking")?.scrollIntoView({ block: "center" }));
-  await page.waitForFunction(() => {
+  await page.waitForFunction(({ reduced }) => {
     const body = document.body;
     const canvas = document.querySelector("[data-gravity-canvas]");
     if (!canvas) return false;
     const opacity = Number(getComputedStyle(canvas).opacity);
-    return body.dataset.cosmosZone === "instinct" && opacity >= 0.08;
-  }, null, { timeout: reducedMotion === "reduce" ? 1800 : 3000 });
+    const target = reduced ? 0.65 : 0.90;
+    return body.dataset.cosmosZone === "instinct" && opacity >= target;
+  }, { reduced: reducedMotion === "reduce" }, { timeout: 4000 });
 
   const after = await page.evaluate(() => ({
     ready: document.body.classList.contains("ashwood-gravity-ready"),
@@ -125,6 +126,18 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (after.canvasOpacity < (reducedMotion === "reduce" ? 0.65 : 0.90) || after.canvasOpacity > 1.0) {
     throw new Error(`${name}: authored motion layer is not visibly active (${after.canvasOpacity})`);
   }
+
+  // Non-reduced desktop and mobile must prove real temporal change, not just visible canvas opacity.
+  if (reducedMotion !== "reduce") {
+    const motionCanvas = page.locator("[data-gravity-canvas]");
+    const frameA = await motionCanvas.screenshot();
+    await page.waitForTimeout(900);
+    const frameB = await motionCanvas.screenshot();
+    if (Buffer.compare(frameA, frameB) === 0) {
+      throw new Error(`${name}: motion canvas did not change between frames`);
+    }
+  }
+
   if (pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join(" | ")}`);
 
   await page.screenshot({ path: `gravity-${name}.png`, fullPage: false });
