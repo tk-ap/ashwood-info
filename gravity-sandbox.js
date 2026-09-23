@@ -1,13 +1,14 @@
 (() => {
   const field = document.querySelector(".v3-field");
-  const canvas = field?.querySelector("[data-gravity-canvas]");
-  if (!field || !canvas || typeof window.createAshwoodGravityRenderer !== "function") return;
+  const siteCosmos = document.querySelector("[data-site-cosmos]");
+  const canvas = siteCosmos?.querySelector("[data-gravity-canvas]");
+  const basePlate = siteCosmos?.querySelector(".ashwood-site-cosmos__plate--base");
+  if (!field || !siteCosmos || !canvas || !basePlate ||
+      typeof window.createAshwoodGravityRenderer !== "function") return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const interactionGate = true; // V4.11: physical Instinct motion is active; Doc and hotspot orbit motion remain gated.
   const thinkingStage = document.querySelector("#thinking");
-  const siteCosmos = document.querySelector("[data-site-cosmos]");
-
   // Public Doc is an optical anomaly, not a mascot or persistent assistant control.
   const docAnomaly = document.createElement("span");
   docAnomaly.className = "ashwood-doc-anomaly";
@@ -20,7 +21,11 @@
     docAnomaly.classList.add("is-glimpsed");
     anomalyTimer = window.setTimeout(() => docAnomaly.classList.remove("is-glimpsed"), 1150);
   };
-  const renderer = window.createAshwoodGravityRenderer({ canvas, reducedMotion: reduced });
+  const renderer = window.createAshwoodGravityRenderer({
+    canvas, imageElement: basePlate, reducedMotion: reduced
+  });
+  // Read-only diagnostics for browser tests; never credentials or private state.
+  window.__ashwoodGravityRenderer = renderer;
   let fieldRect = field.getBoundingClientRect();
   let playing = false;
   const clamp = (v) => Math.max(0, Math.min(1, v));
@@ -29,19 +34,13 @@
   const evidenceStage = document.querySelector("#evidence");
   const depthStage = document.querySelector("#depth");
 
-  const getInstinctMotionStrength = (zone = document.body.dataset.cosmosZone) => {
-    if (reduced) return 0;
-    // The public hero must show motion on touch devices before any scrolling.
-    // Keep hero motion quieter than the full Instinct encounter.
-    if (zone === "hero") return 0.58;
-    if (zone !== "instinct" || !thinkingStage) return 0;
-    const rect = thinkingStage.getBoundingClientRect();
-    const viewportCenter = innerHeight * 0.5;
-    const sectionCenter = rect.top + rect.height * 0.5;
-    const distance = Math.abs(sectionCenter - viewportCenter);
-    const proximity = clamp(1 - distance / Math.max(rect.height * 0.62, innerHeight * 0.75));
-    // V4.13: once Instinct is active, motion must be perceptible even away from exact center.
-    return 0.46 + proximity * 0.54;
+  // Smoothly overlap the hero approach and local Instinct encounter. The
+  // persistent canvas never jumps between unrelated section-local coordinate systems.
+  const getApproach = (rect, center, margin) => {
+    if (!rect) return 0;
+    if (center < rect.top) return clamp((center - rect.top + margin) / margin);
+    if (center > rect.bottom) return clamp((rect.bottom + margin - center) / margin);
+    return 1;
   };
 
   const setCamera = (progress, zone) => {
@@ -75,48 +74,59 @@
     root.setProperty("--cosmos-foreground-scale", String(foregroundScale));
   };
 
+  let lastZone = null;
   const syncCosmosPhase = () => {
     if (!thinkingStage || !siteCosmos) return;
-
     const center = innerHeight * 0.5;
     const heroRect = heroStage?.getBoundingClientRect();
+    const fieldRect = field.getBoundingClientRect();
     const thinkingRect = thinkingStage.getBoundingClientRect();
     const evidenceRect = evidenceStage?.getBoundingClientRect();
     const depthRect = depthStage?.getBoundingClientRect();
-
     let zone = "depth";
     let phase = "afterglow";
-
     if (heroRect && heroRect.bottom > center) {
-      zone = "hero";
-      phase = "ambient";
+      zone = "hero"; phase = "ambient";
     } else if (thinkingRect.top <= center && thinkingRect.bottom >= center) {
-      zone = "instinct";
-      phase = "instinct";
+      zone = "instinct"; phase = "instinct";
     } else if (evidenceRect && evidenceRect.top <= center && evidenceRect.bottom >= center) {
-      zone = "evidence";
-      phase = "afterglow";
+      zone = "evidence"; phase = "afterglow";
     } else if (depthRect && depthRect.top > center) {
-      zone = "evidence";
-      phase = "afterglow";
+      zone = "evidence"; phase = "afterglow";
     }
 
-    const maxScroll = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
-    const progress = scrollY / maxScroll;
+    const margin = Math.min(340, innerHeight * 0.42);
+    const heroStrength = heroRect && center <= heroRect.bottom
+      ? clamp((heroRect.bottom + margin - center) / Math.max(margin, heroRect.height * 0.55))
+      : 0;
+    const instinctStrength = getApproach(fieldRect, center, margin);
+    const sceneOpacity = reduced
+      ? 0.14 * heroStrength + 0.72 * instinctStrength
+      : 0.38 * heroStrength + 0.92 * instinctStrength;
+    const motionStrength = reduced ? 0
+      : clamp(0.54 * heroStrength + 0.90 * instinctStrength);
+    document.body.style.setProperty("--gravity-scene-opacity",
+      String(clamp(sceneOpacity).toFixed(3)));
+    renderer.setZoneActive(motionStrength > 0.001 ? 1 : 0);
+    renderer.setMotionStrength(motionStrength);
 
     document.body.dataset.cosmosPhase = phase;
     document.body.dataset.cosmosZone = zone;
     siteCosmos.dataset.phase = phase;
     siteCosmos.dataset.zone = zone;
-    renderer.setZoneActive(zone === "instinct" || zone === "hero" ? 1 : 0);
-    renderer.setMotionStrength(getInstinctMotionStrength(zone));
-    setCamera(progress, zone);
+    const maxScroll = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
+    setCamera(scrollY / maxScroll, zone);
+    if (lastZone !== zone) {
+      lastZone = zone;
+      renderer.setChapter(zone);
+    }
   };
   syncCosmosPhase();
 
-  renderer.ready.then(({ mode } = {}) => {
-    document.body.classList.add("ashwood-gravity-active", "ashwood-gravity-ready");
+  renderer.ready.then(({ mode, textureLoaded } = {}) => {
     document.body.dataset.gravityMode = mode || "unknown";
+    document.body.dataset.gravityTexture = textureLoaded ? "ready" : "failed";
+    document.body.classList.add("ashwood-gravity-active", "ashwood-gravity-ready");
     field.dataset.gravityReady = "true";
   }).catch(() => document.body.classList.add("ashwood-gravity-fallback"));
 
@@ -154,7 +164,7 @@
     const rect = field.getBoundingClientRect();
     const approach = clamp((innerHeight - rect.top) / Math.max(innerHeight + rect.height, 1));
     renderer.setScroll(approach);
-    renderer.setChapter("instinct");
+    // Chapter updates live in the shared scene controller.
   };
 
   const readDiscovery = () => {
@@ -204,19 +214,31 @@
     observer.observe(document.body, { childList: true });
   }
 
-  const onResize = () => {
+  // One read/write pass per animation frame, including Safari toolbar resize.
+  let framePending = false;
+  const syncFrame = () => {
+    framePending = false;
     refreshRect();
+    syncScroll();
+    syncCosmosPhase();
     renderer.resize();
-    syncScroll();
-    syncCosmosPhase();
   };
-  window.addEventListener("resize", onResize, { passive: true });
-  window.addEventListener("scroll", () => {
-    syncScroll();
-    syncCosmosPhase();
-  }, { passive: true });
-  syncScroll();
-  syncCosmosPhase();
-
-  window.addEventListener("pagehide", () => renderer.dispose(), { once: true });
+  const scheduleFrame = () => {
+    if (framePending) return;
+    framePending = true;
+    requestAnimationFrame(syncFrame);
+  };
+  window.addEventListener("resize", scheduleFrame, { passive:true });
+  window.visualViewport?.addEventListener("resize", scheduleFrame, { passive:true });
+  window.addEventListener("orientationchange", scheduleFrame, { passive:true });
+  window.addEventListener("scroll", scheduleFrame, { passive:true });
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) renderer.resume();
+    scheduleFrame();
+  });
+  window.addEventListener("pagehide", (event) => {
+    if (event.persisted) renderer.pause();
+    else renderer.dispose();
+  });
+  scheduleFrame();
 })();

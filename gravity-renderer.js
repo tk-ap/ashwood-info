@@ -1,60 +1,52 @@
 (() => {
   const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 
-  function create2DFallback(canvas, state) {
+  function create2DFallback(canvas, state, imageSrc) {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return null;
+    const source = new Image();
+    let loaded = false;
+    const ready = new Promise(resolve => {
+      source.onload = () => { loaded = true; resolve(true); };
+      source.onerror = () => resolve(false);
+      source.src = imageSrc;
+    });
 
+    // Draw a rotating, clipped annulus from the SAME authored photograph. A lack
+    // of WebGL must not silently downgrade mobile to a motionless procedural ring.
     const draw = () => {
-      const { width, height } = canvas.getBoundingClientRect();
-      const dpr = state.dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const width = canvas.width / state.dpr;
+      const height = canvas.height / state.dpr;
+      if (!width || !height) return;
+      ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
       ctx.clearRect(0, 0, width, height);
-
-      const cx = width * (0.5 + (state.pointer.x - 0.5) * 0.028 * state.pointer.active);
-      const cy = height * (0.5 + (state.pointer.y - 0.5) * 0.020 * state.pointer.active);
-      const radius = Math.min(width, height) * 0.145;
-
-      const glow = ctx.createRadialGradient(cx, cy, radius * 0.28, cx, cy, radius * 2.9);
-      glow.addColorStop(0, "rgba(0,0,0,1)");
-      glow.addColorStop(0.31, "rgba(0,0,0,1)");
-      glow.addColorStop(0.37, "rgba(255,224,158,.72)");
-      glow.addColorStop(0.43, "rgba(180,135,50,.30)");
-      glow.addColorStop(0.58, "rgba(40,150,120,.11)");
-      glow.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, width, height);
-
+      if (!loaded || !state.geometry || !state.motionStrength) return;
+      const { drawX, drawY, drawW, drawH } = state.geometry;
+      const cx = state.horizon[0] * width;
+      const cy = (1 - state.horizon[1]) * height;
+      const radius = state.horizonRadius * Math.min(width, height);
+      const gate = state.zoneActive * state.motionStrength;
+      if (gate <= 0.001) return;
       ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 2.7, 0, Math.PI * 2);
+      ctx.arc(cx, cy, radius * 1.04, 0, Math.PI * 2, true);
+      ctx.clip("evenodd");
+      ctx.globalAlpha = Math.min(0.94, gate * 0.95);
       ctx.translate(cx, cy);
-      ctx.rotate(-0.18);
-      ctx.scale(1, 0.21);
-      ctx.strokeStyle = `rgba(255,218,138,${0.62 + state.energy * 0.24})`;
-      ctx.lineWidth = Math.max(3, radius * 0.085);
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 1.82, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.rotate(state.elapsed * 0.075 * gate);
+      ctx.translate(-cx, -cy);
+      ctx.drawImage(source, drawX, drawY, drawW, drawH);
       ctx.restore();
-
-      ctx.strokeStyle = "rgba(255,238,196,.88)";
-      ctx.lineWidth = Math.max(1.5, radius * 0.025);
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius * 1.03, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.fillStyle = "rgba(0,0,0,1)";
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius * 0.82, 0, Math.PI * 2);
-      ctx.fill();
     };
-
-    return { draw };
+    return { draw, ready };
   }
 
   window.createAshwoodGravityRenderer = function createAshwoodGravityRenderer({
     canvas,
     reducedMotion = false,
     dprCap = 1.5,
+    imageElement = null,
     imageSrc = "/assets/v4/ashwood-black-hole-environment.png?v=20260922-lens2"
   } = {}) {
     if (!canvas) throw new Error("Gravity renderer requires a canvas");
@@ -74,6 +66,12 @@
       zoneActive: 0,
       imageAspect: 1.5,
       textureReady: 0,
+      horizon: [0.5,0.5],
+      horizonRadius: 0.145,
+      coverScale: [1,1],
+      coverOffset: [0,0],
+      geometry: null,
+      elapsed: 0,
       start: performance.now(),
       raf: 0
     };
@@ -85,6 +83,8 @@
     let texture = null;
     let loc = {};
     let observer = null;
+    let resizeObserver = null;
+    let textureLoadedPromise = Promise.resolve(false);
 
     const vertexSource = `
       attribute vec2 a_position;
@@ -107,6 +107,10 @@
       uniform sampler2D u_image;
       uniform float u_image_aspect;
       uniform float u_texture_ready;
+      uniform vec2 u_horizon;
+      uniform float u_horizon_radius;
+      uniform vec2 u_cover_scale;
+      uniform vec2 u_cover_offset;
 
       #define PI 3.14159265359
       float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
@@ -135,7 +139,7 @@
 
       void main(){
         vec2 frag=gl_FragCoord.xy;
-        vec2 uv=(frag-.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
+        vec2 uv=(frag-u_horizon*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
         float aspect=u_resolution.x/max(u_resolution.y,1.);
         vec2 shift=(u_pointer.xy-.5)*vec2(.025*aspect,.018)*u_pointer.z;
         vec2 p=uv-shift;
@@ -168,7 +172,7 @@
         lp += normalize(p+vec2(.0001))*bend*.010;
         float lr=length(lp);
 
-        float H=.142;
+        float H=u_horizon_radius;
         /* Separate the true shadow, thin photon ring, and broader lens halo. */
         float photonRing=exp(-pow((lr-H*1.10)/.0055,2.));
         float photonEcho=exp(-pow((lr-H*1.24)/.013,2.));
@@ -236,22 +240,16 @@
            Differential rotation shears the source texture around the horizon while the
            true shadow remains untouched. */
         float authoredInner=smoothstep(H*.98,H*1.30,r);
-        float authoredOuter=1.-smoothstep(.34,.56,r);
+        float authoredOuter=1.-smoothstep(H*2.1,H*3.6,r);
         float authoredMask=authoredInner*authoredOuter*motionGate;
-        float differentialRotation=(.045/max(r,.16))*localTime*authoredMask;
+        float differentialRotation=(.075/max(r,H*1.1))*localTime*authoredMask;
         float shearWave=sin(aa*5.0-r*29.0+localTime*.74)*.0045*authoredMask;
         vec2 tangent=normalize(vec2(-p.y,p.x)+vec2(.00001));
         vec2 warpedP=rot(-differentialRotation)*p+tangent*shearWave;
 
-        vec2 warpedScreen=.5+warpedP*(min(u_resolution.x,u_resolution.y)/u_resolution.xy);
-        vec2 texUv=warpedScreen-.5;
-        float viewAspect=u_resolution.x/max(u_resolution.y,1.);
-        if(viewAspect>u_image_aspect){
-          texUv.y*=u_image_aspect/viewAspect;
-        }else{
-          texUv.x*=viewAspect/u_image_aspect;
-        }
-        texUv+=.5;
+        // Project through the exact object-fit:cover crop of the visible authored plate.
+        vec2 warpedScreen=frag/u_resolution.xy+(warpedP-p)*(min(u_resolution.x,u_resolution.y)/u_resolution.xy);
+        vec2 texUv=warpedScreen*u_cover_scale+u_cover_offset;
         vec3 authored=texture2D(u_image,clamp(texUv,vec2(.001),vec2(.999))).rgb;
 
         float authoredAlpha=authoredMask*u_texture_ready*(.72+.20*beaming);
@@ -314,30 +312,39 @@
       loc.image = gl.getUniformLocation(program, "u_image");
       loc.imageAspect = gl.getUniformLocation(program, "u_image_aspect");
       loc.textureReady = gl.getUniformLocation(program, "u_texture_ready");
+      loc.horizon = gl.getUniformLocation(program, "u_horizon");
+      loc.horizonRadius = gl.getUniformLocation(program, "u_horizon_radius");
+      loc.coverScale = gl.getUniformLocation(program, "u_cover_scale");
+      loc.coverOffset = gl.getUniformLocation(program, "u_cover_offset");
       return true;
     };
 
-    const loadAuthoredTexture = () => {
-      if (!gl || !imageSrc) return;
-      const image = new Image();
-      image.decoding = "async";
-      image.onload = () => {
-        if (!gl || state.disposed) return;
-        if (texture) gl.deleteTexture(texture);
-        texture = gl.createTexture();
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        state.imageAspect = image.naturalWidth / Math.max(image.naturalHeight, 1);
-        state.textureReady = 1;
-      };
-      image.onerror = () => { state.textureReady = 0; };
-      image.src = imageSrc;
+    // The image is an img with object-fit: cover, centered and transformed by
+    // the current camera CSS. Its DOM rect is the only cropping source of truth.
+    const updateImageMapping = () => {
+      const canvasRect = canvas.getBoundingClientRect();
+      const plateRect = imageElement?.getBoundingClientRect();
+      if (!plateRect || !canvasRect.width || !canvasRect.height) return;
+      const aspect = state.imageAspect;
+      const drawW = Math.max(plateRect.width, plateRect.height * aspect);
+      const drawH = drawW / aspect;
+      const cropX = (drawW - plateRect.width) / 2;
+      const cropY = (drawH - plateRect.height) / 2;
+      const drawX = plateRect.left - canvasRect.left - cropX;
+      const drawY = plateRect.top - canvasRect.top - cropY;
+      const cx = drawX + drawW * 0.505;
+      const cy = drawY + drawH * 0.468;
+      state.horizon = [
+        cx / canvasRect.width,
+        1 - cy / canvasRect.height
+      ];
+      state.horizonRadius = (drawW * (150 / 1536)) / Math.min(canvasRect.width, canvasRect.height);
+      state.coverScale = [canvasRect.width / drawW, canvasRect.height / drawH];
+      state.coverOffset = [
+        -drawX / drawW,
+        1 - (canvasRect.height - drawY) / drawH
+      ];
+      state.geometry = { drawX, drawY, drawW, drawH };
     };
 
     const resize = () => {
@@ -352,12 +359,45 @@
         canvas.height = height;
       }
       if (gl) gl.viewport(0, 0, width, height);
+      updateImageMapping();
       if (fallback) fallback.draw();
     };
 
+    const loadAuthoredTexture = () => new Promise(resolve => {
+      if (!gl || !imageSrc) { resolve(false); return; }
+      const image = new Image();
+      image.decoding = "async";
+      image.onload = () => {
+        if (!gl || state.disposed) { resolve(false); return; }
+        try {
+          if (texture) gl.deleteTexture(texture);
+          texture = gl.createTexture();
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+          if (gl.getError() !== gl.NO_ERROR) throw new Error("texture upload failed");
+          state.imageAspect = image.naturalWidth / Math.max(image.naturalHeight, 1);
+          state.textureReady = 1;
+          resize();
+          resolve(true);
+        } catch (error) {
+          console.warn("[ASHWOOD / GRAVITY] Texture unavailable", error.message);
+          state.textureReady = 0;
+          resolve(false);
+        }
+      };
+      image.onerror = () => { state.textureReady = 0; resolve(false); };
+      image.src = imageSrc;
+    });
+
     const render = (now = performance.now()) => {
       if (state.disposed || !state.visible || document.hidden) return;
-      resize();
+      state.elapsed = state.reducedMotion ? 0 : (now - state.start) / 1000;
 
       if (gl && program) {
         gl.useProgram(program);
@@ -376,6 +416,10 @@
         gl.uniform1f(loc.zoneActive, state.zoneActive);
         gl.uniform1f(loc.imageAspect, state.imageAspect);
         gl.uniform1f(loc.textureReady, state.textureReady);
+        gl.uniform2f(loc.horizon, ...state.horizon);
+        gl.uniform1f(loc.horizonRadius, state.horizonRadius);
+        gl.uniform2f(loc.coverScale, ...state.coverScale);
+        gl.uniform2f(loc.coverOffset, ...state.coverOffset);
         if (texture) {
           gl.activeTexture(gl.TEXTURE0);
           gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -411,11 +455,12 @@
     canvas.addEventListener("webglcontextrestored", () => {
       try {
         initWebGL();
-        loadAuthoredTexture();
+        textureLoadedPromise = loadAuthoredTexture();
+        resize();
         start();
       } catch (_) {
         gl = null;
-        fallback = create2DFallback(canvas, state);
+        fallback = create2DFallback(canvas, state, imageSrc);
         start();
       }
     });
@@ -425,21 +470,38 @@
       state.visible ? start() : stop();
     }, { rootMargin: "180px 0px" });
     observer.observe(canvas);
+    if ("ResizeObserver" in window) {
+      resizeObserver = new ResizeObserver(() => resize());
+      resizeObserver.observe(canvas);
+    }
+    window.addEventListener("resize", resize, { passive: true });
+    window.visualViewport?.addEventListener("resize", resize, { passive: true });
+    imageElement?.addEventListener("load", resize);
 
     try {
-      if (!initWebGL()) fallback = create2DFallback(canvas, state);
-      else loadAuthoredTexture();
+      if (!initWebGL()) {
+        fallback = create2DFallback(canvas, state, imageSrc);
+        textureLoadedPromise = fallback?.ready || Promise.resolve(false);
+      } else textureLoadedPromise = loadAuthoredTexture();
     } catch (error) {
       console.warn("[ASHWOOD / GRAVITY] WebGL unavailable; using composed fallback.", error);
       gl = null;
-      fallback = create2DFallback(canvas, state);
+      fallback = create2DFallback(canvas, state, imageSrc);
+      textureLoadedPromise = fallback?.ready || Promise.resolve(false);
     }
 
     resize();
     start();
 
     return {
-      ready: Promise.resolve({ mode: gl ? "webgl" : "canvas2d" }),
+      ready: textureLoadedPromise.then(textureLoaded => ({ mode: gl ? "webgl" : "canvas2d", textureLoaded })), 
+      status() { return {
+        mode: gl ? "webgl" : "canvas2d", textureLoaded: !!state.textureReady || !!fallback,
+        horizon: state.horizon, horizonRadius: state.horizonRadius,
+        coverScale: state.coverScale, coverOffset: state.coverOffset,
+        motionStrength: state.motionStrength, zoneActive: state.zoneActive,
+        visible: state.visible
+      }; },
       setPointer({ x = 0.5, y = 0.5, active = 1 } = {}) {
         state.pointer.x = clamp(x);
         state.pointer.y = clamp(y);
@@ -471,10 +533,16 @@
         if (state.reducedMotion) render();
       },
       resize,
+      pause: stop,
+      resume: start,
       dispose() {
         state.disposed = true;
         stop();
         observer?.disconnect();
+        resizeObserver?.disconnect();
+        window.removeEventListener("resize", resize);
+        window.visualViewport?.removeEventListener("resize", resize);
+        imageElement?.removeEventListener("load", resize);
         document.removeEventListener("visibilitychange", onVisibility);
         if (gl) {
           if (buffer) gl.deleteBuffer(buffer);

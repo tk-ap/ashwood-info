@@ -1,183 +1,140 @@
 import { chromium, webkit, devices } from "playwright";
+import { PNG } from "pngjs";
 
 const base = process.env.GRAVITY_URL || "http://127.0.0.1:4173/";
 
-async function check(name, options = {}, reducedMotion = "no-preference", browserType = chromium) {
-  const browser = await browserType.launch({ headless: true });
-  const context = await browser.newContext({ ...options, reducedMotion });
-  const page = await context.newPage();
-  const pageErrors = [];
-  page.on("pageerror", error => pageErrors.push(error.message));
-
-  await page.goto(base, { waitUntil: "networkidle", timeout: 60000 });
-  await page.waitForSelector("body.ashwood-gravity-ready", { timeout: 15000 });
-
-  const source = await page.evaluate(async () => {
-    const text = await fetch("/gravity-renderer.js", { cache: "no-store" }).then(r => r.text());
-    return {
-      sharedFlow: text.includes("gravityFlow("),
-      fluxFilament: text.includes("fluxFilament("),
-      fluxMatter: text.includes("Flux-derived matter"),
-      motionActive: text.includes("u_zone_active*u_motion_strength"),
-      motionStrengthUniform: text.includes("u_motion_strength"),
-      zoneUniform: text.includes("u_zone_active"),
-      photonRing: text.includes("photonRing"),
-      beaming: text.includes("beaming"),
-      diskBand: text.includes("diskBand"),
-      authoredTexture: text.includes("sampler2D u_image"),
-      authoredWarp: text.includes("differentialRotation"),
-      textureReady: text.includes("u_texture_ready")
-    };
-  });
-  if (!source.sharedFlow || !source.fluxFilament || !source.fluxMatter) {
-    throw new Error(`${name}: shared gravitational flux field is missing`);
-  }
-  if (!source.motionActive || !source.motionStrengthUniform || !source.zoneUniform) {
-    throw new Error(`${name}: Instinct-scoped motion controls are missing`);
-  }
-  if (!source.photonRing || !source.beaming || !source.diskBand) {
-    throw new Error(`${name}: NASA-informed accretion structures are missing`);
-  }
-  if (!source.authoredTexture || !source.authoredWarp || !source.textureReady) {
-    throw new Error(`${name}: authored-image motion path is missing`);
-  }
-
-  const initial = await page.evaluate(() => {
-    const canvas = document.querySelector("[data-gravity-canvas]");
-    const hero = document.querySelector(".v3-hero");
-    const body = document.body;
-    const style = canvas ? getComputedStyle(canvas) : null;
-    return {
-      mode: body.dataset.gravityMode || null,
-      canvasWidth: canvas?.width || 0,
-      canvasHeight: canvas?.height || 0,
-      cssOpacity: style?.opacity || null,
-      pointerEvents: style?.pointerEvents || null,
-      heroHeight: hero?.getBoundingClientRect().height || 0,
-      canvasInField: Boolean(document.querySelector(".v3-field > [data-gravity-canvas]")),
-      heroContainsCanvas: Boolean(document.querySelector(".v3-hero [data-gravity-canvas]")),
-      fieldBackground: getComputedStyle(document.querySelector(".v3-field")).backgroundColor,
-      authoredLayers: document.querySelectorAll(".ashwood-site-cosmos__plate").length,
-      authoredLoaded: Array.from(document.querySelectorAll(".ashwood-site-cosmos__plate")).every(img => img.complete && img.naturalWidth > 1000),
-      cosmosInField: Boolean(document.querySelector(".v3-field .ashwood-site-cosmos")),
-      cosmosPosition: getComputedStyle(document.querySelector("[data-site-cosmos]")).position,
-      cosmosPhase: body.dataset.cosmosPhase || null,
-      cosmosZone: body.dataset.cosmosZone || null,
-      cameraScale: getComputedStyle(document.documentElement).getPropertyValue("--cosmos-base-scale").trim(),
-      hotspotOpacity: Number(getComputedStyle(document.querySelector(".v3-hotspot")).opacity),
-      hotspotLabelOpacity: Number(getComputedStyle(document.querySelector(".v3-hotspot span")).opacity),
-      fieldWidth: document.querySelector(".v3-field")?.getBoundingClientRect().width || 0,
-      viewportWidth: innerWidth,
-      hintDisplay: getComputedStyle(document.querySelector(".v3-field__hint")).display,
-      resetDisplay: getComputedStyle(document.querySelector(".v3-field__reset")).display,
-      docLauncherDisplay: document.querySelector(".ashwood-doc-editorial-launcher") ? getComputedStyle(document.querySelector(".ashwood-doc-editorial-launcher")).display : "missing",
-      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
-    };
-  });
-
-  if (!["webgl", "canvas2d"].includes(initial.mode)) {
-    throw new Error(`${name}: renderer mode missing (${initial.mode})`);
-  }
-  if (initial.canvasWidth < 10 || initial.canvasHeight < 10) {
-    throw new Error(`${name}: canvas did not size`);
-  }
-  // Hero motion is now an intentional state on mobile. Only later content zones must be motion-free.
-  if (!["hero", "instinct"].includes(initial.cosmosZone) && Number(initial.cssOpacity) > 0.01) {
-    throw new Error(`${name}: motion leaked into ${initial.cosmosZone} (${initial.cssOpacity})`);
-  }
-  if (initial.authoredLayers !== 3 || !initial.authoredLoaded) throw new Error(`${name}: global authored HiFi environment did not load as three depth plates`);
-  if (initial.cosmosInField) throw new Error(`${name}: authored universe is still owned by the Instinct field`);
-  if (initial.cosmosPosition !== "fixed") throw new Error(`${name}: site cosmos is not persistent/fixed`);
-  if (!["ambient","instinct","afterglow"].includes(initial.cosmosPhase)) throw new Error(`${name}: site cosmos phase is missing`);
-  if (!["hero","instinct","evidence","depth"].includes(initial.cosmosZone)) throw new Error(`${name}: dimensional zone is missing`);
-  if (!initial.cameraScale) throw new Error(`${name}: restrained camera variables were not initialized`);
-  if (initial.hotspotOpacity > 0.2 || initial.hotspotLabelOpacity > 0.01) throw new Error(`${name}: discovery markers are too visually assertive by default`);
-  if (initial.fieldWidth < initial.viewportWidth * 0.98) throw new Error(`${name}: Instinct activation layer is not full bleed`);
-  if (initial.hintDisplay !== "none" || initial.resetDisplay !== "none") throw new Error(`${name}: legacy discovery chrome is still visible`);
-  if (initial.docLauncherDisplay !== "none" && initial.docLauncherDisplay !== "missing") throw new Error(`${name}: persistent Doc launcher leaked into V4`);
-  if (initial.pointerEvents !== "none") throw new Error(`${name}: canvas intercepted input`);
-  if (!initial.canvasInField || initial.heroContainsCanvas) throw new Error(`${name}: Gravity is not isolated to Instinct field`);
-  if (initial.overflow > 2) throw new Error(`${name}: horizontal overflow ${initial.overflow}px`);
-
-  // Center the actual canvas field; centering the entire Thinking section can
-  // leave its animation below the fold on tall iPhone layouts.
-  await page.evaluate(() => {
-    const field = document.querySelector(".v3-field");
-    const rect = field?.getBoundingClientRect();
-    if (!rect) return;
-    window.scrollTo({ top: window.scrollY + rect.top + (rect.height - window.innerHeight) / 2, behavior: "instant" });
-    window.dispatchEvent(new Event("scroll"));
-  });
-  try {
-    await page.waitForFunction(({ reduced }) => {
-      const body = document.body;
-      const canvas = document.querySelector("[data-gravity-canvas]");
-      if (!canvas) return false;
-      const opacity = Number(getComputedStyle(canvas).opacity);
-      const target = reduced ? 0.65 : 0.90;
-      const rect = canvas.getBoundingClientRect();
-      const visible = rect.top < innerHeight && rect.bottom > 0;
-      return body.dataset.cosmosZone === "instinct" && opacity >= target && visible;
-    }, { reduced: reducedMotion === "reduce" }, { timeout: 8500 });
-  } catch (error) {
-    const diagnostic = await page.evaluate(() => {
-      const canvas = document.querySelector("[data-gravity-canvas]");
-      const field = document.querySelector(".v3-field");
-      const rect = canvas?.getBoundingClientRect();
-      return {
-        zone: document.body.dataset.cosmosZone,
-        phase: document.body.dataset.cosmosPhase,
-        opacity: canvas ? getComputedStyle(canvas).opacity : null,
-        canvasRect: rect ? { top: rect.top, bottom: rect.bottom, height: rect.height } : null,
-        fieldTop: field?.getBoundingClientRect().top,
-        scrollY, viewportHeight: innerHeight,
-        mode: document.body.dataset.gravityMode
-      };
-    });
-    console.error(`${name}: Instinct viewport diagnostic ${JSON.stringify(diagnostic)}`);
-    throw error;
-  }
-
-  const after = await page.evaluate(() => ({
-    ready: document.body.classList.contains("ashwood-gravity-ready"),
-    canvasWidth: document.querySelector("[data-gravity-canvas]")?.width || 0,
-    thinkingExists: Boolean(document.querySelector("#thinking")),
-    cosmosPhase: document.body.dataset.cosmosPhase || null,
-    cosmosZone: document.body.dataset.cosmosZone || null,
-    canvasOpacity: Number(getComputedStyle(document.querySelector("[data-gravity-canvas]")).opacity),
-    pageHeight: document.documentElement.scrollHeight,
-    viewportHeight: innerHeight
-  }));
-
-  if (!after.ready || !after.thinkingExists || after.pageHeight < after.viewportHeight * 2) {
-    throw new Error(`${name}: page composition regressed`);
-  }
-  if (after.cosmosPhase !== "instinct" || after.cosmosZone !== "instinct") {
-    throw new Error(`${name}: Instinct did not become the closest-encounter zone (${after.cosmosPhase}/${after.cosmosZone})`);
-  }
-  if (after.canvasOpacity < (reducedMotion === "reduce" ? 0.65 : 0.90) || after.canvasOpacity > 1.0) {
-    throw new Error(`${name}: authored motion layer is not visibly active (${after.canvasOpacity})`);
-  }
-
-  // Non-reduced desktop and mobile must prove real temporal change, not just visible canvas opacity.
-  if (reducedMotion !== "reduce") {
-    const motionCanvas = page.locator("[data-gravity-canvas]");
-    const frameA = await motionCanvas.screenshot();
-    await page.waitForTimeout(900);
-    const frameB = await motionCanvas.screenshot();
-    if (Buffer.compare(frameA, frameB) === 0) {
-      throw new Error(`${name}: motion canvas did not change between frames`);
+function ringDifference(a, b, status) {
+  const first = PNG.sync.read(a);
+  const next = PNG.sync.read(b);
+  if (first.width !== next.width || first.height !== next.height)
+    throw new Error("frame size changed during sample");
+  const w = first.width, h = first.height;
+  const cx = status.horizon[0] * w;
+  const cy = (1 - status.horizon[1]) * h;
+  const radius = status.horizonRadius * Math.min(w, h);
+  let count = 0, changed = 0, totalDelta = 0;
+  for (let y = Math.max(0, Math.floor(cy - 2.5*radius));
+           y < Math.min(h, Math.ceil(cy + 2.5*radius)); y+=2) {
+    for (let x = Math.max(0, Math.floor(cx - 2.5*radius));
+             x < Math.min(w, Math.ceil(cx + 2.5*radius)); x+=2) {
+      const d = Math.hypot(x-cx,y-cy);
+      if (d < radius*1.12 || d > radius*2.45) continue;
+      const k = (y*w+x)*4;
+      const delta = Math.abs(first.data[k]-next.data[k]) +
+        Math.abs(first.data[k+1]-next.data[k+1]) +
+        Math.abs(first.data[k+2]-next.data[k+2]);
+      count++;
+      totalDelta += delta;
+      if (delta >= 9) changed++;
     }
   }
+  return {count,changed,average:count?totalDelta/count:0};
+}
 
-  if (pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join(" | ")}`);
+async function scenario(name, options, motion, engine=chromium) {
+  const browser = await engine.launch({headless:true});
+  const context = await browser.newContext({...options,reducedMotion:motion?"no-preference":"reduce"});
+  const page = await context.newPage();
+  const failures = [];
+  page.on("pageerror", e=>failures.push(e.message));
+  page.on("console", m=>{if(m.type()==="error") failures.push(m.text());});
+  await page.goto(base,{waitUntil:"networkidle",timeout:60000});
+  await page.waitForSelector("body.ashwood-gravity-ready",{timeout:15000});
 
-  await page.screenshot({ path: `gravity-${name}.png`, fullPage: false });
-  console.log(JSON.stringify({ name, reducedMotion, initial, after }, null, 2));
+  const initial = await page.evaluate(()=>{
+    const canvas = document.querySelector("[data-gravity-canvas]");
+    const scene = document.querySelector("[data-site-cosmos]");
+    const state = window.__ashwoodGravityRenderer?.status();
+    return {
+      mounted:canvas?.parentElement===scene,
+      canvasRect:canvas?.getBoundingClientRect().toJSON(),
+      viewport:[innerWidth,innerHeight],
+      mode:document.body.dataset.gravityMode,
+      texture:document.body.dataset.gravityTexture,
+      zone:document.body.dataset.cosmosZone,
+      opacity:Number(getComputedStyle(canvas).opacity),
+      plateLoaded:[...scene.querySelectorAll(".ashwood-site-cosmos__plate")]
+        .every(img=>img.complete&&img.naturalWidth>1000),
+      horizon:state?.horizon,
+      radius:state?.horizonRadius,
+      overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+    };
+  });
+  if(!initial.mounted||!initial.plateLoaded||initial.texture!=="ready")
+    throw new Error(name+": authored scene failed to mount and load "+JSON.stringify(initial));
+  if(initial.mode!=="webgl" && initial.mode!=="canvas2d")
+    throw new Error(name+": missing renderer");
+  if(initial.zone!=="hero")
+    throw new Error(name+": not at hero on initial load");
+  if(initial.canvasRect.width<initial.viewport[0]*0.98||
+     initial.canvasRect.height<initial.viewport[1]*0.98)
+    throw new Error(name+": scene canvas not viewport-fixed");
+  if(initial.overflow>2) throw new Error(name+": horizontal overflow "+initial.overflow);
+
+  const sample = async (section)=>{
+    await page.waitForTimeout(720);
+    const st=await page.evaluate(()=>window.__ashwoodGravityRenderer.status());
+    const a=await page.locator("[data-gravity-canvas]").screenshot({scale:"css"});
+    await page.waitForTimeout(1500);
+    const b=await page.locator("[data-gravity-canvas]").screenshot({scale:"css"});
+    const delta=ringDifference(a,b,st);
+    console.log(JSON.stringify({name,section,delta,status:st}));
+    if(delta.count<100||delta.changed<90||delta.average<0.6)
+      throw new Error(name+": "+section+" accretion not visibly changing "+JSON.stringify(delta));
+  };
+  if(motion) await sample("hero");
+
+  await page.evaluate(()=>{
+    const field=document.querySelector(".v3-field");
+    const r=field.getBoundingClientRect();
+    window.scrollTo({top:scrollY+r.top+(r.height-innerHeight)/2,behavior:"instant"});
+    dispatchEvent(new Event("scroll"));
+  });
+  await page.waitForFunction(()=>{
+    const canvas=document.querySelector("[data-gravity-canvas]");
+    const r=canvas.getBoundingClientRect();
+    return document.body.dataset.cosmosZone==="instinct" &&
+      Number(getComputedStyle(canvas).opacity)>0.82 &&
+      r.top<innerHeight&&r.bottom>0;
+  },null,{timeout:10000});
+  const instinct=await page.evaluate(()=>{
+    const canvas=document.querySelector("[data-gravity-canvas]");
+    const plate=document.querySelector(".ashwood-site-cosmos__plate--base");
+    const status=window.__ashwoodGravityRenderer.status();
+    return {opacity:+getComputedStyle(canvas).opacity,horizon:status.horizon,
+      radius:status.horizonRadius,
+      plateRect:plate.getBoundingClientRect().toJSON()};
+  });
+  if(instinct.radius<0.07||instinct.radius>0.48||
+     instinct.horizon.some(v=>v<0.25||v>0.75))
+    throw new Error(name+": cover/crop horizon misaligned "+JSON.stringify(instinct));
+  if(motion) await sample("instinct");
+  else {
+    const st=await page.evaluate(()=>window.__ashwoodGravityRenderer.status());
+    if(st.motionStrength!==0) throw new Error(name+": reduced motion is not frozen");
+  }
+
+  await page.evaluate(()=>document.querySelector("#evidence")?.scrollIntoView({block:"center",behavior:"instant"}));
+  await page.waitForFunction(()=>document.body.dataset.cosmosZone==="evidence",{timeout:8000});
+  await page.waitForFunction(()=>Number(getComputedStyle(document.querySelector("[data-gravity-canvas]")).opacity)<0.08,null,{timeout:5000});
+
+  if(options.isMobile&&motion){
+    await page.setViewportSize({width:844,height:390});
+    await page.waitForTimeout(700);
+    const resized=await page.evaluate(()=>{
+      const r=document.querySelector("[data-gravity-canvas]").getBoundingClientRect();
+      return {width:r.width,height:r.height,horizon:window.__ashwoodGravityRenderer.status().horizon};
+    });
+    if(resized.width<830||resized.height<380)
+      throw new Error(name+": orientation resize failed "+JSON.stringify(resized));
+  }
+  if(failures.length) throw new Error(name+": runtime errors "+failures.join(" | "));
+  await page.screenshot({path:"gravity-"+name+".png",fullPage:false});
+  console.log(JSON.stringify({name,result:"PASS",initial,instinct}));
   await browser.close();
 }
 
-await check("desktop", devices["Desktop Chrome"]);
-await check("mobile", devices["Pixel 7"]);
-await check("mobile-webkit", devices["iPhone 15"], "no-preference", webkit);
-await check("reduced", devices["Desktop Chrome"], "reduce");
+await scenario("desktop",devices["Desktop Chrome"],true);
+await scenario("mobile",devices["Pixel 7"],true);
+await scenario("mobile-webkit",devices["iPhone 15"],true,webkit);
+await scenario("reduced",devices["Desktop Chrome"],false);

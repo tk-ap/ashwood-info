@@ -1211,3 +1211,35 @@ body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
     animation:none!important;
   }
 }
+
+
+/* V4.15: one persistent, image-aligned gravitational scene across Hero and Instinct.
+   The authored plate, renderer and veil share the same fixed viewport. The canvas
+   overlays only the event; chapter progress supplies opacity, not display toggles. */
+.ashwood-site-cosmos > .ashwood-gravity-canvas {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:5!important;
+  background:transparent!important;
+  pointer-events:none;
+  mix-blend-mode:normal;
+  filter:none;
+  opacity:0!important;
+  transition:none!important;
+}
+body.ashwood-gravity-ready .ashwood-site-cosmos > .ashwood-gravity-canvas {
+  opacity:var(--gravity-scene-opacity,0)!important;
+}
+@media (max-width:900px) {
+  /* Do not spin a full duplicate universe as a substitute for local accretion. */
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity,
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground {
+    animation:none!important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .ashwood-site-cosmos > .ashwood-gravity-canvas { transition:none!important; }
+  .ashwood-site-cosmos__plate { animation:none!important; }
+}
