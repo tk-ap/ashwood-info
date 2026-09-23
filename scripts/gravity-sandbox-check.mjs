@@ -18,14 +18,22 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       sharedFlow: text.includes("gravityFlow("),
       fluxFilament: text.includes("fluxFilament("),
       fluxMatter: text.includes("Flux-derived matter"),
-      motionActive: text.includes("float motionGate=1.0;")
+      motionActive: text.includes("u_zone_active*u_motion_strength"),
+      motionStrengthUniform: text.includes("u_motion_strength"),
+      zoneUniform: text.includes("u_zone_active"),
+      photonRing: text.includes("photonRing"),
+      beaming: text.includes("beaming"),
+      diskBand: text.includes("diskBand")
     };
   });
   if (!source.sharedFlow || !source.fluxFilament || !source.fluxMatter) {
     throw new Error(`${name}: shared gravitational flux field is missing`);
   }
-  if (!source.motionActive) {
-    throw new Error(`${name}: localized gravitational motion is not active`);
+  if (!source.motionActive || !source.motionStrengthUniform || !source.zoneUniform) {
+    throw new Error(`${name}: Instinct-scoped motion controls are missing`);
+  }
+  if (!source.photonRing || !source.beaming || !source.diskBand) {
+    throw new Error(`${name}: NASA-informed accretion structures are missing`);
   }
 
   const initial = await page.evaluate(() => {
@@ -67,7 +75,7 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (initial.canvasWidth < 10 || initial.canvasHeight < 10) {
     throw new Error(`${name}: canvas did not size`);
   }
-  if (Number(initial.cssOpacity) > 0.05) throw new Error(`${name}: procedural canvas is painting over authored still (${initial.cssOpacity})`);
+  if (Number(initial.cssOpacity) > 0.01) throw new Error(`${name}: motion leaked outside Instinct (${initial.cssOpacity})`);
   if (initial.authoredLayers !== 3 || !initial.authoredLoaded) throw new Error(`${name}: global authored HiFi environment did not load as three depth plates`);
   if (initial.cosmosInField) throw new Error(`${name}: authored universe is still owned by the Instinct field`);
   if (initial.cosmosPosition !== "fixed") throw new Error(`${name}: site cosmos is not persistent/fixed`);
