@@ -50,6 +50,8 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
       cosmosPhase: body.dataset.cosmosPhase || null,
       cosmosZone: body.dataset.cosmosZone || null,
       cameraScale: getComputedStyle(document.documentElement).getPropertyValue("--cosmos-base-scale").trim(),
+      hotspotOpacity: Number(getComputedStyle(document.querySelector(".v3-hotspot")).opacity),
+      hotspotLabelOpacity: Number(getComputedStyle(document.querySelector(".v3-hotspot span")).opacity),
       fieldWidth: document.querySelector(".v3-field")?.getBoundingClientRect().width || 0,
       viewportWidth: innerWidth,
       hintDisplay: getComputedStyle(document.querySelector(".v3-field__hint")).display,
@@ -72,6 +74,7 @@ async function check(name, options = {}, reducedMotion = "no-preference") {
   if (!["ambient","instinct","afterglow"].includes(initial.cosmosPhase)) throw new Error(`${name}: site cosmos phase is missing`);
   if (!["hero","instinct","evidence","depth"].includes(initial.cosmosZone)) throw new Error(`${name}: dimensional zone is missing`);
   if (!initial.cameraScale) throw new Error(`${name}: restrained camera variables were not initialized`);
+  if (initial.hotspotOpacity > 0.2 || initial.hotspotLabelOpacity > 0.01) throw new Error(`${name}: discovery markers are too visually assertive by default`);
   if (initial.fieldWidth < initial.viewportWidth * 0.98) throw new Error(`${name}: Instinct activation layer is not full bleed`);
   if (initial.hintDisplay !== "none" || initial.resetDisplay !== "none") throw new Error(`${name}: legacy discovery chrome is still visible`);
   if (initial.docLauncherDisplay !== "none" && initial.docLauncherDisplay !== "missing") throw new Error(`${name}: persistent Doc launcher leaked into V4`);
