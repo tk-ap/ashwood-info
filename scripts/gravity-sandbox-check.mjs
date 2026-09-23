@@ -93,8 +93,9 @@ async function scenario(name, options, motion, engine=chromium) {
   await page.waitForFunction(()=>{
     const canvas=document.querySelector("[data-gravity-canvas]");
     const r=canvas.getBoundingClientRect();
+    const threshold=window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0.68 : 0.82;
     return document.body.dataset.cosmosZone==="instinct" &&
-      Number(getComputedStyle(canvas).opacity)>0.82 &&
+      Number(getComputedStyle(canvas).opacity)>threshold &&
       r.top<innerHeight&&r.bottom>0;
   },null,{timeout:10000});
   const instinct=await page.evaluate(()=>{

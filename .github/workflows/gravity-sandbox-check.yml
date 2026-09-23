@@ -31,6 +31,8 @@ jobs:
           done
           cat /tmp/gravity-http.log
           exit 1
+      - name: Enforce scene-mounting contract
+        run: node --test tests/gravity-motion-contract.test.mjs
       - name: Exercise Gravity renderer
         run: node scripts/gravity-sandbox-check.mjs
       - name: Preserve proof screenshots

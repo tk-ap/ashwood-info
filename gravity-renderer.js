@@ -430,7 +430,7 @@
         fallback.draw();
       }
 
-      if (!state.reducedMotion) state.raf = requestAnimationFrame(render);
+      if (!state.reducedMotion && state.zoneActive > 0.001) state.raf = requestAnimationFrame(render);
     };
 
     const stop = () => {
@@ -529,8 +529,12 @@
         if (state.reducedMotion) render();
       },
       setZoneActive(value = 0) {
+        const wasActive = state.zoneActive > 0.001;
         state.zoneActive = clamp(value);
+        const isActive = state.zoneActive > 0.001;
         if (state.reducedMotion) render();
+        else if (!wasActive && isActive) start();
+        else if (wasActive && !isActive) stop();
       },
       resize,
       pause: stop,
