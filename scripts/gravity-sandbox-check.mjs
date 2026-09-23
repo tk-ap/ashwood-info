@@ -81,7 +81,10 @@ async function check(name, options = {}, reducedMotion = "no-preference", browse
   if (initial.canvasWidth < 10 || initial.canvasHeight < 10) {
     throw new Error(`${name}: canvas did not size`);
   }
-  if (Number(initial.cssOpacity) > 0.01) throw new Error(`${name}: motion leaked outside Instinct (${initial.cssOpacity})`);
+  // Hero motion is now an intentional state on mobile. Only later content zones must be motion-free.
+  if (!["hero", "instinct"].includes(initial.cosmosZone) && Number(initial.cssOpacity) > 0.01) {
+    throw new Error(`${name}: motion leaked into ${initial.cosmosZone} (${initial.cssOpacity})`);
+  }
   if (initial.authoredLayers !== 3 || !initial.authoredLoaded) throw new Error(`${name}: global authored HiFi environment did not load as three depth plates`);
   if (initial.cosmosInField) throw new Error(`${name}: authored universe is still owned by the Instinct field`);
   if (initial.cosmosPosition !== "fixed") throw new Error(`${name}: site cosmos is not persistent/fixed`);
