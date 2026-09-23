@@ -57,6 +57,11 @@
   `;
   document.head.appendChild(style);
 
+  // The here.now build is public-only: workspace remains behind the production auth/API backend.
+  const workspaceHref = location.hostname.endsWith('.here.now')
+    ? 'https://ashwood-info.vercel.app/workspace/'
+    : '/workspace/';
+
   const nav = document.createElement('aside');
   nav.className = 'v3-global-nav';
   nav.id = 'v3-global-nav';
@@ -80,7 +85,7 @@
           <a href="/ai-from-zero/">AI from Zero</a>
           <a href="/#thinking">The instinct</a>
         </div>
-        <a class="v3-global-nav__private" href="/workspace/" rel="nofollow" aria-label="Private ASHWOOD workspace">workspace ↗</a>
+        <a class="v3-global-nav__private" href="${workspaceHref}" rel="nofollow" aria-label="Private ASHWOOD workspace">workspace ↗</a>
       </div>
     </div>`;
   document.body.appendChild(nav);
