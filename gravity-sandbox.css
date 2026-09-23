@@ -1160,3 +1160,54 @@ body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
     animation:none!important;
   }
 }
+
+
+/* V4.14 — mobile/Safari accretion fallback.
+   WebGL remains primary. The authored gravity plate supplies a second, image-native
+   rotational cue on narrow viewports so iOS cannot collapse the encounter to a still. */
+@media(max-width:900px){
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity{
+    opacity:.16;
+    transform-origin:50% 45%;
+    animation:ashwood-mobile-accretion 72s linear infinite;
+  }
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
+    opacity:.045;
+    transform-origin:50% 45%;
+    animation:ashwood-mobile-shear 18s ease-in-out infinite alternate;
+  }
+}
+@keyframes ashwood-mobile-accretion{
+  from{
+    transform:
+      translate3d(var(--cosmos-gravity-x,0px),var(--cosmos-gravity-y,0px),0)
+      scale(var(--cosmos-gravity-scale,1.014))
+      rotate(0deg);
+  }
+  to{
+    transform:
+      translate3d(var(--cosmos-gravity-x,0px),var(--cosmos-gravity-y,0px),0)
+      scale(var(--cosmos-gravity-scale,1.014))
+      rotate(360deg);
+  }
+}
+@keyframes ashwood-mobile-shear{
+  from{
+    transform:
+      translate3d(var(--cosmos-foreground-x,0px),var(--cosmos-foreground-y,0px),0)
+      scale(var(--cosmos-foreground-scale,1.022))
+      rotate(-.6deg);
+  }
+  to{
+    transform:
+      translate3d(calc(var(--cosmos-foreground-x,0px) - 3px),calc(var(--cosmos-foreground-y,0px) + 2px),0)
+      scale(calc(var(--cosmos-foreground-scale,1.022) + .004))
+      rotate(.8deg);
+  }
+}
+@media(max-width:900px) and (prefers-reduced-motion:reduce){
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--gravity,
+  body[data-cosmos-zone="instinct"] .ashwood-site-cosmos__plate--foreground{
+    animation:none!important;
+  }
+}
