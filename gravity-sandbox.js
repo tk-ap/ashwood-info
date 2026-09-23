@@ -35,7 +35,9 @@
     const viewportCenter = innerHeight * 0.5;
     const sectionCenter = rect.top + rect.height * 0.5;
     const distance = Math.abs(sectionCenter - viewportCenter);
-    return clamp(1 - distance / Math.max(rect.height * 0.62, innerHeight * 0.75));
+    const proximity = clamp(1 - distance / Math.max(rect.height * 0.62, innerHeight * 0.75));
+    // V4.13: once Instinct is active, motion must be perceptible even away from exact center.
+    return 0.46 + proximity * 0.54;
   };
 
   const setCamera = (progress, zone) => {
