@@ -1,0 +1,9 @@
+'use strict';
+// Read-only research and position-sizing overlay. No external API calls or trading.
+const SETTINGS='ashwood-paper-lab-research-v1';
+const ids=['kalshiStatus','coinbaseStatus','cashappStatus','smallRisk','mediumRisk','highRisk'];
+let settings={};try{settings=JSON.parse(localStorage.getItem(SETTINGS)||'{}')}catch{}
+for(const id of ids){const el=document.getElementById(id);if(settings[id]!=null)el.value=settings[id];el.addEventListener('change',()=>{settings[id]=el.value;localStorage.setItem(SETTINGS,JSON.stringify(settings));renderSizing()})}
+function renderSizing(){const price=Number(document.getElementById('price').value)/100,fee=Number(document.getElementById('fees').value),n=Number(document.getElementById('contracts').value);const cost=price*n+fee;const unit=price+(n>0?fee/n:0);const root=document.getElementById('sizing');root.replaceChildren();if(!Number.isFinite(unit)||unit<=0||price<=0||price>=1)return;for(const [label,id] of [['Conservative','smallRisk'],['Moderate','mediumRisk'],['High exposure','highRisk']]){const percent=Number(document.getElementById(id).value);if(!Number.isFinite(percent)||percent<=0||percent>100)continue;const allocation=400*percent/100,contracts=Math.floor(allocation/unit),atRisk=contracts*unit,maxGain=contracts-atRisk;const row=document.createElement('div');row.className='trade';const h=document.createElement('strong');h.textContent=label+' · '+percent+'% of starting balance';const p=document.createElement('p');p.textContent=contracts+' contracts · estimated cost '+atRisk.toLocaleString('en-US',{style:'currency',currency:'USD'})+' · max net gain '+maxGain.toLocaleString('en-US',{style:'currency',currency:'USD'});row.append(h,p);root.append(row)}}
+for(const id of ['price','contracts','fees'])document.getElementById(id).addEventListener('input',renderSizing);
+renderSizing();

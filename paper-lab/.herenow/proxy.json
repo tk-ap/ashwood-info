@@ -1,0 +1,9 @@
+{
+  "proxies": {
+    "/api/kalshi-markets": {
+      "upstream": "https://external-api.kalshi.com/trade-api/v2/markets",
+      "method": "GET",
+      "rateLimit": "30/hour/ip"
+    }
+  }
+}
