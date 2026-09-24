@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#0d0e0b" />
+  <title>AgentOS Health — ASHWOOD Workspace</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
+  <link rel="stylesheet" href="/workspace/agentos/agentos-health.css?v=20260924-forward1" />
+  <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
+  <script src="/theme.js?v=20260909-cache1" defer></script>
+  <script type="module" src="/workspace/agentos/agentos-health.mjs?v=20260924-forward1"></script>
+</head>
+<body class="agentos-health-page">
+  <main class="health-shell">
+    <header class="health-mast">
+      <div class="health-brand">
+        <a href="/workspace/" class="health-wordmark">ASHWOOD</a>
+        <span>Workspace / AgentOS</span>
+      </div>
+      <div class="health-mast-actions">
+        <span id="health-source-state" class="health-source-state">Connecting…</span>
+        <button id="health-refresh" type="button">Refresh</button>
+      </div>
+    </header>
+
+    <section class="health-hero" aria-labelledby="health-title">
+      <div class="health-hero-copy">
+        <p class="health-kicker">AgentOS · autonomous persistence</p>
+        <h1 id="health-title">How far is the system from running without TK as the message bus?</h1>
+        <p class="health-deck">A live readout of what is actually persisted, governed, routed, verified and recoverable. Implemented is not the same as proven.</p>
+      </div>
+      <aside class="health-now" aria-label="Current AgentOS health">
+        <span class="health-now-label">System health</span>
+        <strong id="health-overall">Reading</strong>
+        <span id="health-freshness">Waiting for protected sources</span>
+      </aside>
+    </section>
+
+    <section class="autonomy-card" aria-labelledby="autonomy-title">
+      <div class="autonomy-topline">
+        <div>
+          <p class="health-kicker">Distance to autonomous persistence</p>
+          <h2 id="autonomy-title">Autonomy</h2>
+        </div>
+        <strong id="autonomy-value" class="autonomy-value">—%</strong>
+      </div>
+      <div class="autonomy-track" role="progressbar" aria-labelledby="autonomy-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="autonomy-track">
+        <span id="autonomy-fill"></span>
+      </div>
+      <div class="autonomy-meta">
+        <p><span>Current constraint</span><strong id="autonomy-constraint">Establishing evidence baseline…</strong></p>
+        <p><span>Rubric</span><strong>autonomy-rubric.v1</strong></p>
+        <p><span>Scoring</span><strong>Verified = full weight · Partial = ½ · Blocked/Unverified = 0</strong></p>
+      </div>
+    </section>
+
+    <section class="health-stat-grid" aria-label="AgentOS top-line metrics">
+      <article><span>Underway</span><strong id="stat-underway">—</strong><small>canonical board rows</small></article>
+      <article><span>Needs TK</span><strong id="stat-owner">—</strong><small>human-intervention candidates</small></article>
+      <article><span>Blocked / parked</span><strong id="stat-blocked">—</strong><small>cannot safely advance</small></article>
+      <article><span>Agents observed</span><strong id="stat-agents">—</strong><small>distinct assigned identities</small></article>
+      <article><span>Snapshot</span><strong id="stat-snapshot">—</strong><small>latest durable projection</small></article>
+      <article><span>Runtime convergence</span><strong id="stat-convergence">Unverified</strong><small id="stat-shas">SHA evidence unavailable</small></article>
+    </section>
+
+    <section class="health-grid">
+      <div class="capability-panel">
+        <div class="section-head">
+          <div><p class="health-kicker">Capability proof</p><h2>What is real now</h2></div>
+          <p>15 weighted dimensions. Every state is derived from the currently observable Workspace projection and its evidence metadata.</p>
+        </div>
+        <div id="capability-list" class="capability-list" aria-live="polite"></div>
+      </div>
+
+      <aside class="constraint-panel">
+        <div class="section-head section-head-stack">
+          <div><p class="health-kicker">TK dependency</p><h2>Where you are still the runtime</h2></div>
+        </div>
+        <div class="dependency-meter">
+          <strong id="dependency-value">—</strong>
+          <span>observed intervention pressure</span>
+        </div>
+        <div id="dependency-list" class="dependency-list"></div>
+
+        <div class="constraint-block">
+          <p class="health-kicker">Next autonomy gate</p>
+          <h3 id="next-gate-title">Reading current constraints…</h3>
+          <p id="next-gate-copy"></p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="runtime-panel">
+      <div class="section-head">
+        <div><p class="health-kicker">Runtime / workforce</p><h2>Observed agent activity</h2></div>
+        <p id="runtime-note">Read-only. AgentOS remains canonical.</p>
+      </div>
+      <div id="agent-list" class="agent-list"></div>
+    </section>
+
+    <section class="evidence-panel">
+      <div class="section-head">
+        <div><p class="health-kicker">Evidence freshness</p><h2>Why the score moved</h2></div>
+        <p>No silent green state: stale or unavailable telemetry degrades the view.</p>
+      </div>
+      <div id="evidence-events" class="evidence-events"></div>
+    </section>
+
+    <footer class="health-footer">
+      <div><a href="/workspace/">← Back to Workspace</a> · <a href="/workspace/build/agentos/">Raw AgentOS projection</a></div>
+      <span>ASHWOOD is the projection. AgentOS remains the lifecycle, authority, routing and evidence source of truth.</span>
+    </footer>
+  </main>
+</body>
+</html>
