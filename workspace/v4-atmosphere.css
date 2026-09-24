@@ -1,0 +1,54 @@
+/* ASHWOOD Workspace V4 atmosphere.
+   Operational surfaces stay legible; depth lives behind them, never over them. */
+.workspace-page{
+  position:relative;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 82% 8%,rgba(89,159,126,.055),transparent 34%),
+    radial-gradient(ellipse at 12% 38%,rgba(180,135,50,.045),transparent 30%),
+    #090a08;
+}
+.workspace-page::before{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  inset:-18vh -12vw;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 70% 26%,transparent 0 10%,rgba(206,178,111,.045) 10.3%,transparent 11.2%),
+    radial-gradient(circle at 18% 72%,rgba(89,159,126,.035),transparent 18%);
+  transform:rotate(-7deg);
+  animation:workspace-v4-drift 28s ease-in-out infinite alternate;
+}
+.workspace-shell{position:relative;z-index:1}
+.workspace-view-intro{
+  position:relative;
+  overflow:hidden;
+}
+.workspace-view-intro::after{
+  content:"";
+  position:absolute;
+  right:clamp(-90px,-5vw,-30px);
+  top:50%;
+  width:clamp(150px,18vw,260px);
+  aspect-ratio:1;
+  border-radius:50%;
+  transform:translateY(-50%);
+  pointer-events:none;
+  opacity:.48;
+  background:radial-gradient(circle at 32% 28%,rgba(216,187,121,.18),rgba(44,57,47,.16) 25%,rgba(7,8,7,.94) 67%,#030403 100%);
+  box-shadow:inset -24px -18px 42px rgba(0,0,0,.72),0 0 42px rgba(89,159,126,.045);
+}
+.operator-console,.ops-pulse,.today-panel,.today-objective,.operator-actions-section,.ailhat-sprint-section,.build-command-center{
+  position:relative;
+  backdrop-filter:blur(8px);
+}
+@keyframes workspace-v4-drift{
+  from{transform:translate3d(-.6%,0,0) rotate(-7deg)}
+  to{transform:translate3d(.8%,-.7%,0) rotate(-6.4deg)}
+}
+@media(max-width:700px){
+  .workspace-page{background:radial-gradient(ellipse at 85% 5%,rgba(89,159,126,.05),transparent 26%),#090a08}
+  .workspace-view-intro::after{right:-76px;width:160px;opacity:.34}
+}
+@media(prefers-reduced-motion:reduce){.workspace-page::before{animation:none}}
