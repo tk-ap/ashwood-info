@@ -27,7 +27,7 @@ async function refresh() {
   if(loading) return;
   const host=q("#ops-pulse");if(!host)return;
   loading=true;
-  const status=q("#ops-pulse-status");
+  const status=q("#ops-pulse-status");\n  const top=host.querySelector(".ops-pulse__top");\n  if(top && !top.querySelector(".ops-pulse-health-link")){ const link=document.createElement("a"); link.className="ops-pulse-health-link"; link.href="/workspace/agentos/"; link.textContent="AgentOS Health ↗"; const button=top.querySelector("button"); button?.insertAdjacentElement("beforebegin",link); }
   const details=q("#ops-pulse-detail");
   status.textContent="Reading protected Workspace sources…";
   const [board, commands, environment]=await Promise.allSettled([
