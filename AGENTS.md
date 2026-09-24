@@ -58,6 +58,13 @@ ASHWOOD's UI and private Workspace should feel alive: a living, breathing workin
 - The canonical ELITK behavior is the per-notification explainer in `workspace/feed.mjs` on current `main` (`ELITK · Explain this notification`).
 - Any future ELITK or Workspace work must start from current `main` and preserve the live `Today / Build / Work / Network / Evidence / Self` command-center structure.
 
+### Neon Database Preflight
+
+- Before **any Neon-related lookup, diagnosis, environment wiring, branch work, or database change**, read `docs/NEON_DATABASE_TOPOLOGY.md`.
+- Neon has two ALVIRA-related switcher contexts: `Vercel: ALVIRA` and `ALVIRA`. Check both before concluding a database/project is missing.
+- Do not infer a product's Neon project from a similarly named or empty project; use the verified topology map and runtime/table evidence.
+- Never commit database credentials or connection strings.
+
 ### Canonical Deployment Topology
 
 - Read `.agent-os/deployment.yaml` before any release, deployment diagnosis, or claim about live state.
