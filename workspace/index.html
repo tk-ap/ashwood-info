@@ -19,22 +19,23 @@
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260922-fitboard1" />
   <link rel="stylesheet" href="/workspace/sprint.css?v=20260921-sprint1" />
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
+  <link rel="stylesheet" href="/workspace/sandbox-environments.css?v=20260922-env1" />
+  <link rel="stylesheet" href="/workspace/operator-console.css?v=20260922-operator1" />
   <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260921-workcanvas3" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
   <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
   <link rel="stylesheet" href="/workspace/v4-atmosphere.css?v=20260922-v4space1" />
+  <link rel="stylesheet" href="/workspace/build-command-center.css?v=20260923-command-center1" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260921-menufix1"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260922-activity1"></script>
-  <script type="module" src="/workspace/workstreams.mjs?v=20260908-workstreams2"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
   <script type="module" src="/workspace/ops-pulse.mjs?v=20260923-v1"></script>
   <script type="module" src="/workspace/operator-actions.mjs?v=20260921-operator1"></script>
-  <script type="module" src="/workspace/agentos-board.mjs?v=20260922-dragcontract1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
-  <script type="module" src="/workspace/deployment-budget.mjs?v=20260921-agentos1"></script>
-  <script type="module" src="/workspace/design-implementation.mjs?v=20260921-design149"></script>
+  <script type="module" src="/workspace/operator-console.mjs?v=20260922-operator1"></script>
+  <script type="module" src="/workspace/build-command-center.mjs?v=20260923-command-center1"></script>
   <script type="module" src="/workspace/views.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/network.mjs?v=20260922-design153"></script>
@@ -67,6 +68,7 @@
     </header>
 
     <nav class="workspace-section-nav" aria-label="Workspace views">
+      <a href="#operator" data-workspace-nav="operator">Operator</a>
       <a href="#today" data-workspace-nav="today">Today</a>
       <a href="#build" data-workspace-nav="build">Build</a>
       <a href="#career" data-workspace-nav="career">Career</a>
@@ -82,6 +84,46 @@
       </div>
       <div class="workspace-view-tools" id="workspace-view-tools" aria-label="View tools"></div>
       <div class="workspace-view-data-hero" id="workspace-view-data-hero" aria-live="polite" hidden></div>
+    </section>
+
+    <section class="operator-console" id="operator" aria-labelledby="operator-title">
+      <div class="operator-console__head">
+        <div>
+          <p class="section-kicker">Operator · primary command surface</p>
+          <h2 id="operator-title">Talk to the system.</h2>
+          <p class="operator-console__lede">Direct AgentOS from here. Worker apps stay behind the system unless a diagnostic or local action genuinely needs you.</p>
+        </div>
+        <div class="operator-console__state" aria-live="polite">
+          <span id="operator-ingress-state">Ingress · checking</span>
+          <span id="operator-active-state">0 active</span>
+        </div>
+      </div>
+
+      <form class="today-command-form operator-command-form" id="today-command-form">
+        <label class="today-command-label" for="today-command-input">What do you want the ecosystem to do?</label>
+        <div class="today-command-row">
+          <input id="today-command-input" name="command" type="text" autocomplete="off" placeholder="Review the latest ALVIRA sandbox and fix the mobile hero if needed…" />
+          <button type="submit">Send to AgentOS</button>
+        </div>
+        <p class="today-command-note" id="today-command-note">Your message is durable owner intent, not execution authority. AgentOS routes it; ledgato and the normal lifecycle still govern consequential work.</p>
+      </form>
+
+      <div class="operator-console__layout">
+        <div class="operator-thread" id="operator-thread" aria-live="polite">
+          <p class="operator-thread__empty">Loading your AgentOS thread…</p>
+        </div>
+        <aside class="operator-context" aria-labelledby="operator-context-title">
+          <p class="section-kicker">System context</p>
+          <h3 id="operator-context-title">What happens after Send</h3>
+          <ol>
+            <li>ASHWOOD stores the directive.</li>
+            <li>AgentOS claims and routes it.</li>
+            <li>Governance is checked before directed execution.</li>
+            <li>The assigned work and next gate return here.</li>
+          </ol>
+          <p class="operator-context__fallback">Codex, Claude, Hermes and other worker surfaces are fallback/diagnostic tools—not the intended everyday interface.</p>
+        </aside>
+      </div>
     </section>
 
     <section class="today-command-center" id="today" aria-labelledby="today-title">
@@ -103,15 +145,6 @@
         </div>
         <p class="today-head__status" id="today-status" aria-live="polite">Reading canonical workstreams…</p>
       </div>
-
-      <form class="today-command-form" id="today-command-form">
-        <label class="today-command-label" for="today-command-input">Capture or direct your attention</label>
-        <div class="today-command-row">
-          <input id="today-command-input" name="command" type="text" autocomplete="off" placeholder="Get the ALVIRA investor page ready for outreach…" />
-          <button type="submit">Capture</button>
-        </div>
-        <p class="today-command-note" id="today-command-note">Commands enter AgentOS as owner directives. Routing remains reviewable, and ledgato must ALLOW the governed dispatch before directed work can enter the execution queue.</p>
-      </form>
 
       <div class="today-grid">
         <article class="today-panel" aria-labelledby="today-owner-title">
@@ -186,53 +219,6 @@
       </div>
     </section>
 
-    <section class="design-impl" id="design-implementation" aria-labelledby="design-impl-title">
-      <div class="section-heading-row design-impl-head">
-        <div>
-          <p class="section-kicker">21st.dev design batch · #149</p>
-          <h2 id="design-impl-title">Design Implementation</h2>
-          <p class="design-impl-deck">What we agreed, what is in code, merged, live, and actually checked on production.</p>
-        </div>
-        <p class="design-impl-reconciled" id="design-impl-reconciled" aria-live="polite">Loading design status…</p>
-      </div>
-      <div class="design-impl-summary" id="design-impl-summary" role="group" aria-label="Filter design items by state"></div>
-      <div class="design-impl-list" id="design-impl-list" aria-live="polite"><p class="design-impl-empty">Loading design status…</p></div>
-      <details class="design-impl-stale" id="design-impl-stale">
-        <summary>Stale and superseded work</summary>
-        <ul id="design-impl-stale-list"></ul>
-      </details>
-      <p class="section-note">Derived from GitHub, the revision each production domain actually serves, and visual checks recorded on ashwood-info#149. Read-only; nothing here marks work complete by hand.</p>
-    </section>
-
-    <section class="deployment-budget" id="deployment-budget" aria-labelledby="deployment-budget-title">
-      <div class="section-heading-row">
-        <div><p class="section-kicker">AgentOS canonical budget · rolling 24 hours</p><h2 id="deployment-budget-title">Deployment tracker</h2></div>
-        <button type="button" id="deployment-budget-refresh">Refresh</button>
-      </div>
-      <div class="deployment-availability" id="deployment-availability" aria-live="polite"><p>Checking live ASHWOOD deployment status…</p></div>
-      <div class="deployment-budget-summary" id="deployment-budget-summary" aria-live="polite">
-        <p>Loading team deployment capacity…</p>
-      </div>
-      <div class="deployment-budget-projects" id="deployment-budget-projects"></div>
-      <p class="section-note" id="deployment-budget-note">Rendered from the AgentOS deployment budget. AgentOS observes Vercel and governs deployments; ASHWOOD only displays its snapshot.</p>
-    </section>
-
-    <section class="agentos-board-section" id="agentos-board-section" aria-labelledby="agentos-board-title">
-      <div class="section-heading-row agentos-board-heading">
-        <div>
-          <p class="section-kicker">AgentOS · full operating queue</p>
-          <h2 id="agentos-board-title">Kanban Board</h2>
-        </div>
-        <div class="agentos-board-refresh"><p class="agentos-board-status" id="agentos-board-status" aria-live="polite">Waiting for the private AgentOS snapshot…</p><button type="button" id="agentos-board-refresh">Refresh AgentOS snapshot</button></div>
-      </div>
-      <p class="section-note">Read-only ecosystem work ledger: governed execution, Milchik backlog, discovered work, and explicit coverage gaps. Views and filters change what you see; ASHWOOD never moves or authorizes these cards.</p>
-      <div class="agentos-board-tools" id="agentos-board-tools" aria-label="AgentOS board views and filters"></div>
-      <div class="agentos-board-counts" id="agentos-board-counts" aria-label="AgentOS work counts"></div>
-      <div class="agentos-board" id="agentos-board" aria-live="polite">
-        <p class="agentos-board-empty">Loading AgentOS fleet and backlog…</p>
-      </div>
-    </section>
-
     <section class="owner-intelligence" id="owner-intelligence" aria-live="polite">
       <p class="section-kicker">Owner signal · live</p>
     </section>
@@ -273,17 +259,25 @@
       <div class="goal-grid" id="goal-grid"></div>
     </section>
 
-    <section class="workstreams" id="build" aria-labelledby="workstreams-title">
+    <section class="build-command-center" id="build" aria-labelledby="build-command-title">
       <div class="section-heading-row">
         <div>
-          <p class="section-kicker">Current work</p>
-          <h2 id="workstreams-title">Active workstreams</h2>
+          <p class="section-kicker">Build command center</p>
+          <h2 id="build-command-title">What is moving, live, blocked, and next.</h2>
         </div>
-        <p class="section-note workstream-note"><span id="workstream-count">Loading workstreams…</span> · ASHWOOD shows the human-facing projection; execution truth stays in AgentOS, ailhat, and the owning repos.</p>
+        <p class="section-note workstream-note" id="build-command-freshness">Loading canonical environment and AgentOS state…</p>
       </div>
-      <div class="workstream-list is-loading" id="workstream-list" aria-live="polite">
-        <p class="workstream-empty"><strong>Loading active workstreams…</strong><span>Checking the private canonical projection.</span></p>
+      <div id="build-command-center" aria-live="polite">
+        <p class="workstream-empty"><strong>Loading Build state…</strong><span>Reading the canonical environment registry and AgentOS projections.</span></p>
       </div>
+      <nav class="build-command-links" aria-label="Build detail pages">
+        <a href="/workspace/build/environments/">Environments</a>
+        <a href="/workspace/build/agentos/">AgentOS</a>
+        <a href="/workspace/build/queue/">Queue</a>
+        <a href="/workspace/build/design/">Design</a>
+        <a href="/workspace/build/history/">History</a>
+        <a href="/workspace/build-logs/">Build logs</a>
+      </nav>
     </section>
 
     <section class="workstreams career-ops-page" id="work" aria-labelledby="career-work-title">
@@ -659,6 +653,7 @@
   </main>
 
   <nav class="workspace-mobile-nav" aria-label="Workspace views">
+    <a href="#operator" data-workspace-nav="operator">Operator</a>
     <a href="#today" data-workspace-nav="today">Today</a>
     <a href="#build" data-workspace-nav="build">Build</a>
     <a href="#career" data-workspace-nav="career">Career</a>

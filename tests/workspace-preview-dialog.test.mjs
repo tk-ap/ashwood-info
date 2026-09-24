@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import test from "node:test";
+const root = path.resolve(import.meta.dirname, "..");
+const html = fs.readFileSync(path.join(root, "workspace-preview/index.html"), "utf8");
+const css = fs.readFileSync(path.join(root, "workspace-preview/preview.css"), "utf8");
+const js = fs.readFileSync(path.join(root, "workspace-preview/preview.js"), "utf8");
+test("public preview is illustrative and has accessible dialogs", () => { assert.match(html, /Prototype only\./); assert.match(html, /no private data/i); assert.match(html, /<dialog id="environment-dialog" aria-labelledby="environment-dialog-title">/); assert.match(html, /<dialog id="decision-dialog" aria-labelledby="decision-dialog-title">/); assert.match(html, /data-close-dialog aria-label="Close"/); assert.match(js, /showModal/); assert.match(js, /outside/); });
+test("preview keeps visual state, mobile layout, and live drill-downs", () => { assert.match(html, /status-dot--live/); assert.match(html, /status-dot--attention/); assert.match(css, /@media\(max-width: ?800px\)/); assert.match(css, /min-height:44px/); assert.match(html, /workspace\/build\/environments/); assert.match(html, /workspace\/build\/queue/); });

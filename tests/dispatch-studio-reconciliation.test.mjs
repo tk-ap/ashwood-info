@@ -15,10 +15,12 @@ test("Dispatch Studio (#145) survives the integrated release", async () => {
   assert.equal(typeof api.default, "function");
 });
 
-test("Workspace still loads the deployment tracker alongside the rest of Build", () => {
+test("Workspace Build is a command center with one-click detail routes", () => {
   const workspace = read("../workspace/index.html");
-  assert.match(workspace, /deployment-budget\.mjs\?v=20260921-agentos1/);
-  assert.match(workspace, /id="deployment-budget"/);
+  assert.match(workspace, /build-command-center\.mjs/);
+  assert.match(workspace, /workspace\/build\/environments/);
+  assert.match(workspace, /workspace\/build\/agentos/);
+  assert.doesNotMatch(workspace, /id="deployment-budget"/);
 });
 
 test("Dispatch Studio renders persisted titles and sources as text, not HTML", () => {

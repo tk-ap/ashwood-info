@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#0d0e0b" />
+  <title>Sandbox Studio — ASHWOOD Workspace</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20260922-design153" />
+  <link rel="stylesheet" href="/workspace/sandbox-studio.css?v=20260922-studio1" />
+  <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
+  <script src="/theme.js?v=20260909-cache1" defer></script>
+  <script type="module" src="/workspace/sandbox-studio.mjs?v=20260922-studio1"></script>
+</head>
+<body class="workspace-page sandbox-studio-page">
+  <main class="workspace-shell sandbox-studio-shell" inert>
+    <header class="workspace-masthead">
+      <div>
+        <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
+        <span class="workspace-label">Workspace / Sandbox Studio</span>
+      </div>
+      <div class="workspace-actions">
+        <a class="text-button" href="/workspace/#build">Back to Build</a>
+        <a class="text-button" href="/workspace/#operator">Operator</a>
+      </div>
+    </header>
+
+    <section class="sandbox-studio-intro">
+      <div>
+        <p class="eyebrow">Private review surface</p>
+        <h1>See the change.<br/>Direct the next one.</h1>
+      </div>
+      <p>Review a sandbox version, keep production state separate, complete the version-specific checklist, and turn a visual correction into governed AgentOS work without leaving ASHWOOD.</p>
+    </section>
+
+    <section class="sandbox-studio-toolbar" aria-label="Sandbox controls">
+      <label>Product
+        <select id="sandbox-product"></select>
+      </label>
+      <label>Version
+        <select id="sandbox-version"></select>
+      </label>
+      <div class="sandbox-studio-viewports" role="group" aria-label="Preview viewport">
+        <button type="button" data-viewport="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-viewport="mobile" aria-pressed="false">Mobile</button>
+      </div>
+      <label class="sandbox-studio-toggle"><input id="sandbox-overlay-toggle" type="checkbox" checked /> Changes overlay</label>
+      <a id="sandbox-open-external" target="_blank" rel="noopener">Open sandbox ↗</a>
+    </section>
+
+    <section class="sandbox-studio-meta" aria-live="polite">
+      <span id="sandbox-state">Loading sandbox…</span>
+      <span id="sandbox-source"></span>
+      <span id="sandbox-verification"></span>
+    </section>
+
+    <div class="sandbox-studio-layout">
+      <section class="sandbox-stage" aria-label="Sandbox preview">
+        <div class="sandbox-frame-shell" data-viewport="desktop">
+          <iframe id="sandbox-frame" title="Product sandbox preview" loading="eager" referrerpolicy="no-referrer"></iframe>
+          <div class="sandbox-change-overlay" id="sandbox-change-overlay" aria-label="Change annotations"></div>
+        </div>
+        <p class="sandbox-stage-note" id="sandbox-frame-note">The preview is cross-origin. ASHWOOD overlays only recorded change metadata; it does not pretend to inspect or mutate the remote DOM.</p>
+      </section>
+
+      <aside class="sandbox-review-panel">
+        <section>
+          <p class="section-kicker">Version changes</p>
+          <h2>What changed</h2>
+          <div id="sandbox-change-list" class="sandbox-change-list"></div>
+        </section>
+
+        <section>
+          <p class="section-kicker">Review checklist</p>
+          <h2>Check this version</h2>
+          <div id="sandbox-review-list" class="sandbox-review-list"></div>
+          <p id="sandbox-review-save" class="sandbox-review-save" aria-live="polite"></p>
+        </section>
+
+        <section class="sandbox-request">
+          <p class="section-kicker">Direct a correction</p>
+          <h2>Request change</h2>
+          <form id="sandbox-request-form">
+            <label>Attach to
+              <select id="sandbox-request-change">
+                <option value="">Whole version</option>
+              </select>
+            </label>
+            <label>What should change?
+              <textarea id="sandbox-request-text" rows="4" required placeholder="Make the photon ring read more clearly on small iPhones without increasing the overall visual noise."></textarea>
+            </label>
+            <button type="submit">Send to AgentOS</button>
+            <p id="sandbox-request-status" aria-live="polite">This creates owner intent in the Operator thread. It does not mutate the sandbox directly.</p>
+          </form>
+        </section>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

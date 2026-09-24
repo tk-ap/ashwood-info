@@ -293,12 +293,13 @@ function mountCommand() {
         method:"POST",
         credentials:"same-origin",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({action:"submit_command",command:text})
+        body:JSON.stringify({action:"submit_command",command:text,thread_id:"operator:primary"})
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.error || "Command submission failed");
       input.value = "";
       if (note) note.textContent = "Queued for AgentOS. Routing is local; ledgato must ALLOW the governed dispatch before execution is enqueued.";
+      window.dispatchEvent(new CustomEvent("ashwood:operator-command-submitted", { detail:{ id:body.id } }));
       await loadToday();
     } catch (error) {
       if (note) note.textContent = error.message;

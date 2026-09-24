@@ -1,0 +1,77 @@
+{
+  "schema": "ashwood.sandbox-review-manifest/v1",
+  "generated_at": "2026-09-22T19:30:30Z",
+  "products": [
+    {
+      "product_key": "ashwood",
+      "label": "ASHWOOD",
+      "provider": "here-now",
+      "stable": {
+        "url": "https://mighty-yoga-pgph.here.now/",
+        "slug": "mighty-yoga-pgph",
+        "version_id": "01M359HV4JJ4JKVWBRM2EXBAKM",
+        "source_ref": "479e51466a9244af3c8a606921232de730df7da4",
+        "state": "stable",
+        "note": "Owned permanent Gravity sandbox. Updated in place through the authenticated here.now owner connection.",
+        "changes": [
+          {
+            "id": "gravity-hero",
+            "label": "Hero returns to editorial portrait",
+            "scope": "Homepage · Hero",
+            "detail": "Gravity canvas was removed from the identity hero; the portrait fade remains.",
+            "verification": "Desktop, mobile and reduced-motion proof passed.",
+            "source_ref": "479e51466a9244af3c8a606921232de730df7da4"
+          },
+          {
+            "id": "gravity-instinct",
+            "label": "Black hole moved into Instinct",
+            "scope": "Homepage · The instinct",
+            "detail": "The black-hole renderer now belongs to the Instinct discovery field and the six thinking signals sit around it.",
+            "verification": "Instinct-only renderer mount passed; hero contains no Gravity canvas.",
+            "source_ref": "479e51466a9244af3c8a606921232de730df7da4"
+          },
+          {
+            "id": "gravity-clarity",
+            "label": "Black-hole silhouette sharpened",
+            "scope": "Homepage · The instinct",
+            "detail": "Harder black core, brighter photon ring and thinner/brighter accretion plane improve immediate legibility.",
+            "verification": "Visual mobile capture inspected before publish.",
+            "source_ref": "479e51466a9244af3c8a606921232de730df7da4"
+          }
+        ]
+      },
+      "review_items": [
+        {
+          "id": "identity",
+          "label": "Identity remains clear before interaction",
+          "detail": "The hero should answer who TK is without needing the Gravity interaction."
+        },
+        {
+          "id": "instinct",
+          "label": "Instinct interaction explains how TK thinks",
+          "detail": "SIGNAL, FRICTION, TRANSLATION, SYSTEMS, ADAPTATION and SYNTHESIS should feel discoverable rather than decorative."
+        },
+        {
+          "id": "mobile",
+          "label": "Mobile is authored",
+          "detail": "Check narrow layout, tap targets, signal-card behavior, audio coexistence and horizontal overflow."
+        },
+        {
+          "id": "reduced-motion",
+          "label": "Reduced motion is composed",
+          "detail": "The experience should remain intentional without animation."
+        },
+        {
+          "id": "evidence",
+          "label": "Evidence follows the thinking model",
+          "detail": "The section transition should make the work feel like evidence produced by the instinct."
+        },
+        {
+          "id": "production-boundary",
+          "label": "Sandbox stays distinct from production",
+          "detail": "A sandbox PASS does not imply production deployment or production verification."
+        }
+      ]
+    }
+  ]
+}

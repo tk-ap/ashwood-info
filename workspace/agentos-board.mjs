@@ -18,6 +18,34 @@ const VIEW_PRESETS = [
 
 const STORAGE_KEY = "ashwood.agentos-board.view.v2";
 let lastData = null;
+let dragRow = null;
+let pendingTaskId = null;
+const KANBAN_TARGETS = Object.freeze({ in_progress: "READY" });
+const KANBAN_SAFE_FROM = new Set(["PROPOSED", "REVIEW", "BLOCKED", "FAILED"]);
+
+export function canonicalState(row) {
+  return String(row?.phase || row?.status || "").trim().toUpperCase();
+}
+
+export function kanbanTarget(row, laneId) {
+  const target = KANBAN_TARGETS[laneId] || null;
+  return target && row?.task_id && row?.work_id && KANBAN_SAFE_FROM.has(canonicalState(row))
+    ? target : null;
+}
+
+export function transitionPayload(row, laneId, idempotencyKey) {
+  const target = kanbanTarget(row, laneId);
+  if (!target) return null;
+  return {
+    action:"submit_kanban_transition",
+    task_id:String(row.task_id),
+    work_id:String(row.work_id),
+    observed_state:canonicalState(row),
+    observed_generation:Number(row.attempts || 0),
+    target_state:target,
+    idempotency_key:String(idempotencyKey),
+  };
+}
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
   "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
@@ -128,7 +156,10 @@ function card(row) {
   const identity = [row.work_id, row.task_id].filter(Boolean).join(" · ");
   const priority = String(row.priority || "").toUpperCase();
 
-  let html = '<article class="agentos-board-card" data-kind="' + escapeHtml(row.kind || "") + '" data-domain="' + domain + '">';
+  const movable = row.task_id && row.work_id && KANBAN_SAFE_FROM.has(canonicalState(row));
+  let html = '<article class="agentos-board-card' + (pendingTaskId === row.task_id ? ' is-transition-pending' : '') +
+    '" data-kind="' + escapeHtml(row.kind || "") + '" data-domain="' + domain +
+    '" data-task-id="' + escapeHtml(row.task_id || "") + '" draggable="' + (movable ? "true" : "false") + '">';
   html += '<div class="agentos-board-card__top">';
   html += '<div class="agentos-board-card__badges">';
   html += '<span class="agentos-board-card__domain">' + (domain === "agentos" ? "AgentOS" : "Ecosystem") + '</span>';
@@ -259,6 +290,8 @@ function renderBoard(data) {
       '<div class="agentos-board-lane__cards">' + cards + '</div></section>';
   }).join("");
 
+  bindKanbanDragDrop(host, data);
+
   host.querySelectorAll("[data-lane-toggle]").forEach(button => button.addEventListener("click", () => {
     const lane = button.dataset.laneToggle;
     if (!lane) return;
@@ -268,6 +301,120 @@ function renderBoard(data) {
     saveState();
     renderBoard(data);
   }));
+}
+
+function setBoardNotice(message, kind = "") {
+  const status = document.querySelector("#agentos-board-status");
+  if (!status) return;
+  status.textContent = message;
+  status.className = "agentos-board-status " + kind;
+}
+
+function rowByTask(data, taskId) {
+  return (Array.isArray(data?.rows) ? data.rows : []).find(row => String(row.task_id || "") === String(taskId || ""));
+}
+
+function laneForCanonical(state) {
+  const value = String(state || "").toUpperCase();
+  if (value === "READY" || value === "AUTHORIZED" || value === "RUNNING") return "in_progress";
+  if (value === "REVIEW" || value === "WAITING_APPROVAL") return "review";
+  if (["BLOCKED","FAILED","REVOKED","DENIED","COLLISION"].includes(value)) return "stuck";
+  if (["COMPLETE","ACCEPTED","CANCELLED"].includes(value)) return "done";
+  return "backlog";
+}
+
+async function waitForTransition(id, { attempts = 20, delay = 750 } = {}) {
+  for (let index = 0; index < attempts; index += 1) {
+    const response = await fetch("/api/workspace-state?view=kanban-transition&id=" + encodeURIComponent(id), {
+      credentials:"same-origin", cache:"no-store"
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error || "Transition status unavailable");
+    const transition = body.transition || {};
+    if (transition.status === "completed") return transition;
+    if (["route_failed","governance_denied","governance_unavailable","cancelled"].includes(transition.status)) {
+      throw new Error(transition.error || transition.governance?.reason || "AgentOS rejected the transition");
+    }
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  throw new Error("AgentOS transition is still pending");
+}
+
+async function submitKanbanTransition(row, laneId) {
+  const key = globalThis.crypto?.randomUUID?.() || (Date.now() + "-" + Math.random().toString(16).slice(2));
+  const payload = transitionPayload(row, laneId, key);
+  if (!payload) throw new Error("That move is not a legal ASHWOOD transition");
+  pendingTaskId = row.task_id;
+  renderBoard(lastData);
+  setBoardNotice("Requesting governed transition…", "is-aging");
+  try {
+    const response = await fetch("/api/workspace-state", {
+      method:"POST", credentials:"same-origin",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error || "Transition request failed");
+    const id = body.id || body.transition?.id;
+    if (!id) throw new Error("Transition command id missing");
+    const settled = await waitForTransition(id);
+    const canonical = settled.governance?.canonical;
+    if (canonical && lastData) {
+      const current = rowByTask(lastData, row.task_id);
+      if (current) {
+        current.phase = String(canonical.state || current.phase || "").toLowerCase();
+        current.status = current.phase;
+        current.attempts = Number(canonical.generation ?? current.attempts ?? 0);
+        current.lane = laneForCanonical(canonical.state);
+      }
+    }
+    setBoardNotice("AgentOS accepted the canonical transition.", "is-live");
+    await load();
+  } catch (error) {
+    setBoardNotice("Move rejected: " + error.message, "is-stale");
+    renderBoard(lastData);
+  } finally {
+    pendingTaskId = null;
+    renderBoard(lastData);
+  }
+}
+
+function bindKanbanDragDrop(host, data) {
+  host.querySelectorAll(".agentos-board-card[draggable=true]").forEach(element => {
+    element.addEventListener("dragstart", event => {
+      const row = rowByTask(data, element.dataset.taskId);
+      if (!row || pendingTaskId) { event.preventDefault(); return; }
+      dragRow = row;
+      element.classList.add("is-dragging");
+      event.dataTransfer?.setData("text/plain", String(row.task_id));
+      event.dataTransfer && (event.dataTransfer.effectAllowed = "move");
+      host.querySelectorAll(".agentos-board-lane").forEach(lane => {
+        if (kanbanTarget(row, lane.dataset.lane)) lane.classList.add("is-valid-drop");
+      });
+    });
+    element.addEventListener("dragend", () => {
+      dragRow = null;
+      element.classList.remove("is-dragging");
+      host.querySelectorAll(".agentos-board-lane").forEach(lane => lane.classList.remove("is-valid-drop","is-drop-hover"));
+    });
+  });
+  host.querySelectorAll(".agentos-board-lane").forEach(lane => {
+    lane.addEventListener("dragover", event => {
+      if (!dragRow || !kanbanTarget(dragRow, lane.dataset.lane)) return;
+      event.preventDefault();
+      lane.classList.add("is-drop-hover");
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+    });
+    lane.addEventListener("dragleave", () => lane.classList.remove("is-drop-hover"));
+    lane.addEventListener("drop", event => {
+      event.preventDefault();
+      lane.classList.remove("is-drop-hover");
+      const row = dragRow;
+      dragRow = null;
+      if (!row || !kanbanTarget(row, lane.dataset.lane)) return;
+      void submitKanbanTransition(row, lane.dataset.lane);
+    });
+  });
 }
 
 function render(data) {

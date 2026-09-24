@@ -248,6 +248,15 @@ export default async function handler(req, res) {
         const commands = await sql`SELECT id, command_text, command_kind, payload, status, runtime_directive_id, runtime_task_id, governance, error, created_at, updated_at FROM workspace_commands ORDER BY created_at DESC LIMIT 30`;
         return json(res, 200, { ok: true, commands });
       }
+      if (req.query?.view === 'kanban-transition') {
+        await ensureCommandTable(sql);
+        const id = String(req.query?.id || '').trim().slice(0, 250);
+        if (!id) return json(res, 400, { ok:false, error:'Transition id is required' });
+        const rows = await sql`SELECT id,status,payload,governance,error,updated_at
+          FROM workspace_commands WHERE id = ${id} AND command_kind = 'kanban_transition' LIMIT 1`;
+        if (!rows[0]) return json(res, 404, { ok:false, error:'Transition not found' });
+        return json(res, 200, { ok:true, transition:rows[0] });
+      }
       if (req.query?.view === 'network') {
         await ensureNetworkTable(sql);
         const relationships = await sql`
@@ -348,13 +357,138 @@ export default async function handler(req, res) {
       return json(res, 201, { ok:true, existing:false, id, status:'queued', markdown, directive });
     }
 
+    if (action === 'submit_kanban_transition') {
+      await ensureCommandTable(sql);
+      const taskId = String(body.task_id || '').trim().slice(0,250);
+      const workId = String(body.work_id || '').trim().slice(0,250);
+      const observedState = String(body.observed_state || '').trim().toUpperCase().slice(0,40);
+      const targetState = String(body.target_state || '').trim().toUpperCase().slice(0,40);
+      const observedGeneration = Number(body.observed_generation);
+      const idempotencyKey = String(body.idempotency_key || '').trim().slice(0,250);
+      if (!taskId || !workId || !observedState || !targetState || !idempotencyKey ||
+          !Number.isInteger(observedGeneration) || observedGeneration < 0) {
+        return json(res, 400, { ok:false, error:'Invalid Kanban transition request' });
+      }
+      const payload = {
+        schema:'workspace.kanban-transition/v1',
+        source:'ASHWOOD',
+        task_id:taskId,
+        work_id:workId,
+        observed_state:observedState,
+        observed_generation:observedGeneration,
+        target_state:targetState,
+        actor:'owner',
+        idempotency_key:idempotencyKey,
+      };
+      const fingerprint = sha256(JSON.stringify(payload));
+      const existing = await sql`SELECT id,status,payload,governance,error FROM workspace_commands
+        WHERE content_hash = ${fingerprint} LIMIT 1`;
+      if (existing[0]) return json(res, 200, { ok:true, existing:true, transition:existing[0] });
+      const id = 'kanban-transition:' + crypto.randomUUID();
+      await sql`INSERT INTO workspace_commands
+        (id,command_text,status,source,command_kind,payload,content_hash)
+        VALUES(${id},${'Governed Kanban transition '+observedState+' -> '+targetState},'queued',
+          'ashwood-kanban','kanban_transition',${JSON.stringify(payload)}::jsonb,${fingerprint})`;
+      return json(res, 202, { ok:true, existing:false, id, status:'queued' });
+    }
+
+    if (action === 'submit_sandbox_change_request') {
+      await ensureCommandTable(sql);
+      const productKey = String(body.product_key || '').trim().slice(0,120);
+      const sandboxUrl = String(body.sandbox_url || '').trim().slice(0,1200);
+      const versionId = String(body.version_id || '').trim().slice(0,250) || null;
+      const sourceRef = String(body.source_ref || '').trim().slice(0,250) || null;
+      const changeId = String(body.change_id || '').trim().slice(0,180) || null;
+      const requestText = String(body.request_text || '').trim().slice(0,2000);
+      if (!productKey || !requestText) return json(res,400,{ok:false,error:'Product and requested change are required'});
+      let parsed;
+      try { parsed = new URL(sandboxUrl); } catch { return json(res,400,{ok:false,error:'Invalid sandbox URL'}); }
+      if (parsed.protocol !== 'https:' || !parsed.hostname.endsWith('.here.now') || parsed.username || parsed.password) {
+        return json(res,400,{ok:false,error:'Sandbox change request must target here.now'});
+      }
+      const payload = {
+        schema:'workspace.sandbox-change-request/v1',
+        thread_id:'operator:primary',
+        surface:'sandbox-studio',
+        product_key:productKey,
+        sandbox_url:parsed.toString(),
+        version_id:versionId,
+        source_ref:sourceRef,
+        change_id:changeId,
+        request_text:requestText,
+      };
+      const fingerprint = sha256(JSON.stringify(payload));
+      const existing = await sql`SELECT id,status,payload,governance,error FROM workspace_commands
+        WHERE content_hash=${fingerprint} LIMIT 1`;
+      if (existing[0]) return json(res,200,{ok:true,existing:true,id:existing[0].id,status:existing[0].status});
+      const id='sandbox-change:'+crypto.randomUUID();
+      const commandText = [
+        'SANDBOX STUDIO CHANGE REQUEST',
+        'PRODUCT: '+productKey,
+        'SANDBOX: '+parsed.toString(),
+        'VERSION: '+(versionId || 'unversioned'),
+        'SOURCE REF: '+(sourceRef || 'unresolved'),
+        'CHANGE REGION: '+(changeId || 'whole version'),
+        '',
+        requestText,
+        '',
+        'BOUNDARY: change the sandbox/source through normal AgentOS routing and verification; do not infer production deployment authority.'
+      ].join('\n');
+      await sql`INSERT INTO workspace_commands
+        (id,command_text,command_kind,payload,content_hash,status,source)
+        VALUES(${id},${commandText},'owner_command',${JSON.stringify(payload)}::jsonb,${fingerprint},'queued','sandbox-studio')`;
+      return json(res,202,{ok:true,existing:false,id,status:'queued',thread_id:'operator:primary'});
+    }
+
+    if (action === 'submit_owner_decision') {
+      await ensureCommandTable(sql);
+      const taskId = String(body.task_id || '').trim().slice(0, 250);
+      const cardId = String(body.card_id || '').trim().slice(0, 250);
+      const decision = String(body.decision || '').trim().toLowerCase();
+      const observedSnapshot = body.observed_snapshot == null
+        ? null
+        : String(body.observed_snapshot).trim().slice(0, 250);
+      const allowed = new Set(['accept','pause','approve','deny','resume']);
+      if (!taskId || !cardId || !allowed.has(decision)) {
+        return json(res, 400, { ok:false, error:'Invalid owner decision request' });
+      }
+      const payload = {
+        schema:'workspace.owner-decision/v1',
+        thread_id:'operator:primary',
+        task_id:taskId,
+        card_id:cardId,
+        decision,
+        observed_snapshot:observedSnapshot,
+        surface:'operator',
+      };
+      const fingerprint = sha256(JSON.stringify(payload));
+      const existing = await sql`SELECT id,status,payload,governance,error FROM workspace_commands
+        WHERE content_hash = ${fingerprint} LIMIT 1`;
+      if (existing[0]) return json(res, 200, { ok:true, existing:true, decision:existing[0] });
+      const id = 'owner-decision:' + crypto.randomUUID();
+      const commandText = `Owner ${decision} decision for AgentOS task ${taskId}`;
+      await sql`INSERT INTO workspace_commands
+        (id,command_text,command_kind,payload,content_hash,status,source)
+        VALUES(${id},${commandText},'owner_decision',${JSON.stringify(payload)}::jsonb,${fingerprint},'queued','workspace')`;
+      return json(res, 202, { ok:true, existing:false, id, status:'queued', decision:payload });
+    }
+
     if (action === 'submit_command') {
       await ensureCommandTable(sql);
       const text = String(body.command || '').trim().slice(0, 2000);
       if (!text) return json(res, 400, { ok: false, error: 'Command cannot be empty' });
+      const threadId = String(body.thread_id || 'operator:primary').trim().slice(0, 180) || 'operator:primary';
+      const parentCommandId = String(body.parent_command_id || '').trim().slice(0, 250) || null;
       const id = `workspace-command:${crypto.randomUUID()}`;
-      await sql`INSERT INTO workspace_commands (id, command_text, status, source) VALUES (${id}, ${text}, 'queued', 'workspace')`;
-      return json(res, 201, { ok: true, id, status: 'queued' });
+      const payload = {
+        schema: 'workspace.owner-command/v1',
+        thread_id: threadId,
+        parent_command_id: parentCommandId,
+        surface: 'operator',
+      };
+      await sql`INSERT INTO workspace_commands (id, command_text, command_kind, payload, status, source)
+        VALUES (${id}, ${text}, 'owner_command', ${JSON.stringify(payload)}::jsonb, 'queued', 'workspace')`;
+      return json(res, 201, { ok: true, id, status: 'queued', thread_id: threadId });
     }
 
     if (action === 'ingest_external_signal') {

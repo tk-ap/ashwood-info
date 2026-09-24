@@ -60,6 +60,10 @@ test('owner command is durably queued and visible to the owner', async t => {
   assert.equal(visible.body.commands.length, 1);
   assert.equal(visible.body.commands[0].command_text, 'Get the ALVIRA investor page ready for outreach');
   assert.equal(visible.body.commands[0].status, 'queued');
+  assert.equal(visible.body.commands[0].command_kind, 'owner_command');
+  assert.equal(visible.body.commands[0].payload.schema, 'workspace.owner-command/v1');
+  assert.equal(visible.body.commands[0].payload.thread_id, 'operator:primary');
+  assert.equal(visible.body.commands[0].payload.surface, 'operator');
 });
 
 test('runtime can claim a command without receiving the owner browser session', async t => {
@@ -142,4 +146,101 @@ test('foreign-origin browser command submission is rejected', async t => {
     body: { action: 'submit_command', command: 'Do not accept this' },
   });
   assert.equal(res.statusCode, 403);
+});
+
+
+
+
+test('sandbox change requests enter the primary Operator thread with version lineage', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const body = {
+    action:'submit_sandbox_change_request',
+    product_key:'ashwood',
+    sandbox_url:'https://mighty-yoga-pgph.here.now/',
+    version_id:'version-1',
+    source_ref:'abc123',
+    change_id:'gravity-instinct',
+    request_text:'Make the black hole clearer on small iPhones.',
+  };
+  const first = await f.call({ method:'POST', owner:true, body });
+  assert.equal(first.statusCode, 202);
+  assert.equal(first.body.thread_id, 'operator:primary');
+
+  const visible = await f.call({ owner:true, query:{ view:'commands' } });
+  const row = visible.body.commands.find(item => item.id === first.body.id);
+  assert.equal(row.command_kind, 'owner_command');
+  assert.equal(row.payload.schema, 'workspace.sandbox-change-request/v1');
+  assert.equal(row.payload.thread_id, 'operator:primary');
+  assert.equal(row.payload.change_id, 'gravity-instinct');
+  assert.match(row.command_text, /do not infer production deployment authority/i);
+});
+
+test('owner decisions are durably queued, deduped, and bound to the observed review card', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const body = {
+    action:'submit_owner_decision',
+    task_id:'task-7',
+    card_id:'card-7',
+    decision:'approve',
+    observed_snapshot:'snap-7',
+  };
+  const first = await f.call({ method:'POST', owner:true, body });
+  assert.equal(first.statusCode, 202);
+  assert.equal(first.body.status, 'queued');
+
+  const duplicate = await f.call({ method:'POST', owner:true, body });
+  assert.equal(duplicate.statusCode, 200);
+  assert.equal(duplicate.body.existing, true);
+
+  const visible = await f.call({ owner:true, query:{ view:'commands' } });
+  const row = visible.body.commands.find(item => item.id === first.body.id);
+  assert.equal(row.command_kind, 'owner_decision');
+  assert.equal(row.payload.schema, 'workspace.owner-decision/v1');
+  assert.equal(row.payload.task_id, 'task-7');
+  assert.equal(row.payload.card_id, 'card-7');
+  assert.equal(row.payload.observed_snapshot, 'snap-7');
+});
+
+test('Kanban transition is durably queued, deduped, and queryable after a new request', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const body = {
+    action:'submit_kanban_transition',
+    task_id:'task-1',
+    work_id:'work-1',
+    observed_state:'FAILED',
+    observed_generation:2,
+    target_state:'READY',
+    idempotency_key:'drag-1',
+  };
+  const first = await f.call({ method:'POST', owner:true, body });
+  assert.equal(first.statusCode, 202);
+  assert.equal(first.body.status, 'queued');
+
+  const duplicate = await f.call({ method:'POST', owner:true, body });
+  assert.equal(duplicate.statusCode, 200);
+  assert.equal(duplicate.body.existing, true);
+  assert.equal(duplicate.body.transition.id, first.body.id);
+
+  const visible = await f.call({
+    owner:true,
+    query:{ view:'kanban-transition', id:first.body.id },
+  });
+  assert.equal(visible.statusCode, 200);
+  assert.equal(visible.body.transition.status, 'queued');
+  assert.equal(visible.body.transition.payload.schema, 'workspace.kanban-transition/v1');
+  assert.equal(visible.body.transition.payload.observed_generation, 2);
+});
+
+test('Kanban transition rejects incomplete or non-integer observed state', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const res = await f.call({
+    method:'POST', owner:true,
+    body:{
+      action:'submit_kanban_transition',
+      task_id:'task-1', work_id:'work-1',
+      observed_state:'FAILED', observed_generation:'bad',
+      target_state:'READY', idempotency_key:'drag-2',
+    },
+  });
+  assert.equal(res.statusCode, 400);
 });

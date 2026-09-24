@@ -11,9 +11,9 @@ const buildLogsPath = new URL('../workspace/build-logs/index.html', import.meta.
 const careerOpsPath = new URL('../workspace/career-ops/index.html', import.meta.url);
 const productionReviewPath = new URL('../workspace/v3-playtest/index.html', import.meta.url);
 
-test('workspace exposes exactly five primary views on desktop and mobile', async () => {
+test('workspace exposes six primary views on desktop and mobile', async () => {
   const html = await readFile(htmlPath, 'utf8');
-  for (const view of ['today','build','career','evidence','self']) {
+  for (const view of ['operator','today','build','career','evidence','self']) {
     const matches = html.match(new RegExp('data-workspace-nav="' + view + '"', 'g')) || [];
     assert.equal(matches.length, 2, view + ' should exist once in desktop nav and once in mobile nav');
   }
@@ -29,9 +29,10 @@ test('workspace cohesion assets are loaded and escaped newline artifacts are gon
   assert.equal(html.includes('\\n'), false);
 });
 
-test('view router keeps AgentOS inside Build and personal context inside Self', async () => {
+test('view router keeps Build detail one click away and personal context inside Self', async () => {
   const source = await readFile(viewsPath, 'utf8');
-  assert.match(source, /build:[\s\S]*"#agentos-board-section"/);
+  assert.match(source, /build:[\s\S]*workspace\/build\/agentos/);
+  assert.match(source, /build:[\s\S]*workspace\/build\/environments/);
   assert.match(source, /self:[\s\S]*"#frame"[\s\S]*"\.goals"[\s\S]*"#checkin-details"/);
   assert.match(source, /evidence:[\s\S]*"#evidence-panel"/);
 });
@@ -109,12 +110,12 @@ test('What matters now is scoped to Today while full activity lives in Build', a
 });
 
 
-test('Global Add routes every view to the existing durable Today command ingress', async () => {
+test('Global Add routes every view to the durable Operator command ingress', async () => {
   const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
   const views = await readFile(viewsPath, 'utf8');
   assert.match(html, /id="workspace-global-add"/);
   assert.match(views, /#workspace-global-add/);
-  assert.match(views, /setView\("today"\)/);
+  assert.match(views, /setView\("operator"\)/);
   assert.match(views, /#today-command-input/);
 });
 
