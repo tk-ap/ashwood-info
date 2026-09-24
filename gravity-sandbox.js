@@ -21,7 +21,22 @@
     docAnomaly.classList.add("is-glimpsed");
     anomalyTimer = window.setTimeout(() => docAnomaly.classList.remove("is-glimpsed"), 1150);
   };
-  const renderer = window.createAshwoodGravityRenderer({
+  // The physical black hole (gravity-physical.js) is the default scene. It falls back
+  // to the authored image scene where WebGL is missing or the GPU is a software
+  // renderer. ?hole=image forces the image scene; ?hole=physical forces the physical
+  // one even on a software renderer, for headless checks.
+  const holeMode = new URLSearchParams(location.search).get("hole");
+  const physicalCanvas = siteCosmos.querySelector("[data-physical-hole-canvas]");
+  const physical = holeMode !== "image" && physicalCanvas &&
+    typeof window.createAshwoodPhysicalHole === "function"
+    ? window.createAshwoodPhysicalHole({
+        canvas: physicalCanvas, reducedMotion: reduced, force: holeMode === "physical"
+      })
+    : null;
+  const usePhysical = !!(physical && physical.supported);
+  if (physicalCanvas && !usePhysical) physicalCanvas.remove();
+  if (usePhysical) document.body.classList.add("ashwood-physical-hole");
+  const renderer = usePhysical ? physical : window.createAshwoodGravityRenderer({
     canvas, imageElement: basePlate, reducedMotion: reduced
   });
   // Read-only diagnostics for browser tests; never credentials or private state.
@@ -107,6 +122,10 @@
       : clamp(0.54 * heroStrength + 0.90 * instinctStrength);
     document.body.style.setProperty("--gravity-scene-opacity",
       String(clamp(sceneOpacity).toFixed(3)));
+    // The physical hole stays faintly present through the rest of the page, the way
+    // the authored plate does, but only draws frames while it is in view and moving.
+    document.body.style.setProperty("--physical-hole-opacity",
+      String(clamp(Math.max(sceneOpacity, 0.24)).toFixed(3)));
     renderer.setZoneActive(motionStrength > 0.001 ? 1 : 0);
     renderer.setMotionStrength(motionStrength);
 
