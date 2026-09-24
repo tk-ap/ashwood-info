@@ -59,10 +59,24 @@ export function reconcileCareerEmail(applications, { subject = '', from = '', sn
   }).filter(candidate => candidate.jobMatch || (candidate.companyEvidence && candidate.roleEvidence))
     .sort((left, right) => right.score - left.score || String(left.application.id).localeCompare(String(right.application.id)));
   const top = candidates[0];
-  if (!top) return { kind: 'review_required', reason: 'no_safe_match', candidates: [] };
-  const tied = candidates.filter(candidate => candidate.score === top.score);
-  if (tied.length !== 1) return { kind: 'review_required', reason: 'ambiguous_match', candidates: tied.map(candidate => candidate.application) };
-  return { kind: 'matched', application: top.application };
+  if (top) {
+    const tied = candidates.filter(candidate => candidate.score === top.score);
+    if (tied.length !== 1) return { kind: 'review_required', reason: 'ambiguous_match', candidates: tied.map(candidate => candidate.application) };
+    return { kind: 'matched', application: top.application };
+  }
+
+  // Some ATS decision emails identify the employer in the sender/subject but omit
+  // the exact role. A unique active application for that employer is safe to
+  // reconcile; multiple same-employer applications still require owner review.
+  const employerOnly = applications.filter(application => {
+    const companyWords = words(application.company);
+    if (!companyWords.length) return false;
+    const hits = companyWords.filter(word => messageWords.has(word)).length;
+    return hits > 0 && hits / companyWords.length >= 0.5;
+  });
+  if (employerOnly.length === 1) return { kind: 'matched', application: employerOnly[0] };
+  if (employerOnly.length > 1) return { kind: 'review_required', reason: 'employer_match_role_ambiguous', candidates: employerOnly };
+  return { kind: 'review_required', reason: 'no_safe_match', candidates: [] };
 }
 
 export function gmailEventId(messageId) {
