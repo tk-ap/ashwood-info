@@ -21,7 +21,8 @@ const state = {
   opportunityCursor: 0,
   opportunityMeta: null,
   inboxSync: null,
-  inboxReviews: []
+  inboxReviews: [],
+  newJobsSinceSession: 0
 };
 
 async function api(options={}) {
@@ -96,10 +97,10 @@ function materialChips(materials={}) {
 function renderHeader() {
   const counts = summaryCounts(state.applications);
   const cards = [
-    [counts.active, 'active pipeline'],
-    [counts.submitted, 'submitted / screening'],
-    [counts.conversations, 'recruiter / assessment / interview'],
-    [counts.needsAction, 'need action']
+    [counts.submitted, 'applications submitted'],
+    [state.newJobsSinceSession, 'new jobs found'],
+    [counts.denied, 'applications denied'],
+    [counts.interviews, 'applications → interview']
   ];
   const markup = cards.map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
   $('#career-summary').innerHTML = markup;
@@ -193,14 +194,14 @@ function renderSyncState() {
   const gmailEvents = state.events.filter(event => event.source === 'gmail');
   const node = $('#career-sync-state');
   if (state.inboxSync?.status === 'success') {
-    const { checked=0, ingested=0, review_required:reviewRequired=0, syncedAt } = state.inboxSync;
-    const detail = [
-      `${checked} message${checked === 1 ? '' : 's'} checked`,
-      `${ingested} new event${ingested === 1 ? '' : 's'} recorded`,
-      reviewRequired ? `${reviewRequired} need${reviewRequired === 1 ? 's' : ''} review` : 'no review needed'
-    ].join(' · ');
-    const reviewMarkup = state.inboxReviews.length ? `<small>${state.inboxReviews.slice(0,3).map(item => escapeHtml(item.summary || 'Email needs application match')).join(' · ')}</small>` : '';
-    node.innerHTML = `<strong>Inbox synced successfully</strong><span>${escapeHtml(detail)} · ${escapeHtml(fmtDateTime(syncedAt))}</span>${reviewMarkup}`;
+    const { ingested=0, review_required:reviewRequired=0, syncedAt, updates=[] } = state.inboxSync;
+    const headline = ingested ? `Located ${ingested} new application update${ingested === 1 ? '' : 's'}.` : 'No new application updates.';
+    const updateMarkup = updates.length ? '<small>' + updates.slice(0,4).map(item => {
+      const outcome = item.status === 'REJECTED' ? 'Rejection' : item.status === 'INTERVIEW' ? 'Interview' : item.event_type === 'OFFER' ? 'Offer' : 'Application';
+      return escapeHtml(`${outcome}: ${item.company} — ${item.role} updated in tracker.`);
+    }).join('<br>') + '</small>' : '';
+    const reviewMarkup = reviewRequired ? `<small>${reviewRequired} career email${reviewRequired === 1 ? '' : 's'} need application matching review.</small>` : '';
+    node.innerHTML = `<strong>Inbox synced successfully</strong><span>${escapeHtml(headline)} · ${escapeHtml(fmtDateTime(syncedAt))}</span>${updateMarkup}${reviewMarkup}`;
     return;
   }
   if (state.inboxSync?.status === 'error') {
@@ -263,6 +264,8 @@ async function loadOpportunities({ refresh=false }={}) {
     const data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
     state.opportunities = data.opportunities || [];
     state.opportunityMeta = data;
+    if (refresh) state.newJobsSinceSession += state.opportunities.length;
+    renderHeader();
     renderOpportunities();
   } catch (error) {
     $('#career-opportunity-grid').innerHTML = `<div class="career-opportunity-empty"><strong>New options could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
@@ -445,7 +448,8 @@ $('#career-refresh').addEventListener('click', async () => {
       checked:Number(result.checked || 0),
       ingested:Number(result.ingested || 0),
       review_required:Number(result.review_required || state.inboxReviews.length || 0),
-      syncedAt:new Date().toISOString()
+      syncedAt:new Date().toISOString(),
+      updates:Array.isArray(result.updates) ? result.updates : []
     };
     await load();
   } catch (error) {
