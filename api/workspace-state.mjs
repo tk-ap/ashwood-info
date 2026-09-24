@@ -279,9 +279,6 @@ export default async function handler(req, res) {
     }
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
-    if (process.env.WORKSPACE_PREVIEW_READONLY === '1') {
-      return json(res, 403, { ok: false, error: 'Workspace preview is read-only' });
-    }
     if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
 
     if (action === 'network_upsert') {
