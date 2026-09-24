@@ -6,6 +6,7 @@
 .zero-cue,.zero-text-link{display:inline-flex;align-items:center;min-height:44px;margin-top:34px;color:var(--ashwood-ochre);font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid currentColor}
 .zero-cue:hover,.zero-cue:focus-visible,.zero-text-link:hover,.zero-text-link:focus-visible{color:var(--ashwood-oxblood)}
 .zero-section{border-top:1px solid var(--ashwood-rule);padding:clamp(72px,10vw,148px) 0}
+.build-gate-page #bridge{display:none}
 .zero-marker{display:flex;justify-content:space-between;gap:24px;margin-bottom:clamp(42px,6vw,78px);color:var(--ashwood-muted);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
 .zero-marker span:first-child{color:var(--ashwood-ochre)}
 .zero-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.48fr);gap:38px clamp(48px,7vw,110px);align-items:end}
