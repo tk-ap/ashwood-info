@@ -24,7 +24,7 @@ function environmentCard(product) {
         <p class="section-kicker">${escapeHtml(product.label)}</p>
         <h3>${escapeHtml(product.label)}</h3>
       </div>
-      <span class="sandbox-state sandbox-state--${escapeHtml(sandbox.lifecycle || "unassigned")}">${escapeHtml(statusLabel(sandbox.lifecycle || "unassigned"))}</span>
+      <span class="sandbox-state sandbox-state--${escapeHtml(String(product.status || "UNASSIGNED").toLowerCase())}">${escapeHtml(product.status || "UNASSIGNED")}</span>
     </div>
     <div class="sandbox-environment-grid">
       <div>
@@ -52,16 +52,17 @@ async function loadSandboxEnvironments() {
   const status = document.querySelector("#sandbox-environment-status");
   if (!host) return;
   try {
-    const response = await fetch("/data/sandbox-environments.json", { cache: "no-store" });
+    const response = await fetch("/api/workspace-environments", { credentials: "same-origin", cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    const products = Array.isArray(data.products) ? data.products : [];
+    const products = Array.isArray(data.environments) ? data.environments : [];
     host.innerHTML = products.length
       ? products.map(environmentCard).join("")
       : '<p class="workstream-empty"><strong>No sandbox mappings published.</strong><span>Products appear here after AgentOS projects their canonical environment topology.</span></p>';
     if (status) {
-      const live = products.filter((product) => product?.sandbox?.lifecycle === "live").length;
-      status.textContent = `${live} live · ${products.length - live} ready to onboard`;
+      const healthy = products.filter((product) => ["LIVE", "READY"].includes(product.status)).length;
+      const stale = products.filter((product) => product.status === "STALE").length;
+      status.textContent = `${healthy} healthy · ${stale} stale · source ${data.authority || "environment registry"}`;
     }
   } catch (error) {
     host.innerHTML = '<p class="workstream-empty"><strong>Environment projection unavailable.</strong><span>This does not mean production or any sandbox is down.</span></p>';

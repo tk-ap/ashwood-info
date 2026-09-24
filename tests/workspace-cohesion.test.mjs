@@ -29,9 +29,10 @@ test('workspace cohesion assets are loaded and escaped newline artifacts are gon
   assert.equal(html.includes('\\n'), false);
 });
 
-test('view router keeps AgentOS inside Build and personal context inside Self', async () => {
+test('view router keeps Build detail one click away and personal context inside Self', async () => {
   const source = await readFile(viewsPath, 'utf8');
-  assert.match(source, /build:[\s\S]*"#agentos-board-section"/);
+  assert.match(source, /build:[\s\S]*workspace\/build\/agentos/);
+  assert.match(source, /build:[\s\S]*workspace\/build\/environments/);
   assert.match(source, /self:[\s\S]*"#frame"[\s\S]*"\.goals"[\s\S]*"#checkin-details"/);
   assert.match(source, /evidence:[\s\S]*"#evidence-panel"/);
 });

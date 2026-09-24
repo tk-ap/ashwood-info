@@ -97,3 +97,9 @@ test("Sandbox Studio keeps primary phone controls at least 44px tall", () => {
   assert.match(studioCss, /\.sandbox-overlay-rail button\{width:44px;height:44px;/);
   assert.match(studioCss, /\.sandbox-request button\{[^}]*min-width:44px;[^}]*min-height:44px;/);
 });
+
+test("Sandbox Studio reads the canonical environment registry, not the retired static projection", async () => {
+  const studio = await readFile(new URL("../workspace/sandbox-studio.mjs", import.meta.url), "utf8");
+  assert.match(studio, /api\("\/api\/workspace-environments"\)/);
+  assert.doesNotMatch(studio, /data\/sandbox-environments\.json/);
+});

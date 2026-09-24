@@ -20,13 +20,10 @@ test("sandbox environment projection keeps production and sandbox distinct", () 
   assert.equal(ashwood.sandbox.connection_ref, "owner:provider:here-now");
 });
 
-test("future products are prepared without claiming sandbox deployment", () => {
-  const pending = projection.products.filter((product) => product.product_key !== "ashwood");
-  assert.ok(pending.length >= 3);
-  for (const product of pending) {
-    assert.equal(product.sandbox.lifecycle, "unassigned");
-    assert.equal(product.sandbox.url, undefined);
-  }
+test("legacy static projection is not the live Workspace source", () => {
+  assert.doesNotMatch(view, /data\/sandbox-environments\.json/);
+  assert.match(view, /api\/workspace-environments/);
+  assert.match(view, /STALE/);
 });
 
 test("workspace exposes stable sandbox link without converting sandbox to production truth", () => {
@@ -37,8 +34,8 @@ test("workspace exposes stable sandbox link without converting sandbox to produc
 });
 
 
-test("Build view includes the sandbox environment continuity surface", () => {
-  assert.match(workspaceViews, /build:\s*\[[\s\S]*"\.sandbox-environments"/);
+test("Build view links to the dedicated environment detail route", () => {
+  assert.match(workspaceViews, /workspace\/build\/environments/);
 });
 
 
