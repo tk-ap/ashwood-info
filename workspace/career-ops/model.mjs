@@ -40,12 +40,11 @@ export function needsAttention(application={}, now=Date.now()) {
 export function summaryCounts(applications=[], now=Date.now()) {
   return applications.reduce((acc, app) => {
     const status = normaliseStatus(app.status);
-    if (ACTIVE_STATUSES.has(status)) acc.active += 1;
-    if (['APPLIED','SCREENING'].includes(status)) acc.submitted += 1;
-    if (['RECRUITER','ASSESSMENT','INTERVIEW'].includes(status)) acc.conversations += 1;
-    if (needsAttention(app, now)) acc.needsAction += 1;
+    if (['APPLIED','SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER'].includes(status)) acc.submitted += 1;
+    if (status === 'REJECTED') acc.denied += 1;
+    if (status === 'INTERVIEW' || status === 'OFFER') acc.interviews += 1;
     return acc;
-  }, { active:0, submitted:0, conversations:0, needsAction:0 });
+  }, { submitted:0, denied:0, interviews:0 });
 }
 
 export function sortApplications(applications=[]) {

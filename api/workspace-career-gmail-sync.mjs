@@ -122,6 +122,7 @@ export default async function handler(req, res) {
 
     let ingested = 0;
     let reviewRequired = 0;
+    const updates = [];
     for (const item of list.messages || []) {
       const duplicate = await sql`
         SELECT 1 FROM workspace_career_events
@@ -177,6 +178,14 @@ export default async function handler(req, res) {
       } else {
         await sql`UPDATE workspace_career_applications SET updated_at = NOW() WHERE id = ${app.id}`;
       }
+      updates.push({
+        application_id: app.id,
+        company: app.company,
+        role: app.role,
+        event_type: eventType,
+        status: status || app.status,
+        summary
+      });
       ingested += 1;
     }
 
@@ -197,7 +206,8 @@ export default async function handler(req, res) {
       ingested,
       review_required:reviewRequired,
       checked:(list.messages || []).length,
-      reviews
+      reviews,
+      updates
     });
   } catch (error) {
     console.error('workspace career gmail sync failed', error);
