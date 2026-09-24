@@ -20,7 +20,8 @@ const state = {
   opportunities: [],
   opportunityCursor: 0,
   opportunityMeta: null,
-  inboxSync: null
+  inboxSync: null,
+  inboxReviews: []
 };
 
 async function api(options={}) {
@@ -198,7 +199,8 @@ function renderSyncState() {
       `${ingested} new event${ingested === 1 ? '' : 's'} recorded`,
       reviewRequired ? `${reviewRequired} need${reviewRequired === 1 ? 's' : ''} review` : 'no review needed'
     ].join(' · ');
-    node.innerHTML = `<strong>Inbox synced successfully</strong><span>${escapeHtml(detail)} · ${escapeHtml(fmtDateTime(syncedAt))}</span>`;
+    const reviewMarkup = state.inboxReviews.length ? `<small>${state.inboxReviews.slice(0,3).map(item => escapeHtml(item.summary || 'Email needs application match')).join(' · ')}</small>` : '';
+    node.innerHTML = `<strong>Inbox synced successfully</strong><span>${escapeHtml(detail)} · ${escapeHtml(fmtDateTime(syncedAt))}</span>${reviewMarkup}`;
     return;
   }
   if (state.inboxSync?.status === 'error') {
@@ -437,11 +439,12 @@ $('#career-refresh').addEventListener('click', async () => {
   button.textContent = 'Syncing inbox…';
   try {
     const result = await gmailSyncApi();
+    state.inboxReviews = Array.isArray(result.reviews) ? result.reviews : [];
     state.inboxSync = {
       status:'success',
       checked:Number(result.checked || 0),
       ingested:Number(result.ingested || 0),
-      review_required:Number(result.review_required || 0),
+      review_required:Number(result.review_required || state.inboxReviews.length || 0),
       syncedAt:new Date().toISOString()
     };
     await load();

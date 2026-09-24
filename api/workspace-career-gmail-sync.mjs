@@ -143,7 +143,7 @@ export default async function handler(req, res) {
       const occurredAt = message.internalDate ? new Date(Number(message.internalDate)).toISOString() : new Date().toISOString();
       const resolution = reconcileCareerEmail(
         applications.filter(application => !['DECLINED', 'CLOSED', 'DEFERRED'].includes(application.status)),
-        subject, from, snippet
+        { subject, from, snippet }
       );
       if (resolution.kind !== 'matched') {
         await recordReview(sql, { messageId:item.id, occurredAt, subject, from, snippet, resolution });
@@ -189,12 +189,15 @@ export default async function handler(req, res) {
         updated_at = NOW()
     `;
 
+    const reviews = await sql`SELECT id, source_ref, occurred_at, company, role, summary, reason, candidate_ids FROM workspace_career_email_reviews ORDER BY occurred_at DESC LIMIT 50`;
+
     return json(res, 200, {
       ok:true,
       account:profile.emailAddress,
       ingested,
       review_required:reviewRequired,
-      checked:(list.messages || []).length
+      checked:(list.messages || []).length,
+      reviews
     });
   } catch (error) {
     console.error('workspace career gmail sync failed', error);
