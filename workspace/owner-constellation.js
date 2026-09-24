@@ -16,7 +16,7 @@
 
   function injectCss(){
     if(document.querySelector('link[href*="owner-constellation.css"]')) return;
-    const link=document.createElement('link'); link.rel='stylesheet'; link.href='/workspace/owner-constellation.css?v=20260908-constellation1'; document.head.append(link);
+    const link=document.createElement('link'); link.rel='stylesheet'; link.href='/workspace/owner-constellation.css?v=20260924-signal-system1'; document.head.append(link);
   }
 
   function ensureMount(){
@@ -79,21 +79,21 @@
       const [x,y]=GOAL_POSITIONS[i%GOAL_POSITIONS.length];
       const intensity=.22+(g.count/max)*.78;
       const size=72+(g.count/max)*48;
-      return `<button class="owner-node owner-node--goal ${g.count===0?'owner-node--quiet':''}" data-owner-goal="${esc(g.id)}" style="left:${x}%;top:${y}%;--node-color:${COLORS[i%COLORS.length]};--node-intensity:${intensity};--node-size:${size}px" aria-label="Open ${esc(g.name)} goal"><strong>${esc(g.name)}</strong><span>${g.count}</span></button>`;
+      return `<button class="owner-node owner-node--goal ${g.count===0?'owner-node--quiet':''}" data-owner-goal="${esc(g.id)}" style="left:${x}%;top:${y}%;--node-color:${COLORS[i%COLORS.length]};--node-intensity:${intensity};--node-size:${size}px" aria-label="Open ${esc(g.name)} goal"><span class="owner-node__type">Goal</span><strong>${esc(g.name)}</strong><span class="owner-node__count">${g.count}<small>signals</small></span></button>`;
     }).join('');
 
     const productNodes=products.map((p,i)=>{
       const [x,y]=PRODUCT_POSITIONS[i%PRODUCT_POSITIONS.length];
       const goalId=inferGoal(p,goals) || '';
       const isQuiet=/blocked|failed|waiting/.test(p.status);
-      return `<button class="owner-node owner-node--product ${isQuiet?'owner-node--quiet':'owner-node--active'}" data-owner-goal="${esc(goalId)}" style="left:${x}%;top:${y}%" title="${esc(p.title||p.name)}">${esc(p.name.slice(0,12))}</button>`;
+      return `<button class="owner-node owner-node--product ${isQuiet?'owner-node--quiet':'owner-node--active'}" data-owner-goal="${esc(goalId)}" style="left:${x}%;top:${y}%" title="${esc(p.title||p.name)}"><span class="owner-node__type">Work</span><strong>${esc(p.name.slice(0,12))}</strong></button>`;
     }).join('');
 
     const lines=products.map((p,i)=>{
       const goalId=inferGoal(p,goals); const gi=goals.findIndex(g=>g.id===goalId); if(gi<0) return '';
       const [x1,y1]=PRODUCT_POSITIONS[i%PRODUCT_POSITIONS.length]; const [x2,y2]=GOAL_POSITIONS[gi%GOAL_POSITIONS.length];
       const strong=goals[gi].count>0?'is-strong':'';
-      return `<line class="${strong}" x1="${x1}%" y1="${y1}%" x2="${x2}%" y2="${y2}%"/>`;
+      return `<line class="${strong}" style="--thread-color:${COLORS[gi%COLORS.length]}" x1="${x1}%" y1="${y1}%" x2="${x2}%" y2="${y2}%"/>`;
     }).join('');
 
     const synthesis = total===0
@@ -103,11 +103,11 @@
         : `${lead.name} carries the strongest visible momentum; ${quiet.name} is the quietest signal. Quiet is only a problem if it is accidental.`;
 
     root.innerHTML=`
-      <div class="owner-constellation__head"><div><p>Owner constellation · live</p><h2 id="owner-constellation-title">What is pulling on what?</h2></div><div class="owner-constellation__legend"><span>large = more evidence</span><span>lines = work → goal</span><span>dim = quiet</span></div></div>
+      <div class="owner-constellation__head"><div><p>Owner constellation · live projection</p><h2 id="owner-constellation-title">What is pulling on what?</h2><span class="owner-constellation__subhead">Follow the brightest signal, then open its evidence.</span></div><div class="owner-constellation__legend"><span><i class="owner-legend-dot owner-legend-dot--goal"></i>Goal</span><span><i class="owner-legend-dot owner-legend-dot--work"></i>Work</span><span><i class="owner-legend-dot owner-legend-dot--quiet"></i>Quiet</span></div></div>
       <div class="owner-constellation__field"></div>
       <svg class="owner-constellation__threads" aria-hidden="true">${lines}</svg>
       ${nodes}${productNodes}
-      <div class="owner-constellation__readout"><strong>${total} recent signals across ${goals.length} goals</strong><span>${esc(synthesis)}</span></div>`;
+      <div class="owner-constellation__readout"><div class="owner-constellation__metrics"><span><b>${total}</b> recent signals</span><span><b>${esc(lead.name)}</b> strongest pull</span><span><b>${esc(quiet.name)}</b> quietest</span></div><p>${esc(synthesis)}</p></div>`;
   }
 
   document.addEventListener('click',event=>{
