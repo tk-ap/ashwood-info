@@ -3,7 +3,7 @@
 .ops-pulse__top{display:flex;justify-content:space-between;gap:22px;align-items:flex-start}
 .ops-pulse__top h3{font:500 clamp(30px,5vw,56px)/1.04 Georgia,serif;letter-spacing:-.045em;margin:8px 0 10px}
 .ops-pulse__top p{max-width:64ch;line-height:1.5;font-size:13px;color:var(--ashwood-muted)}
-.ops-pulse__top button{border:1px solid currentColor;background:transparent;color:inherit;padding:10px 16px;cursor:pointer}
+.ops-pulse__top button,.ops-pulse-health-link{border:1px solid currentColor;background:transparent;color:inherit;padding:10px 16px;cursor:pointer;font-size:12px;text-decoration:none;white-space:nowrap}\n.ops-pulse-health-link{margin-left:auto}
 .ops-pulse__stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--ashwood-rule);margin:26px 0;padding:23px 0}
 .ops-pulse__stat{display:flex;flex-direction:column;gap:8px;padding-inline:18px;border-right:1px solid var(--ashwood-rule)}
 .ops-pulse__stat:first-child{padding-left:0}.ops-pulse__stat:last-child{border:0}
