@@ -19,7 +19,8 @@ const state = {
   selectedId: null,
   opportunities: [],
   opportunityCursor: 0,
-  opportunityMeta: null
+  opportunityMeta: null,
+  inboxSync: null
 };
 
 async function api(options={}) {
@@ -190,11 +191,25 @@ function renderDetail() {
 function renderSyncState() {
   const gmailEvents = state.events.filter(event => event.source === 'gmail');
   const node = $('#career-sync-state');
+  if (state.inboxSync?.status === 'success') {
+    const { checked=0, ingested=0, review_required:reviewRequired=0, syncedAt } = state.inboxSync;
+    const detail = [
+      `${checked} message${checked === 1 ? '' : 's'} checked`,
+      `${ingested} new event${ingested === 1 ? '' : 's'} recorded`,
+      reviewRequired ? `${reviewRequired} need${reviewRequired === 1 ? 's' : ''} review` : 'no review needed'
+    ].join(' · ');
+    node.innerHTML = `<strong>Inbox synced successfully</strong><span>${escapeHtml(detail)} · ${escapeHtml(fmtDateTime(syncedAt))}</span>`;
+    return;
+  }
+  if (state.inboxSync?.status === 'error') {
+    node.innerHTML = `<strong>Inbox sync unavailable</strong><span>${escapeHtml(state.inboxSync.message || 'Career Gmail sync failed')}</span>`;
+    return;
+  }
   if (gmailEvents.length) {
     const latest = gmailEvents[0];
-    node.innerHTML = `<strong>Gmail activity detected</strong><span>${gmailEvents.length} tracked message event${gmailEvents.length === 1 ? '' : 's'} · latest ${escapeHtml(fmtDateTime(latest.occurred_at))}</span>`;
+    node.innerHTML = `<strong>Gmail monitoring active</strong><span>${gmailEvents.length} tracked message event${gmailEvents.length === 1 ? '' : 's'} · latest ${escapeHtml(fmtDateTime(latest.occurred_at))}</span>`;
   } else {
-    node.innerHTML = `<strong>Inbox sync awaiting delegated authorization</strong><span>Career Ops uses server-side delegated Gmail access. No Gmail credential or token is sent to the browser.</span>`;
+    node.innerHTML = `<strong>Gmail monitoring connected</strong><span>Press Refresh to check the Career Ops inbox. Credentials remain server-side.</span>`;
   }
 }
 
@@ -421,11 +436,18 @@ $('#career-refresh').addEventListener('click', async () => {
   button.disabled = true;
   button.textContent = 'Syncing inbox…';
   try {
-    await gmailSyncApi();
+    const result = await gmailSyncApi();
+    state.inboxSync = {
+      status:'success',
+      checked:Number(result.checked || 0),
+      ingested:Number(result.ingested || 0),
+      review_required:Number(result.review_required || 0),
+      syncedAt:new Date().toISOString()
+    };
     await load();
   } catch (error) {
-    const node = $('#career-sync-state');
-    node.innerHTML = `<strong>Inbox sync unavailable</strong><span>${escapeHtml(error.message)}</span>`;
+    state.inboxSync = { status:'error', message:error.message };
+    renderSyncState();
   } finally {
     button.disabled = false;
     button.textContent = original;
