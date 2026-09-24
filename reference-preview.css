@@ -25,6 +25,4 @@ body.ashwood-preview-panel-active .ashwood-preview-panel__title { opacity: calc(
 .ai-zero-preview-rail a span { color: var(--ashwood-ochre); font-size: 9px; }
 .ai-zero-preview-rail a.is-active,.ai-zero-preview-rail a:hover,.ai-zero-preview-rail a:focus-visible { border-color: var(--ashwood-oxblood); background: var(--ashwood-oxblood); color: var(--ashwood-night-ink); }
 @media (max-width: 720px) { .ai-zero-preview-rail { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); } }
-@media (prefers-reduced-motion: reduce) {
-  .ai-zero-preview-rail a,
-}
+@media (prefers-reduced-motion: reduce) { .ai-zero-preview-rail a { transition: none; } }
