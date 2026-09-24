@@ -25,7 +25,7 @@
   position:relative;
   overflow:hidden;
 }
-.workspace-view-intro::after{
+.workspace-view-intro::after{display:none}\nbody[data-workspace-current-view="today"] .workspace-view-intro::after{\n  display:block;
   content:"";
   position:absolute;
   right:clamp(-90px,-5vw,-30px);
