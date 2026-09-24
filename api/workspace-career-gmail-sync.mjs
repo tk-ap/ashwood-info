@@ -125,11 +125,10 @@ export default async function handler(req, res) {
     const updates = [];
     for (const item of list.messages || []) {
       const duplicate = await sql`
-        SELECT 1 FROM workspace_career_events
+        SELECT application_id, event_type FROM workspace_career_events
         WHERE source = 'gmail' AND source_ref = ${item.id}
         LIMIT 1
       `;
-      if (duplicate[0]) continue;
 
       const messageResponse = await fetch(
         `${GMAIL_API}/messages/${encodeURIComponent(item.id)}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,
@@ -142,11 +141,13 @@ export default async function handler(req, res) {
       const snippet = message.snippet || '';
       const { eventType, status } = classify(subject, snippet);
       const occurredAt = message.internalDate ? new Date(Number(message.internalDate)).toISOString() : new Date().toISOString();
-      const resolution = reconcileCareerEmail(
-        applications.filter(application => !['DECLINED', 'CLOSED', 'DEFERRED'].includes(application.status)),
-        { subject, from, snippet }
-      );
-      if (resolution.kind !== 'matched') {
+      const resolution = duplicate[0]
+        ? { kind:'matched', application:applications.find(application => application.id === duplicate[0].application_id) }
+        : reconcileCareerEmail(
+            applications.filter(application => !['DECLINED', 'CLOSED', 'DEFERRED'].includes(application.status)),
+            { subject, from, snippet }
+          );
+      if (resolution.kind !== 'matched' || !resolution.application) {
         await recordReview(sql, { messageId:item.id, occurredAt, subject, from, snippet, resolution });
         reviewRequired += 1;
         continue;
@@ -175,6 +176,9 @@ export default async function handler(req, res) {
           SET status = ${status}, updated_at = NOW()
           WHERE id = ${app.id}
         `;
+        const verified = await sql`SELECT status FROM workspace_career_applications WHERE id = ${app.id} LIMIT 1`;
+        if (verified[0]?.status !== status) throw new Error(`Career status convergence failed for ${app.id}`);
+        app.status = status;
       } else {
         await sql`UPDATE workspace_career_applications SET updated_at = NOW() WHERE id = ${app.id}`;
       }
@@ -186,7 +190,7 @@ export default async function handler(req, res) {
         status: status || app.status,
         summary
       });
-      ingested += 1;
+      if (!duplicate[0]) ingested += 1;
     }
 
     await sql`
