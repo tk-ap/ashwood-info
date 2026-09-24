@@ -10,15 +10,17 @@ Use this when the live Ashwood Workspace database is hard to identify across Neo
 - Vercel team/project: **alvira2 / ashwood**
 - Runtime variable: **ASHWOOD_DATABASE_URL**
 
-Do not assume another Neon project is the live database just because it has similar tables. **Any time Neon needs to be revisited, check both Neon profiles/accounts first.** The correct project is **ASHWOOD Dispatch** under the **ALVIRA** Neon organization.
+Do not assume another Neon project is the live database just because it has similar tables. **Any time Neon needs to be revisited, check both `Vercel: ALVIRA` and `ALVIRA` in the Neon switcher first.** The correct project is **ASHWOOD Dispatch** under the **ALVIRA** Neon organization.
 
 ## Recovery rule
 
 If `ASHWOOD_DATABASE_URL` is stored as a Sensitive Environment Variable in Vercel and cannot be copied:
 
-1. Open Neon and check **both Neon profiles/accounts** before concluding a project is missing. The user has more than one Neon profile, and this has caused confusion before.
-2. In each profile, inspect the available organizations/projects rather than assuming the currently selected profile is authoritative.
-3. The known live Ashwood database is under the **ALVIRA** organization in project **ASHWOOD Dispatch**.
+1. Open Neon and check **both ALVIRA contexts shown in the account/organization switcher** before concluding a project is missing:
+   - **Vercel: ALVIRA**
+   - **ALVIRA**
+2. Do not assume the currently selected context is authoritative; inspect both because projects may exist under either context.
+3. The known live Ashwood database is under the **ALVIRA** context in project **ASHWOOD Dispatch**.
 4. Use the **main** branch.
 5. Get a current connection string from Neon and add it only to the intended Vercel environment as `ASHWOOD_DATABASE_URL`.
 
