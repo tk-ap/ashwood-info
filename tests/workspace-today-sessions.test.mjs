@@ -25,10 +25,11 @@ test('private AgentOS views reload immediately after Workspace unlock', async ()
   assert.match(board, /ashwood:workspace-authenticated/);
 });
 
-test('Workspace cache-busts the fixed autonomous-session scripts', async () => {
+test('Workspace cache-busts the current autonomous-session and Build scripts', async () => {
   const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
   assert.match(html, /today\.mjs\?v=20260920-sessions1/);
   assert.match(html, /app\.js\?v=20260921-menufix1/);
-  assert.match(html, /agentos-board\.mjs\?v=20260922-dragcontract1/);
+  assert.match(html, /build-command-center\.mjs\?v=20260923-command-center1/);
   assert.match(html, /agentos-board\.css\?v=20260922-fitboard1/);
+  assert.doesNotMatch(html, /agentos-board\.mjs\?v=/, 'the legacy inline AgentOS board runtime moved to Build detail pages');
 });
