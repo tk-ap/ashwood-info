@@ -1,12 +1,8 @@
 import { getSql, json, requireSession, sameOrigin } from './_workspace.mjs';
-import { gmailEventId, reconcileCareerEmail } from './_career-reconciliation.mjs';
+import { ensureCareerSchema } from './_career-ops-handler.mjs';
+import { syncCareerGmail } from './_career-gmail-pipeline.mjs';
 
 const GMAIL_API = 'https://gmail.googleapis.com/gmail/v1/users/me';
-
-const trim = (value, max = 1000) => {
-  const text = String(value ?? '').trim();
-  return text ? text.slice(0, max) : null;
-};
 
 async function accessToken() {
   const clientId = process.env.CAREER_GMAIL_CLIENT_ID;
@@ -31,65 +27,24 @@ async function accessToken() {
   return (await response.json()).access_token;
 }
 
-function header(message, name) {
-  return message.payload?.headers?.find(item => item.name?.toLowerCase() === name.toLowerCase())?.value || '';
-}
-
-function classify(subject, snippet) {
-  const text = `${subject} ${snippet}`.toLowerCase();
-  if (/offer|offer letter/.test(text)) return { eventType:'OFFER', status:'OFFER' };
-  if (/interview|schedule.*(call|meeting)|meet with/.test(text)) return { eventType:'INTERVIEW', status:'INTERVIEW' };
-  if (/assessment|take-home|take home|coding challenge/.test(text)) return { eventType:'ASSESSMENT', status:'ASSESSMENT' };
-  if (/recruiter|talent acquisition|phone screen|screening/.test(text)) return { eventType:'RECRUITER', status:'RECRUITER' };
-  if (/unfortunately|not moving forward|other candidates|not selected/.test(text)) return { eventType:'REJECTION', status:'REJECTED' };
-  if (/application (received|submitted)|thanks for applying|thank you for applying/.test(text)) return { eventType:'CONFIRMATION', status:'APPLIED' };
-  return { eventType:'EMAIL', status:null };
-}
-
-async function ensureSyncSchema(sql) {
-  await sql`
-    CREATE TABLE IF NOT EXISTS workspace_career_gmail_sync (
-      account TEXT PRIMARY KEY,
-      last_history_id TEXT,
-      last_synced_at TIMESTAMPTZ,
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    )
-  `;
-  await sql`
-    CREATE TABLE IF NOT EXISTS workspace_career_email_reviews (
-      id TEXT PRIMARY KEY,
-      source TEXT NOT NULL,
-      source_ref TEXT NOT NULL,
-      occurred_at TIMESTAMPTZ NOT NULL,
-      company TEXT,
-      role TEXT,
-      summary TEXT NOT NULL,
-      reason TEXT NOT NULL,
-      candidate_ids JSONB NOT NULL DEFAULT '[]'::jsonb,
-      payload JSONB NOT NULL DEFAULT '{}'::jsonb,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-      UNIQUE(source, source_ref)
-    )
-  `;
-}
-
-async function recordReview(sql, { messageId, occurredAt, subject, from, snippet, resolution }) {
-  const id = `career-email-review:gmail:${messageId}`;
-  const candidates = resolution.candidates || [];
-  await sql`
-    INSERT INTO workspace_career_email_reviews (
-      id, source, source_ref, occurred_at, company, role, summary, reason, candidate_ids, payload
-    ) VALUES (
-      ${id}, 'gmail', ${messageId}, ${occurredAt},
-      ${candidates.length === 1 ? candidates[0].company : null},
-      ${candidates.length === 1 ? candidates[0].role : null},
-      ${trim(subject, 1200) || 'Career email requires review'}, ${resolution.reason},
-      ${JSON.stringify(candidates.map(candidate => candidate.id))}::jsonb,
-      ${JSON.stringify({ from: trim(from, 500), subject: trim(subject, 500), snippet: trim(snippet, 500) })}::jsonb
-    ) ON CONFLICT (source, source_ref) DO UPDATE SET
-      updated_at = NOW(), reason = EXCLUDED.reason, candidate_ids = EXCLUDED.candidate_ids
-  `;
+function gmailClient(auth) {
+  return {
+    async listMessageIds() {
+      const response = await fetch(
+        `${GMAIL_API}/messages?maxResults=50&q=${encodeURIComponent('newer_than:30d -category:promotions -category:social')}`,
+        { headers:auth }
+      );
+      if (!response.ok) throw new Error('Unable to list Career Gmail messages');
+      return ((await response.json()).messages || []).map(item => item.id);
+    },
+    async getMessage(id) {
+      // Full format: ATS decision language usually sits past the 200-character snippet.
+      // The body is read for classification only and is not persisted.
+      const response = await fetch(`${GMAIL_API}/messages/${encodeURIComponent(id)}?format=full`, { headers:auth });
+      if (!response.ok) throw new Error('Unable to read Career Gmail message');
+      return response.json();
+    }
+  };
 }
 
 export default async function handler(req, res) {
@@ -100,7 +55,7 @@ export default async function handler(req, res) {
     if (!sameOrigin(req)) return json(res, 403, { ok:false, error:'Origin not allowed' });
 
     const sql = getSql();
-    await ensureSyncSchema(sql);
+    await ensureCareerSchema(sql);
     const token = await accessToken();
     const auth = { Authorization: `Bearer ${token}` };
 
@@ -111,87 +66,7 @@ export default async function handler(req, res) {
       return json(res, 409, { ok:false, error:'Delegated Gmail account does not match Career Ops account' });
     }
 
-    const applications = await sql`SELECT id, company, role, job_id, status, submitted_at FROM workspace_career_applications`;
-
-    const listResponse = await fetch(
-      `${GMAIL_API}/messages?maxResults=50&q=${encodeURIComponent('newer_than:30d -category:promotions -category:social')}`,
-      { headers:auth }
-    );
-    if (!listResponse.ok) throw new Error('Unable to list Career Gmail messages');
-    const list = await listResponse.json();
-
-    let ingested = 0;
-    let reviewRequired = 0;
-    const updates = [];
-    for (const item of list.messages || []) {
-      const duplicate = await sql`
-        SELECT application_id, event_type FROM workspace_career_events
-        WHERE source = 'gmail' AND source_ref = ${item.id}
-        LIMIT 1
-      `;
-
-      const messageResponse = await fetch(
-        `${GMAIL_API}/messages/${encodeURIComponent(item.id)}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,
-        { headers:auth }
-      );
-      if (!messageResponse.ok) continue;
-      const message = await messageResponse.json();
-      const subject = header(message, 'Subject');
-      const from = header(message, 'From');
-      const snippet = message.snippet || '';
-      const { eventType, status } = classify(subject, snippet);
-      const occurredAt = message.internalDate ? new Date(Number(message.internalDate)).toISOString() : new Date().toISOString();
-      const resolution = duplicate[0]
-        ? { kind:'matched', application:applications.find(application => application.id === duplicate[0].application_id) }
-        : reconcileCareerEmail(
-            applications.filter(application => !['DECLINED', 'CLOSED', 'DEFERRED'].includes(application.status)),
-            { subject, from, snippet }
-          );
-      if (resolution.kind !== 'matched' || !resolution.application) {
-        await recordReview(sql, { messageId:item.id, occurredAt, subject, from, snippet, resolution });
-        reviewRequired += 1;
-        continue;
-      }
-      const app = resolution.application;
-      const eventId = gmailEventId(item.id);
-      const summary = trim(subject, 1200) || 'Career email received';
-      const payload = JSON.stringify({
-        from: trim(from, 500),
-        subject: trim(subject, 500),
-        thread_id: message.threadId,
-        snippet: trim(snippet, 500)
-      });
-
-      await sql`
-        INSERT INTO workspace_career_events
-          (id, application_id, event_type, occurred_at, source, source_ref, summary, payload)
-        VALUES
-          (${eventId}, ${app.id}, ${eventType}, ${occurredAt}, 'gmail', ${item.id}, ${summary}, ${payload}::jsonb)
-        ON CONFLICT DO NOTHING
-      `;
-
-      if (status) {
-        await sql`
-          UPDATE workspace_career_applications
-          SET status = ${status}, updated_at = NOW()
-          WHERE id = ${app.id}
-        `;
-        const verified = await sql`SELECT status FROM workspace_career_applications WHERE id = ${app.id} LIMIT 1`;
-        if (verified[0]?.status !== status) throw new Error(`Career status convergence failed for ${app.id}`);
-        app.status = status;
-      } else {
-        await sql`UPDATE workspace_career_applications SET updated_at = NOW() WHERE id = ${app.id}`;
-      }
-      updates.push({
-        application_id: app.id,
-        company: app.company,
-        role: app.role,
-        event_type: eventType,
-        status: status || app.status,
-        summary
-      });
-      if (!duplicate[0]) ingested += 1;
-    }
+    const result = await syncCareerGmail({ sql, gmail:gmailClient(auth) });
 
     await sql`
       INSERT INTO workspace_career_gmail_sync (account, last_history_id, last_synced_at, updated_at)
@@ -202,17 +77,10 @@ export default async function handler(req, res) {
         updated_at = NOW()
     `;
 
-    const reviews = await sql`SELECT id, source_ref, occurred_at, company, role, summary, reason, candidate_ids FROM workspace_career_email_reviews ORDER BY occurred_at DESC LIMIT 50`;
-
-    return json(res, 200, {
-      ok:true,
-      account:profile.emailAddress,
-      ingested,
-      review_required:reviewRequired,
-      checked:(list.messages || []).length,
-      reviews,
-      updates
-    });
+    if (!result.ok) {
+      return json(res, 500, { ...result, account:profile.emailAddress, code:'RECONCILIATION_FAILED', error:'Tracker update could not be verified' });
+    }
+    return json(res, 200, { ...result, account:profile.emailAddress });
   } catch (error) {
     console.error('workspace career gmail sync failed', error);
     if (error.code === 'GMAIL_NOT_CONFIGURED') {

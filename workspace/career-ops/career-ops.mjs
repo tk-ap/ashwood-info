@@ -1,4 +1,4 @@
-import { normaliseStatus, requestedSalaryLabel, salaryLabel, sortApplications, summaryCounts, needsAttention } from './model.mjs';
+import { normaliseStatus, requestedSalaryLabel, salaryLabel, sortApplications, summaryCounts, syncSummary, needsAttention } from './model.mjs';
 
 const $ = selector => document.querySelector(selector);
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -50,6 +50,7 @@ async function gmailSyncApi() {
   if (!response.ok) {
     const error = new Error(body.error || `Sync failed (${response.status})`);
     error.code = body.code;
+    error.body = body;
     throw error;
   }
   return body;
@@ -95,7 +96,7 @@ function materialChips(materials={}) {
 }
 
 function renderHeader() {
-  const counts = summaryCounts(state.applications);
+  const counts = summaryCounts(state.applications, state.events);
   const cards = [
     [counts.submitted, 'applications submitted'],
     [state.newJobsSinceSession, 'new jobs found'],
@@ -190,22 +191,23 @@ function renderDetail() {
   $('#career-edit')?.addEventListener('click', () => openApplicationDialog(app));
 }
 
+function syncSummaryMarkup(sync) {
+  const summary = syncSummary(sync);
+  const items = summary.items.map(item => `<small><b>${escapeHtml(item.title)}</b><br>${escapeHtml(item.outcome)} → <b>${escapeHtml(item.status)}</b><br>Tracker updated.</small>`).join('');
+  const review = summary.review ? `<small>${escapeHtml(summary.review)}</small>` : '';
+  return `<strong>Inbox synced successfully</strong><span>${escapeHtml(summary.headline)} · ${escapeHtml(fmtDateTime(sync.syncedAt))}</span>${items}${review}`;
+}
+
 function renderSyncState() {
   const gmailEvents = state.events.filter(event => event.source === 'gmail');
   const node = $('#career-sync-state');
   if (state.inboxSync?.status === 'success') {
-    const { ingested=0, review_required:reviewRequired=0, syncedAt, updates=[] } = state.inboxSync;
-    const headline = ingested ? `Located ${ingested} new application update${ingested === 1 ? '' : 's'}.` : 'No new application updates.';
-    const updateMarkup = updates.length ? '<small>' + updates.slice(0,4).map(item => {
-      const outcome = item.status === 'REJECTED' ? 'Rejection' : item.status === 'INTERVIEW' ? 'Interview' : item.event_type === 'OFFER' ? 'Offer' : 'Application';
-      return escapeHtml(`${outcome}: ${item.company} — ${item.role} updated in tracker.`);
-    }).join('<br>') + '</small>' : '';
-    const reviewMarkup = reviewRequired ? `<small>${reviewRequired} career email${reviewRequired === 1 ? '' : 's'} need application matching review.</small>` : '';
-    node.innerHTML = `<strong>Inbox synced successfully</strong><span>${escapeHtml(headline)} · ${escapeHtml(fmtDateTime(syncedAt))}</span>${updateMarkup}${reviewMarkup}`;
+    node.innerHTML = syncSummaryMarkup(state.inboxSync);
     return;
   }
   if (state.inboxSync?.status === 'error') {
-    node.innerHTML = `<strong>Inbox sync unavailable</strong><span>${escapeHtml(state.inboxSync.message || 'Career Gmail sync failed')}</span>`;
+    const failures = (state.inboxSync.failures || []).map(item => `<small>${escapeHtml(`${item.company} — ${item.role}: ${item.from} → ${item.to} could not be verified. Tracker shows ${item.observed || 'unknown'}.`)}</small>`).join('');
+    node.innerHTML = `<strong>Inbox sync unavailable</strong><span>${escapeHtml(state.inboxSync.message || 'Career Gmail sync failed')}</span>${failures}`;
     return;
   }
   if (gmailEvents.length) {
@@ -445,15 +447,14 @@ $('#career-refresh').addEventListener('click', async () => {
     state.inboxReviews = Array.isArray(result.reviews) ? result.reviews : [];
     state.inboxSync = {
       status:'success',
-      checked:Number(result.checked || 0),
-      ingested:Number(result.ingested || 0),
-      review_required:Number(result.review_required || state.inboxReviews.length || 0),
-      syncedAt:new Date().toISOString(),
-      updates:Array.isArray(result.updates) ? result.updates : []
+      outcomes:Array.isArray(result.outcomes) ? result.outcomes.filter(item => item.verified) : [],
+      reviewOpen:Number(result.counts?.review_open || 0),
+      counts:result.counts || {},
+      syncedAt:new Date().toISOString()
     };
     await load();
   } catch (error) {
-    state.inboxSync = { status:'error', message:error.message };
+    state.inboxSync = { status:'error', message:error.message, failures:error.body?.failures || [] };
     renderSyncState();
   } finally {
     button.disabled = false;

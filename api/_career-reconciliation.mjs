@@ -44,17 +44,36 @@ export function reconcileCareerApplication(applications, { company, role, jobId,
   return { kind: 'review_required', reason: 'no_safe_match', candidates: [] };
 }
 
+const CORPORATE_SUFFIXES = new Set(['inc', 'llc', 'ltd', 'corp', 'corporation', 'co', 'company', 'jv', 'group', 'holdings', 'the', 'plc', 'lp', 'llp']);
+
+// Employer evidence requires every distinctive company word (or the joined
+// form, e.g. "corespaces" in an address). A single shared word such as "core"
+// is not evidence of the employer.
+function employerEvidence(application, messageWords, compactMessage) {
+  const significant = words(application.company).filter(word => !CORPORATE_SUFFIXES.has(word));
+  if (!significant.length) return false;
+  if (significant.every(word => messageWords.has(word))) return true;
+  const compact = significant.join('');
+  return compact.length >= 6 && compactMessage.includes(compact);
+}
+
+function jobIdEvidence(application, normalisedMessage) {
+  const jobId = normaliseCareerText(application.job_id);
+  return jobId.replace(/ /g, '').length >= 5 && ` ${normalisedMessage} `.includes(` ${jobId} `);
+}
+
 export function reconcileCareerEmail(applications, { subject = '', from = '', snippet = '' } = {}) {
-  const messageWords = new Set(words(`${subject} ${from} ${snippet}`));
+  const raw = `${subject} ${from} ${snippet}`;
+  const normalised = normaliseCareerText(raw);
+  const messageWords = new Set(normalised.split(' '));
+  const compactMessage = String(raw).toLowerCase().replace(/[^a-z0-9]+/g, '');
   const candidates = applications.map(application => {
-    const companyWords = words(application.company);
     const roleWords = words(application.role);
-    const companyHits = companyWords.filter(word => messageWords.has(word)).length;
     const roleHits = roleWords.filter(word => messageWords.has(word)).length;
-    const jobMatch = application.job_id && messageWords.has(String(application.job_id).toLowerCase());
-    const companyEvidence = companyHits > 0;
+    const jobMatch = jobIdEvidence(application, normalised);
+    const companyEvidence = employerEvidence(application, messageWords, compactMessage);
     const roleEvidence = roleWords.length > 0 && roleHits === roleWords.length;
-    const score = (jobMatch ? 12 : 0) + (companyWords.length ? (companyHits / companyWords.length) * 4 : 0) + (roleWords.length ? (roleHits / roleWords.length) * 6 : 0);
+    const score = (jobMatch ? 12 : 0) + (companyEvidence ? 4 : 0) + (roleWords.length ? (roleHits / roleWords.length) * 6 : 0);
     return { application, companyEvidence, roleEvidence, jobMatch, score };
   }).filter(candidate => candidate.jobMatch || (candidate.companyEvidence && candidate.roleEvidence))
     .sort((left, right) => right.score - left.score || String(left.application.id).localeCompare(String(right.application.id)));
@@ -68,12 +87,7 @@ export function reconcileCareerEmail(applications, { subject = '', from = '', sn
   // Some ATS decision emails identify the employer in the sender/subject but omit
   // the exact role. A unique active application for that employer is safe to
   // reconcile; multiple same-employer applications still require owner review.
-  const employerOnly = applications.filter(application => {
-    const companyWords = words(application.company);
-    if (!companyWords.length) return false;
-    const hits = companyWords.filter(word => messageWords.has(word)).length;
-    return hits > 0 && hits / companyWords.length >= 0.5;
-  });
+  const employerOnly = applications.filter(application => employerEvidence(application, messageWords, compactMessage));
   if (employerOnly.length === 1) return { kind: 'matched', application: employerOnly[0] };
   if (employerOnly.length > 1) return { kind: 'review_required', reason: 'employer_match_role_ambiguous', candidates: employerOnly };
   return { kind: 'review_required', reason: 'no_safe_match', candidates: [] };
