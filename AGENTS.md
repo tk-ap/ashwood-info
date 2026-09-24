@@ -65,6 +65,14 @@ ASHWOOD's UI and private Workspace should feel alive: a living, breathing workin
 - Do not infer a product's Neon project from a similarly named or empty project; use the verified topology map and runtime/table evidence.
 - Never commit database credentials or connection strings.
 
+### Sandbox vs Production Guardrail
+
+- **Vercel is production-only for ASHWOOD.** Do not create, require, wait for, or troubleshoot Vercel Preview deployments for ordinary sandbox/review work.
+- **here.now is the canonical sandbox / preview surface.** Use the stable sandbox defined in `.agent-os/deployment.yaml` for visual review, branch validation, and pre-production verification.
+- A branch named `preview`, a preview-scoped environment variable, or a PR does **not** imply that Vercel Preview is part of the release path.
+- Before any deployment action, resolve the target from `.agent-os/deployment.yaml`: sandbox work goes to here.now; production work goes to Vercel.
+- Do not open PRs or create commits solely to force a Vercel Preview deployment unless the owner explicitly changes the topology.
+
 ### Canonical Deployment Topology
 
 - Read `.agent-os/deployment.yaml` before any release, deployment diagnosis, or claim about live state.
