@@ -96,15 +96,15 @@ test("tracker data is served only through the session-protected API", async () =
   assert.match(read("vercel.json"), /"\/api\/workspace-design", "destination": "\/api\/workspace-review\?view=design"/);
 });
 
-test("Design Implementation is discoverable in Build and opens its own section", () => {
+test("Design remains discoverable from Build as a dedicated detail page", () => {
   const views = read("workspace/views.mjs");
-  assert.match(views, /"#sprint-directive",\s*"#design-implementation",\s*"#deployment-budget"/);
-  assert.match(views, /\{label:"Design implementation", href:"#design-implementation"\}/);
-  assert.match(views, /"design-implementation":"build"/);
-  assert.match(views, /target\.scrollIntoView/, "section links land on the section, not the top of the view");
+  assert.match(views, /\{label:"Design", href:"\/workspace\/build\/design\/"\}/);
   const html = read("workspace/index.html");
-  assert.match(html, /<section class="design-impl" id="design-implementation"/);
-  assert.match(html, /design-implementation\.mjs\?v=/);
+  assert.match(html, /href="\/workspace\/build\/design\/"[^>]*>Design<\/a>/);
+  const detail = read("workspace/build/design/index.html");
+  assert.match(detail, /data-build-page="design"/);
+  assert.match(detail, /<h1>Design<\/h1>/);
+  assert.match(detail, /href="\/workspace\/#build">Back to Build<\/a>/);
 });
 
 test("the view model states truth in plain language", () => {
