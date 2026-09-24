@@ -10,6 +10,8 @@ hosting:
   team: alvira2
   project: ashwood
   production_url: https://ashwood-info.vercel.app
+  role: production-only
+  preview_policy: do-not-use-vercel-preview-for-sandbox-work
 
 database:
   provider: neon
@@ -44,5 +46,7 @@ release_rules:
   - verify-live-content-and-new-asset-content-types-before-reporting-live
   - never-infer-production-from-a-commit-push-preview-or-stale-repository-homepage
   - sandbox-state-never-implies-production-state
+  - sandbox_is_preview_surface; use here-now for pre-production review instead of Vercel Preview
+  - never-create-a-pr-or-commit-solely-to-force-a-vercel-preview
   - prefer-one-stable-sandbox-url-per-product
   - provider-credentials-are-inherited-from-owner-connection-and-never-stored-here
