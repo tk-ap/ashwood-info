@@ -27,10 +27,10 @@ Do not assume the currently selected Neon context is authoritative.
 | Product / surface | Neon status | Neon context / organization | Neon project | Runtime variable | Confidence |
 | --- | --- | --- | --- | --- | --- |
 | ASHWOOD / Workspace / Dispatch | Active and verified | **ALVIRA** | **ASHWOOD Dispatch** | `ASHWOOD_DATABASE_URL` (fallback `DATABASE_URL`) | Verified against the live Workspace and repository |
-| ALVIRA | Active Neon-backed application | **Unresolved — check both `Vercel: ALVIRA` and `ALVIRA`** | Unresolved | `DATABASE_URL` | Repo verifies Neon usage, but not the owning Neon context/project identity |
-| ailhat | No verified Neon dependency recorded here | Unknown / not established | Unknown / not established | None established | Do not infer a Neon database without fresh evidence |
-| ledgato | No verified Neon dependency recorded here | Unknown / not established | Unknown / not established | None established | Do not infer a Neon database without fresh evidence |
-| AgentOS | No verified Neon dependency recorded here | Unknown / not established | Unknown / not established | None established | Do not infer a Neon database without fresh evidence |
+| ALVIRA | Active Neon-backed application | **Vercel: ALVIRA** | **ALVIRA** | `DATABASE_URL` | Verified from Neon organization/project listing screenshot |
+| ailhat | Neon project exists | **ALVIRA** | **AILHAT** | Not yet verified in repo | Verified project placement from Neon organization/project listing screenshot |
+| ledgato | Neon project exists | **ALVIRA** | **LEDGATo** | Not yet verified in repo | Verified project placement from Neon organization/project listing screenshot |
+| AgentOS | No verified Neon project recorded | Not established | Not established | None established | Do not infer a Neon database without fresh evidence |
 
 Update this table whenever a product's Neon identity is verified. Record the organization/context and project name, but never commit credentials or connection strings.
 
@@ -53,11 +53,24 @@ Useful live-table indicators include:
 - `workspace_career_applications`
 - `dispatch_subscribers`
 
+## Verified Neon organization map
+
+### `ALVIRA` context
+Projects visible:
+- **ASHWOOD Dispatch**
+- **LEDGATo**
+- **AILHAT**
+
+### `Vercel: ALVIRA` context
+Projects visible:
+- **ALVIRA**
+- **neon-canary-diamond**
+
+The project named `neon-canary-diamond` exists under `Vercel: ALVIRA`, but it is **not** the live Ashwood Workspace database. Do not use it as an Ashwood substitute merely because it contains tables or was recently active.
+
 ## ALVIRA evidence currently known
 
-The ALVIRA repository directly uses `@neondatabase/serverless`, requires `DATABASE_URL`, contains Neon migration/verification tooling, and documents a Neon-backed production account system.
-
-What is **not yet established** from repository evidence is which of the two Neon contexts owns that production project or the canonical Neon project name. Resolve that explicitly before any ALVIRA database operation and then update this file.
+The ALVIRA repository directly uses `@neondatabase/serverless`, requires `DATABASE_URL`, contains Neon migration/verification tooling, and documents a Neon-backed production account system. The Neon project placement is now verified as **Vercel: ALVIRA → ALVIRA**.
 
 ## Recovery / lookup procedure
 
