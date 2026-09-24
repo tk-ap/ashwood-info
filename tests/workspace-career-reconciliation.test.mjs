@@ -49,3 +49,27 @@ test('uses a stable Gmail event identity for idempotency and keeps rejection dis
   assert.equal('REJECTED', 'REJECTED');
   assert.notEqual('REJECTED', 'DECLINED');
 });
+
+
+test('matches a unique employer ATS decision even when the role is omitted', () => {
+  const result = reconcileCareerEmail(applications, {
+    subject: 'Thank You for Application - Core Spaces',
+    from: 'Core Spaces <corespaces+email@example.com>',
+    snippet: 'We have decided not to move forward with your application.'
+  });
+  assert.equal(result.kind, 'matched');
+  assert.equal(result.application.id, 'career:core-spaces:2026-2620');
+});
+
+test('keeps same-employer ATS mail in review when multiple roles are active', () => {
+  const result = reconcileCareerEmail([
+    ...applications,
+    { id:'career:core-spaces:second', company:'Core Spaces', role:'Program Manager', job_id:'X2', status:'APPLIED' }
+  ], {
+    subject: 'Application update - Core Spaces',
+    from: 'Core Spaces recruiting',
+    snippet: 'There is an update to your application.'
+  });
+  assert.equal(result.kind, 'review_required');
+  assert.equal(result.reason, 'employer_match_role_ambiguous');
+});
