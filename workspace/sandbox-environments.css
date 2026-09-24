@@ -5,6 +5,9 @@
 .sandbox-environment-card__head h3{margin:2px 0 0;font-size:22px;font-weight:500}
 .sandbox-state{font-size:9px;letter-spacing:.12em;padding:5px 7px;border:1px solid currentColor;border-radius:999px;opacity:.78}
 .sandbox-state--live{color:#8fc8ac}
+.sandbox-state--ready{color:#8fc8ac}
+.sandbox-state--stale,.sandbox-state--syncing{color:#d3b777}
+.sandbox-state--blocked{color:#d28a7e}
 .sandbox-state--unassigned{color:#8a8a8a}
 .sandbox-environment-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
 .sandbox-environment-grid>div{border-top:1px solid rgba(255,255,255,.10);padding-top:11px;min-width:0}

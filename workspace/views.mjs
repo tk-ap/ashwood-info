@@ -18,8 +18,11 @@ const VIEW_META = {
     deck: "Products, active workstreams, governed execution, and the systems moving them forward.",
     eyebrow: "Operating the portfolio",
     tools: [
-      {label:"Sandbox Studio", href:"/workspace/sandbox/"},
-      {label:"Design implementation", href:"#design-implementation"},
+      {label:"Environments", href:"/workspace/build/environments/"},
+      {label:"AgentOS", href:"/workspace/build/agentos/"},
+      {label:"Queue", href:"/workspace/build/queue/"},
+      {label:"Design", href:"/workspace/build/design/"},
+      {label:"History", href:"/workspace/build/history/"},
       {label:"Build logs", href:"/workspace/build-logs/"},
       {label:"Review checklist", href:"/workspace/v3-playtest/"}
     ]
@@ -58,10 +61,6 @@ const GROUPS = {
   ],
   build: [
     "#sprint-directive",
-    "#design-implementation",
-    "#deployment-budget",
-    ".sandbox-environments",
-    "#agentos-board-section",
     "#build",
     "#ashwood-drop",
     "details.ecosystem",
@@ -90,8 +89,6 @@ const VIEW_FOR_HASH = {
   operator:"operator",
   today:"today",
   build:"build",
-  "agentos-board-section":"build",
-  "design-implementation":"build",
   "ashwood-drop":"build",
   career:"career",
   work:"career",

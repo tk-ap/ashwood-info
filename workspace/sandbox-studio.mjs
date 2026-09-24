@@ -69,7 +69,7 @@ function versionsFor(item) {
 }
 
 function selectedEnvironment(productKey) {
-  return (environments.products || []).find((item) => item.product_key === productKey) || null;
+  return (environments.environments || []).find((item) => item.product_key === productKey) || null;
 }
 
 function renderProductOptions() {
@@ -100,7 +100,7 @@ function updateMeta() {
     ? `${version.label} · ${String(version.state || "unknown").replaceAll("_"," ")}`
     : "No sandbox version";
   q("#sandbox-source").textContent = version?.source_ref ? `source · ${version.source_ref.slice(0,12)}` : "source · unresolved";
-  const verification = env?.sandbox?.verification?.state || (version?.state === "temporary_candidate" ? "candidate proof recorded" : "unknown");
+  const verification = env?.sandbox?.verification_state || (version?.state === "temporary_candidate" ? "candidate proof recorded" : "unknown");
   q("#sandbox-verification").textContent = `verification · ${verification}`;
 }
 
@@ -282,7 +282,7 @@ async function start() {
       if (!response.ok) throw new Error("Sandbox review manifest unavailable");
       return response.json();
     }),
-    fetch("/data/sandbox-environments.json",{cache:"no-store"}).then((response) => response.ok ? response.json() : ({products:[]})),
+    api("/api/workspace-environments").catch(() => ({environments:[]})),
   ]);
   renderProductOptions();
   renderVersionOptions();
