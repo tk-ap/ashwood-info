@@ -1,6 +1,10 @@
 (() => {
   'use strict';
 
+  // Owner Constellation was retired. Remove any stale DOM/assets left by an older cached loader.
+  document.querySelector('#owner-constellation')?.remove();
+  document.querySelectorAll('script[src*="owner-constellation.js"],link[href*="owner-constellation.css"]').forEach(node => node.remove());
+
   const mount = document.querySelector('#owner-intelligence');
   if (!mount) return;
 
@@ -132,10 +136,4 @@
   render();
   timer = setInterval(next, 12000);
 
-  if (!document.querySelector('script[src*="owner-constellation.js"]')) {
-    const script = document.createElement('script');
-    script.src = '/workspace/owner-constellation.js?v=20260908-constellation1';
-    script.defer = true;
-    document.head.append(script);
-  }
 })();
