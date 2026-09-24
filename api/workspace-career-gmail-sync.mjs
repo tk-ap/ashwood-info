@@ -1,4 +1,5 @@
 import { getSql, json, requireSession, sameOrigin } from './_workspace.mjs';
+import { gmailEventId, reconcileCareerEmail } from './_career-reconciliation.mjs';
 
 const GMAIL_API = 'https://gmail.googleapis.com/gmail/v1/users/me';
 
@@ -45,17 +46,6 @@ function classify(subject, snippet) {
   return { eventType:'EMAIL', status:null };
 }
 
-function scoreApplication(app, subject, from, snippet) {
-  const haystack = `${subject} ${from} ${snippet}`.toLowerCase();
-  let score = 0;
-  if (app.company && haystack.includes(app.company.toLowerCase())) score += 5;
-  if (app.role && haystack.includes(app.role.toLowerCase())) score += 4;
-  if (app.job_id && haystack.includes(String(app.job_id).toLowerCase())) score += 8;
-  const companyTokens = String(app.company || '').toLowerCase().split(/\W+/).filter(token => token.length > 3);
-  score += companyTokens.filter(token => haystack.includes(token)).length;
-  return score;
-}
-
 async function ensureSyncSchema(sql) {
   await sql`
     CREATE TABLE IF NOT EXISTS workspace_career_gmail_sync (
@@ -64,6 +54,41 @@ async function ensureSyncSchema(sql) {
       last_synced_at TIMESTAMPTZ,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS workspace_career_email_reviews (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      source_ref TEXT NOT NULL,
+      occurred_at TIMESTAMPTZ NOT NULL,
+      company TEXT,
+      role TEXT,
+      summary TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      candidate_ids JSONB NOT NULL DEFAULT '[]'::jsonb,
+      payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE(source, source_ref)
+    )
+  `;
+}
+
+async function recordReview(sql, { messageId, occurredAt, subject, from, snippet, resolution }) {
+  const id = `career-email-review:gmail:${messageId}`;
+  const candidates = resolution.candidates || [];
+  await sql`
+    INSERT INTO workspace_career_email_reviews (
+      id, source, source_ref, occurred_at, company, role, summary, reason, candidate_ids, payload
+    ) VALUES (
+      ${id}, 'gmail', ${messageId}, ${occurredAt},
+      ${candidates.length === 1 ? candidates[0].company : null},
+      ${candidates.length === 1 ? candidates[0].role : null},
+      ${trim(subject, 1200) || 'Career email requires review'}, ${resolution.reason},
+      ${JSON.stringify(candidates.map(candidate => candidate.id))}::jsonb,
+      ${JSON.stringify({ from: trim(from, 500), subject: trim(subject, 500), snippet: trim(snippet, 500) })}::jsonb
+    ) ON CONFLICT (source, source_ref) DO UPDATE SET
+      updated_at = NOW(), reason = EXCLUDED.reason, candidate_ids = EXCLUDED.candidate_ids
   `;
 }
 
@@ -86,11 +111,7 @@ export default async function handler(req, res) {
       return json(res, 409, { ok:false, error:'Delegated Gmail account does not match Career Ops account' });
     }
 
-    const applications = await sql`
-      SELECT id, company, role, job_id, status
-      FROM workspace_career_applications
-      WHERE status NOT IN ('DECLINED','CLOSED','DEFERRED')
-    `;
+    const applications = await sql`SELECT id, company, role, job_id, status, submitted_at FROM workspace_career_applications`;
 
     const listResponse = await fetch(
       `${GMAIL_API}/messages?maxResults=50&q=${encodeURIComponent('newer_than:30d -category:promotions -category:social')}`,
@@ -100,7 +121,7 @@ export default async function handler(req, res) {
     const list = await listResponse.json();
 
     let ingested = 0;
-    let unmatched = 0;
+    let reviewRequired = 0;
     for (const item of list.messages || []) {
       const duplicate = await sql`
         SELECT 1 FROM workspace_career_events
@@ -118,18 +139,19 @@ export default async function handler(req, res) {
       const subject = header(message, 'Subject');
       const from = header(message, 'From');
       const snippet = message.snippet || '';
-      const ranked = applications
-        .map(app => ({ app, score:scoreApplication(app, subject, from, snippet) }))
-        .sort((a,b) => b.score - a.score);
-      if (!ranked[0] || ranked[0].score < 4) {
-        unmatched += 1;
+      const { eventType, status } = classify(subject, snippet);
+      const occurredAt = message.internalDate ? new Date(Number(message.internalDate)).toISOString() : new Date().toISOString();
+      const resolution = reconcileCareerEmail(
+        applications.filter(application => !['DECLINED', 'CLOSED', 'DEFERRED'].includes(application.status)),
+        subject, from, snippet
+      );
+      if (resolution.kind !== 'matched') {
+        await recordReview(sql, { messageId:item.id, occurredAt, subject, from, snippet, resolution });
+        reviewRequired += 1;
         continue;
       }
-
-      const { eventType, status } = classify(subject, snippet);
-      const app = ranked[0].app;
-      const eventId = `career-event:gmail:${item.id}`;
-      const occurredAt = message.internalDate ? new Date(Number(message.internalDate)).toISOString() : new Date().toISOString();
+      const app = resolution.application;
+      const eventId = gmailEventId(item.id);
       const summary = trim(subject, 1200) || 'Career email received';
       const payload = JSON.stringify({
         from: trim(from, 500),
@@ -171,7 +193,7 @@ export default async function handler(req, res) {
       ok:true,
       account:profile.emailAddress,
       ingested,
-      unmatched,
+      review_required:reviewRequired,
       checked:(list.messages || []).length
     });
   } catch (error) {
