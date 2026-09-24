@@ -4,6 +4,7 @@ const VIEW_META = {
     deck: "Direct the ecosystem, follow the work, and stay inside one human-facing control surface.",
     eyebrow: "ASHWOOD operating layer",
     tools: [
+      {label:"AgentOS Health", href:"/workspace/agentos/"},
       {label:"Sandbox Studio direction", href:"https://github.com/tk-ap/ashwood-info/issues/159", external:true}
     ]
   },
@@ -19,7 +20,8 @@ const VIEW_META = {
     eyebrow: "Operating the portfolio",
     tools: [
       {label:"Environments", href:"/workspace/build/environments/"},
-      {label:"AgentOS", href:"/workspace/build/agentos/"},
+      {label:"AgentOS Health", href:"/workspace/agentos/"},
+      {label:"AgentOS detail", href:"/workspace/build/agentos/"},
       {label:"Queue", href:"/workspace/build/queue/"},
       {label:"Design", href:"/workspace/build/design/"},
       {label:"History", href:"/workspace/build/history/"},
