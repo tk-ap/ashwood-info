@@ -185,7 +185,8 @@ async function loadRegistry() {
 
 async function start() {
   if (!(await ensureAuth())) return;
-  document.querySelector('.funding-shell').inert = false;
+  const shell = document.querySelector('.funding-shell');
+  if (shell) shell.inert = false;
   renderProfile();
   renderFilters();
   document.querySelector('#funding-search').addEventListener('input', event => { search = event.target.value; render(); });
