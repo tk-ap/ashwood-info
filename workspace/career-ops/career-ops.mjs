@@ -356,7 +356,7 @@ async function generateResumeArtifact(opportunity, button) {
   button.disabled = true;
   button.textContent = 'Generating…';
   try {
-    const response = await fetch('/api/workspace-career-resume', {
+    const response = await fetch('/api/workspace-career?view=resume', {
       method:'POST',
       credentials:'same-origin',
       headers:{ 'Content-Type':'application/json' },
