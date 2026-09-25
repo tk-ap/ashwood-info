@@ -1,0 +1,285 @@
+/* #170 visual completion: presentation-only layer on current Workspace architecture. */
+.workspace-page{
+  --vc-bg:#080b0d;
+  --vc-panel:#0f1518;
+  --vc-panel-2:#141c20;
+  --vc-ink:#eef5f2;
+  --vc-muted:#8fa09f;
+  --vc-line:rgba(220,240,235,.13);
+  --vc-mint:#76e6c2;
+  --vc-blue:#76a9ff;
+  --vc-violet:#b69cff;
+  --vc-coral:#ff8e7a;
+  --vc-accent:var(--vc-mint);
+  --vc-accent-soft:color-mix(in srgb,var(--vc-accent) 16%,transparent);
+  --vc-glow:color-mix(in srgb,var(--vc-accent) 10%,transparent);
+  background:
+    radial-gradient(900px 500px at 84% -10%,var(--vc-glow),transparent 68%),
+    radial-gradient(700px 420px at -8% 34%,rgba(118,169,255,.055),transparent 70%),
+    var(--vc-bg);
+}
+.workspace-page[data-workspace-current-view="operator"]{--vc-accent:var(--vc-violet)}
+.workspace-page[data-workspace-current-view="today"]{--vc-accent:var(--vc-mint)}
+.workspace-page[data-workspace-current-view="build"]{--vc-accent:var(--vc-blue)}
+.workspace-page[data-workspace-current-view="career"]{--vc-accent:var(--vc-coral)}
+.workspace-page[data-workspace-current-view="evidence"]{--vc-accent:var(--vc-violet)}
+.workspace-page[data-workspace-current-view="self"]{--vc-accent:#8ed6ff}
+
+html[data-ashwood-theme="paper-light"] .workspace-page{
+  --vc-bg:#f2f5f3;--vc-panel:#e9efec;--vc-panel-2:#fff;
+  --vc-ink:#14201d;--vc-muted:#61716d;--vc-line:rgba(20,32,29,.14);
+  --vc-mint:#087f64;--vc-blue:#245ca8;--vc-violet:#6c4da4;--vc-coral:#a54234;
+}
+
+/* Shell + navigation */
+.workspace-page .workspace-shell{max-width:1540px}
+.workspace-page .workspace-masthead{
+  border-bottom:1px solid var(--vc-line);
+  padding-bottom:16px;
+}
+.workspace-page .workspace-section-nav{
+  border:0;
+  border-bottom:1px solid var(--vc-line);
+  border-radius:0;
+  padding:10px 0;
+  gap:6px;
+  background:color-mix(in srgb,var(--vc-bg) 86%,transparent);
+}
+.workspace-page .workspace-section-nav a{
+  position:relative;
+  padding:10px 13px;
+  border-radius:7px;
+  transition:background .18s ease,color .18s ease;
+}
+.workspace-page .workspace-section-nav a[aria-current="page"]{
+  color:var(--vc-ink);
+  background:var(--vc-accent-soft);
+}
+.workspace-page .workspace-section-nav a[aria-current="page"]::before{
+  content:"";position:absolute;left:8px;right:8px;bottom:-11px;height:2px;background:var(--vc-accent);
+}
+
+/* View hero becomes the visual orientation layer rather than another text section. */
+.workspace-page .workspace-view-intro{
+  position:relative;
+  min-height:clamp(270px,34vw,470px);
+  padding:clamp(48px,8vw,104px) 0 38px;
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);
+  gap:clamp(28px,5vw,72px);
+  align-items:end;
+  border-bottom:1px solid var(--vc-line);
+  overflow:hidden;
+}
+.workspace-page .workspace-view-intro::after{
+  content:"";
+  width:clamp(210px,30vw,430px);aspect-ratio:1;
+  position:absolute;right:-4%;top:50%;translate:0 -50%;
+  border:1px solid color-mix(in srgb,var(--vc-accent) 32%,transparent);
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 0 18%,color-mix(in srgb,var(--vc-accent) 18%,transparent) 18.5% 19%,transparent 19.5% 38%,color-mix(in srgb,var(--vc-accent) 12%,transparent) 38.5% 39%,transparent 39.5%),
+    linear-gradient(90deg,transparent 49.7%,color-mix(in srgb,var(--vc-accent) 15%,transparent) 50%,transparent 50.3%);
+  opacity:.7;pointer-events:none;
+}
+.workspace-page .workspace-view-intro::before{
+  content:"";position:absolute;right:calc(clamp(210px,30vw,430px) * .13);top:50%;
+  width:10px;height:10px;border-radius:50%;background:var(--vc-accent);
+  box-shadow:0 0 32px var(--vc-accent);z-index:1;pointer-events:none;
+}
+.workspace-page .workspace-view-intro__copy{position:relative;z-index:2;align-self:end}
+.workspace-page .workspace-view-intro__copy h1{
+  margin:.08em 0 .14em;
+  font-size:clamp(62px,10vw,150px);
+  line-height:.82;
+  letter-spacing:-.075em;
+  font-weight:500;
+}
+.workspace-page .workspace-view-intro__deck{
+  max-width:640px;color:var(--vc-muted);font-size:clamp(16px,1.8vw,22px);line-height:1.45;
+}
+.workspace-page .workspace-view-tools{position:relative;z-index:2;align-self:end}
+.workspace-page .section-kicker,.workspace-page .eyebrow{color:color-mix(in srgb,var(--vc-accent) 78%,var(--vc-muted))}
+
+/* Real-data signal rail. Values are mirrored from existing authenticated DOM readouts. */
+.workspace-signal-rail{
+  position:relative;z-index:3;grid-column:1/-1;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  border:1px solid var(--vc-line);background:rgba(8,11,13,.44);backdrop-filter:blur(14px);
+}
+.workspace-signal{
+  min-width:0;padding:14px 16px;border-right:1px solid var(--vc-line);display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;
+}
+.workspace-signal:last-child{border-right:0}
+.workspace-signal__glyph{
+  --signal-fill:0;
+  width:36px;aspect-ratio:1;border-radius:50%;
+  background:conic-gradient(var(--vc-accent) calc(var(--signal-fill) * 1%),var(--vc-line) 0);
+  display:grid;place-items:center;
+}
+.workspace-signal__glyph::after{content:"";width:26px;aspect-ratio:1;border-radius:50%;background:var(--vc-bg)}
+.workspace-signal strong{display:block;font-size:24px;font-weight:500;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.workspace-signal span{display:block;margin-top:3px;color:var(--vc-muted);font-size:9px;line-height:1.2;text-transform:uppercase;letter-spacing:.1em}
+.workspace-signal-rail[data-empty="true"]{display:none}
+
+/* Repeated panels get hierarchy, not a uniform wall of bordered text. */
+.workspace-page [data-workspace-active="true"] .section-heading-row{
+  padding-bottom:18px;border-bottom:1px solid var(--vc-line);
+}
+.workspace-page [data-workspace-active="true"] .section-heading-row h2{
+  max-width:18ch;font-size:clamp(30px,4.5vw,62px);line-height:.98;letter-spacing:-.055em;
+}
+.workspace-page .today-command-center,
+.workspace-page .build-command-center,
+.workspace-page #work.career-ops-page,
+.workspace-page .self-operating-model,
+.workspace-page #evidence-panel{border-top:0}
+
+.workspace-page .today-panel,
+.workspace-page .today-objective,
+.workspace-page .ops-pulse,
+.workspace-page .workstream-card,
+.workspace-page .career-layout,
+.workspace-page .career-sync,
+.workspace-page .career-opportunities{
+  border-color:var(--vc-line);
+}
+.workspace-page .today-panel,.workspace-page .today-objective,.workspace-page .workstream-card{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--vc-panel) 90%,transparent),color-mix(in srgb,var(--vc-bg) 96%,transparent));
+}
+.workspace-page .today-panel--agent{box-shadow:inset 3px 0 0 color-mix(in srgb,var(--vc-accent) 70%,transparent)}
+.workspace-page .today-count{
+  border-color:color-mix(in srgb,var(--vc-accent) 40%,var(--vc-line));
+  color:var(--vc-accent);background:var(--vc-accent-soft);
+}
+
+/* Ops pulse: real counts read as a graphic dashboard. */
+.workspace-page .ops-pulse{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--vc-panel-2),var(--vc-panel));
+  border-color:var(--vc-line);color:var(--vc-ink);
+}
+.workspace-page .ops-pulse::after{
+  content:"";position:absolute;right:-100px;bottom:-180px;width:420px;aspect-ratio:1;border-radius:50%;
+  border:1px solid color-mix(in srgb,var(--vc-accent) 20%,transparent);
+  box-shadow:0 0 0 46px rgba(118,230,194,.025),0 0 0 92px rgba(118,169,255,.018);
+  pointer-events:none;
+}
+.workspace-page .ops-pulse__stats{position:relative;z-index:1;border-color:var(--vc-line)}
+.workspace-page .ops-pulse__stat{border-color:var(--vc-line)}
+.workspace-page .ops-pulse__stat strong{font-family:Arial,Helvetica,sans-serif;font-size:clamp(42px,6vw,82px)}
+.workspace-page .ops-pulse__stat:nth-child(1) strong{color:var(--vc-mint)}
+.workspace-page .ops-pulse__stat:nth-child(2) strong{color:var(--vc-coral)}
+.workspace-page .ops-pulse__stat:nth-child(3) strong{color:var(--vc-violet)}
+.workspace-page .ops-pulse__stat:nth-child(4) strong{color:var(--vc-blue)}
+
+/* Reality Check becomes a diagnostic instrument rather than another prose card. */
+.workspace-page .reality-check__pulse{
+  position:relative;display:grid;grid-template-columns:minmax(140px,.35fr) minmax(0,1.65fr);gap:24px;
+  padding:24px;border:1px solid var(--vc-line);background:var(--vc-panel);
+}
+.workspace-page .reality-check__score{
+  min-height:140px;display:grid;place-items:center;align-content:center;
+  border-radius:50%;aspect-ratio:1;max-width:180px;
+  border:1px solid color-mix(in srgb,var(--vc-accent) 35%,var(--vc-line));
+  box-shadow:inset 0 0 55px var(--vc-accent-soft);
+}
+.workspace-page .reality-check__score strong{font-size:clamp(40px,5vw,72px);letter-spacing:-.07em}
+.workspace-page .reality-check__score span{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--vc-muted)}
+
+/* Build */
+.workspace-page .build-command-links{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--vc-line);border:1px solid var(--vc-line);
+}
+.workspace-page .build-command-links a{
+  min-height:76px;padding:16px;background:var(--vc-panel);display:flex;align-items:flex-end;text-decoration:none;
+  transition:background .18s ease,color .18s ease;
+}
+.workspace-page .build-command-links a:hover{background:var(--vc-accent-soft);color:var(--vc-accent)}
+
+/* Career */
+.workspace-page[data-workspace-current-view="career"] .career-workspace-head{
+  border-color:var(--vc-line);padding-top:0;
+}
+.workspace-page[data-workspace-current-view="career"] .career-summary article{
+  position:relative;overflow:hidden;background:var(--vc-panel);
+}
+.workspace-page[data-workspace-current-view="career"] .career-summary article::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--vc-coral);opacity:.7;
+}
+.workspace-page .career-status.interview,.workspace-page .career-status.offer,.workspace-page .career-status.recruiter{
+  border-color:color-mix(in srgb,var(--vc-mint) 45%,transparent);background:color-mix(in srgb,var(--vc-mint) 10%,transparent);color:var(--vc-mint);
+}
+.workspace-page .career-status.rejected,.workspace-page .career-status.declined,.workspace-page .career-status.closed{
+  border-color:color-mix(in srgb,var(--vc-coral) 35%,transparent);color:color-mix(in srgb,var(--vc-coral) 75%,var(--vc-muted));
+}
+
+/* Evidence + Self */
+.workspace-page[data-workspace-current-view="evidence"] #evidence-panel{position:relative}
+.workspace-page[data-workspace-current-view="evidence"] #evidence-panel::before{
+  content:"EVIDENCE / SOURCE / DECISION";display:block;padding:10px 0;border-block:1px solid var(--vc-line);
+  color:var(--vc-violet);font:600 9px/1 Arial,sans-serif;letter-spacing:.18em;margin-bottom:26px;
+}
+.workspace-page .self-context-grid{
+  display:grid!important;grid-template-columns:repeat(12,1fr)!important;gap:10px!important;
+}
+.workspace-page .self-context-grid .workstream-card{grid-column:span 4;min-height:220px}
+.workspace-page .self-context-grid .self-context-lead{grid-column:span 6;min-height:300px}
+.workspace-page .self-adaptation-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--vc-line);margin-top:24px}
+.workspace-page .self-adaptation-flow span{padding:16px 10px;background:var(--vc-panel);text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.workspace-page .self-adaptation-flow span+span::before{content:"→";color:var(--vc-accent);margin-right:8px}
+
+/* Shared interaction state */
+.workspace-page button:focus-visible,.workspace-page a:focus-visible,.workspace-page input:focus-visible,.workspace-page select:focus-visible{
+  outline:2px solid var(--vc-accent);outline-offset:3px;
+}
+.workspace-page button,.workspace-page a{transition:border-color .16s ease,background .16s ease,color .16s ease,opacity .16s ease}
+
+/* Funding + AgentOS can opt into the same palette without inheriting Workspace layout. */
+.funding-page{--funding-accent:#76e6c2;background:#080b0d}
+.funding-page .funding-summary article:nth-child(1){box-shadow:inset 0 -2px #76e6c2}
+.funding-page .funding-summary article:nth-child(2){box-shadow:inset 0 -2px #ff8e7a}
+.funding-page .funding-summary article:nth-child(3){box-shadow:inset 0 -2px #b69cff}
+.funding-page .funding-summary article:nth-child(4){box-shadow:inset 0 -2px #76a9ff}
+.funding-page .funding-card{background:linear-gradient(145deg,#0f1518,#0a0e10);border-color:rgba(220,240,235,.13)}
+.funding-page .funding-match{color:#76e6c2;border-color:rgba(118,230,194,.35)}
+.funding-page .funding-filter-row button[aria-pressed="true"]{background:#76e6c2;color:#08100d;border-color:#76e6c2}
+
+.agentos-health-page{--good:#76e6c2!important;--warn:#76a9ff!important;--bad:#ff8e7a!important;--unknown:#8fa09f!important}
+.agentos-health-page .autonomy-card{position:relative;overflow:hidden}
+.agentos-health-page .autonomy-card::after{content:"";position:absolute;width:240px;aspect-ratio:1;border-radius:50%;right:-90px;top:-100px;border:1px solid rgba(118,230,194,.18);box-shadow:0 0 0 34px rgba(118,169,255,.025);pointer-events:none}
+
+@media(max-width:900px){
+  .workspace-page .workspace-view-intro{grid-template-columns:1fr;min-height:0}
+  .workspace-page .workspace-view-intro::after{right:-22%;top:35%;opacity:.45}
+  .workspace-page .workspace-view-tools{max-width:75%}
+  .workspace-page .build-command-links{grid-template-columns:repeat(3,1fr)}
+  .workspace-page .self-context-grid .workstream-card,.workspace-page .self-context-grid .self-context-lead{grid-column:span 6}
+}
+@media(max-width:700px){
+  .workspace-page .workspace-view-intro{padding-top:42px}
+  .workspace-page .workspace-view-intro__copy h1{font-size:clamp(58px,21vw,94px)}
+  .workspace-page .workspace-view-intro::after{width:260px;right:-35%;top:28%}
+  .workspace-signal-rail{grid-template-columns:repeat(2,1fr)}
+  .workspace-signal:nth-child(2){border-right:0}
+  .workspace-signal:nth-child(-n+2){border-bottom:1px solid var(--vc-line)}
+  .workspace-page .build-command-links{grid-template-columns:repeat(2,1fr)}
+  .workspace-page .self-context-grid{grid-template-columns:1fr!important}
+  .workspace-page .self-context-grid .workstream-card,.workspace-page .self-context-grid .self-context-lead{grid-column:auto;min-height:0}
+  .workspace-page .reality-check__pulse{grid-template-columns:1fr}
+  .workspace-page .reality-check__score{max-width:140px}
+}
+@media(prefers-reduced-motion:reduce){
+  .workspace-page *, .funding-page *, .agentos-health-page *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
+
+/* #201 · Ledgato-inspired control-plane surfaces */
+.workspace-page .evidence-dialog,.workspace-page dialog.career-dialog{border:1px solid rgba(118,169,255,.28);background:linear-gradient(145deg,rgba(15,21,24,.98),rgba(8,11,13,.99));color:var(--vc-ink,#f5f7f7);box-shadow:0 32px 90px rgba(0,0,0,.58),0 0 0 1px rgba(118,230,194,.035) inset;border-radius:10px}
+.workspace-page .evidence-dialog::backdrop,.workspace-page dialog.career-dialog::backdrop{background:rgba(2,5,8,.78);backdrop-filter:blur(10px)}
+.workspace-page .evidence-dialog input,.workspace-page .evidence-dialog textarea,.workspace-page .evidence-dialog select,.workspace-page dialog.career-dialog input,.workspace-page dialog.career-dialog textarea,.workspace-page dialog.career-dialog select{background:#080b0d;color:#f5f7f7;border-color:rgba(255,255,255,.14)}
+.workspace-page .ecosystem-feed__item{background:linear-gradient(145deg,rgba(15,21,24,.94),rgba(10,14,16,.9));border-color:rgba(255,255,255,.11);border-left-color:var(--vc-blue,#76a9ff)}
+.workspace-page .ecosystem-feed__item:first-child{border-left-color:var(--vc-mint,#76e6c2)}
+.workspace-page .ecosystem-feed__source strong,.workspace-page .ecosystem-feed__elitk-button span:first-child{color:var(--vc-ink,#f5f7f7)}
+.workspace-page .ecosystem-feed__topline,.workspace-page .ecosystem-feed__meta,.workspace-page .ecosystem-feed__actions span,.workspace-page .ecosystem-feed__notes{color:var(--vc-muted,rgba(255,255,255,.62))}
+.workspace-page .ecosystem-feed__explanation{background:rgba(118,169,255,.07);border-left-color:var(--vc-blue,#76a9ff)}
