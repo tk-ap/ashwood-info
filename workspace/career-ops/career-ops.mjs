@@ -468,7 +468,7 @@ function renderOpportunities() {
   const data = state.opportunityMeta || {};
 
   if (!state.opportunities.length) {
-    root.innerHTML = `<div class="career-opportunity-empty"><strong>No qualified recommendation is available in this source window.</strong><span>The tracker will not substitute unrelated engineering roles just to keep the grid full. Use Next recommendations to move through the eligible pool.</span></div>`;
+    root.innerHTML = resumeProfileSetupMarkup() + `<div class="career-opportunity-empty"><strong>No qualified recommendation is available in this source window.</strong><span>The tracker will not substitute unrelated engineering roles just to keep the grid full. Use Next recommendations to move through the eligible pool.</span></div>`;
   } else {
     const visibleOpportunities = state.opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
     root.innerHTML = resumeProfileSetupMarkup() + visibleOpportunities.map(opportunity => `
@@ -490,8 +490,6 @@ function renderOpportunities() {
         </div>
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
       </article>`).join('');
-
-    wireResumeProfileImport(root);
 
     root.querySelectorAll('[data-generate-resume]').forEach(button => button.addEventListener('click', async () => {
       const opportunity = state.opportunities.find(item => String(item.id) === String(button.dataset.generateResume || ''));
@@ -527,6 +525,8 @@ function renderOpportunities() {
       await trackOpportunity(opportunity, button);
     }));
   }
+
+  wireResumeProfileImport(root);
 
   const sourceStamp = data.source_fetched_at ? `source checked ${fmtDateTime(data.source_fetched_at)}` : 'source time unavailable';
   const pool = Number(data.pool_count || 0);
