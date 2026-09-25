@@ -38,7 +38,7 @@ function qualificationGate(job={}) {
   const body = stripHtml(job.description || '');
   if (!TARGET_TITLE.test(title)) return { pass:false, reason:'title_outside_target_lanes' };
   if (NEGATIVE_TITLE.test(title)) return { pass:false, reason:'technical_or_unrelated_title' };
-  if (TECHNICAL_REQUIREMENT.test(body) && !/business analyst|business operations|operational risk|compliance|governance|controls?|finance|audit|product operations|product strategy|product program|product manager/i.test(title)) {
+  if (TECHNICAL_REQUIREMENT.test(body) && !/business analyst|business operations|operational risk|compliance|governance|controls?|finance|audit/i.test(title)) {
     return { pass:false, reason:'technical_requirements' };
   }
   return { pass:true, reason:'target_lane' };
