@@ -46,6 +46,7 @@
   <script type="module" src="/workspace/elitk-page.mjs?v=20260922-toggle2"></script>
   <script src="/workspace/intelligence-hero.js?v=20260924-no-constellation1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
+  <link rel="stylesheet" href="/workspace/content-studio.css?v=20260925-content1" />
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -77,9 +78,17 @@
       <a href="#build" data-workspace-nav="build">Build</a>
       <a href="#career" data-workspace-nav="career">Career</a>
       <a href="#funding" data-workspace-nav="funding">Funding</a>
+      <a href="#content" data-workspace-nav="content">Content</a>
       <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
       <a href="#self" data-workspace-nav="self">Self</a>
     </nav>
+
+    <section id="content" class="content-studio" aria-labelledby="content-studio-title">
+      <div class="content-studio__head"><div><p class="section-kicker">Content · private capture system</p><h2 id="content-studio-title">Capture first. Decide later.</h2><p>Keep the story without turning every hard moment into a post.</p></div><button type="button" id="content-capture-focus">Capture</button></div>
+      <form id="content-capture-form" class="content-capture-form"><label for="content-capture-input">What happened?</label><textarea id="content-capture-input" rows="3" placeholder="A moment, thought, photo/video context, build milestone, rejection, win…"></textarea><div><select id="content-storyline"><option>Rebuilding / stability</option><option>Building the ecosystem</option><option>Career transition</option><option>LA / life</option><option>Modeling / creative</option></select><button type="submit">Save privately</button></div></form>
+      <div class="content-pipeline" aria-label="Content pipeline"><span>Captured</span><span>Develop</span><span>Draft</span><span>Ready</span><span>Published</span></div>
+      <div id="content-feed" class="content-feed" aria-live="polite"></div>
+    </section>
 
     <section class="workspace-view-intro" aria-labelledby="workspace-title">
       <div class="workspace-view-intro__copy">
@@ -748,5 +757,6 @@
       <div class="dialog-actions"><button type="button" data-close-dialog class="secondary-button">Cancel</button><button type="submit" class="primary-button">Change passphrase</button></div>
     </form>
   </dialog>
+  <script type="module" src="/workspace/content-studio.mjs?v=20260925-content1"></script>
 </body>
 </html>

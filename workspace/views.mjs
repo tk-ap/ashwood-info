@@ -43,6 +43,7 @@ const VIEW_META = {
     eyebrow: "Funding intelligence",
     tools: []
   },
+  content: { title:"Content.", deck:"Capture what is happening, develop what matters, and publish only when it serves you.", eyebrow:"Private content operating system", tools:[] },
   evidence: {
     title: "Evidence.",
     deck: "Signals, proof, decisions, contradictions, and the record behind what the system believes.",
@@ -83,6 +84,7 @@ const GROUPS = {
   funding: [
     "#funding"
   ],
+  content: ["#content"],
   evidence: [
     "#owner-intelligence",
     "details.pulse",
@@ -108,6 +110,7 @@ const VIEW_FOR_HASH = {
   network:"career",
   activity:"build",
   funding:"funding",
+  content:"content",
   evidence:"evidence",
   "evidence-panel":"evidence",
   self:"self",
@@ -212,6 +215,7 @@ function renderUtility(view){
     build:"<strong>Build is the execution view.</strong> AgentOS state is mirrored here; authority remains in AgentOS and ledgato.",
     career:"<strong>Career is the professional view.</strong> Applications, opportunities and relationships stay together without mixing them into product execution.",
     funding:"<strong>Funding is the runway view.</strong> Browse verified assistance, grants, credits, and leverage without leaving the Workspace shell.",
+    content:"<strong>Content is the capture loop.</strong> Keep moments private first, then develop, draft, publish, or archive deliberately.",
     evidence:"<strong>Evidence is the record.</strong> Use it to verify claims, inspect signals, and trace why priorities changed.",
     self:"<strong>Self is your decision context.</strong> Define what matters, test it against evidence, compare real paths, and let the result shape Today without turning reflection into fact."
   };

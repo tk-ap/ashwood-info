@@ -1,0 +1,6 @@
+const KEY='ashwood.content.capture.v1';
+const feed=document.querySelector('#content-feed'), form=document.querySelector('#content-capture-form'), input=document.querySelector('#content-capture-input'), storyline=document.querySelector('#content-storyline');
+let items=[]; try{items=JSON.parse(localStorage.getItem(KEY)||'[]')}catch{}
+function render(){if(!feed)return;feed.innerHTML=items.length?items.map((x,i)=>`<article><div><span>${x.storyline}</span><time>${new Date(x.createdAt).toLocaleString()}</time></div><p>${String(x.text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}</p><small>Captured · private</small><button data-archive="${i}" type="button">Archive</button></article>`).join(''):'<p class="content-empty">Nothing captured yet. This is private by default.</p>';feed.querySelectorAll('[data-archive]').forEach(b=>b.onclick=()=>{items.splice(Number(b.dataset.archive),1);localStorage.setItem(KEY,JSON.stringify(items));render()})}
+form?.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();if(!text)return;items.unshift({text,storyline:storyline.value,status:'captured',createdAt:new Date().toISOString()});localStorage.setItem(KEY,JSON.stringify(items));input.value='';render()});
+document.querySelector('#content-capture-focus')?.addEventListener('click',()=>input?.focus());render();
