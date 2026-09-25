@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
   <link rel="stylesheet" href="/workspace/build-command-center.css?v=20260923-command-center1" />
   <link rel="stylesheet" href="/workspace/v4-atmosphere.css?v=20260924-forward1" />
-  <link rel="stylesheet" href="/workspace/visual-completion.css?v=20260925-notifications1" />
+  <link rel="stylesheet" href="/workspace/visual-completion.css?v=20260925-ruixen1" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260921-menufix1"></script>
@@ -237,6 +237,7 @@
     </section>
 
     <section class="ecosystem-feed" aria-labelledby="ecosystem-feed-title">
+      <div class="ecosystem-notification-filters" role="group" aria-label="Filter notifications"><button type="button" class="is-active" data-notification-filter="all">All</button><button type="button" data-notification-filter="updates">Updates</button><button type="button" data-notification-filter="alerts">Alerts</button><button type="button" data-notification-filter="reminders">Reminders</button></div>
       <div class="section-heading-row">
         <div><p class="section-kicker">Ecosystem notifications</p><h2 id="ecosystem-feed-title">What the system noticed</h2></div>
         <p class="section-note" id="ecosystem-feed-status">Waiting for private signals…</p>
