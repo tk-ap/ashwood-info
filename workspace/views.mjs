@@ -95,6 +95,9 @@ const GROUPS = {
     "details.attention"
   ],
   self: [
+    "#self-daily-wisdom",
+    "#meos-profile",
+    "#meos-places",
     "#self-operating-model",
     "#frame",
     ".goals",
