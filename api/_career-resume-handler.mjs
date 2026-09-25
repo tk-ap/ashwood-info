@@ -5,14 +5,14 @@ import { loadCareerResumeProfile, ensureCareerResumeSchema } from './_career-res
 import { resumeRecommendation, scoreOpportunity, stripHtml } from './_career-opportunities.mjs';
 import { buildResumeDocx } from './_career-resume-docx.mjs';
 
-const SOURCE = 'remotive';
+const DEFAULT_SOURCE = 'remotive';
 
 async function resolveOpportunity(sql, source, opportunityId) {
-  if (source !== SOURCE) return null;
+  const sourceKey = String(source || DEFAULT_SOURCE).trim().toLowerCase();
   const rows = await sql`
     SELECT payload
     FROM workspace_career_opportunity_cache
-    WHERE source = ${SOURCE}
+    WHERE source = ${sourceKey}
     LIMIT 1
   `;
   const jobs = Array.isArray(rows[0]?.payload) ? rows[0].payload : [];
@@ -48,7 +48,7 @@ async function resolveTarget(sql, body) {
     };
   }
 
-  const source = String(body.source || SOURCE).trim().toLowerCase();
+  const source = String(body.source || DEFAULT_SOURCE).trim().toLowerCase();
   const opportunityId = String(body.opportunity_id || '').trim();
   if (!opportunityId) return null;
   const job = await resolveOpportunity(sql, source, opportunityId);
