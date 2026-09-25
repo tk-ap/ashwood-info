@@ -22,7 +22,8 @@ const state = {
   opportunityMeta: null,
   inboxSync: null,
   inboxReviews: [],
-  newJobsSinceSession: 0
+  newJobsSinceSession: 0,
+  declinedOpportunityIds: new Set(JSON.parse(localStorage.getItem('ashwood.career.declined-opportunities.v1') || '[]'))
 };
 
 async function api(options={}) {
@@ -239,7 +240,8 @@ function renderOpportunities() {
   if (!state.opportunities.length) {
     root.innerHTML = `<div class="career-opportunity-empty"><strong>No strong new matches in the current feed.</strong><span>Refresh again later; Career Ops only surfaces roles that overlap the current business execution, risk, controls, compliance, PMO, operations, process, and finance lanes.</span></div>`;
   } else {
-    root.innerHTML = state.opportunities.map(opportunity => `
+    const visibleOpportunities = state.opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
+    root.innerHTML = visibleOpportunities.map(opportunity => `
       <article class="career-opportunity-card">
         <div class="career-opportunity-topline">
           <span>${escapeHtml(opportunity.company)}</span>
@@ -253,9 +255,20 @@ function renderOpportunities() {
         <div class="career-opportunity-actions">
           <a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Open role ↗</a>
           <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
+          <button type="button" data-decline-opportunity="${escapeHtml(opportunity.id)}">Decline</button>
         </div>
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
       </article>`).join('');
+
+    root.querySelectorAll('[data-decline-opportunity]').forEach(button => button.addEventListener('click', async () => {
+      const id = String(button.dataset.declineOpportunity || '');
+      if (!id) return;
+      state.declinedOpportunityIds.add(id);
+      localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
+      state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
+      renderOpportunities(state.opportunityMeta || { opportunities:state.opportunities });
+      if (state.opportunities.length < 2) await loadOpportunities({ refresh:true });
+    }));
 
     root.querySelectorAll('[data-track-opportunity]').forEach(button => button.addEventListener('click', async () => {
       const opportunity = state.opportunities.find(item => String(item.id) === button.dataset.trackOpportunity);
