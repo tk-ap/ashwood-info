@@ -222,9 +222,21 @@ function renderUtility(view){
   utility.classList.add("workspace-view-section");
 }
 
+function enforceViewOwnership(view){
+  ["#work", "#network"].forEach(selector => {
+    document.querySelectorAll(selector).forEach(node => {
+      const active = view === "career";
+      node.hidden = !active;
+      node.setAttribute("aria-hidden", String(!active));
+      if ("inert" in node) node.inert = !active;
+    });
+  });
+}
+
 function setView(view, {updateHash=true, focus=false, anchor=null} = {}){
   if (!VIEW_META[view]) view = "today";
   document.body.dataset.workspaceCurrentView = view;
+  enforceViewOwnership(view);
   document.querySelectorAll(".workspace-view-section[data-workspace-view]").forEach(node => {
     node.dataset.workspaceActive = String(node.dataset.workspaceView === view);
   });
