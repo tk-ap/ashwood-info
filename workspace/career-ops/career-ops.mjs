@@ -315,6 +315,35 @@ function renderSyncState() {
   }
 }
 
+
+function resumeRecommendationMarkup(opportunity={}) {
+  const recommendation = opportunity.resume_recommendation || {};
+  if (!recommendation.variant) return '';
+  const emphasis = Array.isArray(recommendation.emphasis) ? recommendation.emphasis : [];
+  const keywords = Array.isArray(recommendation.keywords) ? recommendation.keywords : [];
+  return `
+    <details class="career-resume-recommendation">
+      <summary><span>Resume to use</span><strong>${escapeHtml(recommendation.variant)}</strong></summary>
+      ${recommendation.summary ? `<p><b>Replace the summary with:</b> ${escapeHtml(recommendation.summary)}</p>` : ''}
+      ${emphasis.length ? `<div><b>Emphasize</b><ul>${emphasis.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>` : ''}
+      ${keywords.length ? `<p><b>Posting language:</b> ${keywords.map(escapeHtml).join(' · ')}</p>` : ''}
+      ${recommendation.guardrail ? `<small>${escapeHtml(recommendation.guardrail)}</small>` : ''}
+      <button type="button" data-copy-resume="${escapeHtml(opportunity.id)}">Copy resume edits</button>
+    </details>`;
+}
+
+function resumeRecommendationText(opportunity={}) {
+  const r = opportunity.resume_recommendation || {};
+  const lines = [
+    `RESUME VERSION: ${r.variant || 'Baseline'}`,
+    r.summary ? `SUMMARY: ${r.summary}` : '',
+    ...(Array.isArray(r.emphasis) ? r.emphasis.map(item => `- ${item}`) : []),
+    Array.isArray(r.keywords) && r.keywords.length ? `POSTING LANGUAGE: ${r.keywords.join(', ')}` : '',
+    r.guardrail || ''
+  ].filter(Boolean);
+  return lines.join('\n');
+}
+
 function renderOpportunities() {
   const root = $('#career-opportunity-grid');
   const meta = $('#career-opportunity-meta');
@@ -335,6 +364,7 @@ function renderOpportunities() {
         ${opportunity.salary ? `<p class="career-opportunity-salary">${escapeHtml(opportunity.salary)}</p>` : ''}
         ${opportunity.matches?.length ? `<div class="career-opportunity-tags">${opportunity.matches.map(match => `<span>${escapeHtml(match)}</span>`).join('')}</div>` : ''}
         <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
+        ${resumeRecommendationMarkup(opportunity)}
         <div class="career-opportunity-actions">
           <a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Open role ↗</a>
           <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
@@ -342,6 +372,19 @@ function renderOpportunities() {
         </div>
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
       </article>`).join('');
+
+    root.querySelectorAll('[data-copy-resume]').forEach(button => button.addEventListener('click', async () => {
+      const opportunity = state.opportunities.find(item => String(item.id) === String(button.dataset.copyResume || ''));
+      if (!opportunity) return;
+      const original = button.textContent;
+      try {
+        await navigator.clipboard.writeText(resumeRecommendationText(opportunity));
+        button.textContent = 'Copied';
+      } catch {
+        button.textContent = 'Copy failed';
+      }
+      window.setTimeout(() => { button.textContent = original; }, 1400);
+    }));
 
     root.querySelectorAll('[data-decline-opportunity]').forEach(button => button.addEventListener('click', async () => {
       const id = String(button.dataset.declineOpportunity || '');
@@ -454,7 +497,7 @@ async function trackOpportunity(opportunity, button) {
         status:'TARGET',
         next_action:'Review the full employer posting and decide whether to apply.',
         posting_snapshot:{ summary:opportunity.summary || '', responsibilities:[], requirements:[], preferred:[] },
-        materials:{},
+        materials:{ resume:opportunity.resume_recommendation?.variant || '' },
         source:'remotive',
         notes:`Discovered through ASHWOOD Career Ops. Source: Remotive. Published ${opportunity.published_at || 'date unavailable'}.`
       })
