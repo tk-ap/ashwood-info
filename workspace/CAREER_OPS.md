@@ -75,6 +75,8 @@ Generation rules:
 
 The recommendation card's primary action is **Generate .docx**. This is intentionally compatible with human and agent application flows: download the generated file, then upload/drag-drop it into the employer's resume field. The tailoring preview remains secondary and explanatory.
 
+The Career UI exposes a one-time import/dropzone for the normalized resume-profile JSON. The browser reads the file locally and sends only the parsed profile through the authenticated `set_resume_profile` action; the file and its PII are never committed to Git. Once saved, the import surface disappears and recommendation cards enable `Generate .docx`.
+
 A private resume profile can be set through the authenticated Career API action `set_resume_profile`. This is a one-time/bootstrap operation that an authorized agent may perform from a trusted resume source. It must correct known stale facts before saving—for example, Wells Fargo employment ends in **March 2026**, not “Present.”
 
 ## Inbox continuity
