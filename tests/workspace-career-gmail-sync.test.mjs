@@ -313,8 +313,8 @@ test('16. funnel counts reflect canonical post-sync state', async t => {
   const before = summaryCounts(await f.sql`SELECT * FROM workspace_career_applications`, await f.sql`SELECT * FROM workspace_career_events`);
   await f.run();
   const after = summaryCounts(await f.sql`SELECT * FROM workspace_career_applications`, await f.sql`SELECT * FROM workspace_career_events`);
-  assert.deepEqual(before, { submitted:3, denied:0, interviews:0 });
-  assert.deepEqual(after, { submitted:3, denied:2, interviews:0 }, 'rejected applications stay submitted and count as denied');
+  assert.deepEqual(before, { submitted:3, denied:0, noResponse:1, interviews:0 });
+  assert.deepEqual(after, { submitted:3, denied:2, noResponse:1, interviews:0 }, 'rejected applications stay submitted and count as denied');
 });
 
 test('historical junk review rows are retired, genuine ones stay open, nothing is deleted', async t => {
