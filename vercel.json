@@ -13,50 +13,18 @@
       "docs/*": false
     }
   },
-  "github": {
-    "autoJobCancelation": true
-  },
+  "github": { "autoJobCancelation": true },
   "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"main\" ]; then exit 1; else exit 0; fi",
   "rewrites": [
-    {
-      "source": "/api/workspace-career-ops",
-      "destination": "/api/workspace-career"
-    },
-    {
-      "source": "/api/workspace-career-opportunities",
-      "destination": "/api/workspace-career?view=opportunities"
-    },
-    {
-      "source": "/api/workspace-board",
-      "destination": "/api/workspace-agentos"
-    },
-    {
-      "source": "/api/workspace-workstreams",
-      "destination": "/api/workspace-agentos?view=workstreams"
-    },
-    {
-      "source": "/api/workspace-sources",
-      "destination": "/api/workspace-agentos?view=sources"
-    },
-    {
-      "source": "/api/workspace-checklist",
-      "destination": "/api/workspace-review"
-    },
-    {
-      "source": "/api/workspace-review-visit",
-      "destination": "/api/workspace-review?view=visit"
-    },
-    {
-      "source": "/api/workspace-design",
-      "destination": "/api/workspace-review?view=design"
-    },
-    {
-      "source": "/api/workspace-upload",
-      "destination": "/api/workspace-media"
-    },
-    {
-      "source": "/api/workspace-upload-direct",
-      "destination": "/api/workspace-media?mode=direct"
-    }
+    { "source": "/api/workspace-career-ops", "destination": "/api/workspace-career" },
+    { "source": "/api/workspace-career-opportunities", "destination": "/api/workspace-career?view=opportunities" },
+    { "source": "/api/workspace-board", "destination": "/api/workspace-agentos" },
+    { "source": "/api/workspace-workstreams", "destination": "/api/workspace-agentos?view=workstreams" },
+    { "source": "/api/workspace-sources", "destination": "/api/workspace-agentos?view=sources" },
+    { "source": "/api/workspace-checklist", "destination": "/api/workspace-review" },
+    { "source": "/api/workspace-review-visit", "destination": "/api/workspace-review?view=visit" },
+    { "source": "/api/workspace-design", "destination": "/api/workspace-review?view=design" },
+    { "source": "/api/workspace-upload", "destination": "/api/workspace-media" },
+    { "source": "/api/workspace-upload-direct", "destination": "/api/workspace-media?mode=direct" }
   ]
 }
