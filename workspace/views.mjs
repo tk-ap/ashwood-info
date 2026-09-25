@@ -56,8 +56,8 @@ const VIEW_META = {
   },
   self: {
     title: "Self.",
-    deck: "Your compass, current thesis, practical constraints, decisions, check-ins, and the evidence shaping what comes next.",
-    eyebrow: "Personal operating context",
+    deck: "A reflective space for meaning, patterns, philosophy, and the ideas that help you understand where you are.",
+    eyebrow: "Inner compass",
     tools: []
   }
 };
