@@ -107,3 +107,36 @@ test('ranked opportunities carry a suggested resume version', () => {
   assert.equal(ranked.length, 1);
   assert.equal(ranked[0].resume_recommendation.variant, 'Risk, Controls & Governance');
 });
+
+
+test('ranked opportunities preserve source identity and dedupe the same role across feeds', () => {
+  const now = new Date().toISOString();
+  const jobs = [
+    {
+      id:101,
+      url:'https://jobicy.com/jobs/example-business-analyst',
+      title:'Senior Business Analyst',
+      company_name:'Example Co',
+      candidate_required_location:'USA',
+      publication_date:now,
+      description:'Business analysis, stakeholder management, controls and process improvement.',
+      source_name:'Jobicy',
+      source_url:'https://jobicy.com/jobs/example-business-analyst'
+    },
+    {
+      id:202,
+      url:'https://remotive.com/remote-jobs/example-business-analyst',
+      title:'Senior Business Analyst',
+      company_name:'Example Co',
+      candidate_required_location:'USA',
+      publication_date:now,
+      description:'Business analysis, stakeholder management, controls and process improvement.',
+      source_name:'Remotive',
+      source_url:'https://remotive.com/remote-jobs/example-business-analyst'
+    }
+  ];
+  const ranked = rankOpportunities(jobs, []);
+  assert.equal(ranked.length, 1);
+  assert.equal(ranked[0].source, 'Jobicy');
+  assert.equal(ranked[0].source_url, jobs[0].url);
+});
