@@ -1,10 +1,19 @@
-name: manual permanent Gravity sandbox publish
+name: permanent Gravity sandbox publish
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+    paths:
+      - "workspace-preview/**"
 
 permissions:
   contents: read
+
+concurrency:
+  group: herenow-gravity-permanent
+  cancel-in-progress: true
 
 jobs:
   update:
