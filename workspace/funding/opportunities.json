@@ -1,0 +1,259 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-24T23:48:00Z",
+  "source_note": "Seed registry only. Every item is presented with a last-verified timestamp and authoritative source. Refreshing this file is not the same as re-verifying the upstream program.",
+  "opportunities": [
+    {
+      "id": "village-for-vets-efund",
+      "name": "Village for Vets Emergency Fund",
+      "funder": "Village for Vets",
+      "type": "emergency_cash",
+      "applicant_lane": "individual",
+      "value": "Short-term emergency financial assistance; amount case-specific",
+      "deadline": null,
+      "availability": "open",
+      "status": "POSSIBLE_FIT",
+      "criteria": [
+        "Veteran",
+        "Resides in Southern California",
+        "Financial emergency threatens housing, employment, or health",
+        "Supporting documentation required"
+      ],
+      "match_tags": [
+        "veteran",
+        "southern_california",
+        "housing"
+      ],
+      "unknowns": [
+        "Exact award amount",
+        "Whether current arrears and active unlawful-detainer posture meet this fund's approval criteria"
+      ],
+      "documents": [
+        "Emergency Fund application",
+        "Supporting documentation",
+        "Release of Information"
+      ],
+      "effort": "medium",
+      "next_action": "Review the live application and assemble the required housing/emergency documentation.",
+      "last_verified_at": "2026-09-24",
+      "source_url": "https://www.villageforvets.org/efund",
+      "source_label": "Village for Vets — Emergency Assistance"
+    },
+    {
+      "id": "lacahsa-rphp",
+      "name": "LACAHSA Emergency Rental & Flexible Financial Assistance",
+      "funder": "L.A. County Affordable Housing Solutions Agency",
+      "type": "emergency_cash",
+      "applicant_lane": "individual",
+      "value": "Emergency rental / flexible financial assistance delivered through funded partner organizations",
+      "deadline": null,
+      "availability": "open",
+      "status": "POSSIBLE_FIT",
+      "criteria": [
+        "Los Angeles County renter",
+        "At risk of losing housing",
+        "Apply through an awarded organization rather than directly to LACAHSA"
+      ],
+      "match_tags": [
+        "los_angeles",
+        "housing"
+      ],
+      "unknowns": [
+        "Which funded provider currently has capacity",
+        "Provider-specific documentation and prioritization rules"
+      ],
+      "documents": [
+        "Provider-specific intake documents",
+        "Housing / arrears documentation"
+      ],
+      "effort": "medium",
+      "next_action": "Contact an awarded provider and ask for emergency rental-assistance intake.",
+      "last_verified_at": "2026-09-24",
+      "source_url": "https://lacahsa.gov/get-help/",
+      "source_label": "LACAHSA — Get Help"
+    },
+    {
+      "id": "founders-first-tadlock-2026",
+      "name": "Kenneth B. and Stephen L. Tadlock Veteran Business Grant",
+      "funder": "Founders First CDC",
+      "type": "founder_cash",
+      "applicant_lane": "business",
+      "value": "$1,000 micro-grant + program access for finalists",
+      "deadline": null,
+      "availability": "open_2026_cycle",
+      "status": "NEEDS_FACT",
+      "criteria": [
+        "U.S. veteran or military spouse business owner",
+        "2–100 employees",
+        "At least 1 year in business"
+      ],
+      "match_tags": [
+        "veteran",
+        "founder"
+      ],
+      "unknowns": [
+        "Whether the applying business meets the employee-count requirement",
+        "Whether the current application window is still accepting full submissions"
+      ],
+      "documents": [
+        "Business eligibility information",
+        "Application materials required by Founders First"
+      ],
+      "effort": "medium",
+      "next_action": "Verify employee-count eligibility before spending time on the application.",
+      "last_verified_at": "2026-09-24",
+      "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
+      "source_label": "Founders First CDC — Tadlock Veteran Business Grant"
+    },
+    {
+      "id": "nsf-sbir-26-510",
+      "name": "NSF SBIR/STTR — Deep Technologies",
+      "funder": "U.S. National Science Foundation",
+      "type": "rd_funding",
+      "applicant_lane": "business",
+      "value": "Phase I standard grant up to $305,000; later phases larger",
+      "deadline": "2026-11-04",
+      "availability": "open",
+      "status": "NEEDS_FACT",
+      "criteria": [
+        "Eligible U.S. small business",
+        "High-risk technology R&D with commercial potential",
+        "Program-specific PI/company requirements",
+        "One proposal per organization at a time"
+      ],
+      "match_tags": [
+        "founder",
+        "software_ai",
+        "rd"
+      ],
+      "unknowns": [
+        "Which project/company is the legal applicant",
+        "Whether the proposed technical work meets NSF R&D and commercialization criteria",
+        "Company registration / submission readiness"
+      ],
+      "documents": [
+        "NSF proposal package",
+        "Company registrations",
+        "Technical R&D plan",
+        "Commercialization case"
+      ],
+      "effort": "high",
+      "next_action": "Run an eligibility and project-fit screen for ALVIRA, ledgato, and governed-agent infrastructure before drafting anything.",
+      "last_verified_at": "2026-09-24",
+      "source_url": "https://www.nsf.gov/funding/opportunities/small-business-innovation-research-small-business-technology/nsf26-510/solicitation",
+      "source_label": "NSF 26-510"
+    },
+    {
+      "id": "aws-activate-founders",
+      "name": "AWS Activate Founders",
+      "funder": "Amazon Web Services",
+      "type": "build_credits",
+      "applicant_lane": "business",
+      "value": "Starts at $1,000 AWS credits; select participants may qualify for up to $5,000",
+      "deadline": null,
+      "availability": "open",
+      "status": "POSSIBLE_FIT",
+      "criteria": [
+        "Self-funded startup",
+        "New to AWS Activate Credits",
+        "Fully functioning company website",
+        "Founded within the past 10 years",
+        "AWS paid-tier account required for Activate eligibility"
+      ],
+      "match_tags": [
+        "founder",
+        "software_ai",
+        "zero_budget"
+      ],
+      "unknowns": [
+        "Whether an eligible legal startup entity and AWS account are already in place",
+        "Prior Activate-credit history"
+      ],
+      "documents": [
+        "Startup profile",
+        "Company website",
+        "AWS account details"
+      ],
+      "effort": "low",
+      "next_action": "Check prior AWS Activate usage and legal startup/account readiness.",
+      "last_verified_at": "2026-09-24",
+      "source_url": "https://aws.amazon.com/startups/credits?lang=en-US",
+      "source_label": "AWS Activate Credits"
+    },
+    {
+      "id": "google-startups-cloud",
+      "name": "Google for Startups Cloud Program",
+      "funder": "Google Cloud",
+      "type": "build_credits",
+      "applicant_lane": "business",
+      "value": "Cloud credits vary by tier; Scale AI startups may receive up to $350,000",
+      "deadline": null,
+      "availability": "open",
+      "status": "NEEDS_FACT",
+      "criteria": [
+        "Digital-native startup",
+        "Tier-specific product/funding requirements",
+        "Business email should match startup website domain",
+        "Program excludes several organization types including consultancies/agencies"
+      ],
+      "match_tags": [
+        "founder",
+        "software_ai",
+        "zero_budget"
+      ],
+      "unknowns": [
+        "Which tier applies",
+        "Whether current funding/MVP status meets tier requirements",
+        "Existing Google Cloud / billing-account status"
+      ],
+      "documents": [
+        "Startup profile",
+        "Cloud billing account",
+        "Public company / funding evidence when required"
+      ],
+      "effort": "medium",
+      "next_action": "Determine the correct tier and whether an existing billing account affects the application path.",
+      "last_verified_at": "2026-09-24",
+      "source_url": "https://cloud.google.com/startup/faq",
+      "source_label": "Google for Startups Cloud Program"
+    },
+    {
+      "id": "microsoft-for-startups",
+      "name": "Microsoft for Startups",
+      "funder": "Microsoft",
+      "type": "build_credits",
+      "applicant_lane": "business",
+      "value": "Starter Azure credits immediately; qualified startups may unlock up to $150,000 over time",
+      "deadline": null,
+      "availability": "open",
+      "status": "POSSIBLE_FIT",
+      "criteria": [
+        "Software-based product or service owned by the company",
+        "Privately held and for-profit",
+        "Azure available in headquarters country",
+        "Not Series C or later",
+        "Lifetime free Azure credits below program cap"
+      ],
+      "match_tags": [
+        "founder",
+        "software_ai",
+        "zero_budget"
+      ],
+      "unknowns": [
+        "Legal startup entity / ownership structure",
+        "Existing Azure-credit history",
+        "Whether the product is being applied under the correct company"
+      ],
+      "documents": [
+        "Registered startup information",
+        "Product/company profile",
+        "Azure / Microsoft account"
+      ],
+      "effort": "low",
+      "next_action": "Check company/legal-entity readiness and previous Azure-credit history.",
+      "last_verified_at": "2026-09-24",
+      "source_url": "https://learn.microsoft.com/en-us/azure/signups/overview",
+      "source_label": "Microsoft for Startups"
+    }
+  ]
+}
