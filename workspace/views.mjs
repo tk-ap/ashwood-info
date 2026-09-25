@@ -34,8 +34,14 @@ const VIEW_META = {
     deck: "Applications, opportunities, professional relationships, and the work of creating runway.",
     eyebrow: "Career operations",
     tools: [
-      {label:"Funding Intelligence", href:"/workspace/funding/"}
+      {label:"Funding", href:"#funding"}
     ]
+  },
+  funding: {
+    title: "Funding.",
+    deck: "Cash, grants, credits, and non-cash leverage ranked against what is actually accessible.",
+    eyebrow: "Funding intelligence",
+    tools: []
   },
   evidence: {
     title: "Evidence.",
@@ -74,6 +80,9 @@ const GROUPS = {
     "#work",
     "#network"
   ],
+  funding: [
+    "#funding"
+  ],
   evidence: [
     "#owner-intelligence",
     "details.pulse",
@@ -98,6 +107,7 @@ const VIEW_FOR_HASH = {
   work:"career",
   network:"career",
   activity:"build",
+  funding:"funding",
   evidence:"evidence",
   "evidence-panel":"evidence",
   self:"self",
