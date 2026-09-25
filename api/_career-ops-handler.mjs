@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { ensureCareerResumeSchema, loadCareerResumeProfile, saveCareerResumeProfile } from './_career-resume-profile.mjs';
 
 const STATUS_VALUES = new Set([
   'TARGET',
@@ -131,6 +132,7 @@ export default async function handler(req, res) {
 
     const sql = getSql();
     await ensureCareerSchema(sql);
+    await ensureCareerResumeSchema(sql);
 
     if (req.method === 'GET') {
       const applications = await sql`
@@ -164,7 +166,18 @@ export default async function handler(req, res) {
         ORDER BY updated_at DESC
         LIMIT 200
       `;
-      return json(res, 200, { ok: true, applications, events, opportunity_dispositions });
+      const resumeProfile = await loadCareerResumeProfile(sql);
+      return json(res, 200, {
+        ok: true,
+        applications,
+        events,
+        opportunity_dispositions,
+        resume_profile:{
+          configured:Boolean(resumeProfile?.profile),
+          source:resumeProfile?.source || null,
+          updated_at:resumeProfile?.updated_at || null
+        }
+      });
     }
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
@@ -172,6 +185,12 @@ export default async function handler(req, res) {
 
     const body = parseBody(req);
     const action = String(body.action || '').trim();
+
+    if (action === 'set_resume_profile') {
+      const result = await saveCareerResumeProfile(sql, body.profile, body.source || 'workspace');
+      if (!result.ok) return json(res, 400, result);
+      return json(res, 200, { ok:true });
+    }
 
     if (action === 'decline_opportunity') {
       const source = trim(body.source, 80);
