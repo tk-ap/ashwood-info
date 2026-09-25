@@ -50,6 +50,7 @@ const VIEW_META = {
     deck: "Signals, proof, decisions, contradictions, and the record behind what the system believes.",
     eyebrow: "Proof before narrative",
     tools: [
+      {label:"Sources", href:"#sources"},
       {label:"Build logs", href:"/workspace/build-logs/"},
       {label:"Add evidence", action:"evidence"}
     ]
@@ -91,6 +92,7 @@ const GROUPS = {
     "#owner-intelligence",
     "details.pulse",
     "details.workspace-connections",
+    "#sources",
     "#evidence-panel",
     "details.attention"
   ],
@@ -119,6 +121,7 @@ const VIEW_FOR_HASH = {
   runway:"runway",
   content:"content",
   evidence:"evidence",
+  sources:"evidence",
   "evidence-panel":"evidence",
   self:"self",
   frame:"self",
