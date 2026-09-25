@@ -323,6 +323,76 @@ function renderSyncState() {
 }
 
 
+async function importResumeProfileFile(file, statusNode=null) {
+  if (!file) return;
+  if (!/\.json$/i.test(file.name || '')) throw new Error('Choose the Career resume profile .json file.');
+  const text = await file.text();
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error('Resume profile file is not valid JSON.');
+  }
+  const profile = parsed?.profile || parsed;
+  const source = String(parsed?.source || file.name || 'workspace-import').slice(0,80);
+  if (!profile?.identity?.name || !Array.isArray(profile?.experience) || !profile.experience.length) {
+    throw new Error('Resume profile is missing identity or experience data.');
+  }
+  if (statusNode) statusNode.textContent = 'Saving private baseline…';
+  await api({
+    method:'POST',
+    body:JSON.stringify({ action:'set_resume_profile', profile, source })
+  });
+  state.resumeProfile = { configured:true, source, updated_at:new Date().toISOString() };
+  if (statusNode) statusNode.textContent = 'Baseline saved. Resume generation is ready.';
+  renderOpportunities();
+}
+
+function resumeProfileSetupMarkup() {
+  if (state.resumeProfile?.configured) return '';
+  return `
+    <div class="career-resume-setup" data-resume-setup>
+      <div>
+        <span>One-time resume setup</span>
+        <strong>Import the private baseline profile</strong>
+        <p>Drop the normalized Career resume JSON here once. It is saved to the private Workspace database and is not committed to the public repository.</p>
+        <small data-resume-import-status>Required before Career can generate application-ready .docx files.</small>
+      </div>
+      <label>
+        Import baseline resume
+        <input type="file" accept=".json,application/json" data-resume-profile-file>
+      </label>
+    </div>`;
+}
+
+function wireResumeProfileImport(root) {
+  const setup = root.querySelector('[data-resume-setup]');
+  const input = root.querySelector('[data-resume-profile-file]');
+  if (!setup || !input) return;
+  const status = setup.querySelector('[data-resume-import-status]');
+  const run = async file => {
+    try {
+      setup.classList.add('is-working');
+      await importResumeProfileFile(file, status);
+    } catch (error) {
+      if (status) status.textContent = error.message;
+    } finally {
+      setup.classList.remove('is-working');
+    }
+  };
+  input.addEventListener('change', () => run(input.files?.[0]));
+  setup.addEventListener('dragover', event => {
+    event.preventDefault();
+    setup.classList.add('is-dragging');
+  });
+  setup.addEventListener('dragleave', () => setup.classList.remove('is-dragging'));
+  setup.addEventListener('drop', event => {
+    event.preventDefault();
+    setup.classList.remove('is-dragging');
+    run(event.dataTransfer?.files?.[0]);
+  });
+}
+
 function resumeArtifactMarkup(opportunity={}) {
   const recommendation = opportunity.resume_recommendation || {};
   if (!recommendation.variant) return '';
@@ -401,7 +471,7 @@ function renderOpportunities() {
     root.innerHTML = `<div class="career-opportunity-empty"><strong>No qualified recommendation is available in this source window.</strong><span>The tracker will not substitute unrelated engineering roles just to keep the grid full. Use Next recommendations to move through the eligible pool.</span></div>`;
   } else {
     const visibleOpportunities = state.opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
-    root.innerHTML = visibleOpportunities.map(opportunity => `
+    root.innerHTML = resumeProfileSetupMarkup() + visibleOpportunities.map(opportunity => `
       <article class="career-opportunity-card">
         <div class="career-opportunity-topline">
           <span>${escapeHtml(opportunity.company)}</span>
@@ -420,6 +490,8 @@ function renderOpportunities() {
         </div>
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
       </article>`).join('');
+
+    wireResumeProfileImport(root);
 
     root.querySelectorAll('[data-generate-resume]').forEach(button => button.addEventListener('click', async () => {
       const opportunity = state.opportunities.find(item => String(item.id) === String(button.dataset.generateResume || ''));
