@@ -25,13 +25,14 @@ test('summaryCounts derives the funnel from canonical status and history', () =>
     { id:'c', status:'REJECTED' },
     { id:'d', status:'REJECTED' },
     { id:'e', status:'DECLINED' },
-    { id:'f', status:'TARGET' }
+    { id:'f', status:'TARGET' },
+    { id:'g', status:'ASSUMED_REJECTED' }
   ], [
     { application_id:'d', event_type:'INTERVIEW', payload:{} },
     { application_id:'c', event_type:'INTERVIEW', payload:{ relevance:'ignored' } }
   ]);
   // Rejected applications were submitted; an interview before rejection still converted.
-  assert.deepEqual(counts, { submitted:4, denied:2, noResponse:0, interviews:2 });
+  assert.deepEqual(counts, { submitted:5, denied:3, noResponse:0, interviews:2 });
 });
 
 test('summaryCounts treats submitted APPLIED records without employer response as no response', () => {
