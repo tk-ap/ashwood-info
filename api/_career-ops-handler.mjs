@@ -10,6 +10,7 @@ const STATUS_VALUES = new Set([
   'INTERVIEW',
   'OFFER',
   'REJECTED',
+  'ASSUMED_REJECTED',
   'DECLINED',
   'CLOSED',
   'DEFERRED'
