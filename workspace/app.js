@@ -198,6 +198,32 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     $('[data-dismiss-content]').forEach(btn=>btn.addEventListener('click',()=>{dismissed.add(btn.dataset.dismissContent);localStorage.setItem('ashwood.dismissedContentEvidence',JSON.stringify([...dismissed].slice(-200)));renderFromWork();}));
   }
 
+  function classifyReality(x){
+    const t=`${x.title||''} ${x.notes||''} ${x.status||''}`.toLowerCase();
+    const market=/user|customer|paid|revenue|signup|design partner|beta|pilot|adoption|external|client/.test(t);
+    const proof=/test|tested|verify|verified|proof|evidence|smoke|readback|production|live|deployed|completed|merged/.test(t);
+    const speculative=/idea|propos|draft|architecture|direction|roadmap|planned|concept|documentation|brief|future|could|maybe/.test(t);
+    if(market && proof) return 'market';
+    if(proof && (x.status==='COMPLETED'||x.source==='manual'||x.source==='ailhat')) return 'verified';
+    if(speculative || x.status==='PLANNED') return 'speculation';
+    return 'build';
+  }
+
+  function renderRealityCheck(evidence){
+    const host=$('#reality-check-grid'); if(!host) return;
+    const recent=evidence.filter(x=>daysSince(x.date)<=45), counts={verified:0,build:0,market:0,speculation:0};
+    recent.forEach(x=>counts[classifyReality(x)]++);
+    const total=Math.max(1,recent.length), coverage=Math.round(((counts.verified+counts.market*.8)/total)*100), distraction=Math.round((counts.speculation/total)*100);
+    const label=coverage>=65&&distraction<25?'Evidence is keeping pace':coverage>=40?'Promising, but proof is lagging':'Story is moving faster than proof';
+    const summary=counts.market?'Market-facing evidence exists, but it needs repeatable use or conversion proof to carry the larger claim.':'Most current movement is internal build evidence; the market-value question remains open.';
+    $('#reality-check-score').textContent=`${coverage}%`;
+    $('#reality-check-label').textContent=label;
+    $('#reality-check-summary').textContent=summary;
+    const cards=[['verified','Verified evidence','Tests, deployments, persisted records, or completed work with a receipt.'],['market','Market signal','External users, pilots, customers, signups, payment, or adoption—not just internal readiness.'],['build','Build activity','Real implementation progress that still needs an end-to-end or independent proof step.'],['speculation','Story / speculation','Ideas, architecture, drafts, or future language that may be valuable but is not proof yet.']];
+    host.innerHTML=cards.map(([key,title,copy])=>`<article class="reality-check__card reality-check__card--${key}"><div><strong>${counts[key]}</strong><span>${title}</span></div><p>${copy}</p></article>`).join('');
+    const note=document.querySelector('.reality-check__note'); if(note) note.dataset.distraction=`${distraction}% of recent activity is currently classified as story/speculation.`;
+  }
+
   function render() {
     const evidence=allEvidence(), last7=evidence.filter(x=>daysSince(x.date)<=7), moved=new Set(last7.flatMap(x=>[x.goal,...(x.secondaryGoals||[])])).size, active=state.repos.filter(r=>daysSince(r.pushed_at)<=14).length, needs=GOALS.filter(g=>['STALE','NEEDS_ATTENTION'].includes(goalStats(g).status)).length;
     $('#pulse-grid').innerHTML=[[moved,'goals with evidence · 7d'],[active,'active ecosystem repos · 14d'],[needs,'buckets needing review'],[state.persistedEvidence.length,'private evidence items']].map(([n,l])=>`<article class="pulse-card"><div class="pulse-number">${n}</div><div class="pulse-label">${l}</div></article>`).join('');
@@ -205,7 +231,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     const products=state.repos.map(r=>({name:PRODUCT_ROLES[r.name]?.label||r.name,type:PRODUCT_ROLES[r.name]?.type||'Discovered ecosystem repository',state:daysSince(r.pushed_at)<=7?'ACTIVE':daysSince(r.pushed_at)<=21?'QUIET':'STALE',pushedAt:r.pushed_at,url:r.html_url,description:r.description||''}));
     if(state.ailhat?.product) products.unshift({name:'ailhat intelligence',type:'Portfolio Intelligence contract',state:state.ailhat.product.attention_status||state.ailhat.product.state,pushedAt:state.ailhat.scan?.observed_at,url:'https://ailhat.vercel.app/',description:`Readiness ${state.ailhat.product.readiness_score ?? 'unknown'} · ${state.ailhat.attention?.top_next_action||'No next action supplied'}`});
     $('#ecosystem-list').innerHTML=products.map(p=>`<article class="ecosystem-row"><div><a class="ecosystem-name" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.name)} ↗</a><div class="ecosystem-commit">${escapeHtml(p.description)}</div></div><div class="ecosystem-type">${escapeHtml(p.type)}</div><div><span class="status-pill">${escapeHtml(p.state)}</span><div class="ecosystem-age">${p.pushedAt?relativeDate(p.pushedAt):'source timestamp unavailable'}</div></div></article>`).join('')||'<p class="empty-state">No project details available from the current sources.</p>';
-    renderEvidence(); renderAttention(); renderNext(); renderFromWork();
+    renderEvidence(); renderAttention(); renderNext(); renderFromWork(); renderRealityCheck(evidence);
     $('#as-of').textContent=`Refreshed ${new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`;
     $('#live-state').textContent=state.error?state.error:`Private state + GitHub + ${state.ailhat?.ok?'ailhat':'ailhat unavailable'} · ${state.board.length} governed tasks`;
   }
