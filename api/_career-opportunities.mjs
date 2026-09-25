@@ -30,7 +30,7 @@ const BODY_RULES = [
 ];
 
 const NEGATIVE_TITLE = /software engineer|software developer|frontend|front[- ]end|backend|back[- ]end|full[- ]stack|data scientist|machine learning engineer|developer|devops|site reliability|solutions architect|cloud architect|security engineer|data engineer|engineering manager|technical lead|account executive|sales representative|nurse|physician|therapist|designer|copywriter|recruiter/i;
-const TARGET_TITLE = /operational risk|risk (?:control|management|analyst)|business analyst|program manager|program management|project manager|project management|\bpmo\b|compliance|regulatory|business operations|operations (?:manager|program|analyst)|controls?|governance|vendor management|third[- ]party|process improvement|business process|operational excellence|business continuity|resilien(?:ce|cy)|strategy|strategic operations|special projects|financial analyst|finance operations|financial operations|fraud|audit|implementation manager|change management/i;
+const TARGET_TITLE = /operational risk|risk (?:control|management|analyst)|business analyst|program manager|program management|project manager|project management|\bpmo\b|compliance|regulatory|business operations|operations (?:manager|program|analyst)|controls?|governance|vendor management|third[- ]party|process improvement|business process|operational excellence|business continuity|resilien(?:ce|cy)|strategy|strategic operations|special projects|financial analyst|finance operations|financial operations|fraud|audit|implementation manager|change management|product operations|product strategy|product program|product manager/i;
 const TECHNICAL_REQUIREMENT = /(?:bachelor'?s|degree|experience).{0,45}(?:computer science|software engineering)|\b(?:python|java|javascript|typescript|c\+\+|kubernetes|terraform|aws|azure|gcp)\b.{0,35}(?:required|must have|years?)/i;
 
 function qualificationGate(job={}) {
@@ -38,7 +38,7 @@ function qualificationGate(job={}) {
   const body = stripHtml(job.description || '');
   if (!TARGET_TITLE.test(title)) return { pass:false, reason:'title_outside_target_lanes' };
   if (NEGATIVE_TITLE.test(title)) return { pass:false, reason:'technical_or_unrelated_title' };
-  if (TECHNICAL_REQUIREMENT.test(body) && !/business analyst|business operations|operational risk|compliance|governance|controls?|finance|audit/i.test(title)) {
+  if (TECHNICAL_REQUIREMENT.test(body) && !/business analyst|business operations|operational risk|compliance|governance|controls?|finance|audit|product operations|product strategy|product program|product manager/i.test(title)) {
     return { pass:false, reason:'technical_requirements' };
   }
   return { pass:true, reason:'target_lane' };
