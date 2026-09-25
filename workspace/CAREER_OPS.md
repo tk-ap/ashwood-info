@@ -45,6 +45,19 @@ Discovery rules:
 
 The discovery feed is a sourcing aid, not a claim that every surfaced job is a fit. Final eligibility and application decisions remain owner-controlled.
 
+## Resume assist
+
+Every recommended role should include a small **Resume to use** panel. Career Ops does not fabricate a bespoke work history. It selects the closest reusable resume lane and shows only the bounded changes that should be made for that posting:
+
+- a replacement professional summary;
+- which existing experience bullets to emphasize or move upward;
+- posting-language signals already supported by the candidate's evidence;
+- a guardrail that employers, dates, titles, and accomplishments remain factual.
+
+Current reusable lanes are Business Analysis & Operations, Risk/Controls/Governance, Finance & Business Analysis, Program/Project/Change, and Strategy/Product/Operations. Tracking a recommended role preserves the suggested lane in that application's submitted-material record so the eventual application can record which version was actually used.
+
+The purpose is application speed and consistency: tailor emphasis, not identity, and never invent a qualification merely to match a posting.
+
 ## Inbox continuity
 
 The data model supports Gmail-originated events through `workspace_career_events`:
