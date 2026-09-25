@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isUsCompatible, rankOpportunities, rotateOpportunities, scoreOpportunity, stripHtml } from '../api/_career-opportunities.mjs';
+import { isUsCompatible, rankOpportunities, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml } from '../api/_career-opportunities.mjs';
 
 test('stripHtml creates a compact readable summary', () => {
   assert.equal(stripHtml('<p>Risk &amp; controls</p><ul><li>PMO</li></ul>'), 'Risk & controls PMO');
@@ -75,4 +75,35 @@ test('transferable product roles pass unless technical requirements dominate', (
   });
   assert.ok(businessProduct.score >= 8);
   assert.equal(technicalProduct.score, -100);
+});
+
+
+test('resume recommendation selects a lane without rewriting factual history', () => {
+  const risk = resumeRecommendation({
+    title:'Operational Risk Manager',
+    description:'Own governance, controls, audit and resiliency.'
+  }, ['operational risk', 'governance / controls']);
+  assert.equal(risk.variant, 'Risk, Controls & Governance');
+  assert.match(risk.summary, /regulated financial services/i);
+  assert.match(risk.guardrail, /do not invent experience/i);
+
+  const strategy = resumeRecommendation({
+    title:'AI Strategy Consultant',
+    description:'Lead strategy, stakeholder discovery and operating transformation.'
+  }, ['strategy', 'stakeholder management']);
+  assert.equal(strategy.variant, 'Strategy, Product & Operations');
+});
+
+test('ranked opportunities carry a suggested resume version', () => {
+  const ranked = rankOpportunities([{
+    id:9,
+    url:'https://example.com/risk',
+    title:'Senior Operational Risk Manager',
+    company_name:'Risk Co',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'Own controls, governance, audit, resiliency and cross-functional process improvement.'
+  }], []);
+  assert.equal(ranked.length, 1);
+  assert.equal(ranked[0].resume_recommendation.variant, 'Risk, Controls & Governance');
 });
