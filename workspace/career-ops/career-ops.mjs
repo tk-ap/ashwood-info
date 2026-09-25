@@ -381,6 +381,7 @@ async function generateResumeArtifact(opportunity, button) {
     URL.revokeObjectURL(href);
     button.textContent = 'Downloaded';
   } catch (error) {
+    button.disabled = false;
     button.textContent = 'Try again';
     button.title = error.message;
     return;
@@ -622,7 +623,8 @@ function openApplicationDialog(application=null) {
   $('#career-requirements').value = (application?.posting_snapshot?.requirements || []).join('\n');
   $('#career-preferred').value = (application?.posting_snapshot?.preferred || []).join('\n');
   $('#career-interview-notes').value = application?.posting_snapshot?.interview_notes || '';
-  $('#career-resume').value = application?.materials?.resume || '';
+  const resumeMaterial = application?.materials?.resume;
+  $('#career-resume').value = typeof resumeMaterial === 'string' ? resumeMaterial : (resumeMaterial?.filename || '');
   $('#career-projects').value = Array.isArray(application?.materials?.projects) ? application.materials.projects.join(', ') : application?.materials?.projects || '';
   $('#career-work-sample').value = application?.materials?.work_sample || '';
   $('#career-notes').value = application?.notes || '';
