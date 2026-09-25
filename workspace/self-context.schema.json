@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ashwood.workspace/self-context/v1",
+  "type": "object",
+  "required": ["schema", "source", "sourceProfileId", "sourceUpdatedAt", "sourceVersion", "rawAreas", "normalized", "unavailableAreas"],
+  "properties": {
+    "schema": {"const": "ashwood.workspace/self-context/v1"},
+    "source": {"type": "string"},
+    "sourceProfileId": {"type": "string"},
+    "sourceUpdatedAt": {"type": "string"},
+    "sourceVersion": {"type": "string"},
+    "sourceVersionStatus": {"type": "string"},
+    "sourceVersionedAtDisplay": {"type": "string"},
+    "sourceChangedAreaCount": {"type": "integer"},
+    "sourceExportConfirmed": {"type": "boolean"},
+    "sourceAccountSignal": {"type": "string"},
+    "rawAreas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "label", "status", "text"],
+        "properties": {
+          "field": {"type": "string"},
+          "label": {"type": "string"},
+          "status": {"type": "string"},
+          "confidence": {"type": ["string", "number", "null"]},
+          "text": {"type": "string"}
+        }
+      }
+    },
+    "normalized": {
+      "type": "object",
+      "required": ["operatingModel", "currentContext", "patterns", "tensions", "systemAdaptations"],
+      "properties": {
+        "operatingModel": {"type": "array", "items": {"type": "string"}},
+        "currentContext": {"type": "array", "items": {"type": "string"}},
+        "patterns": {"type": "array", "items": {"type": "string"}},
+        "tensions": {"type": "array", "items": {"type": "string"}},
+        "systemAdaptations": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "unavailableAreas": {"type": "array", "items": {"type": "string"}},
+    "corrections": {"type": "array"}
+  }
+}
