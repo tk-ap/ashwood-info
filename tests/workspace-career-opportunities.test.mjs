@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isUsCompatible, rankOpportunities, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml } from '../api/_career-opportunities.mjs';
+import { isUsCompatible, locationPreference, rankOpportunities, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml } from '../api/_career-opportunities.mjs';
 
 test('stripHtml creates a compact readable summary', () => {
   assert.equal(stripHtml('<p>Risk &amp; controls</p><ul><li>PMO</li></ul>'), 'Risk & controls PMO');
@@ -139,4 +139,46 @@ test('ranked opportunities preserve source identity and dedupe the same role acr
   assert.equal(ranked.length, 1);
   assert.equal(ranked[0].source, 'Jobicy');
   assert.equal(ranked[0].source_url, jobs[0].url);
+});
+
+
+test('LA Financial District outranks otherwise-identical remote opportunities', () => {
+  const now = new Date().toISOString();
+  const ranked = rankOpportunities([
+    {
+      id:'remote',
+      url:'https://example.com/remote',
+      title:'Senior Business Analyst',
+      company_name:'Remote Co',
+      candidate_required_location:'USA',
+      publication_date:now,
+      description:'Business analysis, controls, stakeholder management and process improvement.'
+    },
+    {
+      id:'dtla',
+      url:'https://example.com/dtla',
+      title:'Senior Business Analyst',
+      company_name:'DTLA Co',
+      candidate_required_location:'Financial District, Los Angeles, CA 90071',
+      publication_date:now,
+      description:'Business analysis, controls, stakeholder management and process improvement.'
+    }
+  ], []);
+  assert.equal(ranked[0].company, 'DTLA Co');
+  assert.equal(ranked[0].location_preference, 'financial-district');
+  assert.ok(ranked[0].matches.includes('LA Financial District'));
+});
+
+test('walkable DTLA receives a stronger location preference than general Los Angeles', () => {
+  assert.deepEqual(locationPreference('Downtown Los Angeles, CA 90017'), {
+    points:6,
+    label:'walkable DTLA',
+    tier:'walkable-dtla'
+  });
+  assert.deepEqual(locationPreference('Los Angeles, CA'), {
+    points:3,
+    label:'Los Angeles',
+    tier:'los-angeles'
+  });
+  assert.equal(locationPreference('USA').points, 0);
 });
