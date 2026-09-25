@@ -58,6 +58,21 @@ ASHWOOD's UI and private Workspace should feel alive: a living, breathing workin
 - The canonical ELITK behavior is the per-notification explainer in `workspace/feed.mjs` on current `main` (`ELITK · Explain this notification`).
 - Any future ELITK or Workspace work must start from current `main` and preserve the live `Today / Build / Work / Network / Evidence / Self` command-center structure.
 
+### Neon Database Preflight
+
+- Before **any Neon-related lookup, diagnosis, environment wiring, branch work, or database change**, read `docs/NEON_DATABASE_TOPOLOGY.md`.
+- Neon has two ALVIRA-related switcher contexts: `Vercel: ALVIRA` and `ALVIRA`. Check both before concluding a database/project is missing.
+- Do not infer a product's Neon project from a similarly named or empty project; use the verified topology map and runtime/table evidence.
+- Never commit database credentials or connection strings.
+
+### Sandbox vs Production Guardrail
+
+- **Vercel is production-only for ASHWOOD.** Do not create, require, wait for, or troubleshoot Vercel Preview deployments for ordinary sandbox/review work.
+- **here.now is the canonical sandbox / preview surface.** Use the stable sandbox defined in `.agent-os/deployment.yaml` for visual review, branch validation, and pre-production verification.
+- A branch named `preview`, a preview-scoped environment variable, or a PR does **not** imply that Vercel Preview is part of the release path.
+- Before any deployment action, resolve the target from `.agent-os/deployment.yaml`: sandbox work goes to here.now; production work goes to Vercel.
+- Do not open PRs or create commits solely to force a Vercel Preview deployment unless the owner explicitly changes the topology.
+
 ### Canonical Deployment Topology
 
 - Read `.agent-os/deployment.yaml` before any release, deployment diagnosis, or claim about live state.

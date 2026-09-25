@@ -18,14 +18,20 @@ test('needsAttention flags stale submitted applications', () => {
   assert.equal(needsAttention({ status:'DECLINED', updated_at:'2026-08-01T12:00:00Z' }, now), false);
 });
 
-test('summaryCounts separates active pipeline and conversations', () => {
-  const now = Date.parse('2026-09-17T12:00:00Z');
+test('summaryCounts derives the funnel from canonical status and history', () => {
   const counts = summaryCounts([
-    { status:'SCREENING', updated_at:'2026-09-16T12:00:00Z' },
-    { status:'INTERVIEW', updated_at:'2026-09-16T12:00:00Z' },
-    { status:'DECLINED', updated_at:'2026-09-16T12:00:00Z' }
-  ], now);
-  assert.deepEqual(counts, { active:2, submitted:1, conversations:1, needsAction:0 });
+    { id:'a', status:'SCREENING' },
+    { id:'b', status:'INTERVIEW' },
+    { id:'c', status:'REJECTED' },
+    { id:'d', status:'REJECTED' },
+    { id:'e', status:'DECLINED' },
+    { id:'f', status:'TARGET' }
+  ], [
+    { application_id:'d', event_type:'INTERVIEW', payload:{} },
+    { application_id:'c', event_type:'INTERVIEW', payload:{ relevance:'ignored' } }
+  ]);
+  // Rejected applications were submitted; an interview before rejection still converted.
+  assert.deepEqual(counts, { submitted:4, denied:2, interviews:2 });
 });
 
 test('sortApplications prioritizes interviews and recruiter activity', () => {

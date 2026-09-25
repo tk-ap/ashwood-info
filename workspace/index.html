@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260922-activity1" />
   <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
+  <link rel="stylesheet" href="/workspace/ops-pulse.css?v=20260924-forward1" />
   <link rel="stylesheet" href="/workspace/operator-actions.css?v=20260921-operator1" />
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260922-fitboard1" />
   <link rel="stylesheet" href="/workspace/sprint.css?v=20260921-sprint1" />
@@ -24,11 +25,13 @@
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
   <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
   <link rel="stylesheet" href="/workspace/build-command-center.css?v=20260923-command-center1" />
+  <link rel="stylesheet" href="/workspace/v4-atmosphere.css?v=20260924-forward1" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260921-menufix1"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260922-activity1"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
+  <script type="module" src="/workspace/ops-pulse.mjs?v=20260924-forward1"></script>
   <script type="module" src="/workspace/operator-actions.mjs?v=20260921-operator1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/operator-console.mjs?v=20260922-operator1"></script>
@@ -37,7 +40,7 @@
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/network.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/elitk-page.mjs?v=20260922-toggle2"></script>
-  <script src="/workspace/intelligence-hero.js?v=20260908-intel1" defer></script>
+  <script src="/workspace/intelligence-hero.js?v=20260924-no-constellation1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
 </head>
 <body class="workspace-page">
@@ -124,6 +127,25 @@
     </section>
 
     <section class="today-command-center" id="today" aria-labelledby="today-title">
+      <section class="ops-pulse" id="ops-pulse" aria-label="Operational readout">
+        <div class="ops-pulse__top">
+          <div>
+            <p class="section-kicker">Canonical work · protected readout</p>
+            <h3>What actually moved.</h3>
+            <p id="ops-pulse-status" aria-live="polite">Reading protected Workspace sources…</p>
+          </div>
+          <a class="ops-pulse-health-link" href="/workspace/agentos/">AgentOS Health ↗</a>
+          <button type="button" id="ops-pulse-refresh">Refresh</button>
+        </div>
+        <div class="ops-pulse__stats" aria-label="Current agent work from synced sources">
+          <div class="ops-pulse__stat"><strong id="ops-pulse-underway">—</strong><span>Underway</span></div>
+          <div class="ops-pulse__stat"><strong id="ops-pulse-owner">—</strong><span>Needs owner</span></div>
+          <div class="ops-pulse__stat"><strong id="ops-pulse-blocked">—</strong><span>Blocked / parked</span></div>
+          <div class="ops-pulse__stat"><strong id="ops-pulse-queued">—</strong><span>Queued commands</span></div>
+        </div>
+        <div class="ops-pulse__details" id="ops-pulse-detail"><p class="ops-pulse-unavailable">Loading evidence…</p></div>
+        <div class="ops-pulse__deployed" id="ops-pulse-deployment"><span>Loading environment registry…</span></div>
+      </section>
       <div class="today-head">
         <div>
           <p class="section-kicker">Today · command center</p>
@@ -289,18 +311,6 @@
         <div id="career-sync-state" class="career-sync-state"></div>
       </section>
 
-      <section class="career-opportunities" aria-labelledby="career-opportunities-title">
-        <div class="career-opportunities-head">
-          <div>
-            <p class="section-kicker">Fresh targets</p>
-            <h2 id="career-opportunities-title">What should I apply to next?</h2>
-            <p id="career-opportunity-meta">Loading new options…</p>
-          </div>
-          <button class="career-primary" type="button" id="career-opportunity-refresh">Refresh options</button>
-        </div>
-        <div class="career-opportunity-grid" id="career-opportunity-grid" aria-live="polite"></div>
-      </section>
-
       <section class="career-board">
         <div class="career-board-head">
           <div>
@@ -314,6 +324,18 @@
           <div class="career-applications" id="career-applications" aria-live="polite"></div>
           <aside class="career-detail" id="career-detail" aria-live="polite"></aside>
         </div>
+      </section>
+
+      <section class="career-opportunities" aria-labelledby="career-opportunities-title">
+        <div class="career-opportunities-head">
+          <div>
+            <p class="section-kicker">Fresh targets</p>
+            <h2 id="career-opportunities-title">What should I apply to next?</h2>
+            <p id="career-opportunity-meta">Loading new options…</p>
+          </div>
+          <button class="career-primary" type="button" id="career-opportunity-refresh">Refresh options</button>
+        </div>
+        <div class="career-opportunity-grid" id="career-opportunity-grid" aria-live="polite"></div>
       </section>
 
       <dialog id="career-dialog" class="career-dialog">

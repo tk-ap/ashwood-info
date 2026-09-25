@@ -34,7 +34,7 @@ const dateOrNull = value => {
 
 const objectOrEmpty = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 
-async function ensureSchema(sql) {
+export async function ensureCareerSchema(sql) {
   await sql`
     CREATE TABLE IF NOT EXISTS workspace_career_applications (
       id TEXT PRIMARY KEY,
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
     if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
 
     const sql = getSql();
-    if (!isPreviewReadOnly()) await ensureSchema(sql);
+    if (!isPreviewReadOnly()) await ensureCareerSchema(sql);
 
     if (req.method === 'GET') {
       const applications = await sql`

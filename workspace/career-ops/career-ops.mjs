@@ -1,4 +1,4 @@
-import { normaliseStatus, requestedSalaryLabel, salaryLabel, sortApplications, summaryCounts, needsAttention } from './model.mjs';
+import { normaliseStatus, requestedSalaryLabel, salaryLabel, sortApplications, summaryCounts, syncSummary, needsAttention } from './model.mjs';
 
 const $ = selector => document.querySelector(selector);
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -19,7 +19,10 @@ const state = {
   selectedId: null,
   opportunities: [],
   opportunityCursor: 0,
-  opportunityMeta: null
+  opportunityMeta: null,
+  inboxSync: null,
+  inboxReviews: [],
+  newJobsSinceSession: 0
 };
 
 async function api(options={}) {
@@ -32,6 +35,22 @@ async function api(options={}) {
   if (!response.ok) {
     const error = new Error(body.error || `Request failed (${response.status})`);
     error.status = response.status;
+    throw error;
+  }
+  return body;
+}
+
+async function gmailSyncApi() {
+  const response = await fetch('/api/workspace-career-gmail-sync', {
+    method:'POST',
+    credentials:'same-origin',
+    headers:{ 'Content-Type':'application/json' }
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(body.error || `Sync failed (${response.status})`);
+    error.code = body.code;
+    error.body = body;
     throw error;
   }
   return body;
@@ -77,12 +96,12 @@ function materialChips(materials={}) {
 }
 
 function renderHeader() {
-  const counts = summaryCounts(state.applications);
+  const counts = summaryCounts(state.applications, state.events);
   const cards = [
-    [counts.active, 'active pipeline'],
-    [counts.submitted, 'submitted / screening'],
-    [counts.conversations, 'recruiter / assessment / interview'],
-    [counts.needsAction, 'need action']
+    [counts.submitted, 'applications submitted'],
+    [state.newJobsSinceSession, 'new jobs found'],
+    [counts.denied, 'applications denied'],
+    [counts.interviews, 'applications → interview']
   ];
   const markup = cards.map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
   $('#career-summary').innerHTML = markup;
@@ -172,14 +191,30 @@ function renderDetail() {
   $('#career-edit')?.addEventListener('click', () => openApplicationDialog(app));
 }
 
+function syncSummaryMarkup(sync) {
+  const summary = syncSummary(sync);
+  const items = summary.items.map(item => `<small><b>${escapeHtml(item.title)}</b><br>${escapeHtml(item.outcome)} → <b>${escapeHtml(item.status)}</b><br>Tracker updated.</small>`).join('');
+  const review = summary.review ? `<small>${escapeHtml(summary.review)}</small>` : '';
+  return `<strong>Inbox synced successfully</strong><span>${escapeHtml(summary.headline)} · ${escapeHtml(fmtDateTime(sync.syncedAt))}</span>${items}${review}`;
+}
+
 function renderSyncState() {
   const gmailEvents = state.events.filter(event => event.source === 'gmail');
   const node = $('#career-sync-state');
+  if (state.inboxSync?.status === 'success') {
+    node.innerHTML = syncSummaryMarkup(state.inboxSync);
+    return;
+  }
+  if (state.inboxSync?.status === 'error') {
+    const failures = (state.inboxSync.failures || []).map(item => `<small>${escapeHtml(`${item.company} — ${item.role}: ${item.from} → ${item.to} could not be verified. Tracker shows ${item.observed || 'unknown'}.`)}</small>`).join('');
+    node.innerHTML = `<strong>Inbox sync unavailable</strong><span>${escapeHtml(state.inboxSync.message || 'Career Gmail sync failed')}</span>${failures}`;
+    return;
+  }
   if (gmailEvents.length) {
     const latest = gmailEvents[0];
-    node.innerHTML = `<strong>Gmail activity detected</strong><span>${gmailEvents.length} tracked message event${gmailEvents.length === 1 ? '' : 's'} · latest ${escapeHtml(fmtDateTime(latest.occurred_at))}</span>`;
+    node.innerHTML = `<strong>Gmail monitoring active</strong><span>${gmailEvents.length} tracked message event${gmailEvents.length === 1 ? '' : 's'} · latest ${escapeHtml(fmtDateTime(latest.occurred_at))}</span>`;
   } else {
-    node.innerHTML = `<strong>Inbox sync ready, not connected</strong><span>Connect the dedicated job-search Gmail account in ChatGPT; application emails can then be matched to these records and written into the timeline without exposing credentials to ASHWOOD.</span>`;
+    node.innerHTML = `<strong>Gmail monitoring connected</strong><span>Press Refresh to check the Career Ops inbox. Credentials remain server-side.</span>`;
   }
 }
 
@@ -231,6 +266,8 @@ async function loadOpportunities({ refresh=false }={}) {
     const data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
     state.opportunities = data.opportunities || [];
     state.opportunityMeta = data;
+    if (refresh) state.newJobsSinceSession += state.opportunities.length;
+    renderHeader();
     renderOpportunities();
   } catch (error) {
     $('#career-opportunity-grid').innerHTML = `<div class="career-opportunity-empty"><strong>New options could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
@@ -400,7 +437,30 @@ async function saveApplication(event) {
 }
 
 $('#career-add').addEventListener('click', () => openApplicationDialog());
-$('#career-refresh').addEventListener('click', load);
+$('#career-refresh').addEventListener('click', async () => {
+  const button = $('#career-refresh');
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Syncing inbox…';
+  try {
+    const result = await gmailSyncApi();
+    state.inboxReviews = Array.isArray(result.reviews) ? result.reviews : [];
+    state.inboxSync = {
+      status:'success',
+      outcomes:Array.isArray(result.outcomes) ? result.outcomes.filter(item => item.verified) : [],
+      reviewOpen:Number(result.counts?.review_open || 0),
+      counts:result.counts || {},
+      syncedAt:new Date().toISOString()
+    };
+    await load();
+  } catch (error) {
+    state.inboxSync = { status:'error', message:error.message, failures:error.body?.failures || [] };
+    renderSyncState();
+  } finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
+});
 $('#career-opportunity-refresh').addEventListener('click', () => loadOpportunities({ refresh:true }));
 $('#career-form').addEventListener('submit', saveApplication);
 document.querySelectorAll('[data-career-close]').forEach(button => button.addEventListener('click', () => $('#career-dialog').close()));

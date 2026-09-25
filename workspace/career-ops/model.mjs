@@ -37,15 +37,26 @@ export function needsAttention(application={}, now=Date.now()) {
   return false;
 }
 
-export function summaryCounts(applications=[], now=Date.now()) {
+const SUBMITTED_STATUSES = new Set(['APPLIED','SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTED']);
+const INTERVIEW_EVENTS = new Set(['INTERVIEW','OFFER']);
+
+/**
+ * Funnel counts derived only from the canonical tracker (applications plus their
+ * event history), so Gmail reconciliation moves them without separate counters.
+ * A rejected application was still submitted, and an application that reached
+ * interview keeps that conversion after a later decision.
+ */
+export function summaryCounts(applications=[], events=[]) {
+  const interviewed = new Set(events
+    .filter(event => INTERVIEW_EVENTS.has(String(event.event_type || '').toUpperCase()) && event.payload?.relevance !== 'ignored')
+    .map(event => event.application_id));
   return applications.reduce((acc, app) => {
     const status = normaliseStatus(app.status);
-    if (ACTIVE_STATUSES.has(status)) acc.active += 1;
-    if (['APPLIED','SCREENING'].includes(status)) acc.submitted += 1;
-    if (['RECRUITER','ASSESSMENT','INTERVIEW'].includes(status)) acc.conversations += 1;
-    if (needsAttention(app, now)) acc.needsAction += 1;
+    if (SUBMITTED_STATUSES.has(status) || (app.submitted_at && status !== 'TARGET' && status !== 'DECLINED')) acc.submitted += 1;
+    if (status === 'REJECTED') acc.denied += 1;
+    if (status === 'INTERVIEW' || status === 'OFFER' || interviewed.has(app.id)) acc.interviews += 1;
     return acc;
-  }, { active:0, submitted:0, conversations:0, needsAction:0 });
+  }, { submitted:0, denied:0, interviews:0 });
 }
 
 export function sortApplications(applications=[]) {
@@ -56,4 +67,33 @@ export function sortApplications(applications=[]) {
     if (sa !== sb) return sa - sb;
     return new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0);
   });
+}
+
+const OUTCOME_LABELS = {
+  REJECTION:'Rejection received',
+  OFFER:'Offer received',
+  INTERVIEW:'Interview requested',
+  ASSESSMENT:'Assessment requested',
+  RECRUITER:'Recruiter contact',
+  SCREENING:'Application under review',
+  CONFIRMATION:'Application confirmed'
+};
+
+/**
+ * User-facing inbox sync summary. Only verified tracker writes count as
+ * updates, one per application; "No new application updates" is used only
+ * when there are none.
+ */
+export function syncSummary({ outcomes=[], reviewOpen=0 }={}) {
+  const seen = new Set();
+  const items = outcomes.filter(item => item.verified && !seen.has(item.application_id) && seen.add(item.application_id)).map(item => ({
+    title:`${item.company} — ${item.role}`,
+    outcome:item.correction ? 'Status corrected from application history' : OUTCOME_LABELS[item.evidence_event_type] || 'Application update',
+    status:item.to
+  }));
+  const reviewText = `${reviewOpen} application email${reviewOpen === 1 ? '' : 's'} require${reviewOpen === 1 ? 's' : ''} review.`;
+  if (!items.length) {
+    return { headline:'No new application updates. Your tracker is current.', items, review:reviewOpen ? reviewText : null };
+  }
+  return { headline:`Located ${items.length} application update${items.length === 1 ? '' : 's'}.`, items, review:reviewText };
 }

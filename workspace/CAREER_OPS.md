@@ -78,3 +78,31 @@ When an application reaches `RECRUITER`, `ASSESSMENT`, or `INTERVIEW`, Career Op
 - the next scheduled action or interview.
 
 This is an owner tool, not a public-facing career feature.
+
+
+### Delegated Gmail implementation
+
+Career Ops has a server-only Gmail sync endpoint at `/api/workspace-career-gmail-sync`. The browser never receives Gmail OAuth credentials or refresh/access tokens.
+
+Required Vercel server environment variables:
+
+- `CAREER_GMAIL_CLIENT_ID`
+- `CAREER_GMAIL_CLIENT_SECRET`
+- `CAREER_GMAIL_REFRESH_TOKEN`
+
+The delegated grant must resolve to exactly `hire.tkashwood@gmail.com`; the endpoint rejects any other mailbox. Use the least-privilege Gmail read scope (`https://www.googleapis.com/auth/gmail.readonly`). The ChatGPT Gmail connector authorization is intentionally not copied or exported: ChatGPT connector tokens are not application credentials for ASHWOOD.
+
+The sync scans recent non-promotional mail and runs each message through one pipeline (`api/_career-gmail-pipeline.mjs`):
+
+1. **Career relevance.** Account and product notices (Neon, Google account security, billing) and mail without application-lifecycle language are ignored before any matching. The full message body is read for classification only; it is not stored.
+2. **Lifecycle classification.** Rejection → `REJECTED`, offer, interview, assessment, recruiter contact, confirmation → `APPLIED`, under review → `SCREENING`. Employer decisions take precedence, and conditional language ("if selected, we will schedule an interview") is not evidence.
+3. **Reconciliation.** An existing Gmail event or thread linkage wins; otherwise employer plus role, or a requisition ID, must identify exactly one application. Otherwise the message enters review. No application is created from a failed match.
+4. **Transition.** Each application's history is replayed in occurrence order: owner-recorded status changes set the state, Gmail evidence may only advance it, and an employer rejection supersedes any open stage. Older evidence cannot regress a newer decision. `DECLINED`, `CLOSED`, and `DEFERRED` are owner decisions and are never changed by Gmail evidence.
+5. **Idempotency.** One event per Gmail message ID. Re-syncing corrects a stale classification in place rather than inserting a second event.
+6. **Verification.** A status write is re-read before it is reported. An unverified write returns `RECONCILIATION_FAILED` instead of success.
+
+The sync response and UI report application-level outcomes: one line per application whose canonical status changed, and `No new application updates` only when none did. The funnel is computed from canonical applications and their events, never from separate counters.
+
+### Reconciliation and review
+
+The Gmail sync reconciles an email only when employer and role (or requisition) identify one canonical application. It does not attach a message to the highest-scoring candidate when there is a tie or insufficient evidence. Those messages are retained in the private Career Ops review state with their Gmail message ID and candidate IDs, so an owner can resolve them without losing the evidence. Review rows are never deleted: a later sync marks a row `resolution = reconciled:<application>` or `ignored:<reason>`, and only unresolved rows count as requiring review. A `DECLINED` application remains an owner decision and is never changed into an employer `REJECTED` outcome by the matcher.
