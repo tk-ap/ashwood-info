@@ -66,6 +66,63 @@ export function isUsCompatible(location='') {
   return !CLEARLY_NON_US.test(value);
 }
 
+
+export function resumeRecommendation(job={}, matches=[]) {
+  const title = String(job.title || '');
+  const body = stripHtml(job.description || '');
+  const evidence = `${title} ${body} ${matches.join(' ')}`;
+
+  let variant = 'Business Analysis & Operations';
+  let summary = 'Business analysis and operations professional with experience improving workflows, controls, operating processes, and cross-functional execution in regulated and service environments.';
+  let emphasis = [
+    'Lead with Wells Fargo workflow analysis, recurring control reporting, process optimization, and automation-opportunity work.',
+    'Keep JPMorgan process-change, audit-remediation, operational analysis, and senior-stakeholder execution prominent.',
+    'Use Kasa to show operating ownership, budgeting, vendor coordination, and performance improvement.'
+  ];
+
+  if (/operational risk|risk control|controls?|governance|compliance|audit|resilien/i.test(evidence)) {
+    variant = 'Risk, Controls & Governance';
+    summary = 'Business execution and controls professional with experience in regulated financial services, operational risk, control design, business resiliency, process improvement, and cross-functional execution.';
+    emphasis = [
+      'Lead with Wells Fargo control design, 20+ recurring control reports, workflow/SLA alignment, and business-resiliency coordination.',
+      'Move JPMorgan audit findings, corrective-action ownership, risk/control partnership, and process-change work directly behind it.',
+      'Keep automation and process-improvement evidence visible; compress unrelated service details.'
+    ];
+  } else if (/financial analyst|finance operations|financial operations|financial services|banking|portfolio/i.test(evidence)) {
+    variant = 'Finance & Business Analysis';
+    summary = 'Finance and business-analysis professional with experience across banking, operational analysis, regulated controls, client needs discovery, and process improvement.';
+    emphasis = [
+      'Lead with Wells Fargo analytical control work, workflow performance, and operational improvement.',
+      'Elevate JPMorgan business-process analysis, audit remediation, and change implementation.',
+      'Keep Charles Schwab client discovery, financial-product knowledge, and SIE evidence visible when the role values financial-services fluency.'
+    ];
+  } else if (/program manager|program management|project manager|project management|\bpmo\b|implementation|change management/i.test(evidence)) {
+    variant = 'Program, Project & Change';
+    summary = 'Cross-functional program and business-operations professional with experience coordinating regulated initiatives, process changes, resiliency work, stakeholder alignment, and operational execution.';
+    emphasis = [
+      'Lead with Wells Fargo resiliency plans, cross-functional exercises, control execution, and workflow improvement.',
+      'Elevate JPMorgan multi-level project and product-launch process changes plus senior-leader buy-in.',
+      'Use Kasa vendor and operations coordination as additional execution evidence; reduce purely service-oriented detail.'
+    ];
+  } else if (/product operations|product strategy|product manager|strategy|special projects|ai strategy|consult/i.test(evidence)) {
+    variant = 'Strategy, Product & Operations';
+    summary = 'Strategy and operations professional focused on diagnosing complex workflows, translating business needs into practical improvements, and coordinating cross-functional execution across regulated and operating environments.';
+    emphasis = [
+      'Lead with Wells Fargo automation-opportunity identification, workflow/control analysis, and cross-functional resiliency work.',
+      'Elevate JPMorgan process-change implementation, operational problem solving, and senior-stakeholder communication.',
+      'For product or AI-strategy roles, add a compact current-projects line only when it is directly relevant; do not present product building as software-engineering experience.'
+    ];
+  }
+
+  return {
+    variant,
+    summary,
+    emphasis,
+    keywords:[...new Set(matches.map(String).filter(Boolean))].slice(0,4),
+    guardrail:'Keep employers, dates, titles, and factual accomplishments unchanged. Tailor emphasis and wording; do not invent experience.'
+  };
+}
+
 export function scoreOpportunity(job={}, now=Date.now()) {
   const title = String(job.title || '');
   const body = stripHtml(job.description || '');
@@ -123,7 +180,8 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
       score,
       matches,
       qualification_gate:gate,
-      summary:stripHtml(job.description || '').slice(0, 700)
+      summary:stripHtml(job.description || '').slice(0, 700),
+      resume_recommendation:resumeRecommendation(job, matches)
     };
   }).filter(item => item && item.company && item.role && item.url && item.score >= 8)
     .sort((a,b) => b.score - a.score || new Date(b.published_at || 0) - new Date(a.published_at || 0))
