@@ -20,6 +20,7 @@
     { "source": "/api/workspace-career-opportunities", "destination": "/api/workspace-career?view=opportunities" },
     { "source": "/api/workspace-board", "destination": "/api/workspace-agentos" },
     { "source": "/api/workspace-workstreams", "destination": "/api/workspace-agentos?view=workstreams" },
+    { "source": "/api/workspace-sources", "destination": "/api/workspace-agentos?view=sources" },
     { "source": "/api/workspace-checklist", "destination": "/api/workspace-review" },
     { "source": "/api/workspace-review-visit", "destination": "/api/workspace-review?view=visit" },
     { "source": "/api/workspace-design", "destination": "/api/workspace-review?view=design" },

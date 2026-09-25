@@ -1,5 +1,5 @@
 import board from './_agentos-board-handler.mjs';
-import workstreams from './_agentos-workstreams-handler.mjs';
+import workstreams, { sourcesHandler } from './_agentos-workstreams-handler.mjs';
 
 async function selfDirective(req,res){
   if(req.method!=='POST') return res.status(405).json({error:'POST required'});
@@ -24,5 +24,6 @@ export default async function handler(req,res){
   const url=new URL(req.url||'/api/workspace-agentos',`https://${req.headers?.host||'localhost'}`);
   const view=url.searchParams.get('view');
   if(view==='self-directive') return selfDirective(req,res);
+  if(view==='sources') return sourcesHandler(req,res);
   return view==='workstreams' ? workstreams(req,res) : board(req,res);
 }
