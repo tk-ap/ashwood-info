@@ -97,11 +97,14 @@ function materialChips(materials={}) {
 
 function renderHeader() {
   const counts = summaryCounts(state.applications, state.events);
+  const denominator = counts.submitted || 0;
+  const ratio = numerator => `${numerator} / ${denominator}`;
   const cards = [
     [counts.submitted, 'applications submitted'],
-    [state.newJobsSinceSession, 'new jobs found'],
-    [counts.denied, 'applications denied'],
-    [counts.interviews, 'applications → interview']
+    [ratio(counts.denied), 'denied / submitted'],
+    [ratio(counts.noResponse), 'no response / submitted'],
+    [ratio(counts.interviews), 'interview requests / submitted'],
+    [state.newJobsSinceSession, 'new jobs found']
   ];
   const markup = cards.map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
   $('#career-summary').innerHTML = markup;
