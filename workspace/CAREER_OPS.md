@@ -106,3 +106,24 @@ The sync response and UI report application-level outcomes: one line per applica
 ### Reconciliation and review
 
 The Gmail sync reconciles an email only when employer and role (or requisition) identify one canonical application. It does not attach a message to the highest-scoring candidate when there is a tie or insufficient evidence. Those messages are retained in the private Career Ops review state with their Gmail message ID and candidate IDs, so an owner can resolve them without losing the evidence. Review rows are never deleted: a later sync marks a row `resolution = reconciled:<application>` or `ignored:<reason>`, and only unresolved rows count as requiring review. A `DECLINED` application remains an owner decision and is never changed into an employer `REJECTED` outcome by the matcher.
+
+
+## Closed-loop operating model
+
+Career Ops is organized around five durable surfaces:
+
+1. **Today** — the small set of application, inbox, or recommendation actions that can move the job search now.
+2. **Recommended** — a continuously replenished queue of qualified roles.
+3. **Applications** — the canonical lifecycle record and preserved posting/material history.
+4. **Inbox / Signals** — Gmail-derived evidence that reconciles into the canonical application rather than becoming a parallel tracker.
+5. **History / Preferences** — durable disposition and lifecycle evidence used to improve subsequent recommendations.
+
+The operational loop is:
+
+`discover → qualify → recommend → act → observe inbox → reconcile → learn → replenish`
+
+A recommendation decline is persisted server-side in `workspace_career_opportunity_dispositions`. Declined opportunity IDs are removed **before** ranking pages are returned, so handling the visible cards cannot create a false empty state while other qualified candidates remain. Client-side decline storage remains only as backward-compatible session evidence.
+
+Recommendation qualification is title-first. Posting-body keyword accumulation cannot promote an unrelated occupation into Apply Next. Engineering and technical occupations are rejected at the gate; finance, business analysis, business/strategy operations, program/project management, governance/risk/control, and transferable non-technical product roles remain eligible.
+
+Source expansion must not regress queue continuity. A preferred source may replace or supplement the current feed only when its ingestion path is proven. Do not disable the only working candidate source merely because a preferred provider requires browser/account ingestion; surface the source provenance honestly and keep the qualifying/replenishment contract intact.
