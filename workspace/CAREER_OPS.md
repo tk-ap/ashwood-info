@@ -45,18 +45,37 @@ Discovery rules:
 
 The discovery feed is a sourcing aid, not a claim that every surfaced job is a fit. Final eligibility and application decisions remain owner-controlled.
 
-## Resume assist
+## Resume artifacts
 
-Every recommended role should include a small **Resume to use** panel. Career Ops does not fabricate a bespoke work history. It selects the closest reusable resume lane and shows only the bounded changes that should be made for that posting:
+Recommended roles should produce an actual **ATS-friendly resume artifact**, not merely tell the owner how to edit a baseline manually.
 
-- a replacement professional summary;
-- which existing experience bullets to emphasize or move upward;
-- posting-language signals already supported by the candidate's evidence;
-- a guardrail that employers, dates, titles, and accomplishments remain factual.
+The operating model is:
 
-Current reusable lanes are Business Analysis & Operations, Risk/Controls/Governance, Finance & Business Analysis, Program/Project/Change, and Strategy/Product/Operations. Tracking a recommended role preserves the suggested lane in that application's submitted-material record so the eventual application can record which version was actually used.
+`qualified posting → select evidence lane → tailor only supported content → generate .docx → owner/agent uploads file → record the exact file used`
 
-The purpose is application speed and consistency: tailor emphasis, not identity, and never invent a qualification merely to match a posting.
+Career Ops keeps one canonical resume profile in the private workspace database (or, as a controlled fallback, `CAREER_RESUME_PROFILE_JSON`). The public repository contains the renderer and rules only; it must never contain the owner's private resume profile, phone number, email address, or live resume artifact.
+
+For each recommendation, Career Ops selects the closest evidence lane:
+
+- Business Analysis & Operations
+- Risk, Controls & Governance
+- Finance & Business Analysis
+- Program, Project & Change
+- Strategy, Product & Operations
+
+Generation rules:
+
+1. create a standard `.docx` with plain headings, text, and bullets so ATS parsers can read it reliably;
+2. replace the professional summary with the role-aligned summary;
+3. reorder and selectively trim existing bullets by relevance to the selected lane;
+4. surface only posting language already supported by the canonical evidence;
+5. never invent qualifications, employers, dates, titles, certifications, metrics, or accomplishments;
+6. keep the canonical source unchanged so every generated file can be traced back to the same factual baseline;
+7. record generation metadata privately, and when an application is already tracked, attach the generated filename/variant to its `materials.resume` record.
+
+The recommendation card's primary action is **Generate .docx**. This is intentionally compatible with human and agent application flows: download the generated file, then upload/drag-drop it into the employer's resume field. The tailoring preview remains secondary and explanatory.
+
+A private resume profile can be set through the authenticated Career API action `set_resume_profile`. This is a one-time/bootstrap operation that an authorized agent may perform from a trusted resume source. It must correct known stale facts before saving—for example, Wells Fargo employment ends in **March 2026**, not “Present.”
 
 ## Inbox continuity
 
