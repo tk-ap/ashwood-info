@@ -15,6 +15,20 @@ async function ensureSchema(sql) {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS workspace_career_opportunity_dispositions (
+      source TEXT NOT NULL,
+      opportunity_id TEXT NOT NULL,
+      company TEXT,
+      role TEXT,
+      url TEXT,
+      disposition TEXT NOT NULL DEFAULT 'DECLINED',
+      reason TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (source, opportunity_id)
+    )
+  `;
 }
 
 async function getCache(sql) {
@@ -88,7 +102,13 @@ export default async function handler(req, res) {
       }
     }
 
-    const ranked = rankOpportunities(sourceJobs, tracked);
+    const declinedRows = await sql`
+      SELECT opportunity_id
+      FROM workspace_career_opportunity_dispositions
+      WHERE source = ${SOURCE} AND disposition = 'DECLINED'
+    `;
+    const declinedIds = new Set(declinedRows.map(row => String(row.opportunity_id)));
+    const ranked = rankOpportunities(sourceJobs, tracked).filter(item => !declinedIds.has(String(item.id)));
     const opportunities = rotateOpportunities(ranked, cursor, 8);
 
     return json(res, 200, {
