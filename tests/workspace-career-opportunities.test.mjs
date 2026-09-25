@@ -47,3 +47,32 @@ test('rotation returns a new page of up to eight opportunities', () => {
   assert.equal(second.length, 8);
   assert.notDeepEqual(first.map(x => x.id), second.map(x => x.id));
 });
+
+
+test('body keywords cannot promote a title outside the target lanes', () => {
+  const unrelated = scoreOpportunity({
+    title:'Executive Assistant',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'Own governance, controls, business analysis, PMO, finance and process improvement.'
+  });
+  assert.equal(unrelated.score, -100);
+  assert.equal(unrelated.gate, 'title_outside_target_lanes');
+});
+
+test('transferable product roles pass unless technical requirements dominate', () => {
+  const businessProduct = scoreOpportunity({
+    title:'Product Operations Manager',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'Own cross-functional workflows, business process improvement, stakeholder management and operational planning.'
+  });
+  const technicalProduct = scoreOpportunity({
+    title:'Product Manager',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'5 years Python required. Degree in computer science required. Own developer platform APIs.'
+  });
+  assert.ok(businessProduct.score >= 8);
+  assert.equal(technicalProduct.score, -100);
+});
