@@ -74,6 +74,29 @@ async function opportunityApi({ cursor=0, refresh=false }={}) {
   return body;
 }
 
+function opportunitySourceKey(opportunity={}) {
+  return String(opportunity.source || 'unknown').trim().toLowerCase().replace(/\s+/g,'-');
+}
+
+async function persistOpportunityDecline(opportunity, reason=null) {
+  const source = opportunitySourceKey(opportunity);
+  const id = String(opportunity.id || '');
+  if (!id) throw new Error('Opportunity ID is required');
+  await api({
+    method:'POST',
+    body:JSON.stringify({
+      action:'decline_opportunity',
+      source,
+      opportunity_id:id,
+      company:opportunity.company,
+      role:opportunity.role,
+      url:opportunity.url,
+      reason
+    })
+  });
+  return { source, id };
+}
+
 function statusClass(status) {
   return normaliseStatus(status).toLowerCase();
 }
@@ -327,18 +350,7 @@ function renderOpportunities() {
       button.disabled = true;
       button.textContent = 'Declining…';
       try {
-        const source = String(opportunity.source || 'unknown').trim().toLowerCase().replace(/\s+/g,'-');
-        await api({
-          method:'POST',
-          body:JSON.stringify({
-            action:'decline_opportunity',
-            source,
-            opportunity_id:id,
-            company:opportunity.company,
-            role:opportunity.role,
-            url:opportunity.url
-          })
-        });
+        const { source } = await persistOpportunityDecline(opportunity);
         state.declinedOpportunityIds.add(id);
         localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
         state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', updated_at:new Date().toISOString() });
@@ -372,8 +384,42 @@ async function loadOpportunities({ refresh=false }={}) {
   button.textContent = refresh ? 'Finding more…' : 'Loading…';
   try {
     if (refresh) state.opportunityCursor += 1;
-    const data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
-    state.opportunities = data.opportunities || [];
+    let data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
+    let opportunities = data.opportunities || [];
+
+    const legacyDeclines = opportunities.filter(opportunity =>
+      state.declinedOpportunityIds.has(String(opportunity.id)) &&
+      !state.opportunityDispositions.some(item =>
+        item.disposition === 'DECLINED' &&
+        item.source === opportunitySourceKey(opportunity) &&
+        String(item.opportunity_id) === String(opportunity.id)
+      )
+    );
+    let migratedLegacyDecline = false;
+    for (const opportunity of legacyDeclines) {
+      try {
+        const { source, id } = await persistOpportunityDecline(opportunity, 'migrated_from_legacy_local_storage');
+        state.opportunityDispositions.unshift({
+          source,
+          opportunity_id:id,
+          company:opportunity.company,
+          role:opportunity.role,
+          url:opportunity.url,
+          disposition:'DECLINED',
+          reason:'migrated_from_legacy_local_storage',
+          updated_at:new Date().toISOString()
+        });
+        migratedLegacyDecline = true;
+      } catch {
+        // Keep the legacy browser disposition as a fail-safe; do not resurrect a role the owner already declined.
+      }
+    }
+    if (migratedLegacyDecline) {
+      data = await opportunityApi({ cursor:state.opportunityCursor, refresh:false });
+      opportunities = data.opportunities || [];
+    }
+
+    state.opportunities = opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
     state.opportunityMeta = data;
     if (refresh) state.newJobsSinceSession += state.opportunities.length;
     renderHeader();
@@ -385,7 +431,7 @@ async function loadOpportunities({ refresh=false }={}) {
     $('#career-opportunity-meta').textContent = 'Opportunity feed unavailable';
   } finally {
     button.disabled = false;
-    button.textContent = 'Refresh options';
+    button.textContent = 'Next recommendations';
   }
 }
 
