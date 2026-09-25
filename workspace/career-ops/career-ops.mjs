@@ -79,6 +79,15 @@ function opportunitySourceKey(opportunity={}) {
   return String(opportunity.source || 'unknown').trim().toLowerCase().replace(/\s+/g,'-');
 }
 
+function opportunityStorageKey(opportunity={}) {
+  return `${opportunitySourceKey(opportunity)}:${String(opportunity.id || '')}`;
+}
+
+function isLocallyDeclined(opportunity={}) {
+  const id = String(opportunity.id || '');
+  return state.declinedOpportunityIds.has(opportunityStorageKey(opportunity)) || state.declinedOpportunityIds.has(id);
+}
+
 async function persistOpportunityDecline(opportunity, reason=null) {
   const source = opportunitySourceKey(opportunity);
   const id = String(opportunity.id || '');
@@ -470,7 +479,7 @@ function renderOpportunities() {
   if (!state.opportunities.length) {
     root.innerHTML = resumeProfileSetupMarkup() + `<div class="career-opportunity-empty"><strong>No qualified recommendation is available in this source window.</strong><span>The tracker will not substitute unrelated engineering roles just to keep the grid full. Use Next recommendations to move through the eligible pool.</span></div>`;
   } else {
-    const visibleOpportunities = state.opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
+    const visibleOpportunities = state.opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
     root.innerHTML = resumeProfileSetupMarkup() + visibleOpportunities.map(opportunity => `
       <article class="career-opportunity-card">
         <div class="career-opportunity-topline">
@@ -505,7 +514,8 @@ function renderOpportunities() {
       button.textContent = 'Declining…';
       try {
         const { source } = await persistOpportunityDecline(opportunity);
-        state.declinedOpportunityIds.add(id);
+        state.declinedOpportunityIds.add(opportunityStorageKey(opportunity));
+        state.declinedOpportunityIds.delete(id);
         localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
         state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', updated_at:new Date().toISOString() });
         state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
@@ -528,10 +538,11 @@ function renderOpportunities() {
 
   wireResumeProfileImport(root);
 
-  const sourceStamp = data.source_fetched_at ? `source checked ${fmtDateTime(data.source_fetched_at)}` : 'source time unavailable';
+  const sourceStamp = data.source_fetched_at ? `sources checked ${fmtDateTime(data.source_fetched_at)}` : 'source time unavailable';
+  const sourceLabel = data.source ? `${data.source} · ` : '';
   const pool = Number(data.pool_count || 0);
   const warning = data.warning ? ` · ${data.warning}` : '';
-  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool · ${sourceStamp}${warning}`;
+  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool · ${sourceLabel}${sourceStamp}${warning}`;
 }
 
 async function loadOpportunities({ refresh=false }={}) {
@@ -544,7 +555,7 @@ async function loadOpportunities({ refresh=false }={}) {
     let opportunities = data.opportunities || [];
 
     const legacyDeclines = opportunities.filter(opportunity =>
-      state.declinedOpportunityIds.has(String(opportunity.id)) &&
+      isLocallyDeclined(opportunity) &&
       !state.opportunityDispositions.some(item =>
         item.disposition === 'DECLINED' &&
         item.source === opportunitySourceKey(opportunity) &&
@@ -575,7 +586,7 @@ async function loadOpportunities({ refresh=false }={}) {
       opportunities = data.opportunities || [];
     }
 
-    state.opportunities = opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
+    state.opportunities = opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
     state.opportunityMeta = data;
     if (refresh) state.newJobsSinceSession += state.opportunities.length;
     renderHeader();
@@ -600,7 +611,7 @@ async function trackOpportunity(opportunity, button) {
       method:'POST',
       body:JSON.stringify({
         action:'upsert_application',
-        id:`career:remotive:${opportunity.id}`,
+        id:`career:${opportunitySourceKey(opportunity)}:${opportunity.id}`,
         company:opportunity.company,
         role:opportunity.role,
         job_id:String(opportunity.id),
@@ -611,8 +622,8 @@ async function trackOpportunity(opportunity, button) {
         next_action:'Review the full employer posting and decide whether to apply.',
         posting_snapshot:{ summary:opportunity.summary || '', responsibilities:[], requirements:[], preferred:[] },
         materials:{ resume_variant:opportunity.resume_recommendation?.variant || '' },
-        source:'remotive',
-        notes:`Discovered through ASHWOOD Career Ops. Source: Remotive. Published ${opportunity.published_at || 'date unavailable'}.`
+        source:opportunitySourceKey(opportunity),
+        notes:`Discovered through ASHWOOD Career Ops. Source: ${opportunity.source || 'job feed'}. Published ${opportunity.published_at || 'date unavailable'}.`
       })
     });
     state.selectedId = result.id;
