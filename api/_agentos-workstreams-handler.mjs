@@ -214,7 +214,7 @@ function sourceCleanItem(value) {
   };
 }
 
-function sourceCleanSource(value, observedAt, sourceSystem) {
+export function sourceCleanSource(value, observedAt, sourceSystem) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const sourceId = String(value.source_id || '').trim().slice(0, 200);
   const sourceType = String(value.source_type || '').trim().slice(0, 80);
