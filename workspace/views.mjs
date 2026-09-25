@@ -43,7 +43,7 @@ const VIEW_META = {
     eyebrow: "Funding intelligence",
     tools: []
   },
-  runway: { title:"Runway.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#career"},{label:"Funding",href:"#funding"}] },
+  runway: { title:"Income.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#career"},{label:"Funding",href:"#funding"}] },
   content: { title:"Content.", deck:"Capture what is happening, develop what matters, and publish only when it serves you.", eyebrow:"Private content operating system", tools:[] },
   evidence: {
     title: "Evidence.",
@@ -218,7 +218,7 @@ function renderUtility(view){
     build:"<strong>Build is the execution view.</strong> AgentOS state is mirrored here; authority remains in AgentOS and ledgato.",
     career:"<strong>Career is the professional view.</strong> Applications, opportunities and relationships stay together without mixing them into product execution.",
     funding:"<strong>Funding is the runway view.</strong> Browse verified assistance, grants, credits, and leverage without leaving the Workspace shell.",
-    runway:"<strong>Runway is the income view.</strong> Keep immediate cash experiments visible beside jobs, funding, creative work and longer-term product revenue.",
+    runway:"<strong>Income is the opportunity view.</strong> Keep immediate cash experiments visible beside jobs, funding, creative work and longer-term product revenue.",
     content:"<strong>Content is the capture loop.</strong> Keep moments private first, then develop, draft, publish, or archive deliberately.",
     evidence:"<strong>Evidence is the record.</strong> Use it to verify claims, inspect signals, and trace why priorities changed.",
     self:"<strong>Self is your decision context.</strong> Define what matters, test it against evidence, compare real paths, and let the result shape Today without turning reflection into fact."
