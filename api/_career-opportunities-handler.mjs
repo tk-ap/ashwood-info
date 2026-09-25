@@ -1,10 +1,14 @@
 import { getSql, json, requireSession } from './_workspace.mjs';
 import { rankOpportunities, rotateOpportunities } from './_career-opportunities.mjs';
 
-const SOURCE = 'remotive';
-const SOURCE_NAME = 'Remotive';
-const SOURCE_URL = 'https://remotive.com/api/remote-jobs?limit=200';
 const CACHE_HOURS = 6;
+const SOURCES = [
+  { id:'remotejobs', name:'RemoteJobs.io', url:'https://www.remotejobs.io/search?joblocations=Work+from+Anywhere+in+US&searchtype=basic', mode:'browser_required', enabled:true, reason:'Terms prohibit automated scraping/data-mining; ingest only through approved user/browser evidence.' },
+  { id:'80000hours', name:'80,000 Hours', url:'https://jobs.80000hours.org/', mode:'browser_required', enabled:true, reason:'No supported public machine-readable feed verified; ingest through approved browser evidence.' },
+  { id:'mentra', name:'Mentra', url:'https://www.mentra.com/', mode:'account_or_browser_required', enabled:true, reason:'Job matching is account-oriented; no supported public machine-readable feed verified.' },
+  { id:'remotive', name:'Remotive', url:'https://remotive.com/', mode:'fallback', enabled:false, reason:'Retired from default Apply Next sourcing.' }
+];
+const SOURCE = 'career-source-registry';
 
 async function ensureSchema(sql) {
   await sql`
@@ -34,13 +38,11 @@ function cacheFresh(cache) {
 }
 
 async function fetchSource() {
-  const response = await fetch(SOURCE_URL, {
-    headers:{ 'Accept':'application/json', 'User-Agent':'ASHWOOD-Career-Ops/1.0' },
-    signal:AbortSignal.timeout(10000)
-  });
-  if (!response.ok) throw new Error(`${SOURCE_NAME} returned ${response.status}`);
-  const body = await response.json();
-  return Array.isArray(body.jobs) ? body.jobs : [];
+  /* Source policy is intentionally fail-closed. These providers are not scraped from
+     the server without a verified supported feed/API. Browser/agent ingestion writes
+     normalized evidence into the cache; until then Apply Next must not silently fall
+     back to unrelated Remotive inventory. */
+  return [];
 }
 
 async function trackedApplications(sql) {
@@ -96,8 +98,9 @@ export default async function handler(req, res) {
       opportunities,
       count:opportunities.length,
       pool_count:ranked.length,
-      source:SOURCE_NAME,
-      source_url:'https://remotive.com/',
+      source:'Career source registry',
+      source_url:null,
+      sources:SOURCES,
       source_fetched_at:cache?.fetched_at || null,
       source_refreshed:sourceRefreshed,
       cache_hours:CACHE_HOURS,
