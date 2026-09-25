@@ -59,6 +59,33 @@ export function locationPreference(location='') {
   return { points:0, label:null, tier:'other' };
 }
 
+export function workArrangementPreference(job={}) {
+  const location = String(job.candidate_required_location || '');
+  const body = stripHtml(job.description || '');
+  const explicit = [
+    job.work_arrangement,
+    job.workplace_type,
+    job.remote,
+    job.job_type
+  ].filter(value => value !== undefined && value !== null).join(' ');
+  const source = String(job.source_name || job.source || '');
+  const evidence = `${location} ${explicit} ${body}`;
+
+  if (/\bhybrid\b|hybrid[- ]remote|remote.{0,20}(?:days?|week).{0,20}(?:office|onsite|on-site)|(?:office|onsite|on-site).{0,20}(?:days?|week).{0,20}remote/i.test(evidence)) {
+    return { tier:'hybrid', rank:1, points:4, label:'hybrid' };
+  }
+  if (/\bremote\b|work from home|work-from-home|distributed team|fully distributed/i.test(evidence) || /remotive/i.test(source)) {
+    return { tier:'remote', rank:0, points:8, label:'remote' };
+  }
+  if (/on[- ]?site|onsite|in[- ]office|office[- ]based|five days? (?:a|per) week|5 days? (?:a|per) week/i.test(evidence)) {
+    return { tier:'onsite', rank:3, points:0, label:'on-site' };
+  }
+  if (DTLA_EXACT.test(location) || DTLA_WALKABLE.test(location) || LA_METRO.test(location)) {
+    return { tier:'onsite', rank:3, points:0, label:'on-site' };
+  }
+  return { tier:'unknown', rank:2, points:0, label:null };
+}
+
 export function stripHtml(value='') {
   return String(value)
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
@@ -143,36 +170,52 @@ export function scoreOpportunity(job={}, now=Date.now()) {
   if (!title || !gate.pass) return { score:-100, matches:[], gate:gate.reason };
   if (!isUsCompatible(job.candidate_required_location)) return { score:-100, matches:[], gate:'location' };
 
-  let score = 0;
+  let fitScore = 0;
   const matches = [];
   TITLE_RULES.forEach(([pattern, points, label]) => {
-    if (pattern.test(title)) { score += points; matches.push(label); }
+    if (pattern.test(title)) { fitScore += points; matches.push(label); }
   });
   BODY_RULES.forEach(([pattern, points, label]) => {
-    if (pattern.test(body)) { score += points; matches.push(label); }
+    if (pattern.test(body)) { fitScore += points; matches.push(label); }
   });
 
-  const locationPref = locationPreference(job.candidate_required_location);
-  score += locationPref.points;
-  if (locationPref.label) matches.push(locationPref.label);
-
-  if (/senior|lead|manager|principal/i.test(title)) score += 2;
-  if (/director|vice president|\bvp\b|chief/i.test(title)) score -= 2;
+  if (/senior|lead|manager|principal/i.test(title)) fitScore += 2;
+  if (/director|vice president|\bvp\b|chief/i.test(title)) fitScore -= 2;
 
   const published = new Date(job.publication_date || 0).getTime();
   if (Number.isFinite(published) && published > 0) {
     const ageDays = Math.max(0, Math.floor((now - published) / 86400000));
-    if (ageDays <= 3) score += 4;
-    else if (ageDays <= 7) score += 3;
-    else if (ageDays <= 14) score += 1;
-    else if (ageDays > 45) score -= 4;
+    if (ageDays <= 3) fitScore += 4;
+    else if (ageDays <= 7) fitScore += 3;
+    else if (ageDays <= 14) fitScore += 1;
+    else if (ageDays > 45) fitScore -= 4;
   }
+
+  const arrangement = workArrangementPreference(job);
+  if (arrangement.tier === 'onsite' && fitScore < 22) {
+    return {
+      score:-100,
+      fit_score:fitScore,
+      matches:[...new Set(matches)].slice(0,4),
+      gate:'onsite_requires_great_fit',
+      work_arrangement_preference:arrangement.tier,
+      work_arrangement_rank:arrangement.rank
+    };
+  }
+
+  const locationPref = locationPreference(job.candidate_required_location);
+  const score = fitScore + arrangement.points + locationPref.points;
+  if (arrangement.label) matches.push(arrangement.label);
+  if (locationPref.label) matches.push(locationPref.label);
 
   return {
     score,
+    fit_score:fitScore,
     matches:[...new Set(matches)].slice(0,4),
     gate:'qualified',
-    location_preference:locationPref.tier
+    location_preference:locationPref.tier,
+    work_arrangement_preference:arrangement.tier,
+    work_arrangement_rank:arrangement.rank
   };
 }
 
@@ -183,7 +226,7 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
   const seenPairs = new Set();
 
   return jobs.map(job => {
-    const { score, matches, gate, location_preference } = scoreOpportunity(job, now);
+    const { score, fit_score, matches, gate, location_preference, work_arrangement_preference, work_arrangement_rank } = scoreOpportunity(job, now);
     if (score < 8) return null;
     const url = String(job.url || '').trim();
     const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
@@ -206,14 +249,17 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
       source,
       source_url:String(job.source_url || url).trim() || url,
       score,
+      fit_score:fit_score ?? score,
       matches,
       qualification_gate:gate,
       location_preference:location_preference || 'other',
+      work_arrangement_preference:work_arrangement_preference || 'unknown',
+      work_arrangement_rank:Number.isFinite(work_arrangement_rank) ? work_arrangement_rank : 2,
       summary:stripHtml(job.description || '').slice(0, 700),
       resume_recommendation:resumeRecommendation(job, matches)
     };
   }).filter(item => item && item.company && item.role && item.url && item.score >= 8)
-    .sort((a,b) => b.score - a.score || new Date(b.published_at || 0) - new Date(a.published_at || 0))
+    .sort((a,b) => a.work_arrangement_rank - b.work_arrangement_rank || b.score - a.score || new Date(b.published_at || 0) - new Date(a.published_at || 0))
     .slice(0, 60);
 }
 
