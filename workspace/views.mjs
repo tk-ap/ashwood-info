@@ -33,7 +33,9 @@ const VIEW_META = {
     title: "Career.",
     deck: "Applications, opportunities, professional relationships, and the work of creating runway.",
     eyebrow: "Career operations",
-    tools: []
+    tools: [
+      {label:"Funding Intelligence", href:"/workspace/funding/"}
+    ]
   },
   evidence: {
     title: "Evidence.",
