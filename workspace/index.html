@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
   <link rel="stylesheet" href="/workspace/sandbox-environments.css?v=20260922-env1" />
   <link rel="stylesheet" href="/workspace/operator-console.css?v=20260922-operator1" />
-  <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260925-ownership2" />
+  <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20260925-closedloop1" />
   <link rel="stylesheet" href="/workspace/funding/funding.css?v=20260925-native1" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
   <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
@@ -42,7 +42,7 @@
   <script type="module" src="/workspace/views.mjs?v=20260925-sources1"></script>
   <script type="module" src="/workspace/sources.mjs?v=20260925-sources1"></script>
   <script type="module" src="/workspace/visual-completion.mjs?v=20260925-live201"></script>
-  <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260925-decline1"></script>
+  <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260925-closedloop1"></script>
   <script type="module" src="/workspace/funding/funding.mjs?v=20260925-shell1"></script>
   <script type="module" src="/workspace/network.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/elitk-page.mjs?v=20260922-toggle2"></script>
@@ -79,10 +79,10 @@
     </header>
 
     <nav class="workspace-section-nav" aria-label="Workspace views">
+      <a href="#operator" data-workspace-nav="operator">Operator</a>
       <a href="#today" data-workspace-nav="today">Today</a>
       <a href="#build" data-workspace-nav="build">Build</a>
-      <a href="#runway" data-workspace-nav="runway">Income</a>
-      <a href="#content" data-workspace-nav="content">Content</a>
+      <a href="#career" data-workspace-nav="career">Career</a>
       <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
       <a href="#self" data-workspace-nav="self">Self</a>
     </nav>
@@ -296,29 +296,41 @@
         <div>
           <p class="section-kicker">Income &amp; opportunity</p>
           <h2 id="career-work-title">Career Ops</h2>
-          <p>Applications, fresh opportunities, preserved postings, compensation, interview context, and next actions — directly inside Work.</p>
+          <p>A closed loop for finding work: decide what matters now, act, reconcile evidence, learn, and immediately replenish the queue.</p>
         </div>
         <div class="career-workspace-actions">
           <span id="career-state" aria-live="polite">Locked</span>
-          <button class="career-primary" type="button" id="career-refresh">Refresh</button>
+          <button class="career-primary" type="button" id="career-refresh">Sync inbox</button>
         </div>
       </div>
 
       <section class="career-summary" id="career-summary" aria-live="polite"></section>
 
-      <section class="career-sync">
-        <div>
-          <p class="section-kicker">Inbox continuity</p>
-          <h2>Application email monitor</h2>
+      <section class="career-today" aria-labelledby="career-today-title">
+        <div class="career-section-heading">
+          <div><p class="section-kicker">Today</p><h2 id="career-today-title">What should I do next?</h2></div>
+          <p>Only actions that can move an application, resolve evidence, or create the next credible application.</p>
         </div>
-        <div id="career-sync-state" class="career-sync-state"></div>
+        <div id="career-today" class="career-today-list" aria-live="polite"></div>
+      </section>
+
+      <section class="career-opportunities" aria-labelledby="career-opportunities-title">
+        <div class="career-opportunities-head">
+          <div>
+            <p class="section-kicker">Recommended</p>
+            <h2 id="career-opportunities-title">Apply next</h2>
+            <p id="career-opportunity-meta">Loading qualified options…</p>
+          </div>
+          <button class="career-primary" type="button" id="career-opportunity-refresh">Next recommendations</button>
+        </div>
+        <div class="career-opportunity-grid" id="career-opportunity-grid" aria-live="polite"></div>
       </section>
 
       <section class="career-board">
         <div class="career-board-head">
           <div>
-            <p class="section-kicker">Pipeline</p>
-            <h2>Application tracker</h2>
+            <p class="section-kicker">Applications</p>
+            <h2>Canonical pipeline</h2>
             <span id="career-refreshed"></span>
           </div>
           <button class="career-primary" type="button" id="career-add">Add application</button>
@@ -329,16 +341,20 @@
         </div>
       </section>
 
-      <section class="career-opportunities" aria-labelledby="career-opportunities-title">
-        <div class="career-opportunities-head">
-          <div>
-            <p class="section-kicker">Fresh targets</p>
-            <h2 id="career-opportunities-title">What should I apply to next?</h2>
-            <p id="career-opportunity-meta">Loading new options…</p>
-          </div>
-          <button class="career-primary" type="button" id="career-opportunity-refresh">Refresh options</button>
+      <section class="career-sync">
+        <div>
+          <p class="section-kicker">Inbox / signals</p>
+          <h2>Email reconciliation</h2>
         </div>
-        <div class="career-opportunity-grid" id="career-opportunity-grid" aria-live="polite"></div>
+        <div id="career-sync-state" class="career-sync-state"></div>
+      </section>
+
+      <section class="career-history" aria-labelledby="career-history-title">
+        <div class="career-section-heading">
+          <div><p class="section-kicker">History / preferences</p><h2 id="career-history-title">What the system has learned</h2></div>
+          <p>Durable dispositions and recent lifecycle evidence—not a second application database.</p>
+        </div>
+        <div id="career-history-preferences" class="career-history-preferences" aria-live="polite"></div>
       </section>
 
       <dialog id="career-dialog" class="career-dialog">

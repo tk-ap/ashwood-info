@@ -29,7 +29,20 @@ const BODY_RULES = [
   [/automation|workflow/i, 2, 'workflow automation']
 ];
 
-const NEGATIVE_TITLE = /software engineer|software developer|frontend|front[- ]end|backend|back[- ]end|full[- ]stack|data scientist|machine learning engineer|account executive|sales representative|nurse|physician|therapist|designer|copywriter|recruiter/i;
+const NEGATIVE_TITLE = /software engineer|software developer|frontend|front[- ]end|backend|back[- ]end|full[- ]stack|data scientist|machine learning engineer|developer|devops|site reliability|solutions architect|cloud architect|security engineer|data engineer|engineering manager|technical lead|account executive|sales representative|nurse|physician|therapist|designer|copywriter|recruiter/i;
+const TARGET_TITLE = /operational risk|risk (?:control|management|analyst)|business analyst|program manager|program management|project manager|project management|\bpmo\b|compliance|regulatory|business operations|operations (?:manager|program|analyst)|controls?|governance|vendor management|third[- ]party|process improvement|business process|operational excellence|business continuity|resilien(?:ce|cy)|strategy|strategic operations|special projects|financial analyst|finance operations|financial operations|fraud|audit|implementation manager|change management|product operations|product strategy|product program|product manager/i;
+const TECHNICAL_REQUIREMENT = /(?:bachelor'?s|degree|experience).{0,45}(?:computer science|software engineering)|\b(?:python|java|javascript|typescript|c\+\+|kubernetes|terraform|aws|azure|gcp)\b.{0,35}(?:required|must have|years?)/i;
+
+function qualificationGate(job={}) {
+  const title = String(job.title || '');
+  const body = stripHtml(job.description || '');
+  if (!TARGET_TITLE.test(title)) return { pass:false, reason:'title_outside_target_lanes' };
+  if (NEGATIVE_TITLE.test(title)) return { pass:false, reason:'technical_or_unrelated_title' };
+  if (TECHNICAL_REQUIREMENT.test(body) && !/business analyst|business operations|operational risk|compliance|governance|controls?|finance|audit/i.test(title)) {
+    return { pass:false, reason:'technical_requirements' };
+  }
+  return { pass:true, reason:'target_lane' };
+}
 const US_COMPATIBLE = /worldwide|anywhere|united states|\busa\b|u\.s\.|north america|northern america|americas|us time|pst|est|cst|mst/i;
 const CLEARLY_NON_US = /europe|emea|united kingdom|\buk\b|germany|france|spain|italy|poland|portugal|netherlands|sweden|norway|denmark|finland|india|philippines|australia|new zealand|latam|latin america|canada only/i;
 
@@ -53,11 +66,69 @@ export function isUsCompatible(location='') {
   return !CLEARLY_NON_US.test(value);
 }
 
+
+export function resumeRecommendation(job={}, matches=[]) {
+  const title = String(job.title || '');
+  const body = stripHtml(job.description || '');
+  const evidence = `${title} ${body} ${matches.join(' ')}`;
+
+  let variant = 'Business Analysis & Operations';
+  let summary = 'Business analysis and operations professional with experience improving workflows, controls, operating processes, and cross-functional execution in regulated and service environments.';
+  let emphasis = [
+    'Lead with Wells Fargo workflow analysis, recurring control reporting, process optimization, and automation-opportunity work.',
+    'Keep JPMorgan process-change, audit-remediation, operational analysis, and senior-stakeholder execution prominent.',
+    'Use Kasa to show operating ownership, budgeting, vendor coordination, and performance improvement.'
+  ];
+
+  if (/operational risk|risk control|controls?|governance|compliance|audit|resilien/i.test(evidence)) {
+    variant = 'Risk, Controls & Governance';
+    summary = 'Business execution and controls professional with experience in regulated financial services, operational risk, control design, business resiliency, process improvement, and cross-functional execution.';
+    emphasis = [
+      'Lead with Wells Fargo control design, 20+ recurring control reports, workflow/SLA alignment, and business-resiliency coordination.',
+      'Move JPMorgan audit findings, corrective-action ownership, risk/control partnership, and process-change work directly behind it.',
+      'Keep automation and process-improvement evidence visible; compress unrelated service details.'
+    ];
+  } else if (/financial analyst|finance operations|financial operations|financial services|banking|portfolio/i.test(evidence)) {
+    variant = 'Finance & Business Analysis';
+    summary = 'Finance and business-analysis professional with experience across banking, operational analysis, regulated controls, client needs discovery, and process improvement.';
+    emphasis = [
+      'Lead with Wells Fargo analytical control work, workflow performance, and operational improvement.',
+      'Elevate JPMorgan business-process analysis, audit remediation, and change implementation.',
+      'Keep Charles Schwab client discovery, financial-product knowledge, and SIE evidence visible when the role values financial-services fluency.'
+    ];
+  } else if (/program manager|program management|project manager|project management|\bpmo\b|implementation|change management/i.test(evidence)) {
+    variant = 'Program, Project & Change';
+    summary = 'Cross-functional program and business-operations professional with experience coordinating regulated initiatives, process changes, resiliency work, stakeholder alignment, and operational execution.';
+    emphasis = [
+      'Lead with Wells Fargo resiliency plans, cross-functional exercises, control execution, and workflow improvement.',
+      'Elevate JPMorgan multi-level project and product-launch process changes plus senior-leader buy-in.',
+      'Use Kasa vendor and operations coordination as additional execution evidence; reduce purely service-oriented detail.'
+    ];
+  } else if (/product operations|product strategy|product manager|strategy|special projects|ai strategy|consult/i.test(evidence)) {
+    variant = 'Strategy, Product & Operations';
+    summary = 'Strategy and operations professional focused on diagnosing complex workflows, translating business needs into practical improvements, and coordinating cross-functional execution across regulated and operating environments.';
+    emphasis = [
+      'Lead with Wells Fargo automation-opportunity identification, workflow/control analysis, and cross-functional resiliency work.',
+      'Elevate JPMorgan process-change implementation, operational problem solving, and senior-stakeholder communication.',
+      'For product or AI-strategy roles, add a compact current-projects line only when it is directly relevant; do not present product building as software-engineering experience.'
+    ];
+  }
+
+  return {
+    variant,
+    summary,
+    emphasis,
+    keywords:[...new Set(matches.map(String).filter(Boolean))].slice(0,4),
+    guardrail:'Keep employers, dates, titles, and factual accomplishments unchanged. Tailor emphasis and wording; do not invent experience.'
+  };
+}
+
 export function scoreOpportunity(job={}, now=Date.now()) {
   const title = String(job.title || '');
   const body = stripHtml(job.description || '');
-  if (!title || NEGATIVE_TITLE.test(title)) return { score:-100, matches:[] };
-  if (!isUsCompatible(job.candidate_required_location)) return { score:-100, matches:[] };
+  const gate = qualificationGate(job);
+  if (!title || !gate.pass) return { score:-100, matches:[], gate:gate.reason };
+  if (!isUsCompatible(job.candidate_required_location)) return { score:-100, matches:[], gate:'location' };
 
   let score = 0;
   const matches = [];
@@ -80,7 +151,7 @@ export function scoreOpportunity(job={}, now=Date.now()) {
     else if (ageDays > 45) score -= 4;
   }
 
-  return { score, matches:[...new Set(matches)].slice(0,4) };
+  return { score, matches:[...new Set(matches)].slice(0,4), gate:'qualified' };
 }
 
 export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
@@ -89,7 +160,7 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
   const seen = new Set();
 
   return jobs.map(job => {
-    const { score, matches } = scoreOpportunity(job, now);
+    const { score, matches, gate } = scoreOpportunity(job, now);
     const url = String(job.url || '').trim();
     const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
     const id = String(job.id || url || pair);
@@ -108,7 +179,9 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
       source_url:url,
       score,
       matches,
-      summary:stripHtml(job.description || '').slice(0, 700)
+      qualification_gate:gate,
+      summary:stripHtml(job.description || '').slice(0, 700),
+      resume_recommendation:resumeRecommendation(job, matches)
     };
   }).filter(item => item && item.company && item.role && item.url && item.score >= 8)
     .sort((a,b) => b.score - a.score || new Date(b.published_at || 0) - new Date(a.published_at || 0))

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isUsCompatible, rankOpportunities, rotateOpportunities, scoreOpportunity, stripHtml } from '../api/_career-opportunities.mjs';
+import { isUsCompatible, rankOpportunities, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml } from '../api/_career-opportunities.mjs';
 
 test('stripHtml creates a compact readable summary', () => {
   assert.equal(stripHtml('<p>Risk &amp; controls</p><ul><li>PMO</li></ul>'), 'Risk & controls PMO');
@@ -46,4 +46,64 @@ test('rotation returns a new page of up to eight opportunities', () => {
   assert.equal(first.length, 8);
   assert.equal(second.length, 8);
   assert.notDeepEqual(first.map(x => x.id), second.map(x => x.id));
+});
+
+
+test('body keywords cannot promote a title outside the target lanes', () => {
+  const unrelated = scoreOpportunity({
+    title:'Executive Assistant',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'Own governance, controls, business analysis, PMO, finance and process improvement.'
+  });
+  assert.equal(unrelated.score, -100);
+  assert.equal(unrelated.gate, 'title_outside_target_lanes');
+});
+
+test('transferable product roles pass unless technical requirements dominate', () => {
+  const businessProduct = scoreOpportunity({
+    title:'Product Operations Manager',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'Own cross-functional workflows, business process improvement, stakeholder management and operational planning.'
+  });
+  const technicalProduct = scoreOpportunity({
+    title:'Product Manager',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'5 years Python required. Degree in computer science required. Own developer platform APIs.'
+  });
+  assert.ok(businessProduct.score >= 8);
+  assert.equal(technicalProduct.score, -100);
+});
+
+
+test('resume recommendation selects a lane without rewriting factual history', () => {
+  const risk = resumeRecommendation({
+    title:'Operational Risk Manager',
+    description:'Own governance, controls, audit and resiliency.'
+  }, ['operational risk', 'governance / controls']);
+  assert.equal(risk.variant, 'Risk, Controls & Governance');
+  assert.match(risk.summary, /regulated financial services/i);
+  assert.match(risk.guardrail, /do not invent experience/i);
+
+  const strategy = resumeRecommendation({
+    title:'AI Strategy Consultant',
+    description:'Lead strategy, stakeholder discovery and operating transformation.'
+  }, ['strategy', 'stakeholder management']);
+  assert.equal(strategy.variant, 'Strategy, Product & Operations');
+});
+
+test('ranked opportunities carry a suggested resume version', () => {
+  const ranked = rankOpportunities([{
+    id:9,
+    url:'https://example.com/risk',
+    title:'Senior Operational Risk Manager',
+    company_name:'Risk Co',
+    candidate_required_location:'USA',
+    publication_date:new Date().toISOString(),
+    description:'Own controls, governance, audit, resiliency and cross-functional process improvement.'
+  }], []);
+  assert.equal(ranked.length, 1);
+  assert.equal(ranked[0].resume_recommendation.variant, 'Risk, Controls & Governance');
 });

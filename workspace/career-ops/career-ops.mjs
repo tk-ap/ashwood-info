@@ -22,6 +22,8 @@ const state = {
   opportunityMeta: null,
   inboxSync: null,
   inboxReviews: [],
+  opportunityDispositions: [],
+  resumeProfile: { configured:false, source:null, updated_at:null },
   newJobsSinceSession: 0,
   declinedOpportunityIds: new Set(JSON.parse(localStorage.getItem('ashwood.career.declined-opportunities.v1') || '[]'))
 };
@@ -73,6 +75,29 @@ async function opportunityApi({ cursor=0, refresh=false }={}) {
   return body;
 }
 
+function opportunitySourceKey(opportunity={}) {
+  return String(opportunity.source || 'unknown').trim().toLowerCase().replace(/\s+/g,'-');
+}
+
+async function persistOpportunityDecline(opportunity, reason=null) {
+  const source = opportunitySourceKey(opportunity);
+  const id = String(opportunity.id || '');
+  if (!id) throw new Error('Opportunity ID is required');
+  await api({
+    method:'POST',
+    body:JSON.stringify({
+      action:'decline_opportunity',
+      source,
+      opportunity_id:id,
+      company:opportunity.company,
+      role:opportunity.role,
+      url:opportunity.url,
+      reason
+    })
+  });
+  return { source, id };
+}
+
 function statusClass(status) {
   return normaliseStatus(status).toLowerCase();
 }
@@ -95,7 +120,13 @@ function snapshotList(snapshot, key) {
 
 function materialChips(materials={}) {
   const items = [];
-  if (materials.resume) items.push(`Résumé: ${materials.resume}`);
+  if (materials.resume && typeof materials.resume === 'object') {
+    items.push(`Résumé: ${materials.resume.filename || materials.resume.variant || 'tailored artifact'}`);
+  } else if (materials.resume) {
+    items.push(`Résumé: ${materials.resume}`);
+  } else if (materials.resume_variant) {
+    items.push(`Résumé lane: ${materials.resume_variant}`);
+  }
   if (materials.projects) items.push(`Projects: ${Array.isArray(materials.projects) ? materials.projects.join(', ') : materials.projects}`);
   if (materials.work_sample) items.push(`Work sample: ${materials.work_sample}`);
   if (materials.self_intro) items.push('Self-introduction submitted');
@@ -117,6 +148,65 @@ function renderHeader() {
   $('#career-summary').innerHTML = markup;
   const hero = $('#workspace-view-data-hero');
   if (hero) hero.innerHTML = '<p class="section-kicker">Work · live career state · relationships below</p><div class="workspace-data-hero-grid">' + markup + '</div>';
+}
+
+function renderToday() {
+  const root = $('#career-today');
+  if (!root) return;
+  const actions = sortApplications(state.applications)
+    .filter(app => needsAttention(app))
+    .map(app => ({
+      kind:normaliseStatus(app.status),
+      title:`${app.company} — ${app.role}`,
+      detail:app.next_action || 'Review this application and set the next action.',
+      due:app.next_action_at ? fmtDateTime(app.next_action_at) : null,
+      appId:app.id
+    }));
+
+  const reviewOpen = Number(state.inboxSync?.reviewOpen || state.inboxReviews.length || 0);
+  if (reviewOpen) actions.unshift({
+    kind:'INBOX',
+    title:`${reviewOpen} application email${reviewOpen === 1 ? '' : 's'} need review`,
+    detail:'Resolve unmatched or ambiguous email evidence before relying on the pipeline.',
+    due:null
+  });
+  if (actions.length < 5 && state.opportunities.length) actions.push({
+    kind:'APPLY NEXT',
+    title:'Review the next recommended role',
+    detail:`${state.opportunities[0].company} — ${state.opportunities[0].role}`,
+    due:null
+  });
+
+  root.innerHTML = actions.length ? actions.slice(0,7).map(item => `
+    <button class="career-today-row" type="button" ${item.appId ? `data-today-app="${escapeHtml(item.appId)}"` : ''}>
+      <span>${escapeHtml(item.kind)}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <small>${escapeHtml(item.detail)}${item.due ? ` · ${escapeHtml(item.due)}` : ''}</small>
+    </button>`).join('') :
+    '<div class="career-empty"><strong>No urgent application action is currently due.</strong><p>Use Recommended to keep the pipeline moving rather than treating an empty task list as completion.</p></div>';
+
+  root.querySelectorAll('[data-today-app]').forEach(button => button.addEventListener('click', () => {
+    state.selectedId = button.dataset.todayApp;
+    renderApplications();
+    renderDetail();
+    $('#career-applications')?.scrollIntoView({ behavior:'smooth', block:'start' });
+  }));
+}
+
+function renderHistoryPreferences() {
+  const root = $('#career-history-preferences');
+  if (!root) return;
+  const dispositions = state.opportunityDispositions.filter(item => item.disposition === 'DECLINED');
+  const recentEvents = state.events.slice(0,5);
+  root.innerHTML = `
+    <div class="career-preference-card">
+      <span>Recommendation learning</span>
+      <strong>${dispositions.length} declined recommendation${dispositions.length === 1 ? '' : 's'} persisted</strong>
+      <p>Declines are durable preference evidence. Engineering and technical roles are excluded unless the title belongs to a demonstrated target lane.</p>
+    </div>
+    <div class="career-history-list">
+      ${recentEvents.length ? recentEvents.map(event => `<article><time>${escapeHtml(fmtDateTime(event.occurred_at))}</time><strong>${escapeHtml(event.summary)}</strong><span>${escapeHtml(event.source || 'manual')} · ${escapeHtml(event.event_type || 'NOTE')}</span></article>`).join('') : '<p class="career-muted">No career history recorded yet.</p>'}
+    </div>`;
 }
 
 function renderApplications() {
@@ -232,13 +322,83 @@ function renderSyncState() {
   }
 }
 
+
+function resumeArtifactMarkup(opportunity={}) {
+  const recommendation = opportunity.resume_recommendation || {};
+  if (!recommendation.variant) return '';
+  const profileReady = Boolean(state.resumeProfile?.configured);
+  return `
+    <div class="career-resume-artifact">
+      <div>
+        <span>ATS resume file</span>
+        <strong>${escapeHtml(recommendation.variant)}</strong>
+        <small>${profileReady ? 'Generated from the private baseline resume. Employers, titles, dates, and factual accomplishments stay locked.' : 'Private baseline resume needs to be configured once before file generation.'}</small>
+      </div>
+      <button type="button" data-generate-resume="${escapeHtml(opportunity.id)}" ${profileReady ? '' : 'disabled'}>
+        ${profileReady ? 'Generate .docx' : 'Resume source missing'}
+      </button>
+      <details>
+        <summary>See tailoring logic</summary>
+        ${recommendation.summary ? `<p><b>Summary:</b> ${escapeHtml(recommendation.summary)}</p>` : ''}
+        ${Array.isArray(recommendation.emphasis) && recommendation.emphasis.length ? `<ul>${recommendation.emphasis.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+        ${recommendation.guardrail ? `<small>${escapeHtml(recommendation.guardrail)}</small>` : ''}
+      </details>
+    </div>`;
+}
+
+function filenameFromDisposition(value='') {
+  const match=String(value).match(/filename="([^"]+)"/i);
+  return match?.[1] || 'TK_Tailored_Resume.docx';
+}
+
+async function generateResumeArtifact(opportunity, button) {
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Generating…';
+  try {
+    const response = await fetch('/api/workspace-career-resume', {
+      method:'POST',
+      credentials:'same-origin',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({
+        source:String(opportunity.source || 'remotive').toLowerCase(),
+        opportunity_id:String(opportunity.id || '')
+      })
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body.error || `Resume generation failed (${response.status})`);
+    }
+    const blob = await response.blob();
+    const filename = filenameFromDisposition(response.headers.get('Content-Disposition'));
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(href);
+    button.textContent = 'Downloaded';
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = 'Try again';
+    button.title = error.message;
+    return;
+  }
+  window.setTimeout(() => {
+    button.disabled = false;
+    button.textContent = original;
+  }, 1400);
+}
+
 function renderOpportunities() {
   const root = $('#career-opportunity-grid');
   const meta = $('#career-opportunity-meta');
   const data = state.opportunityMeta || {};
 
   if (!state.opportunities.length) {
-    root.innerHTML = `<div class="career-opportunity-empty"><strong>No strong new matches in the current feed.</strong><span>Refresh again later; Career Ops only surfaces roles that overlap the current business execution, risk, controls, compliance, PMO, operations, process, and finance lanes.</span></div>`;
+    root.innerHTML = `<div class="career-opportunity-empty"><strong>No qualified recommendation is available in this source window.</strong><span>The tracker will not substitute unrelated engineering roles just to keep the grid full. Use Next recommendations to move through the eligible pool.</span></div>`;
   } else {
     const visibleOpportunities = state.opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
     root.innerHTML = visibleOpportunities.map(opportunity => `
@@ -252,6 +412,7 @@ function renderOpportunities() {
         ${opportunity.salary ? `<p class="career-opportunity-salary">${escapeHtml(opportunity.salary)}</p>` : ''}
         ${opportunity.matches?.length ? `<div class="career-opportunity-tags">${opportunity.matches.map(match => `<span>${escapeHtml(match)}</span>`).join('')}</div>` : ''}
         <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
+        ${resumeArtifactMarkup(opportunity)}
         <div class="career-opportunity-actions">
           <a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Open role ↗</a>
           <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
@@ -260,14 +421,32 @@ function renderOpportunities() {
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
       </article>`).join('');
 
+    root.querySelectorAll('[data-generate-resume]').forEach(button => button.addEventListener('click', async () => {
+      const opportunity = state.opportunities.find(item => String(item.id) === String(button.dataset.generateResume || ''));
+      if (!opportunity) return;
+      await generateResumeArtifact(opportunity, button);
+    }));
+
     root.querySelectorAll('[data-decline-opportunity]').forEach(button => button.addEventListener('click', async () => {
       const id = String(button.dataset.declineOpportunity || '');
-      if (!id) return;
-      state.declinedOpportunityIds.add(id);
-      localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
-      state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
-      renderOpportunities(state.opportunityMeta || { opportunities:state.opportunities });
-      if (state.opportunities.length < 2) await loadOpportunities({ refresh:true });
+      const opportunity = state.opportunities.find(item => String(item.id) === id);
+      if (!id || !opportunity) return;
+      button.disabled = true;
+      button.textContent = 'Declining…';
+      try {
+        const { source } = await persistOpportunityDecline(opportunity);
+        state.declinedOpportunityIds.add(id);
+        localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
+        state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', updated_at:new Date().toISOString() });
+        state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
+        renderOpportunities();
+        renderHistoryPreferences();
+        await loadOpportunities();
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = 'Decline';
+        $('#career-opportunity-meta').textContent = `Decline was not saved: ${error.message}`;
+      }
     }));
 
     root.querySelectorAll('[data-track-opportunity]').forEach(button => button.addEventListener('click', async () => {
@@ -289,18 +468,54 @@ async function loadOpportunities({ refresh=false }={}) {
   button.textContent = refresh ? 'Finding more…' : 'Loading…';
   try {
     if (refresh) state.opportunityCursor += 1;
-    const data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
-    state.opportunities = data.opportunities || [];
+    let data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
+    let opportunities = data.opportunities || [];
+
+    const legacyDeclines = opportunities.filter(opportunity =>
+      state.declinedOpportunityIds.has(String(opportunity.id)) &&
+      !state.opportunityDispositions.some(item =>
+        item.disposition === 'DECLINED' &&
+        item.source === opportunitySourceKey(opportunity) &&
+        String(item.opportunity_id) === String(opportunity.id)
+      )
+    );
+    let migratedLegacyDecline = false;
+    for (const opportunity of legacyDeclines) {
+      try {
+        const { source, id } = await persistOpportunityDecline(opportunity, 'migrated_from_legacy_local_storage');
+        state.opportunityDispositions.unshift({
+          source,
+          opportunity_id:id,
+          company:opportunity.company,
+          role:opportunity.role,
+          url:opportunity.url,
+          disposition:'DECLINED',
+          reason:'migrated_from_legacy_local_storage',
+          updated_at:new Date().toISOString()
+        });
+        migratedLegacyDecline = true;
+      } catch {
+        // Keep the legacy browser disposition as a fail-safe; do not resurrect a role the owner already declined.
+      }
+    }
+    if (migratedLegacyDecline) {
+      data = await opportunityApi({ cursor:state.opportunityCursor, refresh:false });
+      opportunities = data.opportunities || [];
+    }
+
+    state.opportunities = opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
     state.opportunityMeta = data;
     if (refresh) state.newJobsSinceSession += state.opportunities.length;
     renderHeader();
     renderOpportunities();
+    renderToday();
+    renderHistoryPreferences();
   } catch (error) {
     $('#career-opportunity-grid').innerHTML = `<div class="career-opportunity-empty"><strong>New options could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
     $('#career-opportunity-meta').textContent = 'Opportunity feed unavailable';
   } finally {
     button.disabled = false;
-    button.textContent = 'Refresh options';
+    button.textContent = 'Next recommendations';
   }
 }
 
@@ -323,7 +538,7 @@ async function trackOpportunity(opportunity, button) {
         status:'TARGET',
         next_action:'Review the full employer posting and decide whether to apply.',
         posting_snapshot:{ summary:opportunity.summary || '', responsibilities:[], requirements:[], preferred:[] },
-        materials:{},
+        materials:{ resume_variant:opportunity.resume_recommendation?.variant || '' },
         source:'remotive',
         notes:`Discovered through ASHWOOD Career Ops. Source: Remotive. Published ${opportunity.published_at || 'date unavailable'}.`
       })
@@ -341,9 +556,11 @@ async function trackOpportunity(opportunity, button) {
 
 function render() {
   renderHeader();
+  renderToday();
   renderApplications();
   renderDetail();
   renderSyncState();
+  renderHistoryPreferences();
   $('#career-refreshed').textContent = `Refreshed ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
 }
 
@@ -355,6 +572,8 @@ async function load() {
     const data = await api();
     state.applications = data.applications || [];
     state.events = data.events || [];
+    state.opportunityDispositions = data.opportunity_dispositions || [];
+    state.resumeProfile = data.resume_profile || { configured:false, source:null, updated_at:null };
     if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
     $('#career-state').textContent = 'Private workspace';
     render();
@@ -404,7 +623,8 @@ function openApplicationDialog(application=null) {
   $('#career-requirements').value = (application?.posting_snapshot?.requirements || []).join('\n');
   $('#career-preferred').value = (application?.posting_snapshot?.preferred || []).join('\n');
   $('#career-interview-notes').value = application?.posting_snapshot?.interview_notes || '';
-  $('#career-resume').value = application?.materials?.resume || '';
+  const resumeMaterial = application?.materials?.resume;
+  $('#career-resume').value = typeof resumeMaterial === 'string' ? resumeMaterial : (resumeMaterial?.filename || '');
   $('#career-projects').value = Array.isArray(application?.materials?.projects) ? application.materials.projects.join(', ') : application?.materials?.projects || '';
   $('#career-work-sample').value = application?.materials?.work_sample || '';
   $('#career-notes').value = application?.notes || '';

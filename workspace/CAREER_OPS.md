@@ -45,6 +45,38 @@ Discovery rules:
 
 The discovery feed is a sourcing aid, not a claim that every surfaced job is a fit. Final eligibility and application decisions remain owner-controlled.
 
+## Resume artifacts
+
+Recommended roles should produce an actual **ATS-friendly resume artifact**, not merely tell the owner how to edit a baseline manually.
+
+The operating model is:
+
+`qualified posting → select evidence lane → tailor only supported content → generate .docx → owner/agent uploads file → record the exact file used`
+
+Career Ops keeps one canonical resume profile in the private workspace database (or, as a controlled fallback, `CAREER_RESUME_PROFILE_JSON`). The public repository contains the renderer and rules only; it must never contain the owner's private resume profile, phone number, email address, or live resume artifact.
+
+For each recommendation, Career Ops selects the closest evidence lane:
+
+- Business Analysis & Operations
+- Risk, Controls & Governance
+- Finance & Business Analysis
+- Program, Project & Change
+- Strategy, Product & Operations
+
+Generation rules:
+
+1. create a standard `.docx` with plain headings, text, and bullets so ATS parsers can read it reliably;
+2. replace the professional summary with the role-aligned summary;
+3. reorder and selectively trim existing bullets by relevance to the selected lane;
+4. surface only posting language already supported by the canonical evidence;
+5. never invent qualifications, employers, dates, titles, certifications, metrics, or accomplishments;
+6. keep the canonical source unchanged so every generated file can be traced back to the same factual baseline;
+7. record generation metadata privately, and when an application is already tracked, attach the generated filename/variant to its `materials.resume` record.
+
+The recommendation card's primary action is **Generate .docx**. This is intentionally compatible with human and agent application flows: download the generated file, then upload/drag-drop it into the employer's resume field. The tailoring preview remains secondary and explanatory.
+
+A private resume profile can be set through the authenticated Career API action `set_resume_profile`. This is a one-time/bootstrap operation that an authorized agent may perform from a trusted resume source. It must correct known stale facts before saving—for example, Wells Fargo employment ends in **March 2026**, not “Present.”
+
 ## Inbox continuity
 
 The data model supports Gmail-originated events through `workspace_career_events`:
@@ -106,3 +138,24 @@ The sync response and UI report application-level outcomes: one line per applica
 ### Reconciliation and review
 
 The Gmail sync reconciles an email only when employer and role (or requisition) identify one canonical application. It does not attach a message to the highest-scoring candidate when there is a tie or insufficient evidence. Those messages are retained in the private Career Ops review state with their Gmail message ID and candidate IDs, so an owner can resolve them without losing the evidence. Review rows are never deleted: a later sync marks a row `resolution = reconciled:<application>` or `ignored:<reason>`, and only unresolved rows count as requiring review. A `DECLINED` application remains an owner decision and is never changed into an employer `REJECTED` outcome by the matcher.
+
+
+## Closed-loop operating model
+
+Career Ops is organized around five durable surfaces:
+
+1. **Today** — the small set of application, inbox, or recommendation actions that can move the job search now.
+2. **Recommended** — a continuously replenished queue of qualified roles.
+3. **Applications** — the canonical lifecycle record and preserved posting/material history.
+4. **Inbox / Signals** — Gmail-derived evidence that reconciles into the canonical application rather than becoming a parallel tracker.
+5. **History / Preferences** — durable disposition and lifecycle evidence used to improve subsequent recommendations.
+
+The operational loop is:
+
+`discover → qualify → recommend → act → observe inbox → reconcile → learn → replenish`
+
+A recommendation decline is persisted server-side in `workspace_career_opportunity_dispositions`. Declined opportunity IDs are removed **before** ranking pages are returned, so handling the visible cards cannot create a false empty state while other qualified candidates remain. Client-side decline storage remains only as backward-compatible session evidence.
+
+Recommendation qualification is title-first. Posting-body keyword accumulation cannot promote an unrelated occupation into Apply Next. Engineering and technical occupations are rejected at the gate; finance, business analysis, business/strategy operations, program/project management, governance/risk/control, and transferable non-technical product roles remain eligible.
+
+Source expansion must not regress queue continuity. A preferred source may replace or supplement the current feed only when its ingestion path is proven. Do not disable the only working candidate source merely because a preferred provider requires browser/account ingestion; surface the source provenance honestly and keep the qualifying/replenishment contract intact.
