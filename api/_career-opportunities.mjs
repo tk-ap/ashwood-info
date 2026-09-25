@@ -46,14 +46,12 @@ function qualificationGate(job={}) {
 const US_COMPATIBLE = /worldwide|anywhere|united states|\busa\b|u\.s\.|north america|northern america|americas|us time|pst|est|cst|mst/i;
 const CLEARLY_NON_US = /europe|emea|united kingdom|\buk\b|germany|france|spain|italy|poland|portugal|netherlands|sweden|norway|denmark|finland|india|philippines|australia|new zealand|latam|latin america|canada only/i;
 
-const DTLA_EXACT = /(?:los angeles[^\n,;]{0,30})?financial district|financial district[^\n,;]{0,30}los angeles|\b90071\b/i;
-const DTLA_WALKABLE = /downtown los angeles|\bdtla\b|bunker hill|historic core|south park(?:,? los angeles)?|\b90014\b|\b90015\b|\b90017\b/i;
+const DTLA_WALKABLE = /financial district|jewelry district|fashion district|historic core|south park(?:,? los angeles)?|bunker hill|broadway(?: district)?|civic center|downtown los angeles|\bdtla\b|\b90014\b|\b90015\b|\b90017\b|\b90071\b/i;
 const LA_METRO = /los angeles|\b900\d{2}\b/i;
 
 export function locationPreference(location='') {
   const value = String(location || '').trim();
   if (!value) return { points:0, label:null, tier:'unknown' };
-  if (DTLA_EXACT.test(value)) return { points:8, label:'LA Financial District', tier:'financial-district' };
   if (DTLA_WALKABLE.test(value)) return { points:6, label:'walkable DTLA', tier:'walkable-dtla' };
   if (LA_METRO.test(value)) return { points:3, label:'Los Angeles', tier:'los-angeles' };
   return { points:0, label:null, tier:'other' };
@@ -80,7 +78,7 @@ export function workArrangementPreference(job={}) {
   if (/on[- ]?site|onsite|in[- ]office|office[- ]based|five days? (?:a|per) week|5 days? (?:a|per) week/i.test(evidence)) {
     return { tier:'onsite', rank:3, points:0, label:'on-site' };
   }
-  if (DTLA_EXACT.test(location) || DTLA_WALKABLE.test(location) || LA_METRO.test(location)) {
+  if (DTLA_WALKABLE.test(location) || LA_METRO.test(location)) {
     return { tier:'onsite', rank:3, points:0, label:'on-site' };
   }
   return { tier:'unknown', rank:2, points:0, label:null };
