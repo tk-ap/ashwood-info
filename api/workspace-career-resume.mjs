@@ -105,7 +105,7 @@ export default async function handler(req, res) {
         filename, format, generated_at, metadata
       ) VALUES (
         ${artifactId}, ${target.applicationId}, ${target.source || null}, ${target.opportunityId || null},
-        ${target.company}, ${target.role}, ${artifact.recommendation?.variant || target.recommendation.variant},
+        ${target.company}, ${target.role}, ${target.recommendation.variant},
         ${artifact.filename}, 'docx', ${generatedAt},
         ${JSON.stringify({
           profile_source:profileRow.source,
@@ -118,13 +118,11 @@ export default async function handler(req, res) {
     if (target.applicationId) {
       const nextMaterials = {
         ...(target.materials || {}),
-        resume:{
-          filename:artifact.filename,
-          variant:target.recommendation.variant,
-          format:'docx',
-          generated_at:generatedAt,
-          artifact_id:artifactId
-        }
+        resume:artifact.filename,
+        resume_variant:target.recommendation.variant,
+        resume_format:'docx',
+        resume_generated_at:generatedAt,
+        resume_artifact_id:artifactId
       };
       await sql`
         UPDATE workspace_career_applications
