@@ -15,7 +15,7 @@
     }
   },
   "github": { "autoJobCancelation": true },
-  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"main\" ]; then exit 1; else exit 0; fi",
+  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"main\" ] || [ \"$VERCEL_GIT_COMMIT_REF\" = \"feat/workspace-visual-system\" ]; then exit 1; else exit 0; fi",
   "rewrites": [
     { "source": "/api/workspace-career-ops", "destination": "/api/workspace-career" },
     { "source": "/api/workspace-career-opportunities", "destination": "/api/workspace-career?view=opportunities" },
