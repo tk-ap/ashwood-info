@@ -162,6 +162,7 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
 
   return jobs.map(job => {
     const { score, matches, gate } = scoreOpportunity(job, now);
+    if (score < 8) return null;
     const url = String(job.url || '').trim();
     const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
     const source = String(job.source_name || job.source || 'Remotive').trim() || 'Remotive';
