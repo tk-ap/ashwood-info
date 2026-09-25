@@ -283,3 +283,14 @@ html[data-ashwood-theme="paper-light"] .workspace-page{
 .workspace-page .ecosystem-feed__source strong,.workspace-page .ecosystem-feed__elitk-button span:first-child{color:var(--vc-ink,#f5f7f7)}
 .workspace-page .ecosystem-feed__topline,.workspace-page .ecosystem-feed__meta,.workspace-page .ecosystem-feed__actions span,.workspace-page .ecosystem-feed__notes{color:var(--vc-muted,rgba(255,255,255,.62))}
 .workspace-page .ecosystem-feed__explanation{background:rgba(118,169,255,.07);border-left-color:var(--vc-blue,#76a9ff)}
+
+
+/* Workspace view isolation: views are mutually exclusive regardless of legacy section CSS.
+   JS assigns every top-level content surface a view before activating exactly one. */
+.workspace-page[data-workspace-view-ready="true"] .workspace-view-section[data-workspace-active="false"]{
+  display:none!important;
+}
+.workspace-page[data-workspace-view-ready="true"] .workspace-view-section[data-workspace-active="true"]{
+  visibility:visible;
+}
+.workspace-page[data-workspace-current-view="funding"]{--vc-accent:var(--vc-mint)}
