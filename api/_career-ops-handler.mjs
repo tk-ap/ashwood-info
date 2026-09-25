@@ -78,6 +78,21 @@ export async function ensureCareerSchema(sql) {
   await sql`CREATE INDEX IF NOT EXISTS workspace_career_applications_status_idx ON workspace_career_applications(status, updated_at DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS workspace_career_events_application_idx ON workspace_career_events(application_id, occurred_at DESC)`;
   await sql`CREATE UNIQUE INDEX IF NOT EXISTS workspace_career_events_source_ref_idx ON workspace_career_events(source, source_ref) WHERE source_ref IS NOT NULL`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS workspace_career_opportunity_dispositions (
+      source TEXT NOT NULL,
+      opportunity_id TEXT NOT NULL,
+      company TEXT,
+      role TEXT,
+      url TEXT,
+      disposition TEXT NOT NULL DEFAULT 'DECLINED',
+      reason TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (source, opportunity_id)
+    )
+  `;
+  await sql`CREATE INDEX IF NOT EXISTS workspace_career_opportunity_disposition_idx ON workspace_career_opportunity_dispositions(disposition, updated_at DESC)`;
 }
 
 async function addEvent(sql, {
@@ -143,7 +158,13 @@ export default async function handler(req, res) {
         ORDER BY occurred_at DESC
         LIMIT 1000
       `;
-      return json(res, 200, { ok: true, applications, events });
+      const opportunity_dispositions = await sql`
+        SELECT source, opportunity_id, company, role, url, disposition, reason, created_at, updated_at
+        FROM workspace_career_opportunity_dispositions
+        ORDER BY updated_at DESC
+        LIMIT 200
+      `;
+      return json(res, 200, { ok: true, applications, events, opportunity_dispositions });
     }
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
@@ -151,6 +172,28 @@ export default async function handler(req, res) {
 
     const body = parseBody(req);
     const action = String(body.action || '').trim();
+
+    if (action === 'decline_opportunity') {
+      const source = trim(body.source, 80);
+      const opportunityId = trim(body.opportunity_id, 300);
+      if (!source || !opportunityId) return json(res, 400, { ok:false, error:'Opportunity source and ID are required' });
+      await sql`
+        INSERT INTO workspace_career_opportunity_dispositions (
+          source, opportunity_id, company, role, url, disposition, reason, updated_at
+        ) VALUES (
+          ${source}, ${opportunityId}, ${trim(body.company,220)}, ${trim(body.role,300)},
+          ${trim(body.url,1000)}, 'DECLINED', ${trim(body.reason,500)}, NOW()
+        )
+        ON CONFLICT (source, opportunity_id) DO UPDATE SET
+          company = COALESCE(EXCLUDED.company, workspace_career_opportunity_dispositions.company),
+          role = COALESCE(EXCLUDED.role, workspace_career_opportunity_dispositions.role),
+          url = COALESCE(EXCLUDED.url, workspace_career_opportunity_dispositions.url),
+          disposition = 'DECLINED',
+          reason = COALESCE(EXCLUDED.reason, workspace_career_opportunity_dispositions.reason),
+          updated_at = NOW()
+      `;
+      return json(res, 200, { ok:true, source, opportunity_id:opportunityId, disposition:'DECLINED' });
+    }
 
     if (action === 'upsert_application') {
       const company = trim(body.company, 220);
