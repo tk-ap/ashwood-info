@@ -1,4 +1,4 @@
-import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sameOrigin } from './_workspace.mjs';
 
 const cleanKey = (value, max = 250) => String(value || '').trim().slice(0, max);
 const cleanList = (value) => Array.isArray(value)
@@ -29,10 +29,11 @@ async function ensureTable(sql) {
 
 export default async function handler(req, res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     const session = await requireSession(req);
     if (!session) return json(res, 401, { ok:false, error:'Unauthorized' });
     const sql = getSql();
-    await ensureTable(sql);
+    if (!isPreviewReadOnly()) await ensureTable(sql);
 
     if (req.method === 'GET') {
       const productKey = cleanKey(req.query?.product, 120);

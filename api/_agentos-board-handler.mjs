@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { getSql, json, parseBody, requireSession, sha256 } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sha256 } from './_workspace.mjs';
 
 // Read-only mirror of AgentOS/Hermes work state for the private ASHWOOD Workspace.
 // AgentOS remains canonical. ASHWOOD never moves, approves, unblocks, or completes
@@ -105,8 +105,9 @@ function cleanRow(row, fallbackObservedAt, snapshotId) {
 
 export default async function handler(req, res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     const sql = getSql();
-    await ensureTable(sql);
+    if (!isPreviewReadOnly()) await ensureTable(sql);
 
     if (req.method === 'GET') {
       const session = await requireSession(req);

@@ -1,10 +1,26 @@
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 
-export function getSql() {
+export function isPreviewReadOnly() {
+  return process.env.WORKSPACE_PREVIEW_READONLY === '1';
+}
+
+export function rejectPreviewMutation(req, res) {
+  if (!isPreviewReadOnly() || ['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return false;
+  json(res, 403, { ok: false, error: 'This Workspace preview is read-only. Use production for changes.' });
+  return true;
+}
+
+export function getSql({ allowPreviewWrites = false } = {}) {
   const connectionString = process.env.ASHWOOD_DATABASE_URL || process.env.DATABASE_URL;
   if (!connectionString) throw new Error('ASHWOOD_DATABASE_URL is not configured');
-  return neon(connectionString);
+  const sql = neon(connectionString);
+  if (!isPreviewReadOnly() || allowPreviewWrites) return sql;
+  return async (strings, ...values) => {
+    const statement = (typeof strings === 'string' ? strings : strings.join(' ? ')).replace(/^\s*(?:\/\*[\s\S]*?\*\/\s*)*/u, '').toUpperCase();
+    if (!/^(SELECT|WITH)\b/u.test(statement) || /\b(INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|GRANT|REVOKE|TRUNCATE)\b/u.test(statement)) throw new Error('Workspace preview database access is read-only');
+    return sql(strings, ...values);
+  };
 }
 
 export function json(res, status, body) {

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sameOrigin } from './_workspace.mjs';
 
 const SEED_TITLE = 'Building Around the Agent';
 const SEED_SLUG = 'building-around-the-agent';
@@ -29,8 +29,9 @@ const clean = (v,n) => String(v ?? '').trim().slice(0,n);
 
 export default async function handler(req,res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     const sql=getSql();
-    await ensureTable(sql);
+    if (!isPreviewReadOnly()) await ensureTable(sql);
 
     if (req.method === 'GET' && req.query?.view === 'published') {
       const rows=await sql`SELECT slug,published_title AS title,published_body AS body,published_sources AS sources,published_at

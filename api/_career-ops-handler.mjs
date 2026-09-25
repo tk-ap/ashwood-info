@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sameOrigin } from './_workspace.mjs';
 
 const STATUS_VALUES = new Set([
   'TARGET',
@@ -110,11 +110,12 @@ async function addEvent(sql, {
 
 export default async function handler(req, res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     const session = await requireSession(req);
     if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
 
     const sql = getSql();
-    await ensureSchema(sql);
+    if (!isPreviewReadOnly()) await ensureSchema(sql);
 
     if (req.method === 'GET') {
       const applications = await sql`

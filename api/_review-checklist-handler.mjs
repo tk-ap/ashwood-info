@@ -1,5 +1,5 @@
 import { deploymentSpecificReviewItems } from './_review-targets.mjs';
-import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sameOrigin } from './_workspace.mjs';
 import { REVIEW_ACTIVE_DAYS, splitReviewAttention } from './_attention.mjs';
 
 const CHECKLIST_ID = 'v3-playtest-2026-09-08';
@@ -20,6 +20,7 @@ const REVIEW_SYSTEM_PATHS = [
 
 async function ensureTable(sql) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     await sql`CREATE TABLE IF NOT EXISTS workspace_checklists (
       checklist_id TEXT PRIMARY KEY,
       completed_items JSONB NOT NULL DEFAULT '[]'::jsonb,
@@ -126,7 +127,7 @@ export default async function handler(req, res) {
     const session = await requireSession(req);
     if (!session) return json(res, 401, { ok: false, error: 'Unauthorized' });
     const sql = getSql();
-    await ensureTable(sql);
+    if (!isPreviewReadOnly()) await ensureTable(sql);
 
     if (req.method === 'GET') {
       const rows = await sql`SELECT checklist_id, completed_items, notes, auto_items, deployment_completed_items, deployment_notes, review_started, updated_at FROM workspace_checklists WHERE checklist_id = ${CHECKLIST_ID} LIMIT 1`;

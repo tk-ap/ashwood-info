@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { getSql, json, parseBody, requireSession, sameOrigin, sha256 } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sameOrigin, sha256 } from './_workspace.mjs';
 import { SIGNAL_ACTIVE_DAYS, monitoringSummary, splitSignalAttention } from './_attention.mjs';
 
 
@@ -126,6 +126,8 @@ const COMMAND_RUNTIME_STATES = new Set([
 
 export default async function handler(req, res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
+    if (isPreviewReadOnly() && req.method === 'GET' && req.query?.view === 'command-next') return json(res, 403, { ok: false, error: 'This Workspace preview is read-only. Use production for changes.' });
     const sql = getSql();
     const machineAuthorized = commandSyncTokenValid(req);
 

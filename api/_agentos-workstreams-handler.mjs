@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { getSql, json, parseBody, requireSession, sha256 } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sha256 } from './_workspace.mjs';
 
 // Human-facing workstream projection for ASHWOOD /workspace.
 // Canonical execution state stays in the owning system (AgentOS, product repo,
@@ -68,8 +68,9 @@ function cleanRow(row) {
 
 export default async function handler(req, res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     const sql = getSql();
-    await ensureTable(sql);
+    if (!isPreviewReadOnly()) await ensureTable(sql);
 
     if (req.method === 'GET') {
       const session = await requireSession(req);

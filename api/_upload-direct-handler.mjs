@@ -1,6 +1,6 @@
 import { put } from '@vercel/blob';
 import { ensureUploadsTable } from './workspace-upload.mjs';
-import { getSql, json, requireSession, sameOrigin } from './_workspace.mjs';
+import { getSql, json, rejectPreviewMutation, requireSession, sameOrigin } from './_workspace.mjs';
 
 // The client upload flow sends the file straight from the browser to Blob storage,
 // which is the only way large masters can be uploaded at all — a serverless function
@@ -57,6 +57,7 @@ function metaFrom(req) {
 }
 
 export default async function handler(req, res) {
+  if (rejectPreviewMutation(req, res)) return;
   try {
     if (req.method !== 'POST') {
       res.setHeader('Allow', 'POST');

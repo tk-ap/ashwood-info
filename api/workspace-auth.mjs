@@ -1,8 +1,8 @@
-import { clearSession, getSql, hashPassphrase, issueSession, json, parseBody, requireSession, sameOrigin, sha256, timingSafeEqualHex, verifyPassphrase } from './_workspace.mjs';
+import { clearSession, getSql, hashPassphrase, isPreviewReadOnly, issueSession, json, parseBody, requireSession, sameOrigin, sha256, timingSafeEqualHex, verifyPassphrase } from './_workspace.mjs';
 
 export default async function handler(req, res) {
   try {
-    const sql = getSql();
+    const sql = getSql({ allowPreviewWrites: true });
     if (req.method === 'GET') {
       const authRows = await sql`SELECT pass_hash IS NOT NULL AS configured, bootstrap_used_at FROM workspace_auth WHERE id = 'owner' LIMIT 1`;
       const session = await requireSession(req);
@@ -13,6 +13,7 @@ export default async function handler(req, res) {
     if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
     const body = parseBody(req);
     const action = String(body.action || 'login');
+    if (isPreviewReadOnly() && !['login', 'logout'].includes(action)) return json(res, 403, { ok: false, error: 'This Workspace preview is read-only. Use production for changes.' });
 
     if (action === 'logout') {
       const session = await requireSession(req);

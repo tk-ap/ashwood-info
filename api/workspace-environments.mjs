@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { getSql, json, parseBody, requireSession, sha256 } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sha256 } from './_workspace.mjs';
 
 // This is the owner-facing projection of environment facts. AgentOS/provider
 // collectors write observations; ASHWOOD only renders their latest evidence.
@@ -87,8 +87,9 @@ function presentationStatus(row, now = Date.now()) {
 
 export default async function handler(req, res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     const sql = getSql();
-    await ensureTable(sql);
+    if (!isPreviewReadOnly()) await ensureTable(sql);
     if (req.method === 'GET') {
       if (!(await requireSession(req))) return json(res, 401, { ok: false, error: 'Unauthorized' });
       const rows = await sql`SELECT environment_id, product_key, kind, provider, provider_status, url, provider_identity, revision, source_ref, verification_state, observed_at, source_system, metadata, updated_at FROM workspace_environment_registry ORDER BY updated_at DESC`;

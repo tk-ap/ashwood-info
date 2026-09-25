@@ -1,6 +1,6 @@
 import { handleUpload } from '@vercel/blob/client';
 import { del } from '@vercel/blob';
-import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
+import { getSql, isPreviewReadOnly, json, parseBody, rejectPreviewMutation, requireSession, sameOrigin } from './_workspace.mjs';
 
 const AUDIO_TYPES = [
   'audio/mpeg',
@@ -103,8 +103,9 @@ function publicRow(row) {
 
 export default async function handler(req, res) {
   try {
+    if (rejectPreviewMutation(req, res)) return;
     const sql = getSql();
-    await ensureUploadsTable(sql);
+    if (!isPreviewReadOnly()) await ensureUploadsTable(sql);
 
     if (req.method === 'GET') {
       const session = await requireSession(req);
