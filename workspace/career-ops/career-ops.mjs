@@ -22,6 +22,7 @@ const state = {
   opportunityMeta: null,
   inboxSync: null,
   inboxReviews: [],
+  opportunityDispositions: [],
   newJobsSinceSession: 0,
   declinedOpportunityIds: new Set(JSON.parse(localStorage.getItem('ashwood.career.declined-opportunities.v1') || '[]'))
 };
@@ -117,6 +118,65 @@ function renderHeader() {
   $('#career-summary').innerHTML = markup;
   const hero = $('#workspace-view-data-hero');
   if (hero) hero.innerHTML = '<p class="section-kicker">Work · live career state · relationships below</p><div class="workspace-data-hero-grid">' + markup + '</div>';
+}
+
+function renderToday() {
+  const root = $('#career-today');
+  if (!root) return;
+  const actions = sortApplications(state.applications)
+    .filter(app => needsAttention(app))
+    .map(app => ({
+      kind:normaliseStatus(app.status),
+      title:`${app.company} — ${app.role}`,
+      detail:app.next_action || 'Review this application and set the next action.',
+      due:app.next_action_at ? fmtDateTime(app.next_action_at) : null,
+      appId:app.id
+    }));
+
+  const reviewOpen = Number(state.inboxSync?.reviewOpen || state.inboxReviews.length || 0);
+  if (reviewOpen) actions.unshift({
+    kind:'INBOX',
+    title:`${reviewOpen} application email${reviewOpen === 1 ? '' : 's'} need review`,
+    detail:'Resolve unmatched or ambiguous email evidence before relying on the pipeline.',
+    due:null
+  });
+  if (actions.length < 5 && state.opportunities.length) actions.push({
+    kind:'APPLY NEXT',
+    title:'Review the next recommended role',
+    detail:`${state.opportunities[0].company} — ${state.opportunities[0].role}`,
+    due:null
+  });
+
+  root.innerHTML = actions.length ? actions.slice(0,7).map(item => `
+    <button class="career-today-row" type="button" ${item.appId ? `data-today-app="${escapeHtml(item.appId)}"` : ''}>
+      <span>${escapeHtml(item.kind)}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <small>${escapeHtml(item.detail)}${item.due ? ` · ${escapeHtml(item.due)}` : ''}</small>
+    </button>`).join('') :
+    '<div class="career-empty"><strong>No urgent application action is currently due.</strong><p>Use Recommended to keep the pipeline moving rather than treating an empty task list as completion.</p></div>';
+
+  root.querySelectorAll('[data-today-app]').forEach(button => button.addEventListener('click', () => {
+    state.selectedId = button.dataset.todayApp;
+    renderApplications();
+    renderDetail();
+    $('#career-applications')?.scrollIntoView({ behavior:'smooth', block:'start' });
+  }));
+}
+
+function renderHistoryPreferences() {
+  const root = $('#career-history-preferences');
+  if (!root) return;
+  const dispositions = state.opportunityDispositions.filter(item => item.disposition === 'DECLINED');
+  const recentEvents = state.events.slice(0,5);
+  root.innerHTML = `
+    <div class="career-preference-card">
+      <span>Recommendation learning</span>
+      <strong>${dispositions.length} declined recommendation${dispositions.length === 1 ? '' : 's'} persisted</strong>
+      <p>Declines are durable preference evidence. Engineering and technical roles are excluded unless the title belongs to a demonstrated target lane.</p>
+    </div>
+    <div class="career-history-list">
+      ${recentEvents.length ? recentEvents.map(event => `<article><time>${escapeHtml(fmtDateTime(event.occurred_at))}</time><strong>${escapeHtml(event.summary)}</strong><span>${escapeHtml(event.source || 'manual')} · ${escapeHtml(event.event_type || 'NOTE')}</span></article>`).join('') : '<p class="career-muted">No career history recorded yet.</p>'}
+    </div>`;
 }
 
 function renderApplications() {
@@ -238,7 +298,7 @@ function renderOpportunities() {
   const data = state.opportunityMeta || {};
 
   if (!state.opportunities.length) {
-    root.innerHTML = `<div class="career-opportunity-empty"><strong>No strong new matches in the current feed.</strong><span>Refresh again later; Career Ops only surfaces roles that overlap the current business execution, risk, controls, compliance, PMO, operations, process, and finance lanes.</span></div>`;
+    root.innerHTML = `<div class="career-opportunity-empty"><strong>No qualified recommendation is available in this source window.</strong><span>The tracker will not substitute unrelated engineering roles just to keep the grid full. Use Next recommendations to move through the eligible pool.</span></div>`;
   } else {
     const visibleOpportunities = state.opportunities.filter(opportunity => !state.declinedOpportunityIds.has(String(opportunity.id)));
     root.innerHTML = visibleOpportunities.map(opportunity => `
@@ -262,12 +322,35 @@ function renderOpportunities() {
 
     root.querySelectorAll('[data-decline-opportunity]').forEach(button => button.addEventListener('click', async () => {
       const id = String(button.dataset.declineOpportunity || '');
-      if (!id) return;
-      state.declinedOpportunityIds.add(id);
-      localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
-      state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
-      renderOpportunities(state.opportunityMeta || { opportunities:state.opportunities });
-      if (state.opportunities.length < 2) await loadOpportunities({ refresh:true });
+      const opportunity = state.opportunities.find(item => String(item.id) === id);
+      if (!id || !opportunity) return;
+      button.disabled = true;
+      button.textContent = 'Declining…';
+      try {
+        const source = String(opportunity.source || 'unknown').trim().toLowerCase().replace(/\s+/g,'-');
+        await api({
+          method:'POST',
+          body:JSON.stringify({
+            action:'decline_opportunity',
+            source,
+            opportunity_id:id,
+            company:opportunity.company,
+            role:opportunity.role,
+            url:opportunity.url
+          })
+        });
+        state.declinedOpportunityIds.add(id);
+        localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
+        state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', updated_at:new Date().toISOString() });
+        state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
+        renderOpportunities();
+        renderHistoryPreferences();
+        await loadOpportunities();
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = 'Decline';
+        $('#career-opportunity-meta').textContent = `Decline was not saved: ${error.message}`;
+      }
     }));
 
     root.querySelectorAll('[data-track-opportunity]').forEach(button => button.addEventListener('click', async () => {
@@ -295,6 +378,8 @@ async function loadOpportunities({ refresh=false }={}) {
     if (refresh) state.newJobsSinceSession += state.opportunities.length;
     renderHeader();
     renderOpportunities();
+    renderToday();
+    renderHistoryPreferences();
   } catch (error) {
     $('#career-opportunity-grid').innerHTML = `<div class="career-opportunity-empty"><strong>New options could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
     $('#career-opportunity-meta').textContent = 'Opportunity feed unavailable';
@@ -341,9 +426,11 @@ async function trackOpportunity(opportunity, button) {
 
 function render() {
   renderHeader();
+  renderToday();
   renderApplications();
   renderDetail();
   renderSyncState();
+  renderHistoryPreferences();
   $('#career-refreshed').textContent = `Refreshed ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
 }
 
@@ -355,6 +442,7 @@ async function load() {
     const data = await api();
     state.applications = data.applications || [];
     state.events = data.events || [];
+    state.opportunityDispositions = data.opportunity_dispositions || [];
     if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
     $('#career-state').textContent = 'Private workspace';
     render();
