@@ -98,6 +98,7 @@ const GROUPS = {
     "#self-daily-wisdom",
     "#meos-profile",
     "#meos-places",
+    "#reality-check",
     "#self-operating-model",
     "#frame",
     ".goals",
