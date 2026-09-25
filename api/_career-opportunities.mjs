@@ -46,6 +46,19 @@ function qualificationGate(job={}) {
 const US_COMPATIBLE = /worldwide|anywhere|united states|\busa\b|u\.s\.|north america|northern america|americas|us time|pst|est|cst|mst/i;
 const CLEARLY_NON_US = /europe|emea|united kingdom|\buk\b|germany|france|spain|italy|poland|portugal|netherlands|sweden|norway|denmark|finland|india|philippines|australia|new zealand|latam|latin america|canada only/i;
 
+const DTLA_EXACT = /(?:los angeles[^\n,;]{0,30})?financial district|financial district[^\n,;]{0,30}los angeles|\b90071\b/i;
+const DTLA_WALKABLE = /downtown los angeles|\bdtla\b|bunker hill|historic core|south park(?:,? los angeles)?|\b90014\b|\b90015\b|\b90017\b/i;
+const LA_METRO = /los angeles|\b900\d{2}\b/i;
+
+export function locationPreference(location='') {
+  const value = String(location || '').trim();
+  if (!value) return { points:0, label:null, tier:'unknown' };
+  if (DTLA_EXACT.test(value)) return { points:8, label:'LA Financial District', tier:'financial-district' };
+  if (DTLA_WALKABLE.test(value)) return { points:6, label:'walkable DTLA', tier:'walkable-dtla' };
+  if (LA_METRO.test(value)) return { points:3, label:'Los Angeles', tier:'los-angeles' };
+  return { points:0, label:null, tier:'other' };
+}
+
 export function stripHtml(value='') {
   return String(value)
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
@@ -139,6 +152,10 @@ export function scoreOpportunity(job={}, now=Date.now()) {
     if (pattern.test(body)) { score += points; matches.push(label); }
   });
 
+  const locationPref = locationPreference(job.candidate_required_location);
+  score += locationPref.points;
+  if (locationPref.label) matches.push(locationPref.label);
+
   if (/senior|lead|manager|principal/i.test(title)) score += 2;
   if (/director|vice president|\bvp\b|chief/i.test(title)) score -= 2;
 
@@ -151,7 +168,12 @@ export function scoreOpportunity(job={}, now=Date.now()) {
     else if (ageDays > 45) score -= 4;
   }
 
-  return { score, matches:[...new Set(matches)].slice(0,4), gate:'qualified' };
+  return {
+    score,
+    matches:[...new Set(matches)].slice(0,4),
+    gate:'qualified',
+    location_preference:locationPref.tier
+  };
 }
 
 export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
@@ -161,7 +183,7 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
   const seenPairs = new Set();
 
   return jobs.map(job => {
-    const { score, matches, gate } = scoreOpportunity(job, now);
+    const { score, matches, gate, location_preference } = scoreOpportunity(job, now);
     if (score < 8) return null;
     const url = String(job.url || '').trim();
     const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
@@ -186,6 +208,7 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
       score,
       matches,
       qualification_gate:gate,
+      location_preference:location_preference || 'other',
       summary:stripHtml(job.description || '').slice(0, 700),
       resume_recommendation:resumeRecommendation(job, matches)
     };
