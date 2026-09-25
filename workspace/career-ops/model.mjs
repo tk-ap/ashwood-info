@@ -1,5 +1,5 @@
 export const ACTIVE_STATUSES = new Set(['TARGET','APPLIED','SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','DEFERRED']);
-export const TERMINAL_STATUSES = new Set(['REJECTED','DECLINED','CLOSED']);
+export const TERMINAL_STATUSES = new Set(['REJECTED','ASSUMED_REJECTED','DECLINED','CLOSED']);
 
 export function normaliseStatus(value='TARGET') {
   const status = String(value || 'TARGET').trim().toUpperCase();
@@ -60,7 +60,7 @@ export function summaryCounts(applications=[], events=[]) {
     const status = normaliseStatus(app.status);
     const submitted = SUBMITTED_STATUSES.has(status) || (app.submitted_at && status !== 'TARGET' && status !== 'DECLINED');
     if (submitted) acc.submitted += 1;
-    if (status === 'REJECTED') acc.denied += 1;
+    if (status === 'REJECTED' || status === 'ASSUMED_REJECTED') acc.denied += 1;
     if (status === 'INTERVIEW' || status === 'OFFER' || interviewed.has(app.id)) acc.interviews += 1;
     if (submitted && status === 'APPLIED' && !responded.has(app.id)) acc.noResponse += 1;
     return acc;
@@ -68,7 +68,7 @@ export function summaryCounts(applications=[], events=[]) {
 }
 
 export function sortApplications(applications=[]) {
-  const order = { INTERVIEW:1, RECRUITER:2, ASSESSMENT:3, OFFER:4, SCREENING:5, APPLIED:6, TARGET:7, DEFERRED:8, REJECTED:9, DECLINED:10, CLOSED:11 };
+  const order = { INTERVIEW:1, RECRUITER:2, ASSESSMENT:3, OFFER:4, SCREENING:5, APPLIED:6, TARGET:7, DEFERRED:8, ASSUMED_REJECTED:9, REJECTED:10, DECLINED:11, CLOSED:12 };
   return [...applications].sort((a,b) => {
     const sa = order[normaliseStatus(a.status)] || 99;
     const sb = order[normaliseStatus(b.status)] || 99;
@@ -79,6 +79,7 @@ export function sortApplications(applications=[]) {
 
 const OUTCOME_LABELS = {
   REJECTION:'Rejection received',
+  ASSUMED_REJECTION:'Assumed rejection after silent-close window',
   OFFER:'Offer received',
   INTERVIEW:'Interview requested',
   ASSESSMENT:'Assessment requested',
