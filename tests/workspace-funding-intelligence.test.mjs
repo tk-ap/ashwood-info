@@ -5,7 +5,7 @@ import fs from 'node:fs';
 test('Funding Intelligence route and registry exist with explicit freshness', () => {
   const html = fs.readFileSync('workspace/funding/index.html','utf8');
   const data = JSON.parse(fs.readFileSync('workspace/funding/opportunities.json','utf8'));
-  assert.match(html, /Private funding intelligence/);
+  assert.match(html, /\/workspace\/#funding/);
   assert.ok(Array.isArray(data.opportunities) && data.opportunities.length >= 5);
   for (const item of data.opportunities) {
     assert.ok(item.source_url);
