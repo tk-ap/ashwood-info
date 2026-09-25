@@ -23,6 +23,7 @@ const state = {
   inboxSync: null,
   inboxReviews: [],
   opportunityDispositions: [],
+  resumeProfile: { configured:false, source:null, updated_at:null },
   newJobsSinceSession: 0,
   declinedOpportunityIds: new Set(JSON.parse(localStorage.getItem('ashwood.career.declined-opportunities.v1') || '[]'))
 };
@@ -119,7 +120,13 @@ function snapshotList(snapshot, key) {
 
 function materialChips(materials={}) {
   const items = [];
-  if (materials.resume) items.push(`Résumé: ${materials.resume}`);
+  if (materials.resume && typeof materials.resume === 'object') {
+    items.push(`Résumé: ${materials.resume.filename || materials.resume.variant || 'tailored artifact'}`);
+  } else if (materials.resume) {
+    items.push(`Résumé: ${materials.resume}`);
+  } else if (materials.resume_variant) {
+    items.push(`Résumé lane: ${materials.resume_variant}`);
+  }
   if (materials.projects) items.push(`Projects: ${Array.isArray(materials.projects) ? materials.projects.join(', ') : materials.projects}`);
   if (materials.work_sample) items.push(`Work sample: ${materials.work_sample}`);
   if (materials.self_intro) items.push('Self-introduction submitted');
@@ -316,32 +323,72 @@ function renderSyncState() {
 }
 
 
-function resumeRecommendationMarkup(opportunity={}) {
+function resumeArtifactMarkup(opportunity={}) {
   const recommendation = opportunity.resume_recommendation || {};
   if (!recommendation.variant) return '';
-  const emphasis = Array.isArray(recommendation.emphasis) ? recommendation.emphasis : [];
-  const keywords = Array.isArray(recommendation.keywords) ? recommendation.keywords : [];
+  const profileReady = Boolean(state.resumeProfile?.configured);
   return `
-    <details class="career-resume-recommendation">
-      <summary><span>Resume to use</span><strong>${escapeHtml(recommendation.variant)}</strong></summary>
-      ${recommendation.summary ? `<p><b>Replace the summary with:</b> ${escapeHtml(recommendation.summary)}</p>` : ''}
-      ${emphasis.length ? `<div><b>Emphasize</b><ul>${emphasis.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>` : ''}
-      ${keywords.length ? `<p><b>Posting language:</b> ${keywords.map(escapeHtml).join(' · ')}</p>` : ''}
-      ${recommendation.guardrail ? `<small>${escapeHtml(recommendation.guardrail)}</small>` : ''}
-      <button type="button" data-copy-resume="${escapeHtml(opportunity.id)}">Copy resume edits</button>
-    </details>`;
+    <div class="career-resume-artifact">
+      <div>
+        <span>ATS resume file</span>
+        <strong>${escapeHtml(recommendation.variant)}</strong>
+        <small>${profileReady ? 'Generated from the private baseline resume. Employers, titles, dates, and factual accomplishments stay locked.' : 'Private baseline resume needs to be configured once before file generation.'}</small>
+      </div>
+      <button type="button" data-generate-resume="${escapeHtml(opportunity.id)}" ${profileReady ? '' : 'disabled'}>
+        ${profileReady ? 'Generate .docx' : 'Resume source missing'}
+      </button>
+      <details>
+        <summary>See tailoring logic</summary>
+        ${recommendation.summary ? `<p><b>Summary:</b> ${escapeHtml(recommendation.summary)}</p>` : ''}
+        ${Array.isArray(recommendation.emphasis) && recommendation.emphasis.length ? `<ul>${recommendation.emphasis.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+        ${recommendation.guardrail ? `<small>${escapeHtml(recommendation.guardrail)}</small>` : ''}
+      </details>
+    </div>`;
 }
 
-function resumeRecommendationText(opportunity={}) {
-  const r = opportunity.resume_recommendation || {};
-  const lines = [
-    `RESUME VERSION: ${r.variant || 'Baseline'}`,
-    r.summary ? `SUMMARY: ${r.summary}` : '',
-    ...(Array.isArray(r.emphasis) ? r.emphasis.map(item => `- ${item}`) : []),
-    Array.isArray(r.keywords) && r.keywords.length ? `POSTING LANGUAGE: ${r.keywords.join(', ')}` : '',
-    r.guardrail || ''
-  ].filter(Boolean);
-  return lines.join('\n');
+function filenameFromDisposition(value='') {
+  const match=String(value).match(/filename="([^"]+)"/i);
+  return match?.[1] || 'TK_Tailored_Resume.docx';
+}
+
+async function generateResumeArtifact(opportunity, button) {
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Generating…';
+  try {
+    const response = await fetch('/api/workspace-career-resume', {
+      method:'POST',
+      credentials:'same-origin',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({
+        source:String(opportunity.source || 'remotive').toLowerCase(),
+        opportunity_id:String(opportunity.id || '')
+      })
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body.error || `Resume generation failed (${response.status})`);
+    }
+    const blob = await response.blob();
+    const filename = filenameFromDisposition(response.headers.get('Content-Disposition'));
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(href);
+    button.textContent = 'Downloaded';
+  } catch (error) {
+    button.textContent = 'Try again';
+    button.title = error.message;
+    return;
+  }
+  window.setTimeout(() => {
+    button.disabled = false;
+    button.textContent = original;
+  }, 1400);
 }
 
 function renderOpportunities() {
@@ -364,7 +411,7 @@ function renderOpportunities() {
         ${opportunity.salary ? `<p class="career-opportunity-salary">${escapeHtml(opportunity.salary)}</p>` : ''}
         ${opportunity.matches?.length ? `<div class="career-opportunity-tags">${opportunity.matches.map(match => `<span>${escapeHtml(match)}</span>`).join('')}</div>` : ''}
         <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
-        ${resumeRecommendationMarkup(opportunity)}
+        ${resumeArtifactMarkup(opportunity)}
         <div class="career-opportunity-actions">
           <a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Open role ↗</a>
           <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
@@ -373,17 +420,10 @@ function renderOpportunities() {
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
       </article>`).join('');
 
-    root.querySelectorAll('[data-copy-resume]').forEach(button => button.addEventListener('click', async () => {
-      const opportunity = state.opportunities.find(item => String(item.id) === String(button.dataset.copyResume || ''));
+    root.querySelectorAll('[data-generate-resume]').forEach(button => button.addEventListener('click', async () => {
+      const opportunity = state.opportunities.find(item => String(item.id) === String(button.dataset.generateResume || ''));
       if (!opportunity) return;
-      const original = button.textContent;
-      try {
-        await navigator.clipboard.writeText(resumeRecommendationText(opportunity));
-        button.textContent = 'Copied';
-      } catch {
-        button.textContent = 'Copy failed';
-      }
-      window.setTimeout(() => { button.textContent = original; }, 1400);
+      await generateResumeArtifact(opportunity, button);
     }));
 
     root.querySelectorAll('[data-decline-opportunity]').forEach(button => button.addEventListener('click', async () => {
@@ -497,7 +537,7 @@ async function trackOpportunity(opportunity, button) {
         status:'TARGET',
         next_action:'Review the full employer posting and decide whether to apply.',
         posting_snapshot:{ summary:opportunity.summary || '', responsibilities:[], requirements:[], preferred:[] },
-        materials:{ resume:opportunity.resume_recommendation?.variant || '' },
+        materials:{ resume_variant:opportunity.resume_recommendation?.variant || '' },
         source:'remotive',
         notes:`Discovered through ASHWOOD Career Ops. Source: Remotive. Published ${opportunity.published_at || 'date unavailable'}.`
       })
@@ -532,6 +572,7 @@ async function load() {
     state.applications = data.applications || [];
     state.events = data.events || [];
     state.opportunityDispositions = data.opportunity_dispositions || [];
+    state.resumeProfile = data.resume_profile || { configured:false, source:null, updated_at:null };
     if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
     $('#career-state').textContent = 'Private workspace';
     render();
