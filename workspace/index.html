@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="/workspace/build-command-center.css?v=20260923-command-center1" />
   <link rel="stylesheet" href="/workspace/v4-atmosphere.css?v=20260924-forward1" />
   <link rel="stylesheet" href="/workspace/visual-completion.css?v=20260925-ruixen1" />
+  <link rel="stylesheet" href="/workspace/sources.css?v=20260925-sources1" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20260921-menufix1"></script>
@@ -38,7 +39,8 @@
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/operator-console.mjs?v=20260922-operator1"></script>
   <script type="module" src="/workspace/build-command-center.mjs?v=20260923-command-center1"></script>
-  <script type="module" src="/workspace/views.mjs?v=20260925-career-owner2"></script>
+  <script type="module" src="/workspace/views.mjs?v=20260925-sources1"></script>
+  <script type="module" src="/workspace/sources.mjs?v=20260925-sources1"></script>
   <script type="module" src="/workspace/visual-completion.mjs?v=20260925-live201"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20260925-decline1"></script>
   <script type="module" src="/workspace/funding/funding.mjs?v=20260925-shell1"></script>
@@ -719,6 +721,23 @@
       <summary>Project details</summary>
       <div class="ecosystem-list" id="ecosystem-list"></div>
     </details>
+
+    <section class="workspace-sources" id="sources" aria-labelledby="sources-title">
+      <div class="workspace-sources__head">
+        <div>
+          <p class="section-kicker">Evidence · sources</p>
+          <h2 id="sources-title">What the system has actually ingested.</h2>
+          <p class="section-note">Registered references, acquisition coverage, and anything still requiring your eyes.</p>
+        </div>
+        <div class="workspace-sources__actions">
+          <span id="source-registry-status" aria-live="polite">Reading AgentOS source evidence…</span>
+          <button class="text-button" id="source-registry-refresh" type="button">Refresh</button>
+        </div>
+      </div>
+      <div class="source-registry" id="source-registry" aria-live="polite">
+        <div class="workspace-state is-loading"><strong>Loading source registry…</strong>Reading the latest machine-synced evidence projection.</div>
+      </div>
+    </section>
 
     <details class="evidence disclosure" id="evidence-panel">
       <summary>Explore the evidence <span id="evidence-selection">All goals</span></summary>
