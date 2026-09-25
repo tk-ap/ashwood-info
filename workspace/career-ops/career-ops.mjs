@@ -80,6 +80,12 @@ function eventsFor(applicationId) {
   return state.events.filter(event => event.application_id === applicationId);
 }
 
+function silentRejectionFor(applicationId) {
+  return eventsFor(applicationId)
+    .filter(event => event.source === 'gmail' && event.payload?.silent_rejection_policy?.detected)
+    .sort((a,b) => new Date(b.occurred_at || 0) - new Date(a.occurred_at || 0))[0]?.payload?.silent_rejection_policy || null;
+}
+
 function snapshotList(snapshot, key) {
   const values = Array.isArray(snapshot?.[key]) ? snapshot[key] : [];
   if (!values.length) return '';
@@ -97,11 +103,14 @@ function materialChips(materials={}) {
 
 function renderHeader() {
   const counts = summaryCounts(state.applications, state.events);
+  const denominator = counts.submitted || 0;
+  const ratio = numerator => `${numerator} / ${denominator}`;
   const cards = [
     [counts.submitted, 'applications submitted'],
-    [state.newJobsSinceSession, 'new jobs found'],
-    [counts.denied, 'applications denied'],
-    [counts.interviews, 'applications → interview']
+    [ratio(counts.denied), 'denied / submitted'],
+    [ratio(counts.noResponse), 'no response / submitted'],
+    [ratio(counts.interviews), 'interview requests / submitted'],
+    [state.newJobsSinceSession, 'new jobs found']
   ];
   const markup = cards.map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
   $('#career-summary').innerHTML = markup;
@@ -121,6 +130,8 @@ function renderApplications() {
     const attention = needsAttention(app);
     const requested = requestedSalaryLabel(app);
     const eventCount = eventsFor(app.id).length;
+    const silentPolicy = silentRejectionFor(app.id);
+    const silentNote = silentPolicy?.deadline ? ` · silent-close ${fmtDate(silentPolicy.deadline)}` : '';
     return `<button class="career-row ${state.selectedId === app.id ? 'is-selected' : ''}" type="button" data-app-id="${escapeHtml(app.id)}">
       <span class="career-row-main">
         <span class="career-company">${escapeHtml(app.company)}</span>
@@ -129,7 +140,7 @@ function renderApplications() {
       </span>
       <span class="career-row-comp">${escapeHtml(salaryLabel(app))}${requested ? `<small>asked ${escapeHtml(requested)}</small>` : ''}</span>
       <span class="career-status ${statusClass(app.status)}">${escapeHtml(normaliseStatus(app.status))}</span>
-      <span class="career-row-meta">${attention ? '<b>action due</b>' : `${eventCount} event${eventCount === 1 ? '' : 's'}`}</span>
+      <span class="career-row-meta">${attention ? '<b>action due</b>' : `${eventCount} event${eventCount === 1 ? '' : 's'}${escapeHtml(silentNote)}`}</span>
     </button>`;
   }).join('');
 
@@ -152,6 +163,7 @@ function renderDetail() {
   const materials = app.materials || {};
   const chips = materialChips(materials);
   const events = eventsFor(app.id);
+  const silentPolicy = silentRejectionFor(app.id);
 
   root.innerHTML = `
     <div class="career-detail-head">
@@ -171,6 +183,7 @@ function renderDetail() {
       <article><span>Requested salary</span><strong>${escapeHtml(requestedSalaryLabel(app) || '—')}</strong></article>
       <article><span>Submitted</span><strong>${escapeHtml(fmtDate(app.submitted_at))}</strong></article>
     </div>
+    ${silentPolicy?.deadline ? `<div class="career-note"><span>Silent rejection policy detected</span><p>Employer confirmation says unsuccessful applicants may not receive a rejection notice. If no meaningful employer response arrives by ${escapeHtml(fmtDate(silentPolicy.deadline))}, Career Ops will mark this <b>ASSUMED_REJECTED</b>. This remains distinguishable from an explicit rejection.</p></div>` : ''}
     ${app.next_action ? `<div class="career-next"><span>Next action</span><strong>${escapeHtml(app.next_action)}</strong><small>${app.next_action_at ? `Due ${escapeHtml(fmtDateTime(app.next_action_at))}` : 'No due date set'}</small></div>` : ''}
     ${app.fit_decision ? `<div class="career-note"><span>Fit decision</span><p>${escapeHtml(app.fit_decision)}</p></div>` : ''}
     ${chips.length ? `<div class="career-materials"><span>Submitted materials</span><div>${chips.map(chip => `<b>${escapeHtml(chip)}</b>`).join('')}</div></div>` : ''}

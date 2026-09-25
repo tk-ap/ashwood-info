@@ -12,9 +12,12 @@ export const EVENT_STATUS = {
   ASSESSMENT:'ASSESSMENT',
   INTERVIEW:'INTERVIEW',
   OFFER:'OFFER',
-  REJECTION:'REJECTED'
+  REJECTION:'REJECTED',
+  ASSUMED_REJECTION:'ASSUMED_REJECTED'
 };
 const RECONCILIATION_SOURCE = 'gmail-reconciliation';
+const POLICY_SOURCE = 'career-policy';
+export const DEFAULT_SILENT_REJECTION_DAYS = 30;
 
 const trim = (value, max = 1000) => {
   const text = String(value ?? '').trim();
@@ -120,6 +123,36 @@ function isAccountNotice(from, subject) {
 }
 
 const CONDITIONAL = /\b(if|should|once|in the event|may be|might be)\b/i;
+const SILENT_REJECTION_PATTERNS = [
+  /\bonly (candidates|applicants|individuals) (who are )?(selected|chosen|moving forward|advanced) (will|may) be (contacted|notified)\b/i,
+  /\b(we|the team) (will|may) only (contact|notify) (candidates|applicants|individuals) (who are )?(selected|chosen|moving forward|advanced)\b/i,
+  /\b(if you are|if you're) not selected[^.]{0,100}\b(will not|won't|may not) (receive|be sent|get) (a |an )?(notification|notice|response|email|rejection)\b/i,
+  /\b(will not|won't|cannot|can't|unable to) (contact|notify|respond to) (every|all|each) (candidate|applicant)\b/i,
+  /\b(do not|don't) (send|provide) (individual )?(rejection|status) (emails?|notices?|notifications?)\b/i
+];
+
+export function silentRejectionPolicy(text, occurredAt, defaultDays=DEFAULT_SILENT_REJECTION_DAYS) {
+  const clean = cleanText(text);
+  const sentence = sentences(clean).find(value => SILENT_REJECTION_PATTERNS.some(pattern => pattern.test(value)));
+  if (!sentence) return null;
+  const explicit = sentence.match(/\bwithin\s+(\d{1,3})\s+(business\s+)?(day|week)s?\b/i);
+  let days = defaultDays;
+  if (explicit) {
+    const amount = Number(explicit[1]);
+    if (explicit[3].toLowerCase() === 'week') days = amount * 7;
+    else if (explicit[2]) days = Math.ceil(amount * 7 / 5);
+    else days = amount;
+  }
+  const start = new Date(occurredAt);
+  const deadline = Number.isNaN(start.getTime()) ? null : new Date(start.getTime() + days * 86400000).toISOString();
+  return {
+    detected:true,
+    days,
+    deadline,
+    basis:trim(sentence, 500),
+    assumption:'ASSUMED_REJECTED'
+  };
+}
 
 // Ordered by precedence. A rejection often also thanks the applicant and
 // mentions interviews, so employer decisions are tested first.
@@ -208,22 +241,23 @@ const excerpt = (text, index) => trim(String(text).slice(Math.max(0, index - 60)
  * Decide whether a message is Career Ops evidence at all, and which lifecycle
  * event it supports. Irrelevant mail never reaches application matching.
  */
-export function classifyCareerEmail({ subject = '', from = '', snippet = '', body = '' } = {}) {
+export function classifyCareerEmail({ subject = '', from = '', snippet = '', body = '', occurredAt = null } = {}) {
   const text = cleanText(`${subject}. ${body || snippet}`);
+  const silentPolicy = silentRejectionPolicy(text, occurredAt);
   const lower = text.toLowerCase();
   const ats = domainIn(senderDomain(from), ATS_DOMAINS);
   if (!ats && isAccountNotice(from, subject)) {
-    return { relevant:false, reason:'account_notice', eventType:null, status:null, evidence:null };
+    return { relevant:false, reason:'account_notice', eventType:null, status:null, evidence:null, silentRejectionPolicy:null };
   }
   const lifecycle = lifecycleMatch(text);
   const context = CAREER_CONTEXT.test(lower);
   if (lifecycle && (context || ats)) {
-    return { relevant:true, reason:'lifecycle_evidence', eventType:lifecycle.eventType, status:EVENT_STATUS[lifecycle.eventType], evidence:lifecycle.evidence };
+    return { relevant:true, reason:'lifecycle_evidence', eventType:lifecycle.eventType, status:EVENT_STATUS[lifecycle.eventType], evidence:lifecycle.evidence, silentRejectionPolicy:silentPolicy };
   }
   if (ats && /\byour (application|candidacy)\b/.test(lower)) {
-    return { relevant:true, reason:'ats_application_mail', eventType:'EMAIL', status:null, evidence:excerpt(text, 0) };
+    return { relevant:true, reason:'ats_application_mail', eventType:'EMAIL', status:null, evidence:excerpt(text, 0), silentRejectionPolicy:silentPolicy };
   }
-  return { relevant:false, reason:lifecycle ? 'no_career_context' : 'no_lifecycle_evidence', eventType:null, status:null, evidence:null };
+  return { relevant:false, reason:lifecycle ? 'no_career_context' : 'no_lifecycle_evidence', eventType:null, status:null, evidence:null, silentRejectionPolicy:null };
 }
 
 // ---------------------------------------------------------------------------
@@ -233,6 +267,7 @@ export function classifyCareerEmail({ subject = '', from = '', snippet = '', bod
 function eventStatus(event) {
   if (event.source === RECONCILIATION_SOURCE) return null;
   const payload = event.payload || {};
+  if (event.source === POLICY_SOURCE && event.event_type === 'ASSUMED_REJECTION') return 'ASSUMED_REJECTED';
   if (event.source === 'gmail') {
     if (payload.relevance === 'ignored') return null;
     return EVENT_STATUS[event.event_type] || null;
@@ -248,7 +283,10 @@ function advance(current, evidence) {
   if (!current) return evidence;
   if (OWNER_CONTROLLED_STATUSES.has(current)) return current;
   if (evidence === 'REJECTED') return 'REJECTED';
-  // Only real re-engagement reopens an employer rejection.
+  if (evidence === 'ASSUMED_REJECTED') return current === 'REJECTED' ? current : 'ASSUMED_REJECTED';
+  // An inferred silent rejection reopens on any later substantive employer response.
+  if (current === 'ASSUMED_REJECTED') return evidence !== 'APPLIED' ? evidence : current;
+  // Only real re-engagement reopens an explicit employer rejection.
   if (current === 'REJECTED') return evidence === 'INTERVIEW' || evidence === 'OFFER' ? evidence : current;
   return (PIPELINE_RANK[evidence] ?? -1) > (PIPELINE_RANK[current] ?? -1) ? evidence : current;
 }
@@ -269,7 +307,7 @@ export function deriveCanonicalStatus(application, events) {
   for (const event of ordered) {
     const status = eventStatus(event);
     if (!status) continue;
-    if (event.source === 'gmail') {
+    if (event.source === 'gmail' || event.source === POLICY_SOURCE) {
       const next = advance(state, status);
       if (next !== state) evidence = event;
       state = next;
@@ -391,7 +429,8 @@ async function persistEvent(sql, message, application, existing) {
     snippet: trim(message.snippet, 500),
     evidence: message.classification.evidence,
     relevance: message.classification.relevant ? 'relevant' : 'ignored',
-    classifier: message.classification.reason
+    classifier: message.classification.reason,
+    silent_rejection_policy: message.classification.silentRejectionPolicy
   };
   const eventType = message.classification.eventType || 'EMAIL';
   if (existing) {
@@ -527,6 +566,53 @@ export async function syncCareerGmail({ sql, gmail }) {
 
   const scanned = new Set(messages.map(message => message.id));
   const historicalRetired = await retireHistoricalJunkReviews(sql, scanned);
+
+  // A confirmation can explicitly say unsuccessful applicants will not receive
+  // another notice. Keep that as an inference policy, never as employer-supplied
+  // rejection evidence. After its deadline, APPLIED becomes ASSUMED_REJECTED.
+  const policyCandidates = await sql`
+    SELECT application_id, source_ref, occurred_at, payload
+    FROM workspace_career_events
+    WHERE source = 'gmail' AND payload->'silent_rejection_policy' IS NOT NULL
+    ORDER BY occurred_at DESC
+  `;
+  const policySeen = new Set();
+  for (const candidate of policyCandidates) {
+    if (policySeen.has(candidate.application_id)) continue;
+    policySeen.add(candidate.application_id);
+    const application = byId.get(candidate.application_id);
+    const policy = candidate.payload?.silent_rejection_policy;
+    if (!application || application.status !== 'APPLIED' || !policy?.deadline) continue;
+    if (Date.now() < new Date(policy.deadline).getTime()) continue;
+    const laterResponse = await sql`
+      SELECT id FROM workspace_career_events
+      WHERE application_id = ${candidate.application_id}
+        AND source = 'gmail'
+        AND occurred_at > ${candidate.occurred_at}
+        AND event_type IN ('SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTION')
+        AND COALESCE(payload->>'relevance', 'relevant') <> 'ignored'
+      LIMIT 1
+    `;
+    if (laterResponse[0]) continue;
+    await sql`
+      INSERT INTO workspace_career_events
+        (id, application_id, event_type, occurred_at, source, source_ref, summary, payload)
+      VALUES
+        (${`career-event:silent-rejection:${candidate.application_id}:${candidate.source_ref}`},
+         ${candidate.application_id}, 'ASSUMED_REJECTION', ${policy.deadline}, ${POLICY_SOURCE},
+         ${`${candidate.application_id}:${candidate.source_ref}:silent-rejection`},
+         'Assumed rejection after employer silent-close window',
+         ${JSON.stringify({
+           status:'ASSUMED_REJECTED',
+           inferred:true,
+           basis_message_id:candidate.source_ref,
+           deadline:policy.deadline,
+           days:policy.days,
+           reason:'Employer confirmation states unsuccessful applicants may not receive a rejection notice'
+         })}::jsonb)
+      ON CONFLICT DO NOTHING
+    `;
+  }
 
   // Converge every application that has Gmail evidence, not only those touched
   // by new messages, so a stored event can repair a stale tracker status.

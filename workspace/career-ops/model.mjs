@@ -1,5 +1,5 @@
 export const ACTIVE_STATUSES = new Set(['TARGET','APPLIED','SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','DEFERRED']);
-export const TERMINAL_STATUSES = new Set(['REJECTED','DECLINED','CLOSED']);
+export const TERMINAL_STATUSES = new Set(['REJECTED','ASSUMED_REJECTED','DECLINED','CLOSED']);
 
 export function normaliseStatus(value='TARGET') {
   const status = String(value || 'TARGET').trim().toUpperCase();
@@ -37,30 +37,38 @@ export function needsAttention(application={}, now=Date.now()) {
   return false;
 }
 
-const SUBMITTED_STATUSES = new Set(['APPLIED','SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTED']);
+const SUBMITTED_STATUSES = new Set(['APPLIED','SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTED','ASSUMED_REJECTED']);
 const INTERVIEW_EVENTS = new Set(['INTERVIEW','OFFER']);
+const RESPONSE_EVENTS = new Set(['SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTION']);
 
 /**
  * Funnel counts derived only from the canonical tracker (applications plus their
  * event history), so Gmail reconciliation moves them without separate counters.
  * A rejected application was still submitted, and an application that reached
- * interview keeps that conversion after a later decision.
+ * interview keeps that conversion after a later decision. No-response means a
+ * submitted application remains APPLIED with no meaningful employer-response event.
  */
 export function summaryCounts(applications=[], events=[]) {
-  const interviewed = new Set(events
-    .filter(event => INTERVIEW_EVENTS.has(String(event.event_type || '').toUpperCase()) && event.payload?.relevance !== 'ignored')
+  const relevantEvents = events.filter(event => event.payload?.relevance !== 'ignored');
+  const interviewed = new Set(relevantEvents
+    .filter(event => INTERVIEW_EVENTS.has(String(event.event_type || '').toUpperCase()))
+    .map(event => event.application_id));
+  const responded = new Set(relevantEvents
+    .filter(event => RESPONSE_EVENTS.has(String(event.event_type || '').toUpperCase()))
     .map(event => event.application_id));
   return applications.reduce((acc, app) => {
     const status = normaliseStatus(app.status);
-    if (SUBMITTED_STATUSES.has(status) || (app.submitted_at && status !== 'TARGET' && status !== 'DECLINED')) acc.submitted += 1;
-    if (status === 'REJECTED') acc.denied += 1;
+    const submitted = SUBMITTED_STATUSES.has(status) || (app.submitted_at && status !== 'TARGET' && status !== 'DECLINED');
+    if (submitted) acc.submitted += 1;
+    if (status === 'REJECTED' || status === 'ASSUMED_REJECTED') acc.denied += 1;
     if (status === 'INTERVIEW' || status === 'OFFER' || interviewed.has(app.id)) acc.interviews += 1;
+    if (submitted && status === 'APPLIED' && !responded.has(app.id)) acc.noResponse += 1;
     return acc;
-  }, { submitted:0, denied:0, interviews:0 });
+  }, { submitted:0, denied:0, noResponse:0, interviews:0 });
 }
 
 export function sortApplications(applications=[]) {
-  const order = { INTERVIEW:1, RECRUITER:2, ASSESSMENT:3, OFFER:4, SCREENING:5, APPLIED:6, TARGET:7, DEFERRED:8, REJECTED:9, DECLINED:10, CLOSED:11 };
+  const order = { INTERVIEW:1, RECRUITER:2, ASSESSMENT:3, OFFER:4, SCREENING:5, APPLIED:6, TARGET:7, DEFERRED:8, ASSUMED_REJECTED:9, REJECTED:10, DECLINED:11, CLOSED:12 };
   return [...applications].sort((a,b) => {
     const sa = order[normaliseStatus(a.status)] || 99;
     const sb = order[normaliseStatus(b.status)] || 99;
@@ -71,6 +79,7 @@ export function sortApplications(applications=[]) {
 
 const OUTCOME_LABELS = {
   REJECTION:'Rejection received',
+  ASSUMED_REJECTION:'Assumed rejection after silent-close window',
   OFFER:'Offer received',
   INTERVIEW:'Interview requested',
   ASSESSMENT:'Assessment requested',
