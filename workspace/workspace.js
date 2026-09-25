@@ -420,3 +420,9 @@
   render();
   refreshEvidence();
 })();
+
+
+// Self → AgentOS operating directive
+const selfDirectiveButton=document.querySelector('#self-directive-inject');
+const selfDirectiveStatus=document.querySelector('#self-directive-status');
+if(selfDirectiveButton){selfDirectiveButton.addEventListener('click',async()=>{const directive='Prioritize evidence over expansion. Do not initiate new product or UI work unless it directly advances income, housing stability, an existing proof obligation, or removes a verified blocker. Prefer finishing, validating, shipping, or stopping existing work. Challenge new scope against the Reality Check before accepting it.';selfDirectiveButton.disabled=true;selfDirectiveStatus.textContent='Injecting…';try{const response=await fetch('/api/workspace-self-directive',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({directive})});const body=await response.json();if(!response.ok)throw new Error(body.error||'Injection failed');selfDirectiveStatus.textContent='Active in AgentOS';}catch(error){selfDirectiveStatus.textContent=error.message;}finally{selfDirectiveButton.disabled=false;}});}
