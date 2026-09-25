@@ -10,3 +10,16 @@
 .funding-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--funding-line);margin:0}.funding-facts div{background:var(--page-bg,#0d0e0b);padding:14px}.funding-facts dt{text-transform:uppercase;letter-spacing:.08em;font-size:10px;color:var(--funding-muted)}.funding-facts dd{margin:5px 0 0}
 .funding-columns{display:grid;grid-template-columns:1fr 1fr;gap:28px}.funding-columns h4{margin:0 0 10px}.funding-columns ul{margin:0;padding-left:18px;color:var(--funding-muted);line-height:1.55}.funding-next{border-top:1px solid var(--funding-line);padding-top:16px;margin:0}.funding-card__actions{display:flex;justify-content:space-between;gap:16px;align-items:center}.funding-card__actions label{display:flex;gap:9px;align-items:center}.funding-card select{background:transparent;color:inherit;border:1px solid var(--funding-line);padding:8px}.funding-card a,.funding-footer a{text-decoration:underline;text-underline-offset:3px}.funding-footer{display:flex;justify-content:space-between;gap:20px;padding-top:24px;color:var(--funding-muted);font-size:12px}
 @media(max-width:820px){.funding-hero{grid-template-columns:1fr}.funding-summary{grid-template-columns:repeat(2,1fr)}.funding-summary article:nth-child(2){border-right:0}.funding-section-head,.funding-controls,.funding-card__top,.funding-card__actions,.funding-footer{align-items:flex-start;flex-direction:column}.funding-columns,.funding-facts{grid-template-columns:1fr}.funding-search{width:100%}.funding-search input{min-width:0;width:100%}.funding-controls{position:static}.funding-card__actions{display:flex}.funding-match{white-space:normal}}
+
+/* Native Workspace view contract: the shared Workspace intro owns the page hero. */
+.workspace-page .funding-workspace{padding:0;border:0}
+.workspace-page .funding-view-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 0 20px;border-bottom:1px solid var(--funding-line)}
+.workspace-page .funding-view-status .section-kicker{margin:0}
+.workspace-page .funding-view-status strong{font-size:13px;font-weight:600}
+.workspace-page .funding-view-status small{color:var(--funding-muted)}
+.workspace-page .funding-summary{border:1px solid var(--funding-line);border-top:0}
+.workspace-page .funding-profile,.workspace-page .funding-board{padding:32px 0}
+.workspace-page .funding-section-head h2{font-size:clamp(24px,3vw,38px)}
+.workspace-page .funding-controls{top:var(--workspace-sticky-offset,0);background:color-mix(in srgb,var(--page-bg,#0d0e0b) 94%,transparent);backdrop-filter:blur(16px)}
+.workspace-page .funding-card{border-radius:14px;background:color-mix(in srgb,currentColor 3%,transparent)}
+@media(max-width:820px){.workspace-page .funding-view-status{align-items:flex-start;flex-direction:column}.workspace-page .funding-summary{grid-template-columns:1fr 1fr}}
