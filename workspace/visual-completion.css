@@ -294,3 +294,33 @@ html[data-ashwood-theme="paper-light"] .workspace-page{
   visibility:visible;
 }
 .workspace-page[data-workspace-current-view="funding"]{--vc-accent:var(--vc-mint)}
+
+
+/* 21st.dev-inspired cockpit polish: restrained semantic color + notification affordance.
+   Uses existing ASHWOOD tokens rather than importing a second design system. */
+.workspace-page{
+  --vc-surface-1:rgba(12,16,18,.94);
+  --vc-surface-2:rgba(17,22,25,.88);
+  --vc-border:rgba(255,255,255,.10);
+  --vc-border-strong:rgba(118,230,194,.22);
+  --vc-warn:#e0bd5a;
+  --vc-danger:#e47f7f;
+}
+.workspace-page .workspace-masthead{background:linear-gradient(180deg,rgba(9,12,14,.96),rgba(9,12,14,.78));border-color:var(--vc-border)}
+.workspace-page .workspace-section-nav a[aria-current="page"]{background:rgba(118,230,194,.09);border-color:rgba(118,230,194,.24);color:var(--vc-mint)}
+.workspace-page .workspace-primary-link{position:relative;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--vc-border);background:var(--vc-surface-2);border-radius:999px;padding:8px 11px}
+.workspace-page #workspace-notification-count:not(:empty){display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--vc-mint);color:#07100d;font-size:10px;font-weight:800;line-height:1}
+.workspace-page .ecosystem-feed{border:1px solid var(--vc-border-strong);background:linear-gradient(145deg,rgba(15,21,24,.96),rgba(8,12,14,.94));box-shadow:0 18px 60px rgba(0,0,0,.24)}
+.workspace-page .ecosystem-feed__context{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--vc-border);padding-bottom:14px}
+.workspace-page .ecosystem-feed__badge{border:1px solid rgba(118,230,194,.25);background:rgba(118,230,194,.08);color:var(--vc-mint);border-radius:999px;padding:5px 9px}
+.workspace-page .ecosystem-feed__item{position:relative;border:1px solid var(--vc-border)!important;border-left:1px solid var(--vc-border)!important;border-radius:12px;background:var(--vc-surface-2)!important;box-shadow:none}
+.workspace-page .ecosystem-feed__item::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;border-radius:2px;background:var(--vc-blue)}
+.workspace-page .ecosystem-feed__item:first-child::before{background:var(--vc-mint)}
+.workspace-page .ecosystem-feed__actions button,.workspace-page .ecosystem-feed__actions a{border-radius:8px;border:1px solid var(--vc-border);background:rgba(255,255,255,.025)}
+.workspace-page .ecosystem-feed__actions button:hover,.workspace-page .ecosystem-feed__actions a:hover{border-color:rgba(118,230,194,.28);background:rgba(118,230,194,.06)}
+@media(max-width:700px){
+  .workspace-page .workspace-primary-link{width:38px;height:38px;padding:0;justify-content:center;font-size:0;border-radius:50%}
+  .workspace-page .workspace-primary-link::before{content:"";width:15px;height:17px;border:1.5px solid currentColor;border-radius:8px 8px 6px 6px;clip-path:polygon(15% 0,85% 0,100% 78%,70% 78%,64% 100%,36% 100%,30% 78%,0 78%)}
+  .workspace-page #workspace-notification-count:not(:empty){position:absolute;right:-4px;top:-5px;font-size:9px}
+  .workspace-page .ecosystem-feed__context{align-items:flex-start;flex-direction:column}
+}
