@@ -72,3 +72,17 @@ test('source sync strips unbounded transcript fields and rejects wrong token', a
   assert.equal('transcript' in visible.body.sources[0].items[0], false);
   assert.equal(visible.body.sources[0].items[0].transcript_excerpt.length > 0, true);
 });
+
+test('Evidence view exposes Sources and its client module parses', async () => {
+  const [html, views, client] = await Promise.all([
+    readFile(new URL('../workspace/index.html', import.meta.url), 'utf8'),
+    readFile(new URL('../workspace/views.mjs', import.meta.url), 'utf8'),
+    readFile(new URL('../workspace/sources.mjs', import.meta.url), 'utf8'),
+  ]);
+  assert.match(html, /id="sources"/);
+  assert.match(html, /\/workspace\/sources\.mjs/);
+  assert.match(views, /evidence:[\s\S]*"#sources"/);
+  assert.match(views, /sources:"evidence"/);
+  assert.match(client, /\/api\/workspace-sources/);
+  assert.match(client, /visual_pending/);
+});
