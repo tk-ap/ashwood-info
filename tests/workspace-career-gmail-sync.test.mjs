@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PGlite } from '@electric-sql/pglite';
 import { ensureCareerSchema } from '../api/_career-ops-handler.mjs';
-import { classifyCareerEmail, deriveCanonicalStatus, syncCareerGmail } from '../api/_career-gmail-pipeline.mjs';
+import { classifyCareerEmail, deriveCanonicalStatus, silentRejectionPolicy, syncCareerGmail } from '../api/_career-gmail-pipeline.mjs';
 import { summaryCounts, syncSummary } from '../workspace/career-ops/model.mjs';
 
 const TIKTOK = 'career:tiktok:A115985';
@@ -357,4 +357,46 @@ test('role-named "no longer available" decision reads as an employer rejection',
     body:"Thanks for giving us the time to review your application. We're letting you know that Project Manager, PMO-USDS is no longer available."
   });
   assert.equal(result.status, 'REJECTED');
+});
+
+
+test('confirmation can carry an explicit silent-rejection policy without becoming an immediate rejection', () => {
+  const occurredAt = '2026-09-25T00:00:00Z';
+  const result = classifyCareerEmail({
+    subject:'Application received',
+    from:'Employer <no-reply@greenhouse.io>',
+    occurredAt,
+    body:'Thank you for applying. Only candidates who are selected will be contacted.'
+  });
+  assert.equal(result.eventType, 'CONFIRMATION');
+  assert.equal(result.status, 'APPLIED');
+  assert.equal(result.silentRejectionPolicy.detected, true);
+  assert.equal(result.silentRejectionPolicy.days, 30);
+  assert.equal(result.silentRejectionPolicy.deadline, '2026-10-25T00:00:00.000Z');
+});
+
+test('explicit employer silent-close timeline overrides the 30-day default', () => {
+  const policy = silentRejectionPolicy(
+    'Only candidates who are selected will be contacted within 2 weeks.',
+    '2026-09-25T00:00:00Z'
+  );
+  assert.equal(policy.days, 14);
+  assert.equal(policy.deadline, '2026-10-09T00:00:00.000Z');
+});
+
+test('assumed rejection is distinct from explicit rejection and can reopen on later employer activity', () => {
+  const decision = deriveCanonicalStatus({ status:'APPLIED' }, [
+    { source:'gmail', event_type:'CONFIRMATION', occurred_at:'2026-09-25T00:00:00Z', source_ref:'confirm', payload:{} },
+    { source:'career-policy', event_type:'ASSUMED_REJECTION', occurred_at:'2026-10-25T00:00:00Z', source_ref:'silent', payload:{ inferred:true } }
+  ]);
+  assert.equal(decision.status, 'ASSUMED_REJECTED');
+  assert.equal(decision.evidence.event_type, 'ASSUMED_REJECTION');
+
+  const reopened = deriveCanonicalStatus({ status:'ASSUMED_REJECTED' }, [
+    { source:'gmail', event_type:'CONFIRMATION', occurred_at:'2026-09-25T00:00:00Z', source_ref:'confirm', payload:{} },
+    { source:'career-policy', event_type:'ASSUMED_REJECTION', occurred_at:'2026-10-25T00:00:00Z', source_ref:'silent', payload:{ inferred:true } },
+    { source:'gmail', event_type:'RECRUITER', occurred_at:'2026-10-27T00:00:00Z', source_ref:'reengage', payload:{} }
+  ]);
+  assert.equal(reopened.status, 'RECRUITER');
+  assert.equal(reopened.evidence.source_ref, 'reengage');
 });
