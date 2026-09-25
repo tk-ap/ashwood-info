@@ -4,6 +4,7 @@
     "deploymentEnabled": {
       "main": true,
       "feat/*": false,
+      "feat/workspace-visual-system": true,
       "fix/*": false,
       "design/*": false,
       "content/*": false,
