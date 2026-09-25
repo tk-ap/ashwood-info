@@ -42,3 +42,10 @@ html[data-ashwood-theme="paper-light"]{--career-ink:#171713;--career-muted:#706f
   .workspace-page #work .career-detail:empty{display:none}
   .workspace-page #work .career-layout:has(.career-applications:empty) {display:none}
 }
+
+
+/* View ownership wins over legacy mobile Career layout overrides. */
+.workspace-page[data-workspace-view-ready="true"][data-workspace-current-view]:not([data-workspace-current-view="career"]) #work.career-ops-page,
+.workspace-page[data-workspace-view-ready="true"][data-workspace-current-view]:not([data-workspace-current-view="career"]) #network{
+  display:none!important;
+}
