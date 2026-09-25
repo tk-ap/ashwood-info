@@ -158,14 +158,19 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
   const trackedUrls = new Set(tracked.map(item => String(item.posting_url || '').trim()).filter(Boolean));
   const trackedPairs = new Set(tracked.map(item => `${String(item.company || '').toLowerCase()}::${String(item.role || '').toLowerCase()}`));
   const seen = new Set();
+  const seenPairs = new Set();
 
   return jobs.map(job => {
     const { score, matches, gate } = scoreOpportunity(job, now);
     const url = String(job.url || '').trim();
     const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
+    const source = String(job.source_name || job.source || 'Remotive').trim() || 'Remotive';
+    const sourceKey = source.toLowerCase().replace(/\s+/g,'-');
     const id = String(job.id || url || pair);
-    if (seen.has(id) || trackedUrls.has(url) || trackedPairs.has(pair)) return null;
-    seen.add(id);
+    const seenKey = `${sourceKey}::${id}`;
+    if (seen.has(seenKey) || seenPairs.has(pair) || trackedUrls.has(url) || trackedPairs.has(pair)) return null;
+    seen.add(seenKey);
+    seenPairs.add(pair);
     return {
       id,
       company:String(job.company_name || '').trim(),
@@ -175,8 +180,8 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
       job_type:String(job.job_type || '').trim(),
       salary:String(job.salary || '').trim(),
       published_at:job.publication_date || null,
-      source:'Remotive',
-      source_url:url,
+      source,
+      source_url:String(job.source_url || url).trim() || url,
       score,
       matches,
       qualification_gate:gate,
