@@ -400,3 +400,27 @@ test('assumed rejection is distinct from explicit rejection and can reopen on la
   assert.equal(reopened.status, 'RECRUITER');
   assert.equal(reopened.evidence.source_ref, 'reengage');
 });
+
+
+test('Gmail application confirmation backfills submitted_at on a tracked TARGET', async t => {
+  const tracked = {
+    id:'career:curated-career-search:headway',
+    company:'Headway',
+    role:'Business Operations Lead',
+    job_id:'headway-1',
+    status:'TARGET'
+  };
+  const confirmation = gmailMessage({
+    id:'headway-confirmation',
+    at:'2026-09-26T20:45:00Z',
+    from:'Headway <no-reply@greenhouse-mail.io>',
+    subject:'Thank you for applying to Headway',
+    body:'We have received your application for the Business Operations Lead role at Headway.'
+  });
+  const f = await fixture({ mailbox:[confirmation], extraApplications:[tracked] });
+  t.after(() => f.db.close());
+  await f.run();
+  const app = await f.app(tracked.id);
+  assert.equal(app.status, 'APPLIED');
+  assert.equal(new Date(app.submitted_at).toISOString(), '2026-09-26T20:45:00.000Z');
+});
