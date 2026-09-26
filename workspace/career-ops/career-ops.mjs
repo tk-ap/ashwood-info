@@ -25,6 +25,8 @@ const state = {
   opportunityDispositions: [],
   resumeProfile: { configured:false, source:null, updated_at:null },
   newJobsSinceSession: 0,
+  gmailSyncInFlight: false,
+  gmailPollTimer: null,
   declinedOpportunityIds: new Set(JSON.parse(localStorage.getItem('ashwood.career.declined-opportunities.v1') || '[]'))
 };
 
@@ -81,6 +83,34 @@ function opportunitySourceKey(opportunity={}) {
 
 function opportunityStorageKey(opportunity={}) {
   return `${opportunitySourceKey(opportunity)}:${String(opportunity.id || '')}`;
+}
+
+function workArrangementLabel(opportunity={}) {
+  const tier = String(opportunity.work_arrangement_preference || '').toLowerCase();
+  if (tier === 'remote') return 'Remote';
+  if (tier === 'hybrid') return 'Hybrid';
+  if (tier === 'onsite') return 'On-site';
+  const evidence = `${opportunity.job_type || ''} ${opportunity.location || ''}`;
+  if (/hybrid/i.test(evidence)) return 'Hybrid';
+  if (/remote/i.test(evidence)) return 'Remote';
+  if (/on[- ]?site|onsite|in[- ]office/i.test(evidence)) return 'On-site';
+  return '';
+}
+
+function salaryBounds(label='') {
+  const values = [...String(label).matchAll(/(?:\$|USD\s*)?([\d,.]+(?:\.\d+)?)\s*([kKmM]?)/g)]
+    .map(match => {
+      let value = Number(String(match[1]).replaceAll(',', ''));
+      if (!Number.isFinite(value)) return null;
+      if (/k/i.test(match[2] || '')) value *= 1000;
+      if (/m/i.test(match[2] || '')) value *= 1000000;
+      return Math.round(value);
+    })
+    .filter(value => Number.isFinite(value) && value >= 1000);
+  return {
+    min:values[0] || null,
+    max:values[1] || values[0] || null
+  };
 }
 
 function isLocallyDeclined(opportunity={}) {
@@ -493,7 +523,7 @@ function renderOpportunities() {
         <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
         ${resumeArtifactMarkup(opportunity)}
         <div class="career-opportunity-actions">
-          <a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Open role ↗</a>
+          <button type="button" data-apply-opportunity="${escapeHtml(opportunity.id)}">Apply ↗</button>
           <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
           <button type="button" data-decline-opportunity="${escapeHtml(opportunity.id)}">Decline</button>
         </div>
@@ -527,6 +557,21 @@ function renderOpportunities() {
         button.textContent = 'Decline';
         $('#career-opportunity-meta').textContent = `Decline was not saved: ${error.message}`;
       }
+    }));
+
+    root.querySelectorAll('[data-apply-opportunity]').forEach(button => button.addEventListener('click', async () => {
+      const opportunity = state.opportunities.find(item => String(item.id) === button.dataset.applyOpportunity);
+      if (!opportunity) return;
+      const applicationTab = window.open('about:blank', '_blank');
+      if (applicationTab) applicationTab.opener = null;
+      const tracked = await trackOpportunity(opportunity, button, { reload:false, nextAction:'Complete the employer application; Gmail confirmation will update this record automatically.' });
+      if (!tracked) {
+        applicationTab?.close();
+        return;
+      }
+      if (applicationTab) applicationTab.location.replace(opportunity.url);
+      else window.location.href = opportunity.url;
+      await load();
     }));
 
     root.querySelectorAll('[data-track-opportunity]').forEach(button => button.addEventListener('click', async () => {
@@ -602,11 +647,12 @@ async function loadOpportunities({ refresh=false }={}) {
   }
 }
 
-async function trackOpportunity(opportunity, button) {
+async function trackOpportunity(opportunity, button, { reload=true, nextAction=null }={}) {
   const original = button.textContent;
   button.disabled = true;
-  button.textContent = 'Adding…';
+  button.textContent = reload ? 'Adding…' : 'Preparing…';
   try {
+    const salary = salaryBounds(opportunity.salary);
     const result = await api({
       method:'POST',
       body:JSON.stringify({
@@ -617,24 +663,38 @@ async function trackOpportunity(opportunity, button) {
         job_id:String(opportunity.id),
         posting_url:opportunity.url,
         location:opportunity.location,
-        work_arrangement:'Remote',
+        work_arrangement:workArrangementLabel(opportunity),
+        salary_min:salary.min,
+        salary_max:salary.max,
+        salary_currency:'USD',
         status:'TARGET',
-        next_action:'Review the full employer posting and decide whether to apply.',
-        posting_snapshot:{ summary:opportunity.summary || '', responsibilities:[], requirements:[], preferred:[] },
+        next_action:nextAction || 'Review the full employer posting and decide whether to apply.',
+        posting_snapshot:{
+          summary:opportunity.summary || '',
+          responsibilities:[],
+          requirements:[],
+          preferred:[],
+          source:opportunity.source || null,
+          source_url:opportunity.source_url || opportunity.url,
+          salary_label:opportunity.salary || null,
+          published_at:opportunity.published_at || null
+        },
         materials:{ resume_variant:opportunity.resume_recommendation?.variant || '' },
         source:opportunitySourceKey(opportunity),
         notes:`Discovered through ASHWOOD Career Ops. Source: ${opportunity.source || 'job feed'}. Published ${opportunity.published_at || 'date unavailable'}.`
       })
     });
     state.selectedId = result.id;
-    await load();
+    if (reload) await load();
+    button.textContent = original;
+    button.disabled = false;
+    return true;
   } catch (error) {
     button.disabled = false;
     button.textContent = 'Try again';
     button.title = error.message;
-    return;
+    return false;
   }
-  button.textContent = original;
 }
 
 function render() {
@@ -765,12 +825,15 @@ async function saveApplication(event) {
   }
 }
 
-$('#career-add').addEventListener('click', () => openApplicationDialog());
-$('#career-refresh').addEventListener('click', async () => {
+async function syncInbox({ interactive=false }={}) {
+  if (state.gmailSyncInFlight) return;
+  state.gmailSyncInFlight = true;
   const button = $('#career-refresh');
-  const original = button.textContent;
-  button.disabled = true;
-  button.textContent = 'Syncing inbox…';
+  const original = button?.textContent || 'Refresh';
+  if (interactive && button) {
+    button.disabled = true;
+    button.textContent = 'Syncing inbox…';
+  }
   try {
     const result = await gmailSyncApi();
     state.inboxReviews = Array.isArray(result.reviews) ? result.reviews : [];
@@ -786,12 +849,32 @@ $('#career-refresh').addEventListener('click', async () => {
     state.inboxSync = { status:'error', message:error.message, failures:error.body?.failures || [] };
     renderSyncState();
   } finally {
-    button.disabled = false;
-    button.textContent = original;
+    state.gmailSyncInFlight = false;
+    if (interactive && button) {
+      button.disabled = false;
+      button.textContent = original;
+    }
   }
-});
+}
+
+function startCareerLiveSync() {
+  if (state.gmailPollTimer) window.clearInterval(state.gmailPollTimer);
+  window.setTimeout(() => {
+    if (document.visibilityState === 'visible') syncInbox();
+  }, 10000);
+  state.gmailPollTimer = window.setInterval(() => {
+    if (document.visibilityState === 'visible') syncInbox();
+  }, 60000);
+}
+
+$('#career-add').addEventListener('click', () => openApplicationDialog());
+$('#career-refresh').addEventListener('click', () => syncInbox({ interactive:true }));
 $('#career-opportunity-refresh').addEventListener('click', () => loadOpportunities({ refresh:true }));
 $('#career-form').addEventListener('submit', saveApplication);
 document.querySelectorAll('[data-career-close]').forEach(button => button.addEventListener('click', () => $('#career-dialog').close()));
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') syncInbox();
+});
 
-load();
+load().then(startCareerLiveSync);
+
