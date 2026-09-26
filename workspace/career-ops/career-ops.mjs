@@ -707,19 +707,28 @@ function render() {
   $('#career-refreshed').textContent = `Refreshed ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
 }
 
-async function load() {
-  try {
+async function refreshCareerState({ showLoading=false }={}) {
+  if (showLoading) {
     $('#career-state').textContent = 'Loading…';
     $('#career-applications').innerHTML = '<div class="workspace-state is-loading"><strong>Loading applications…</strong><span>Reading the private Career Ops record.</span></div>';
     $('#career-detail').innerHTML = '<div class="workspace-state is-loading"><strong>Preparing application detail…</strong><span>Selecting the current application after the record loads.</span></div>';
-    const data = await api();
-    state.applications = data.applications || [];
-    state.events = data.events || [];
-    state.opportunityDispositions = data.opportunity_dispositions || [];
-    state.resumeProfile = data.resume_profile || { configured:false, source:null, updated_at:null };
-    if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
-    $('#career-state').textContent = 'Private workspace';
-    render();
+  }
+  const data = await api();
+  state.applications = data.applications || [];
+  state.events = data.events || [];
+  state.opportunityDispositions = data.opportunity_dispositions || [];
+  state.resumeProfile = data.resume_profile || { configured:false, source:null, updated_at:null };
+  if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
+  if (state.selectedId && !state.applications.some(item => item.id === state.selectedId)) {
+    state.selectedId = state.applications.length ? sortApplications(state.applications)[0].id : null;
+  }
+  $('#career-state').textContent = 'Private workspace';
+  render();
+}
+
+async function load() {
+  try {
+    await refreshCareerState({ showLoading:true });
     await loadOpportunities();
   } catch (error) {
     if (error.status === 401) {
@@ -844,7 +853,7 @@ async function syncInbox({ interactive=false }={}) {
       counts:result.counts || {},
       syncedAt:new Date().toISOString()
     };
-    await load();
+    await refreshCareerState();
   } catch (error) {
     state.inboxSync = { status:'error', message:error.message, failures:error.body?.failures || [] };
     renderSyncState();
