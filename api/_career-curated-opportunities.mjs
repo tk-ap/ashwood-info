@@ -6,7 +6,7 @@ export const CURATED_CAREER_OPPORTUNITIES = [
     id:'career-search:headway-business-operations-lead:2026-09-26',
     url:'https://to.indeed.com/aavjzz89wfwr',
     title:'Business Operations Lead',
-    company_name:'Headway (NY)',
+    company_name:'Headway',
     candidate_required_location:'Remote',
     job_type:'Full-time · Remote',
     work_arrangement:'remote',
