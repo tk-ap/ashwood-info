@@ -1,0 +1,26 @@
+/* Physical black hole (gravity-physical.js). Sits in the fixed cosmos where the
+   authored plates sit, and replaces them while it is running. If it cannot run, the
+   script removes this canvas and the authored image scene stays exactly as it was. */
+.ashwood-physical-hole-canvas{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  display:block;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  background:#000;
+  opacity:0;
+  transition:opacity 260ms linear;
+}
+body.ashwood-physical-hole .ashwood-physical-hole-canvas{
+  opacity:var(--physical-hole-opacity,0);
+}
+/* The plates carry their own black hole; two would be one too many. */
+body.ashwood-physical-hole .ashwood-site-cosmos__plate,
+body.ashwood-physical-hole .ashwood-gravity-canvas{
+  display:none;
+}
+@media (prefers-reduced-motion:reduce){
+  .ashwood-physical-hole-canvas{transition:none}
+}
