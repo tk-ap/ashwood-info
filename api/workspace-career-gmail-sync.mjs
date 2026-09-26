@@ -27,7 +27,7 @@ async function accessToken() {
   return (await response.json()).access_token;
 }
 
-function gmailClient(auth, startHistoryId=null) {
+export function gmailClient(auth, startHistoryId=null) {
   async function recentMessageIds() {
     const response = await fetch(
       `${GMAIL_API}/messages?maxResults=50&q=${encodeURIComponent('newer_than:30d -category:promotions -category:social')}`,
