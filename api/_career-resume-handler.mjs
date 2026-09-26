@@ -4,11 +4,15 @@ import { ensureCareerSchema } from './_career-ops-handler.mjs';
 import { loadCareerResumeProfile, ensureCareerResumeSchema } from './_career-resume-profile.mjs';
 import { resumeRecommendation, scoreOpportunity, stripHtml } from './_career-opportunities.mjs';
 import { buildResumeDocx } from './_career-resume-docx.mjs';
+import { CURATED_CAREER_OPPORTUNITIES } from './_career-curated-opportunities.mjs';
 
 const DEFAULT_SOURCE = 'remotive';
 
 async function resolveOpportunity(sql, source, opportunityId) {
   const sourceKey = String(source || DEFAULT_SOURCE).trim().toLowerCase();
+  if (sourceKey === 'curated-career-search') {
+    return CURATED_CAREER_OPPORTUNITIES.find(job => String(job.id || '') === String(opportunityId || '')) || null;
+  }
   const rows = await sql`
     SELECT payload
     FROM workspace_career_opportunity_cache

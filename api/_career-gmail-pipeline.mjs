@@ -433,6 +433,14 @@ async function persistEvent(sql, message, application, existing) {
     silent_rejection_policy: message.classification.silentRejectionPolicy
   };
   const eventType = message.classification.eventType || 'EMAIL';
+  if (eventType === 'CONFIRMATION' && application?.id) {
+    await sql`
+      UPDATE workspace_career_applications
+      SET submitted_at = COALESCE(submitted_at, ${message.occurredAt}),
+          updated_at = NOW()
+      WHERE id = ${application.id}
+    `;
+  }
   if (existing) {
     // Correct a stale classification in place: the same Gmail message stays one event.
     await sql`

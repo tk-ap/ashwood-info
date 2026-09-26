@@ -4,6 +4,7 @@ import { PGlite } from '@electric-sql/pglite';
 import { ensureCareerSchema } from '../api/_career-ops-handler.mjs';
 import { classifyCareerEmail, deriveCanonicalStatus, silentRejectionPolicy, syncCareerGmail } from '../api/_career-gmail-pipeline.mjs';
 import { summaryCounts, syncSummary } from '../workspace/career-ops/model.mjs';
+import { gmailClient } from '../api/workspace-career-gmail-sync.mjs';
 
 const TIKTOK = 'career:tiktok:A115985';
 const TIKTOK_LIVE = 'career:tiktok:A14462';
@@ -399,4 +400,70 @@ test('assumed rejection is distinct from explicit rejection and can reopen on la
   ]);
   assert.equal(reopened.status, 'RECRUITER');
   assert.equal(reopened.evidence.source_ref, 'reengage');
+});
+
+
+test('Gmail application confirmation backfills submitted_at on a tracked TARGET', async t => {
+  const tracked = {
+    id:'career:curated-career-search:headway',
+    company:'Headway',
+    role:'Business Operations Lead',
+    job_id:'headway-1',
+    status:'TARGET'
+  };
+  const confirmation = gmailMessage({
+    id:'headway-confirmation',
+    at:'2026-09-26T20:45:00Z',
+    from:'Headway <no-reply@greenhouse-mail.io>',
+    subject:'Thank you for applying to Headway',
+    body:'We have received your application for the Business Operations Lead role at Headway.'
+  });
+  const f = await fixture({ mailbox:[confirmation], extraApplications:[tracked] });
+  t.after(() => f.db.close());
+  await f.run();
+  const app = await f.app(tracked.id);
+  assert.equal(app.status, 'APPLIED');
+  assert.equal(new Date(app.submitted_at).toISOString(), '2026-09-26T20:45:00.000Z');
+});
+
+
+test('Career Gmail client uses incremental history after the first sync', async t => {
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const calls = [];
+  globalThis.fetch = async url => {
+    calls.push(String(url));
+    if (String(url).includes('/history?')) {
+      return {
+        ok:true,
+        status:200,
+        json:async () => ({
+          history:[
+            { messagesAdded:[{ message:{ id:'m-1' } }, { message:{ id:'m-2' } }] },
+            { messagesAdded:[{ message:{ id:'m-2' } }] }
+          ]
+        })
+      };
+    }
+    throw new Error('unexpected fetch');
+  };
+  const ids = await gmailClient({ Authorization:'Bearer test' }, '12345').listMessageIds();
+  assert.deepEqual(ids.sort(), ['m-1','m-2']);
+  assert.equal(calls.some(url => url.includes('/messages?')), false);
+});
+
+test('Career Gmail client falls back to recent messages when Gmail history expires', async t => {
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  globalThis.fetch = async url => {
+    if (String(url).includes('/history?')) {
+      return { ok:false, status:404, json:async () => ({}) };
+    }
+    if (String(url).includes('/messages?')) {
+      return { ok:true, status:200, json:async () => ({ messages:[{ id:'fresh-1' }] }) };
+    }
+    throw new Error('unexpected fetch');
+  };
+  const ids = await gmailClient({ Authorization:'Bearer test' }, 'stale-history').listMessageIds();
+  assert.deepEqual(ids, ['fresh-1']);
 });
