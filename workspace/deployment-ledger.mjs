@@ -37,6 +37,7 @@ function deploymentCard(row) {
   const siteUrl = safeUrl(row.site_url);
   const target = String(row.target || 'preview');
   const state = String(row.state || 'UNKNOWN');
+  const destinationUrl = target === 'production' ? (siteUrl || deploymentUrl) : (deploymentUrl || siteUrl);
   return `<article class="deployment-ledger__row" data-project="${esc(row.project)}" data-target="${esc(target)}" data-state="${esc(state)}">
     <div class="deployment-ledger__row-head">
       <div>
@@ -49,7 +50,7 @@ function deploymentCard(row) {
       <div><dt>When</dt><dd>${esc(age(row.created_at))}</dd></div>
       <div><dt>Branch</dt><dd>${esc(row.git_ref || '—')}</dd></div>
       <div><dt>Revision</dt><dd><code>${esc(shortSha(row.git_sha))}</code></dd></div>
-      <div><dt>Site</dt><dd>${siteUrl ? `<a href="${esc(siteUrl)}" target="_blank" rel="noopener">${esc(siteUrl.replace(/^https:\/\//,''))}</a>` : '—'}</dd></div>
+      <div><dt>Destination</dt><dd>${destinationUrl ? `<a href="${esc(destinationUrl)}" target="_blank" rel="noopener">${esc(destinationUrl.replace(/^https:\/\//,''))}</a>` : '—'}</dd></div>
     </dl>
     <div class="deployment-ledger__links">
       ${deploymentUrl ? `<a href="${esc(deploymentUrl)}" target="_blank" rel="noopener">Deployment ↗</a>` : ''}
