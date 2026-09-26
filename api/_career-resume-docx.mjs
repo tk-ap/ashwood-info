@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer';
 
 const VARIANT_TERMS = {
+  'Analytics & Business Operations': ['analytics','analysis','data','report','business','operations','controls','workflow','performance','insight'],
   'Risk, Controls & Governance': ['risk','control','controls','governance','compliance','audit','resilien','regulatory','remediation'],
   'Finance & Business Analysis': ['finance','financial','banking','analysis','analytical','portfolio','client','business process','report'],
   'Program, Project & Change': ['program','project','change','implementation','cross-functional','stakeholder','launch','coordination','resilien'],
