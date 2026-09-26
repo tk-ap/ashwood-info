@@ -1,6 +1,6 @@
 import { getSql, json, requireSession, sameOrigin } from './_workspace.mjs';
 import { ensureCareerSchema } from './_career-ops-handler.mjs';
-import { syncCareerGmail } from './_career-gmail-pipeline.mjs';
+import { ensureGmailSyncSchema, syncCareerGmail } from './_career-gmail-pipeline.mjs';
 
 const GMAIL_API = 'https://gmail.googleapis.com/gmail/v1/users/me';
 
@@ -27,15 +27,46 @@ async function accessToken() {
   return (await response.json()).access_token;
 }
 
-function gmailClient(auth) {
+function gmailClient(auth, startHistoryId=null) {
+  async function recentMessageIds() {
+    const response = await fetch(
+      `${GMAIL_API}/messages?maxResults=50&q=${encodeURIComponent('newer_than:30d -category:promotions -category:social')}`,
+      { headers:auth }
+    );
+    if (!response.ok) throw new Error('Unable to list Career Gmail messages');
+    return ((await response.json()).messages || []).map(item => item.id);
+  }
+
+  async function historyMessageIds() {
+    if (!startHistoryId) return null;
+    const ids = new Set();
+    let pageToken = null;
+    for (let page = 0; page < 5; page += 1) {
+      const query = new URLSearchParams({
+        startHistoryId:String(startHistoryId),
+        historyTypes:'messageAdded',
+        maxResults:'100'
+      });
+      if (pageToken) query.set('pageToken', pageToken);
+      const response = await fetch(`${GMAIL_API}/history?${query.toString()}`, { headers:auth });
+      if (response.status === 404) return null;
+      if (!response.ok) throw new Error('Unable to read Career Gmail history');
+      const body = await response.json();
+      for (const entry of body.history || []) {
+        for (const added of entry.messagesAdded || []) {
+          if (added.message?.id) ids.add(String(added.message.id));
+        }
+      }
+      pageToken = body.nextPageToken || null;
+      if (!pageToken) break;
+    }
+    return [...ids];
+  }
+
   return {
     async listMessageIds() {
-      const response = await fetch(
-        `${GMAIL_API}/messages?maxResults=50&q=${encodeURIComponent('newer_than:30d -category:promotions -category:social')}`,
-        { headers:auth }
-      );
-      if (!response.ok) throw new Error('Unable to list Career Gmail messages');
-      return ((await response.json()).messages || []).map(item => item.id);
+      const incremental = await historyMessageIds();
+      return incremental === null ? recentMessageIds() : incremental;
     },
     async getMessage(id) {
       // Full format: ATS decision language usually sits past the 200-character snippet.
@@ -56,6 +87,7 @@ export default async function handler(req, res) {
 
     const sql = getSql();
     await ensureCareerSchema(sql);
+    await ensureGmailSyncSchema(sql);
     const token = await accessToken();
     const auth = { Authorization: `Bearer ${token}` };
 
@@ -66,7 +98,16 @@ export default async function handler(req, res) {
       return json(res, 409, { ok:false, error:'Delegated Gmail account does not match Career Ops account' });
     }
 
-    const result = await syncCareerGmail({ sql, gmail:gmailClient(auth) });
+    const priorSync = await sql`
+      SELECT last_history_id
+      FROM workspace_career_gmail_sync
+      WHERE account = ${profile.emailAddress}
+      LIMIT 1
+    `;
+    const result = await syncCareerGmail({
+      sql,
+      gmail:gmailClient(auth, priorSync[0]?.last_history_id || null)
+    });
 
     await sql`
       INSERT INTO workspace_career_gmail_sync (account, last_history_id, last_synced_at, updated_at)
