@@ -327,7 +327,7 @@ function renderDetail() {
       ${!snapshot.summary && !snapshot.responsibilities?.length && !snapshot.requirements?.length && !snapshot.preferred?.length ? '<p class="career-muted">No posting details have been captured yet.</p>' : ''}
     </div>
     <div class="career-timeline">
-      <div class="career-section-title"><span>Timeline</span><small>Email-driven status events will appear here once Gmail monitoring is connected.</small></div>
+      <div class="career-section-title"><span>Timeline</span><small>Email-driven status events appear here as Career Ops reconciles the inbox.</small></div>
       ${events.length ? events.map(event => `<article><time>${escapeHtml(fmtDateTime(event.occurred_at))}</time><div><strong>${escapeHtml(event.summary)}</strong><span>${escapeHtml(event.source || 'manual')} · ${escapeHtml(event.event_type || 'NOTE')}</span></div></article>`).join('') : '<p class="career-muted">No events yet.</p>'}
     </div>`;
 
@@ -357,7 +357,7 @@ function renderSyncState() {
     const latest = gmailEvents[0];
     node.innerHTML = `<strong>Gmail monitoring active</strong><span>${gmailEvents.length} tracked message event${gmailEvents.length === 1 ? '' : 's'} · latest ${escapeHtml(fmtDateTime(latest.occurred_at))}</span>`;
   } else {
-    node.innerHTML = `<strong>Gmail monitoring connected</strong><span>Press Refresh to check the Career Ops inbox. Credentials remain server-side.</span>`;
+    node.innerHTML = `<strong>Gmail monitoring connected</strong><span>Live inbox sync checks about once a minute while this page is open. Refresh remains available for an immediate check.</span>`;
   }
 }
 
