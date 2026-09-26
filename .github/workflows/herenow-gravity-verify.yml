@@ -2,9 +2,19 @@ name: verify here.now Gravity baseline
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ops/herenow-gravity-sandbox
+    paths:
+      - "scripts/herenow-visual-check.mjs"
+      - ".github/workflows/herenow-gravity-verify.yml"
 
 permissions:
   contents: read
+
+concurrency:
+  group: herenow-gravity-visual-verify
+  cancel-in-progress: true
 
 jobs:
   verify:
@@ -31,5 +41,7 @@ jobs:
           path: |
             herenow-desktop.png
             herenow-mobile.png
+            herenow-deployments-desktop.png
+            herenow-deployments-mobile.png
           if-no-files-found: error
           retention-days: 7
