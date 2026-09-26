@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Deployments — ASHWOOD Workspace</title>
+  <link rel="stylesheet" href="/ashwood-core.css">
+  <link rel="stylesheet" href="/workspace/workspace.css">
+  <link rel="stylesheet" href="/workspace/build-command-center.css">
+  <link rel="stylesheet" href="/workspace/build-detail.css">
+  <script type="module" src="/workspace/deployment-ledger.mjs"></script>
+</head>
+<body class="workspace-page" data-build-page="deployments">
+  <main class="build-detail-shell">
+    <header class="build-detail-head">
+      <div>
+        <p class="section-kicker">Build detail</p>
+        <h1>Deployments</h1>
+        <p>A deployment-by-deployment audit trail: what tried to ship, where it went, what revision it carried, and what Vercel reported.</p>
+      </div>
+      <a class="build-detail-back" href="/workspace/#build">Back to Build</a>
+    </header>
+    <nav class="build-detail-nav" aria-label="Build detail">
+      <a href="/workspace/build/environments/">Environments</a>
+      <a aria-current="page" href="/workspace/build/deployments/">Deployments</a>
+      <a href="/workspace/build/agentos/">AgentOS</a>
+      <a href="/workspace/build/queue/">Queue</a>
+      <a href="/workspace/build/design/">Design</a>
+      <a href="/workspace/build/history/">History</a>
+    </nav>
+    <section id="deployment-ledger" aria-live="polite">
+      <p class="build-detail-fresh">Loading canonical AgentOS deployment evidence…</p>
+    </section>
+  </main>
+</body>
+</html>
