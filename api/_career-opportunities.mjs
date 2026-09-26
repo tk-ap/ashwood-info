@@ -1,4 +1,5 @@
 const TITLE_RULES = [
+  [/analytics consultant|business analytics|analytics manager/i, 13, 'analytics'],
   [/operational risk|risk control|risk management/i, 14, 'operational risk'],
   [/business analyst/i, 13, 'business analysis'],
   [/program manager|program management/i, 12, 'program management'],
@@ -16,6 +17,7 @@ const TITLE_RULES = [
 ];
 
 const BODY_RULES = [
+  [/analytics|data analysis|business intelligence|data-driven insights/i, 3, 'analytics'],
   [/operational risk|risk controls?|control environment/i, 4, 'operational risk'],
   [/business analysis|business analyst|requirements gathering/i, 4, 'business analysis'],
   [/program management|project management|\bpmo\b/i, 4, 'program / project'],
@@ -30,7 +32,7 @@ const BODY_RULES = [
 ];
 
 const NEGATIVE_TITLE = /software engineer|software developer|frontend|front[- ]end|backend|back[- ]end|full[- ]stack|data scientist|machine learning engineer|developer|devops|site reliability|solutions architect|cloud architect|security engineer|data engineer|engineering manager|technical lead|account executive|sales representative|nurse|physician|therapist|designer|copywriter|recruiter/i;
-const TARGET_TITLE = /operational risk|risk (?:control|management|analyst)|business analyst|program manager|program management|project manager|project management|\bpmo\b|compliance|regulatory|business operations|operations (?:manager|program|analyst)|controls?|governance|vendor management|third[- ]party|process improvement|business process|operational excellence|business continuity|resilien(?:ce|cy)|strategy|strategic operations|special projects|financial analyst|finance operations|financial operations|fraud|audit|implementation manager|change management|product operations|product strategy|product program|product manager/i;
+const TARGET_TITLE = /analytics consultant|analytics manager|business analytics|operational risk|risk (?:control|management|analyst)|business analyst|program manager|program management|project manager|project management|\bpmo\b|compliance|regulatory|business operations|operations (?:manager|program|analyst)|controls?|governance|vendor management|third[- ]party|process improvement|business process|operational excellence|business continuity|resilien(?:ce|cy)|strategy|strategic operations|special projects|financial analyst|finance operations|financial operations|fraud|audit|implementation manager|change management|product operations|product strategy|product program|product manager/i;
 const TECHNICAL_REQUIREMENT = /(?:bachelor'?s|degree|experience).{0,45}(?:computer science|software engineering)|\b(?:python|java|javascript|typescript|c\+\+|kubernetes|terraform|aws|azure|gcp)\b.{0,35}(?:required|must have|years?)/i;
 
 function qualificationGate(job={}) {
@@ -118,7 +120,15 @@ export function resumeRecommendation(job={}, matches=[]) {
     'Use Kasa to show operating ownership, budgeting, vendor coordination, and performance improvement.'
   ];
 
-  if (/operational risk|risk control|controls?|governance|compliance|audit|resilien/i.test(evidence)) {
+  if (/analytics consultant|business analytics|analytics manager/i.test(title)) {
+    variant = 'Analytics & Business Operations';
+    summary = 'Analytics and business-operations professional with experience turning operational data, controls evidence, workflow performance, and stakeholder needs into clear decisions and process improvements.';
+    emphasis = [
+      'Lead with the Wells Fargo Analytics Consultant promotion, 20+ recurring control reports, exception investigation, data validation, and executive reporting.',
+      'Keep JPMorgan business-process analysis, service-level analysis, reporting, and process-improvement evidence prominent.',
+      'Use Charles Schwab when financial-services fluency, client discovery, or regulated-product knowledge is relevant.'
+    ];
+  } else if (/operational risk|risk control|controls?|governance|compliance|audit|resilien/i.test(evidence)) {
     variant = 'Risk, Controls & Governance';
     summary = 'Business execution and controls professional with experience in regulated financial services, operational risk, control design, business resiliency, process improvement, and cross-functional execution.';
     emphasis = [
@@ -168,8 +178,9 @@ export function scoreOpportunity(job={}, now=Date.now()) {
   if (!title || !gate.pass) return { score:-100, matches:[], gate:gate.reason };
   if (!isUsCompatible(job.candidate_required_location)) return { score:-100, matches:[], gate:'location' };
 
-  let fitScore = 0;
+  let fitScore = job.curated ? 12 : 0;
   const matches = [];
+  if (job.curated) matches.push('curated');
   TITLE_RULES.forEach(([pattern, points, label]) => {
     if (pattern.test(title)) { fitScore += points; matches.push(label); }
   });

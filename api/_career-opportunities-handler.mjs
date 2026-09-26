@@ -1,5 +1,6 @@
 import { getSql, json, requireSession } from './_workspace.mjs';
 import { rankOpportunities, rotateOpportunities } from './_career-opportunities.mjs';
+import { CURATED_CAREER_OPPORTUNITIES } from './_career-curated-opportunities.mjs';
 
 const CACHE_HOURS = 6;
 const FORCE_REFRESH_MIN_HOURS = 1;
@@ -179,7 +180,7 @@ export default async function handler(req, res) {
       loaded.push(await loadSource(sql, source, forceRefresh));
     }
 
-    const sourceJobs = loaded.flatMap(item => item.jobs || []);
+    const sourceJobs = [...CURATED_CAREER_OPPORTUNITIES, ...loaded.flatMap(item => item.jobs || [])];
     if (!sourceJobs.length) {
       throw new Error('No opportunity source returned usable jobs');
     }
@@ -209,15 +210,25 @@ export default async function handler(req, res) {
       opportunities,
       count:opportunities.length,
       pool_count:ranked.length,
-      source:loaded.map(item => item.name).join(' + '),
-      sources:loaded.map(item => ({
+      source:['Curated Career Search', ...loaded.map(item => item.name)].join(' + '),
+      sources:[
+        {
+          key:'curated-career-search',
+          name:'Curated Career Search',
+          source_url:'workspace-ingest',
+          fetched_at:null,
+          refreshed:false,
+          count:CURATED_CAREER_OPPORTUNITIES.length
+        },
+        ...loaded.map(item => ({
         key:item.key,
         name:item.name,
         source_url:item.homepage,
         fetched_at:item.fetched_at,
         refreshed:item.refreshed,
         count:(item.jobs || []).length
-      })),
+      }))
+      ],
       source_fetched_at:oldestFetch,
       source_refreshed:loaded.some(item => item.refreshed),
       cache_hours:CACHE_HOURS,

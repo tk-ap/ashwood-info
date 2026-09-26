@@ -237,3 +237,33 @@ test('work arrangement classifier recognizes remote and hybrid evidence', () => 
     description:'Hybrid schedule with three days in office and two days remote.'
   }).tier, 'hybrid');
 });
+
+
+test('analytics consultant is a supported target lane', () => {
+  const analytics = scoreOpportunity({
+    title:'Senior Analytics Consultant',
+    candidate_required_location:'Remote',
+    work_arrangement:'remote',
+    description:'Coordinate analytics, business teams and subject-matter experts to turn data into operational insight.'
+  });
+  assert.ok(analytics.score >= 8);
+  assert.equal(analytics.gate, 'qualified');
+  const recommendation = resumeRecommendation({
+    title:'Senior Analytics Consultant',
+    description:'Operational analytics and business decision support.'
+  }, ['analytics']);
+  assert.equal(recommendation.variant, 'Analytics & Business Operations');
+});
+
+test('curated target-lane roles can enter the queue without inventing work arrangement', () => {
+  const curated = scoreOpportunity({
+    title:'Field Strategy & Operations Manager - Los Angeles',
+    candidate_required_location:'Santa Monica, CA',
+    job_type:'Full-time',
+    description:'Lead field strategy, operating systems, and execution.',
+    curated:true
+  });
+  assert.ok(curated.score >= 8);
+  assert.equal(curated.gate, 'qualified');
+  assert.ok(curated.matches.includes('curated'));
+});
