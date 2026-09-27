@@ -18,16 +18,28 @@ export const CURATED_CAREER_OPPORTUNITIES = [
   },
   {
     id:'career-search:ge-vernova-controls-program-manager:2026-09-26',
-    url:'https://to.indeed.com/aaf6p4hj7wyd',
+    url:'https://careers.gevernova.com/controls-program-manager-remote-eligible-u-s/job/R5053117',
     title:'Controls Program Manager (Remote Eligible, U.S.)',
     company_name:'GE Vernova',
-    candidate_required_location:'Remote',
+    candidate_required_location:'Remote - United States',
     job_type:'Full-time · Remote eligible',
     work_arrangement:'remote',
     salary:'$113,200 - $188,800 a year',
-    description:'Remote-eligible U.S. controls program role aligned with program governance, control execution, and cross-functional operating discipline.',
+    publication_date:'2026-09-23T00:00:00Z',
+    description:'Gas Power Controls PMO role leading New Product Introduction engineering development programs. Responsibilities include project schedules, resource assignment, spending, engineering-process adherence, risk mitigation, stakeholder status reporting, and NPI delivery. Required qualifications: Bachelor of Science in Engineering, Mathematics, or Computer Science; minimum 8 years of experience in engineering or program/project management of engineered systems.',
+    requirements_review:{
+      status:'requirement_mismatch',
+      reasons:['education','education_field','specialized_domain_experience'],
+      checks:[
+        'Requires a Bachelor of Science in Engineering, Mathematics, or Computer Science.',
+        'Requires at least 8 years in engineering or program/project management of engineered systems.',
+        'Verified against the employer posting before recommendation ranking.'
+      ],
+      confidence:'high',
+      source:'https://careers.gevernova.com/controls-program-manager-remote-eligible-u-s/job/R5053117'
+    },
     source_name:'Curated Career Search',
-    source_url:'https://to.indeed.com/aaf6p4hj7wyd',
+    source_url:'https://careers.gevernova.com/controls-program-manager-remote-eligible-u-s/job/R5053117',
     curated:true
   },
   {

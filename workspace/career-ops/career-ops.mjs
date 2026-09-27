@@ -178,7 +178,7 @@ function renderHeader() {
   const ratio = numerator => `${numerator} / ${denominator}`;
   const cards = [
     [counts.submitted, 'applications submitted'],
-    [ratio(counts.denied), 'denied / submitted'],
+    [ratio(counts.denied), 'rejected / submitted'],
     [ratio(counts.noResponse), 'no response / submitted'],
     [ratio(counts.interviews), 'interview requests / submitted'],
     [state.newJobsSinceSession, 'new jobs found']
@@ -436,18 +436,20 @@ function resumeArtifactMarkup(opportunity={}) {
   const recommendation = opportunity.resume_recommendation || {};
   if (!recommendation.variant) return '';
   const profileReady = Boolean(state.resumeProfile?.configured);
+  const requirementsReady = String(opportunity.requirements_status || 'unknown') === 'qualified';
+  const canGenerate = profileReady && requirementsReady;
   return `
     <div class="career-resume-artifact">
       <div>
-        <span>ATS resume file</span>
+        <span>Tailored résumé</span>
         <strong>${escapeHtml(recommendation.variant)}</strong>
-        <small>${profileReady ? 'Generated from the private baseline resume. Employers, titles, dates, and factual accomplishments stay locked.' : 'Private baseline resume needs to be configured once before file generation.'}</small>
+        <small>${!profileReady ? 'Private baseline resume needs to be configured once before file generation.' : !requirementsReady ? 'Review the employer requirements before generating an application-ready résumé.' : 'Built from your verified Career profile; factual history stays locked.'}</small>
       </div>
-      <button type="button" data-generate-resume="${escapeHtml(opportunity.id)}" ${profileReady ? '' : 'disabled'}>
-        ${profileReady ? 'Generate .docx' : 'Resume source missing'}
+      <button type="button" data-generate-resume="${escapeHtml(opportunity.id)}" ${canGenerate ? '' : 'disabled'}>
+        ${!profileReady ? 'Resume source missing' : !requirementsReady ? 'Review requirements first' : 'Generate résumé (.docx)'}
       </button>
       <details>
-        <summary>See tailoring logic</summary>
+        <summary>View tailoring details</summary>
         ${recommendation.summary ? `<p><b>Summary:</b> ${escapeHtml(recommendation.summary)}</p>` : ''}
         ${Array.isArray(recommendation.emphasis) && recommendation.emphasis.length ? `<ul>${recommendation.emphasis.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
         ${recommendation.guardrail ? `<small>${escapeHtml(recommendation.guardrail)}</small>` : ''}
@@ -501,6 +503,29 @@ async function generateResumeArtifact(opportunity, button) {
   }, 1400);
 }
 
+function requirementsHealthMarkup(opportunity={}) {
+  const status = String(opportunity.requirements_status || 'unknown');
+  const labels = {
+    qualified:'Requirements checked',
+    needs_review:'Requirements need review',
+    unknown:'Requirements not fully verified'
+  };
+  const detail = Array.isArray(opportunity.requirements_checked) && opportunity.requirements_checked.length
+    ? opportunity.requirements_checked[0]
+    : status === 'qualified'
+      ? 'No conflicting hard requirement was detected in the available posting.'
+      : 'Open the employer posting before applying.';
+  const why = Array.isArray(opportunity.why_this_is_here) && opportunity.why_this_is_here.length
+    ? `Why this is here: ${opportunity.why_this_is_here.join(' · ')}`
+    : '';
+  return `
+    <div class="career-requirements-health" data-requirements-status="${escapeHtml(status)}">
+      <strong>${escapeHtml(labels[status] || labels.unknown)}</strong>
+      <span>${escapeHtml(detail)}</span>
+      ${why ? `<small>${escapeHtml(why)}</small>` : ''}
+    </div>`;
+}
+
 function renderOpportunities() {
   const root = $('#career-opportunity-grid');
   const meta = $('#career-opportunity-meta');
@@ -521,10 +546,13 @@ function renderOpportunities() {
         ${opportunity.salary ? `<p class="career-opportunity-salary">${escapeHtml(opportunity.salary)}</p>` : ''}
         ${opportunity.matches?.length ? `<div class="career-opportunity-tags">${opportunity.matches.map(match => `<span>${escapeHtml(match)}</span>`).join('')}</div>` : ''}
         <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
+        ${requirementsHealthMarkup(opportunity)}
         ${resumeArtifactMarkup(opportunity)}
         <div class="career-opportunity-actions">
-          <button type="button" data-apply-opportunity="${escapeHtml(opportunity.id)}">Apply ↗</button>
-          <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
+          ${opportunity.requirements_status === 'qualified'
+            ? `<button type="button" data-apply-opportunity="${escapeHtml(opportunity.id)}">Apply ↗</button>
+               <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>`
+            : `<a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Review requirements ↗</a>`}
           <button type="button" data-decline-opportunity="${escapeHtml(opportunity.id)}">Decline</button>
         </div>
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
@@ -543,11 +571,14 @@ function renderOpportunities() {
       button.disabled = true;
       button.textContent = 'Declining…';
       try {
-        const { source } = await persistOpportunityDecline(opportunity);
+        const declineReason = opportunity.requirements_status === 'needs_review'
+          ? `owner_declined_after_requirements_review:${(opportunity.requirements_reasons || [])[0] || 'unspecified'}`
+          : 'owner_declined';
+        const { source } = await persistOpportunityDecline(opportunity, declineReason);
         state.declinedOpportunityIds.add(opportunityStorageKey(opportunity));
         state.declinedOpportunityIds.delete(id);
         localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
-        state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', updated_at:new Date().toISOString() });
+        state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', reason:declineReason, updated_at:new Date().toISOString() });
         state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
         renderOpportunities();
         renderHistoryPreferences();
@@ -587,7 +618,17 @@ function renderOpportunities() {
   const sourceLabel = data.source ? `${data.source} · ` : '';
   const pool = Number(data.pool_count || 0);
   const warning = data.warning ? ` · ${data.warning}` : '';
-  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool · ${sourceLabel}${sourceStamp}${warning}`;
+  const healthCounts = state.opportunities.reduce((acc, opportunity) => {
+    const key = String(opportunity.requirements_status || 'unknown');
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const health = [
+    healthCounts.qualified ? `${healthCounts.qualified} requirements checked` : '',
+    healthCounts.needs_review ? `${healthCounts.needs_review} need review` : '',
+    healthCounts.unknown ? `${healthCounts.unknown} unverified` : ''
+  ].filter(Boolean).join(' · ');
+  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool${health ? ` · ${health}` : ''} · ${sourceLabel}${sourceStamp}${warning}`;
 }
 
 async function loadOpportunities({ refresh=false }={}) {
@@ -633,7 +674,7 @@ async function loadOpportunities({ refresh=false }={}) {
 
     state.opportunities = opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
     state.opportunityMeta = data;
-    if (refresh) state.newJobsSinceSession += state.opportunities.length;
+    state.newJobsSinceSession = Number(data.pool_count || state.opportunities.length || 0);
     renderHeader();
     renderOpportunities();
     renderToday();
@@ -672,7 +713,9 @@ async function trackOpportunity(opportunity, button, { reload=true, nextAction=n
         posting_snapshot:{
           summary:opportunity.summary || '',
           responsibilities:[],
-          requirements:[],
+          requirements:Array.isArray(opportunity.requirements_checked) ? opportunity.requirements_checked : [],
+          requirements_status:opportunity.requirements_status || 'unknown',
+          requirements_reasons:Array.isArray(opportunity.requirements_reasons) ? opportunity.requirements_reasons : [],
           preferred:[],
           source:opportunity.source || null,
           source_url:opportunity.source_url || opportunity.url,
@@ -704,7 +747,7 @@ function render() {
   renderDetail();
   renderSyncState();
   renderHistoryPreferences();
-  $('#career-refreshed').textContent = `Refreshed ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
+  $('#career-refreshed').textContent = `↻ Last synced ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
 }
 
 async function refreshCareerState({ showLoading=false }={}) {
@@ -722,7 +765,8 @@ async function refreshCareerState({ showLoading=false }={}) {
   if (state.selectedId && !state.applications.some(item => item.id === state.selectedId)) {
     state.selectedId = state.applications.length ? sortApplications(state.applications)[0].id : null;
   }
-  $('#career-state').textContent = 'Private workspace';
+  $('#career-state').textContent = '';
+  $('#career-state').hidden = true;
   render();
 }
 
@@ -732,6 +776,7 @@ async function load() {
     await loadOpportunities();
   } catch (error) {
     if (error.status === 401) {
+      $('#career-state').hidden = false;
       $('#career-state').textContent = 'Locked';
       $('#career-applications').innerHTML = `<div class="career-empty"><strong>Workspace is locked.</strong><p>Unlock the main ASHWOOD workspace first, then return here.</p><a class="career-primary-link" href="/workspace/">Unlock workspace</a></div>`;
       $('#career-detail').innerHTML = '';
@@ -739,6 +784,7 @@ async function load() {
       $('#career-opportunity-meta').textContent = 'Unlock the workspace to load private recommendations.';
       return;
     }
+    $('#career-state').hidden = false;
     $('#career-state').textContent = 'Unavailable';
     $('#career-applications').innerHTML = `<div class="workspace-state is-error"><strong>Career Ops could not load.</strong><span>${escapeHtml(error.message)} Canonical application data was not changed.</span></div>`;
     $('#career-detail').innerHTML = '<div class="workspace-state is-error"><strong>Application detail unavailable.</strong><span>No application was modified.</span></div>';

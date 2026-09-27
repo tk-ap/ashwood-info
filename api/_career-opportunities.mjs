@@ -35,15 +35,152 @@ const NEGATIVE_TITLE = /software engineer|software developer|frontend|front[- ]e
 const TARGET_TITLE = /analytics consultant|analytics manager|business analytics|operational risk|risk (?:control|management|analyst)|business analyst|program manager|program management|project manager|project management|\bpmo\b|compliance|regulatory|business operations|operations (?:manager|program|analyst)|controls?|governance|vendor management|third[- ]party|process improvement|business process|operational excellence|business continuity|resilien(?:ce|cy)|strategy|strategic operations|special projects|financial analyst|finance operations|financial operations|fraud|audit|implementation manager|change management|product operations|product strategy|product program|product manager/i;
 const TECHNICAL_REQUIREMENT = /(?:bachelor'?s|degree|experience).{0,45}(?:computer science|software engineering)|\b(?:python|java|javascript|typescript|c\+\+|kubernetes|terraform|aws|azure|gcp)\b.{0,35}(?:required|must have|years?)/i;
 
-function qualificationGate(job={}) {
+
+const REQUIREMENTS_PROFILE = Object.freeze({
+  highest_degree:'associate',
+  degree_fields:['general studies'],
+  minimum_overall_years:10,
+  certifications:['securities industry essentials', 'sie', 'certified business resiliency coordinator']
+});
+
+const REQUIREMENT_STATUS = new Set(['qualified','needs_review','requirement_mismatch','unknown']);
+
+function normalizedRequirementReview(job={}) {
+  const review = job.requirements_review;
+  if (!review || !REQUIREMENT_STATUS.has(String(review.status || ''))) return null;
+  return {
+    status:String(review.status),
+    reasons:Array.isArray(review.reasons) ? review.reasons.map(String) : [],
+    checks:Array.isArray(review.checks) ? review.checks.map(String) : [],
+    confidence:String(review.confidence || (review.status === 'qualified' || review.status === 'requirement_mismatch' ? 'high' : 'medium')),
+    source:String(review.source || job.source_url || job.url || '')
+  };
+}
+
+function requirementSentences(body='') {
+  return String(body)
+    .split(/(?<=[.!?])\s+|\s*[•●▪]\s*|\n+/)
+    .map(value => value.trim())
+    .filter(Boolean);
+}
+
+export function assessRequirements(job={}) {
+  const override = normalizedRequirementReview(job);
+  if (override) return override;
+
+  const body = stripHtml(job.description || '');
+  const sentences = requirementSentences(body);
+  const checks = [];
+  const mismatches = [];
+  const review = [];
+
+  const bachelorRequired = sentences.find(value =>
+    /(?:required qualifications?|minimum qualifications?|requirements?|must have|minimum).{0,120}\b(?:bachelor(?:'s)?|b\.s\.|bs degree)\b/i.test(value) ||
+    /\b(?:bachelor(?:'s)?|b\.s\.|bs degree)\b.{0,120}(?:required|minimum|must)/i.test(value)
+  );
+  const degreeRequired = sentences.find(value =>
+    /\bdegree\b.{0,100}\b(?:engineering|mathematics|computer science|software engineering|finance|accounting)\b.{0,100}(?:required|minimum|must)/i.test(value) ||
+    /(?:required qualifications?|minimum qualifications?).{0,120}\b(?:degree|engineering|mathematics|computer science)\b/i.test(value)
+  );
+  if (bachelorRequired) {
+    checks.push('Bachelor’s degree requirement detected.');
+    if (REQUIREMENTS_PROFILE.highest_degree !== 'bachelor' && REQUIREMENTS_PROFILE.highest_degree !== 'master' && REQUIREMENTS_PROFILE.highest_degree !== 'doctorate') {
+      mismatches.push('education');
+    }
+  }
+  if (degreeRequired && /engineering|mathematics|computer science|software engineering/i.test(degreeRequired)) {
+    checks.push('Specific technical degree field requirement detected.');
+    mismatches.push('education_field');
+  }
+
+  const technicalCertification = sentences.find(value =>
+    /\b(?:PMP|CPA|CFA|CISA|CISM|CISSP|Series 7|Series 63|Series 66|professional engineer|PE license)\b.{0,80}(?:required|must|minimum)/i.test(value)
+  );
+  if (technicalCertification) {
+    const required = (technicalCertification.match(/\b(PMP|CPA|CFA|CISA|CISM|CISSP|Series 7|Series 63|Series 66|professional engineer|PE license)\b/i) || [])[1] || '';
+    checks.push(`Required certification/license detected: ${required || 'specialized credential'}.`);
+    if (required && !REQUIREMENTS_PROFILE.certifications.some(value => value.toLowerCase().includes(required.toLowerCase()))) mismatches.push('certification');
+  }
+
+  const engineeredSystems = sentences.find(value =>
+    /\b(?:\d{1,2}\+?\s*years?.{0,100})?(?:engineered systems|engineering development|electronic hardware|software development|engineering program)\b/i.test(value) &&
+    /(?:required qualifications?|minimum|must|years? of experience)/i.test(value)
+  );
+  if (engineeredSystems) {
+    checks.push('Specialized engineering/engineered-systems experience requirement detected.');
+    review.push('specialized_domain_experience');
+  }
+
+  const yearMatches = [...body.matchAll(/\b(?:minimum\s+of\s+|minimum\s+)?(\d{1,2})\+?\s+years?\s+(?:of\s+)?experience\b/gi)]
+    .map(match => Number(match[1]))
+    .filter(Number.isFinite);
+  if (yearMatches.length) {
+    const maxYears = Math.max(...yearMatches);
+    checks.push(`Minimum experience requirement detected: up to ${maxYears} years.`);
+    if (maxYears > REQUIREMENTS_PROFILE.minimum_overall_years) review.push('experience_years');
+  }
+
+  if (/\b(?:security clearance|secret clearance|top secret|ts\/sci|u\.s\. citizen|us citizen|citizenship required)\b/i.test(body)) {
+    checks.push('Citizenship or security-clearance requirement detected.');
+    review.push('citizenship_or_clearance');
+  }
+  if (/\b(?:travel required|travel up to|up to \d{1,3}% travel|\d{1,3}% travel)\b/i.test(body)) {
+    checks.push('Travel requirement detected.');
+    review.push('travel');
+  }
+  if (/\b(?:legally authorized to work|work authorization|visa sponsorship|sponsorship is not available|no sponsorship)\b/i.test(body)) {
+    checks.push('Work-authorization or sponsorship condition detected.');
+    review.push('work_authorization');
+  }
+
+  if (mismatches.length) {
+    return {
+      status:'requirement_mismatch',
+      reasons:[...new Set(mismatches)],
+      checks,
+      confidence:'high',
+      source:String(job.source_url || job.url || '')
+    };
+  }
+  if (review.length) {
+    return {
+      status:'needs_review',
+      reasons:[...new Set(review)],
+      checks,
+      confidence:'medium',
+      source:String(job.source_url || job.url || '')
+    };
+  }
+  if (body.length < 180) {
+    return {
+      status:'unknown',
+      reasons:['insufficient_posting_detail'],
+      checks:checks.length ? checks : ['Full employer requirements were not available in the ingested posting.'],
+      confidence:'low',
+      source:String(job.source_url || job.url || '')
+    };
+  }
+  return {
+    status:'qualified',
+    reasons:[],
+    checks:checks.length ? checks : ['No conflicting hard requirement was detected in the available posting text.'],
+    confidence:body.length >= 500 ? 'medium' : 'low',
+    source:String(job.source_url || job.url || '')
+  };
+}
+
+function qualificationGate(job={}, requirements=assessRequirements(job)) {
   const title = String(job.title || '');
   const body = stripHtml(job.description || '');
   if (!TARGET_TITLE.test(title)) return { pass:false, reason:'title_outside_target_lanes' };
   if (NEGATIVE_TITLE.test(title)) return { pass:false, reason:'technical_or_unrelated_title' };
+  if (requirements.status === 'requirement_mismatch') {
+    return { pass:false, reason:`requirement_mismatch:${requirements.reasons[0] || 'hard_requirement'}` };
+  }
   if (TECHNICAL_REQUIREMENT.test(body) && !/business analyst|business operations|operational risk|compliance|governance|controls?|finance|audit/i.test(title)) {
     return { pass:false, reason:'technical_requirements' };
   }
-  return { pass:true, reason:'target_lane' };
+  return { pass:true, reason:requirements.status === 'qualified' ? 'qualified' : requirements.status };
 }
 const US_COMPATIBLE = /worldwide|anywhere|united states|\busa\b|u\.s\.|north america|northern america|americas|us time|pst|est|cst|mst/i;
 const CLEARLY_NON_US = /europe|emea|united kingdom|\buk\b|germany|france|spain|italy|poland|portugal|netherlands|sweden|norway|denmark|finland|india|philippines|australia|new zealand|latam|latin america|canada only/i;
@@ -174,13 +311,16 @@ export function resumeRecommendation(job={}, matches=[]) {
 export function scoreOpportunity(job={}, now=Date.now()) {
   const title = String(job.title || '');
   const body = stripHtml(job.description || '');
-  const gate = qualificationGate(job);
-  if (!title || !gate.pass) return { score:-100, matches:[], gate:gate.reason };
-  if (!isUsCompatible(job.candidate_required_location)) return { score:-100, matches:[], gate:'location' };
+  const requirements = assessRequirements(job);
+  const gate = qualificationGate(job, requirements);
+  if (!title || !gate.pass) return { score:-100, matches:[], gate:gate.reason, requirements };
+  if (!isUsCompatible(job.candidate_required_location)) return { score:-100, matches:[], gate:'location', requirements };
 
-  let fitScore = job.curated ? 12 : 0;
+  let fitScore = job.curated && requirements.status === 'qualified' ? 8 : 0;
   const matches = [];
   if (job.curated) matches.push('curated');
+  if (requirements.status === 'needs_review') fitScore -= 4;
+  if (requirements.status === 'unknown') fitScore -= 7;
   TITLE_RULES.forEach(([pattern, points, label]) => {
     if (pattern.test(title)) { fitScore += points; matches.push(label); }
   });
@@ -208,7 +348,8 @@ export function scoreOpportunity(job={}, now=Date.now()) {
       matches:[...new Set(matches)].slice(0,4),
       gate:'onsite_requires_great_fit',
       work_arrangement_preference:arrangement.tier,
-      work_arrangement_rank:arrangement.rank
+      work_arrangement_rank:arrangement.rank,
+      requirements
     };
   }
 
@@ -221,10 +362,11 @@ export function scoreOpportunity(job={}, now=Date.now()) {
     score,
     fit_score:fitScore,
     matches:[...new Set(matches)].slice(0,4),
-    gate:'qualified',
+    gate:gate.reason,
     location_preference:locationPref.tier,
     work_arrangement_preference:arrangement.tier,
-    work_arrangement_rank:arrangement.rank
+    work_arrangement_rank:arrangement.rank,
+    requirements
   };
 }
 
@@ -235,7 +377,7 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
   const seenPairs = new Set();
 
   return jobs.map(job => {
-    const { score, fit_score, matches, gate, location_preference, work_arrangement_preference, work_arrangement_rank } = scoreOpportunity(job, now);
+    const { score, fit_score, matches, gate, location_preference, work_arrangement_preference, work_arrangement_rank, requirements } = scoreOpportunity(job, now);
     if (score < 8) return null;
     const url = String(job.url || '').trim();
     const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
@@ -261,6 +403,12 @@ export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
       fit_score:fit_score ?? score,
       matches,
       qualification_gate:gate,
+      requirements_status:requirements?.status || 'unknown',
+      requirements_reasons:requirements?.reasons || [],
+      requirements_checked:requirements?.checks || [],
+      requirements_confidence:requirements?.confidence || 'low',
+      requirements_source:requirements?.source || String(job.source_url || job.url || ''),
+      why_this_is_here:[...new Set(matches.filter(value => value !== 'curated'))].slice(0,3),
       location_preference:location_preference || 'other',
       work_arrangement_preference:work_arrangement_preference || 'unknown',
       work_arrangement_rank:Number.isFinite(work_arrangement_rank) ? work_arrangement_rank : 2,
