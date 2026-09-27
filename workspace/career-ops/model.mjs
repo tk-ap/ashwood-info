@@ -46,7 +46,7 @@ const RESPONSE_EVENTS = new Set(['RECRUITER','ASSESSMENT','INTERVIEW','OFFER','R
  * event history), so Gmail reconciliation moves them without separate counters.
  * A rejected application was still submitted, and an application that reached
  * interview keeps that conversion after a later decision. No-response means a
- * submitted application remains APPLIED with no meaningful employer-response event.
+ * submitted application remains in APPLIED/SCREENING with no meaningful employer-response event.
  */
 export function summaryCounts(applications=[], events=[]) {
   const relevantEvents = events.filter(event => event.payload?.relevance !== 'ignored');
