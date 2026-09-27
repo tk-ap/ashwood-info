@@ -76,22 +76,6 @@
         "lifecycle": "unassigned",
         "static_primary": true
       }
-    },
-    {
-      "product_key": "agent-control",
-      "label": "Agent Control",
-      "repository": null,
-      "production": {
-        "provider": "vercel",
-        "url": "https://agent-availability.vercel.app/",
-        "state": "configured"
-      },
-      "sandbox": {
-        "provider": "here-now",
-        "connection_ref": "owner:provider:here-now",
-        "lifecycle": "unassigned",
-        "static_primary": true
-      }
     }
   ]
 }

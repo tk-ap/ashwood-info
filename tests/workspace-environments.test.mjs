@@ -20,7 +20,7 @@ test('known sandbox associations are stale, never unassigned, until a fresh mach
   const before = await f.call({ owner:true });
   assert.equal(before.statusCode, 200);
   for (const key of ['ashwood', 'alvira-meos', 'ailhat', 'ledgato']) assert.equal(before.body.environments.find(row => row.product_key === key).status, 'STALE');
-  assert.equal(before.body.environments.find(row => row.product_key === 'agent-control').status, 'UNASSIGNED');
+  assert.equal(before.body.environments.some(row => row.product_key === 'agent-control'), false, 'Agent Control is a role, not an environment');
 });
 
 test('only the machine sync token can refresh an associated environment to live', async t => {
