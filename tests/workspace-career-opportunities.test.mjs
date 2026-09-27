@@ -222,7 +222,8 @@ test('onsite roles are hidden unless core fit is unusually strong', () => {
     description:'On-site five days per week. Own operational risk, controls, governance, compliance, process improvement and cross-functional stakeholder management.'
   });
   assert.ok(strongOnsite.score > 0);
-  assert.equal(strongOnsite.gate, 'qualified');
+  assert.equal(strongOnsite.gate, 'unknown');
+  assert.equal(strongOnsite.requirements.status, 'unknown');
   assert.equal(strongOnsite.work_arrangement_preference, 'onsite');
 });
 
@@ -247,7 +248,8 @@ test('analytics consultant is a supported target lane', () => {
     description:'Coordinate analytics, business teams and subject-matter experts to turn data into operational insight.'
   });
   assert.ok(analytics.score >= 8);
-  assert.equal(analytics.gate, 'qualified');
+  assert.equal(analytics.gate, 'unknown');
+  assert.equal(analytics.requirements.status, 'unknown');
   const recommendation = resumeRecommendation({
     title:'Senior Analytics Consultant',
     description:'Operational analytics and business decision support.'
@@ -264,7 +266,8 @@ test('curated target-lane roles can enter the queue without inventing work arran
     curated:true
   });
   assert.ok(curated.score >= 8);
-  assert.equal(curated.gate, 'qualified');
+  assert.equal(curated.gate, 'unknown');
+  assert.equal(curated.requirements.status, 'unknown');
   assert.ok(curated.matches.includes('curated'));
 });
 
