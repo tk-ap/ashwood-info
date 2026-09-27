@@ -766,6 +766,7 @@ async function refreshCareerState({ showLoading=false }={}) {
     state.selectedId = state.applications.length ? sortApplications(state.applications)[0].id : null;
   }
   $('#career-state').textContent = '';
+  $('#career-state').hidden = true;
   render();
 }
 
@@ -775,6 +776,7 @@ async function load() {
     await loadOpportunities();
   } catch (error) {
     if (error.status === 401) {
+      $('#career-state').hidden = false;
       $('#career-state').textContent = 'Locked';
       $('#career-applications').innerHTML = `<div class="career-empty"><strong>Workspace is locked.</strong><p>Unlock the main ASHWOOD workspace first, then return here.</p><a class="career-primary-link" href="/workspace/">Unlock workspace</a></div>`;
       $('#career-detail').innerHTML = '';
@@ -782,6 +784,7 @@ async function load() {
       $('#career-opportunity-meta').textContent = 'Unlock the workspace to load private recommendations.';
       return;
     }
+    $('#career-state').hidden = false;
     $('#career-state').textContent = 'Unavailable';
     $('#career-applications').innerHTML = `<div class="workspace-state is-error"><strong>Career Ops could not load.</strong><span>${escapeHtml(error.message)} Canonical application data was not changed.</span></div>`;
     $('#career-detail').innerHTML = '<div class="workspace-state is-error"><strong>Application detail unavailable.</strong><span>No application was modified.</span></div>';
