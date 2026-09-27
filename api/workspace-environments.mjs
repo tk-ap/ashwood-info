@@ -3,12 +3,14 @@ import { getSql, json, parseBody, requireSession, sha256 } from './_workspace.mj
 
 // This is the owner-facing projection of environment facts. AgentOS/provider
 // collectors write observations; ASHWOOD only renders their latest evidence.
+// Agent Control is the authorization-intelligence role inside AgentOS, filled
+// by LEDGATo at boundaries it enforces. It is not a product and has no
+// environment of its own (AgentOS #213, LEDGATo #57).
 const CATALOG = [
   ['ashwood', 'ASHWOOD', 'tk-ap/ashwood-info', 'https://ashwood-info.vercel.app/'],
   ['alvira-meos', 'ALVIRA', 'tk-ap/ALVIRA', 'https://alviratech.vercel.app/'],
   ['ailhat', 'ailhat', 'tk-ap/ailhat', 'https://ailhat.vercel.app/'],
   ['ledgato', 'ledgato', 'tk-ap/ledgato', 'https://ledgato.vercel.app/'],
-  ['agent-control', 'Agent Control', null, 'https://agent-availability.vercel.app/'],
 ];
 
 // One-time recovery of already-created sandboxes. These records establish an
