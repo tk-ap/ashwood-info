@@ -218,7 +218,7 @@ function renderIntro(view){
 function renderUtility(view){
   document.querySelectorAll(".workspace-view-utility").forEach(node => node.remove());
   const first = document.querySelector('[data-workspace-view="' + view + '"][data-workspace-active="true"]');
-  if (!first || view === "today" || view === "operator") return;
+  if (!first || view === "today" || view === "operator" || view === "career") return;
   const utility = document.createElement("div");
   utility.className = "workspace-view-utility";
   const copy = {
