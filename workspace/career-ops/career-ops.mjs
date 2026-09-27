@@ -178,7 +178,7 @@ function renderHeader() {
   const ratio = numerator => `${numerator} / ${denominator}`;
   const cards = [
     [counts.submitted, 'applications submitted'],
-    [ratio(counts.denied), 'denied / submitted'],
+    [ratio(counts.denied), 'rejected / submitted'],
     [ratio(counts.noResponse), 'no response / submitted'],
     [ratio(counts.interviews), 'interview requests / submitted'],
     [state.newJobsSinceSession, 'new jobs found']
@@ -441,7 +441,7 @@ function resumeArtifactMarkup(opportunity={}) {
   return `
     <div class="career-resume-artifact">
       <div>
-        <span>ATS resume file</span>
+        <span>Tailored résumé</span>
         <strong>${escapeHtml(recommendation.variant)}</strong>
         <small>${!profileReady ? 'Private baseline resume needs to be configured once before file generation.' : !requirementsReady ? 'Review the employer requirements before generating an application-ready résumé.' : 'Built from your verified Career profile; factual history stays locked.'}</small>
       </div>
@@ -449,7 +449,7 @@ function resumeArtifactMarkup(opportunity={}) {
         ${!profileReady ? 'Resume source missing' : !requirementsReady ? 'Review requirements first' : 'Generate résumé (.docx)'}
       </button>
       <details>
-        <summary>See tailoring logic</summary>
+        <summary>View tailoring details</summary>
         ${recommendation.summary ? `<p><b>Summary:</b> ${escapeHtml(recommendation.summary)}</p>` : ''}
         ${Array.isArray(recommendation.emphasis) && recommendation.emphasis.length ? `<ul>${recommendation.emphasis.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
         ${recommendation.guardrail ? `<small>${escapeHtml(recommendation.guardrail)}</small>` : ''}
@@ -674,7 +674,7 @@ async function loadOpportunities({ refresh=false }={}) {
 
     state.opportunities = opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
     state.opportunityMeta = data;
-    if (refresh) state.newJobsSinceSession += state.opportunities.length;
+    state.newJobsSinceSession = Number(data.pool_count || state.opportunities.length || 0);
     renderHeader();
     renderOpportunities();
     renderToday();
@@ -747,7 +747,7 @@ function render() {
   renderDetail();
   renderSyncState();
   renderHistoryPreferences();
-  $('#career-refreshed').textContent = `Refreshed ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
+  $('#career-refreshed').textContent = `↻ Last synced ${new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}`;
 }
 
 async function refreshCareerState({ showLoading=false }={}) {
@@ -765,7 +765,7 @@ async function refreshCareerState({ showLoading=false }={}) {
   if (state.selectedId && !state.applications.some(item => item.id === state.selectedId)) {
     state.selectedId = state.applications.length ? sortApplications(state.applications)[0].id : null;
   }
-  $('#career-state').textContent = 'Private workspace';
+  $('#career-state').textContent = '';
   render();
 }
 
