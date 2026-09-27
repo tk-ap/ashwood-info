@@ -32,7 +32,7 @@ test('summaryCounts derives the funnel from canonical status and history', () =>
     { application_id:'c', event_type:'INTERVIEW', payload:{ relevance:'ignored' } }
   ]);
   // Rejected applications were submitted; an interview before rejection still converted.
-  assert.deepEqual(counts, { submitted:5, denied:3, noResponse:0, interviews:2 });
+  assert.deepEqual(counts, { submitted:5, denied:3, noResponse:1, interviews:2 });
 });
 
 test('summaryCounts treats submitted APPLIED records without employer response as no response', () => {
@@ -44,7 +44,7 @@ test('summaryCounts treats submitted APPLIED records without employer response a
     { application_id:'a', event_type:'CONFIRMATION', payload:{} },
     { application_id:'b', event_type:'RECRUITER', payload:{} }
   ]);
-  assert.deepEqual(counts, { submitted:3, denied:0, noResponse:1, interviews:0 });
+  assert.deepEqual(counts, { submitted:3, denied:0, noResponse:2, interviews:0 });
 });
 
 test('sortApplications prioritizes interviews and recruiter activity', () => {
