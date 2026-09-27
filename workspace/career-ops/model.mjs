@@ -39,7 +39,7 @@ export function needsAttention(application={}, now=Date.now()) {
 
 const SUBMITTED_STATUSES = new Set(['APPLIED','SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTED','ASSUMED_REJECTED']);
 const INTERVIEW_EVENTS = new Set(['INTERVIEW','OFFER']);
-const RESPONSE_EVENTS = new Set(['SCREENING','RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTION']);
+const RESPONSE_EVENTS = new Set(['RECRUITER','ASSESSMENT','INTERVIEW','OFFER','REJECTION']);
 
 /**
  * Funnel counts derived only from the canonical tracker (applications plus their
@@ -62,7 +62,7 @@ export function summaryCounts(applications=[], events=[]) {
     if (submitted) acc.submitted += 1;
     if (status === 'REJECTED' || status === 'ASSUMED_REJECTED') acc.denied += 1;
     if (status === 'INTERVIEW' || status === 'OFFER' || interviewed.has(app.id)) acc.interviews += 1;
-    if (submitted && status === 'APPLIED' && !responded.has(app.id)) acc.noResponse += 1;
+    if (submitted && (status === 'APPLIED' || status === 'SCREENING') && !responded.has(app.id)) acc.noResponse += 1;
     return acc;
   }, { submitted:0, denied:0, noResponse:0, interviews:0 });
 }
