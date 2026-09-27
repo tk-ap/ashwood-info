@@ -501,6 +501,29 @@ async function generateResumeArtifact(opportunity, button) {
   }, 1400);
 }
 
+function requirementsHealthMarkup(opportunity={}) {
+  const status = String(opportunity.requirements_status || 'unknown');
+  const labels = {
+    qualified:'Requirements checked',
+    needs_review:'Requirements need review',
+    unknown:'Requirements not fully verified'
+  };
+  const detail = Array.isArray(opportunity.requirements_checked) && opportunity.requirements_checked.length
+    ? opportunity.requirements_checked[0]
+    : status === 'qualified'
+      ? 'No conflicting hard requirement was detected in the available posting.'
+      : 'Open the employer posting before applying.';
+  const why = Array.isArray(opportunity.why_this_is_here) && opportunity.why_this_is_here.length
+    ? `Why this is here: ${opportunity.why_this_is_here.join(' · ')}`
+    : '';
+  return `
+    <div class="career-requirements-health" data-requirements-status="${escapeHtml(status)}">
+      <strong>${escapeHtml(labels[status] || labels.unknown)}</strong>
+      <span>${escapeHtml(detail)}</span>
+      ${why ? `<small>${escapeHtml(why)}</small>` : ''}
+    </div>`;
+}
+
 function renderOpportunities() {
   const root = $('#career-opportunity-grid');
   const meta = $('#career-opportunity-meta');
@@ -521,6 +544,7 @@ function renderOpportunities() {
         ${opportunity.salary ? `<p class="career-opportunity-salary">${escapeHtml(opportunity.salary)}</p>` : ''}
         ${opportunity.matches?.length ? `<div class="career-opportunity-tags">${opportunity.matches.map(match => `<span>${escapeHtml(match)}</span>`).join('')}</div>` : ''}
         <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
+        ${requirementsHealthMarkup(opportunity)}
         ${resumeArtifactMarkup(opportunity)}
         <div class="career-opportunity-actions">
           <button type="button" data-apply-opportunity="${escapeHtml(opportunity.id)}">Apply ↗</button>
@@ -543,11 +567,14 @@ function renderOpportunities() {
       button.disabled = true;
       button.textContent = 'Declining…';
       try {
-        const { source } = await persistOpportunityDecline(opportunity);
+        const declineReason = opportunity.requirements_status === 'needs_review'
+          ? `owner_declined_after_requirements_review:${(opportunity.requirements_reasons || [])[0] || 'unspecified'}`
+          : 'owner_declined';
+        const { source } = await persistOpportunityDecline(opportunity, declineReason);
         state.declinedOpportunityIds.add(opportunityStorageKey(opportunity));
         state.declinedOpportunityIds.delete(id);
         localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
-        state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', updated_at:new Date().toISOString() });
+        state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', reason:declineReason, updated_at:new Date().toISOString() });
         state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
         renderOpportunities();
         renderHistoryPreferences();
@@ -587,7 +614,17 @@ function renderOpportunities() {
   const sourceLabel = data.source ? `${data.source} · ` : '';
   const pool = Number(data.pool_count || 0);
   const warning = data.warning ? ` · ${data.warning}` : '';
-  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool · ${sourceLabel}${sourceStamp}${warning}`;
+  const healthCounts = state.opportunities.reduce((acc, opportunity) => {
+    const key = String(opportunity.requirements_status || 'unknown');
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const health = [
+    healthCounts.qualified ? `${healthCounts.qualified} requirements checked` : '',
+    healthCounts.needs_review ? `${healthCounts.needs_review} need review` : '',
+    healthCounts.unknown ? `${healthCounts.unknown} unverified` : ''
+  ].filter(Boolean).join(' · ');
+  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool${health ? ` · ${health}` : ''} · ${sourceLabel}${sourceStamp}${warning}`;
 }
 
 async function loadOpportunities({ refresh=false }={}) {
@@ -672,7 +709,9 @@ async function trackOpportunity(opportunity, button, { reload=true, nextAction=n
         posting_snapshot:{
           summary:opportunity.summary || '',
           responsibilities:[],
-          requirements:[],
+          requirements:Array.isArray(opportunity.requirements_checked) ? opportunity.requirements_checked : [],
+          requirements_status:opportunity.requirements_status || 'unknown',
+          requirements_reasons:Array.isArray(opportunity.requirements_reasons) ? opportunity.requirements_reasons : [],
           preferred:[],
           source:opportunity.source || null,
           source_url:opportunity.source_url || opportunity.url,
