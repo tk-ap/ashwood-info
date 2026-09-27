@@ -92,7 +92,7 @@ async function fixture({ mailbox, extraApplications = [] }) {
   ];
   for (const app of applications) {
     await sql`INSERT INTO workspace_career_applications (id, company, role, job_id, status, submitted_at)
-      VALUES (${app.id}, ${app.company}, ${app.role}, ${app.job_id}, ${app.status}, ${app.status === 'DECLINED' ? null : '2026-09-17T02:00:00Z'})`;
+      VALUES (${app.id}, ${app.company}, ${app.role}, ${app.job_id}, ${app.status}, ${['DECLINED', 'TARGET'].includes(app.status) ? null : '2026-09-17T02:00:00Z'})`;
   }
   // Owner-recorded history from the application sessions.
   const manual = [
