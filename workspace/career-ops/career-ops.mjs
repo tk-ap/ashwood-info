@@ -436,15 +436,17 @@ function resumeArtifactMarkup(opportunity={}) {
   const recommendation = opportunity.resume_recommendation || {};
   if (!recommendation.variant) return '';
   const profileReady = Boolean(state.resumeProfile?.configured);
+  const requirementsReady = String(opportunity.requirements_status || 'unknown') === 'qualified';
+  const canGenerate = profileReady && requirementsReady;
   return `
     <div class="career-resume-artifact">
       <div>
         <span>ATS resume file</span>
         <strong>${escapeHtml(recommendation.variant)}</strong>
-        <small>${profileReady ? 'Generated from the private baseline resume. Employers, titles, dates, and factual accomplishments stay locked.' : 'Private baseline resume needs to be configured once before file generation.'}</small>
+        <small>${!profileReady ? 'Private baseline resume needs to be configured once before file generation.' : !requirementsReady ? 'Review the employer requirements before generating an application-ready résumé.' : 'Built from your verified Career profile; factual history stays locked.'}</small>
       </div>
-      <button type="button" data-generate-resume="${escapeHtml(opportunity.id)}" ${profileReady ? '' : 'disabled'}>
-        ${profileReady ? 'Generate .docx' : 'Resume source missing'}
+      <button type="button" data-generate-resume="${escapeHtml(opportunity.id)}" ${canGenerate ? '' : 'disabled'}>
+        ${!profileReady ? 'Resume source missing' : !requirementsReady ? 'Review requirements first' : 'Generate résumé (.docx)'}
       </button>
       <details>
         <summary>See tailoring logic</summary>
@@ -547,8 +549,10 @@ function renderOpportunities() {
         ${requirementsHealthMarkup(opportunity)}
         ${resumeArtifactMarkup(opportunity)}
         <div class="career-opportunity-actions">
-          <button type="button" data-apply-opportunity="${escapeHtml(opportunity.id)}">Apply ↗</button>
-          <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>
+          ${opportunity.requirements_status === 'qualified'
+            ? `<button type="button" data-apply-opportunity="${escapeHtml(opportunity.id)}">Apply ↗</button>
+               <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>`
+            : `<a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Review requirements ↗</a>`}
           <button type="button" data-decline-opportunity="${escapeHtml(opportunity.id)}">Decline</button>
         </div>
         <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
