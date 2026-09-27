@@ -69,16 +69,6 @@ export function assessRequirements(job={}) {
   if (override) return override;
 
   const body = stripHtml(job.description || '');
-  if (body.length < 180) {
-    return {
-      status:'unknown',
-      reasons:['insufficient_posting_detail'],
-      checks:['Full employer requirements were not available in the ingested posting.'],
-      confidence:'low',
-      source:String(job.source_url || job.url || '')
-    };
-  }
-
   const sentences = requirementSentences(body);
   const checks = [];
   const mismatches = [];
@@ -158,6 +148,15 @@ export function assessRequirements(job={}) {
       reasons:[...new Set(review)],
       checks,
       confidence:'medium',
+      source:String(job.source_url || job.url || '')
+    };
+  }
+  if (body.length < 180) {
+    return {
+      status:'unknown',
+      reasons:['insufficient_posting_detail'],
+      checks:checks.length ? checks : ['Full employer requirements were not available in the ingested posting.'],
+      confidence:'low',
       source:String(job.source_url || job.url || '')
     };
   }
