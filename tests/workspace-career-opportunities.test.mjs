@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isUsCompatible, locationPreference, rankOpportunities, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml, workArrangementPreference } from '../api/_career-opportunities.mjs';
+import { assessRequirements, isUsCompatible, locationPreference, rankOpportunities, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml, workArrangementPreference } from '../api/_career-opportunities.mjs';
 
 test('stripHtml creates a compact readable summary', () => {
   assert.equal(stripHtml('<p>Risk &amp; controls</p><ul><li>PMO</li></ul>'), 'Risk & controls PMO');
@@ -266,4 +266,66 @@ test('curated target-lane roles can enter the queue without inventing work arran
   assert.ok(curated.score >= 8);
   assert.equal(curated.gate, 'qualified');
   assert.ok(curated.matches.includes('curated'));
+});
+
+
+test('GE Vernova-style hard education and engineered-systems requirements are excluded', () => {
+  const job = {
+    id:'ge',
+    url:'https://careers.gevernova.com/controls-program-manager-remote-eligible-u-s/job/R5053117',
+    title:'Controls Program Manager (Remote Eligible, U.S.)',
+    company_name:'GE Vernova',
+    candidate_required_location:'Remote - United States',
+    work_arrangement:'remote',
+    description:'Required Qualifications. Bachelor of Science in Engineering, Mathematics, or Computer Science required. Minimum 8 years of experience in engineering or program/project management of engineered systems.',
+    requirements_review:{
+      status:'requirement_mismatch',
+      reasons:['education','education_field','specialized_domain_experience'],
+      checks:['Requires a Bachelor of Science in Engineering, Mathematics, or Computer Science.','Requires at least 8 years in engineered systems.'],
+      confidence:'high'
+    }
+  };
+  const assessment = assessRequirements(job);
+  assert.equal(assessment.status, 'requirement_mismatch');
+  assert.ok(assessment.reasons.includes('education'));
+  assert.equal(scoreOpportunity(job).score, -100);
+  assert.equal(rankOpportunities([job], []).length, 0);
+});
+
+test('travel or authorization requirements are surfaced for review rather than silently treated as qualified', () => {
+  const assessment = assessRequirements({
+    title:'Program Manager',
+    candidate_required_location:'USA',
+    description:'Lead cross-functional program execution and controls. This role requires travel up to 25%. Candidates must be legally authorized to work in the United States.'
+  });
+  assert.equal(assessment.status, 'needs_review');
+  assert.ok(assessment.reasons.includes('travel'));
+  assert.ok(assessment.reasons.includes('work_authorization'));
+});
+
+test('thin posting summaries have unknown requirement health and receive reduced-confidence treatment', () => {
+  const job = {
+    title:'Business Operations Manager',
+    company_name:'Summary Co',
+    url:'https://example.com/summary',
+    candidate_required_location:'Remote',
+    work_arrangement:'remote',
+    curated:true,
+    description:'Remote business operations leadership role.'
+  };
+  const assessment = assessRequirements(job);
+  assert.equal(assessment.status, 'unknown');
+  const score = scoreOpportunity(job);
+  assert.equal(score.requirements.status, 'unknown');
+  assert.equal(score.gate, 'unknown');
+});
+
+test('explicit unsupported required certification is a hard requirement mismatch', () => {
+  const assessment = assessRequirements({
+    title:'Risk Program Manager',
+    candidate_required_location:'USA',
+    description:'Own governance, controls, audit readiness, and program execution. PMP required for this position.'
+  });
+  assert.equal(assessment.status, 'requirement_mismatch');
+  assert.ok(assessment.reasons.includes('certification'));
 });
