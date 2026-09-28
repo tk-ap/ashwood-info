@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T15:44:54.373Z",
+  "generated_at": "2026-09-28T17:27:48.210Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
@@ -30,20 +30,28 @@
   "tiktok": {
     "account": "tiktokoftk",
     "followers": 69,
-    "following": 41,
+    "following": 42,
     "verified": false,
-    "total_videos": 22,
-    "latest_video_at": "2026-09-08T22:08:27.000Z",
-    "videos_30d": 7,
-    "avg_plays": 295,
+    "total_videos": 23,
+    "latest_video_at": "2026-09-23T05:49:11.000Z",
+    "videos_30d": 8,
+    "avg_plays": 301,
     "avg_likes": 25,
     "avg_comments": 2,
     "recent_videos": [
       {
+        "at": "2026-09-23T05:49:11.000Z",
+        "caption": "ran out of food that was already food so I had to become a Michelin chef n actually start cooking ingredients 😭.. behold, my world famous s",
+        "plays": 429,
+        "likes": 9,
+        "comments": 1,
+        "shares": 0
+      },
+      {
         "at": "2026-09-08T22:08:27.000Z",
         "caption": "stg I be forgetting that part 😅 , let’s just work though #model #queer #streetwear #fypシ゚viral #exp ",
-        "plays": 317,
-        "likes": 22,
+        "plays": 318,
+        "likes": 23,
         "comments": 2,
         "shares": 0
       },
@@ -54,14 +62,6 @@
         "likes": 92,
         "comments": 0,
         "shares": 1
-      },
-      {
-        "at": "2026-09-05T01:02:53.000Z",
-        "caption": "thinking out loud… one side only 🤭 ✨#artistsoftiktok #poetry #blackpoet #fypシ゚viral #exp ",
-        "plays": 194,
-        "likes": 11,
-        "comments": 0,
-        "shares": 0
       }
     ]
   }
