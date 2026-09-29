@@ -4,6 +4,10 @@ const WEIGHTS=[
 ["durable","Durable work persistence",10],["recovery","Restart / recovery reconciliation",8],["authority","Governed authority + sender provenance",8],["routing","Capacity-aware routing",7],["harness","Harness / provider interchangeability",6],["handoff","Agent-to-agent handoff",7],["verification","Independent verification",8],["evidence","Evidence persistence",7],["retry","Retry / park / resume lifecycle",7],["human","Human-interruption discipline",6],["telegram","Telegram operator interface",6],["convergence","Runtime / canonical convergence",7],["external","External-operation reconciliation",4],["workspace","Cross-domain Workspace integration",5],["telemetry","Self-observation / health telemetry",4]
 ];
 const SCORE={VERIFIED:1,PARTIAL:.5,BLOCKED:0,UNVERIFIED:0};
+const REALITY_CONTRACT="reality-evidence.v1";
+const TERMINAL_SUCCESS=/\b(complete|completed|accepted|done|merged|deployed|verified|succeeded|success)\b/i;
+const TERMINAL_FAILURE=/\b(blocked|failed|revoked|denied|cancelled|collision|stuck|parked)\b/i;
+const ACTIVE_WORK=/\b(running|in_progress|review|waiting_approval|approved|release_pending|ready|authorized)\b/i;
 let timer=null,lastScore=null;
 async function read(url){const r=await fetch(url,{credentials:"same-origin",cache:"no-store"});const b=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(b.error||("HTTP "+r.status)),{status:r.status});return b}
 async function ensureAuth(){
@@ -12,6 +16,37 @@ async function ensureAuth(){
 }
 async function readPost(url,body){const r=await fetch(url,{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const b=await r.json().catch(()=>({}));if(!r.ok)throw new Error(b.error||("HTTP "+r.status));return b}
 const txt=row=>[row.title,row.summary,row.blocker,row.next_gate,row.phase,row.status,JSON.stringify(row.metadata||{})].filter(Boolean).join(" ").toLowerCase();
+const workState=row=>[row?.status,row?.phase,row?.lane].filter(Boolean).join(" ");
+function workDomain(row){
+ const explicit=String(row?.work_domain||row?.metadata?.work_domain||"").toLowerCase();
+ if(explicit==="agentos"||explicit==="ecosystem")return explicit;
+ return String(row?.product||"").trim().toLowerCase()==="agentos"?"agentos":"ecosystem";
+}
+function hasDurableProof(row){
+ const m=row?.metadata||{};
+ return Boolean(row?.canonical_url||m.evidence||m.evidence_ref||m.verification_ref||m.outcome_ref||m.receipt_ref||m.proof_ref);
+}
+function evidenceGrade(row){
+ const state=workState(row),proof=hasDurableProof(row);
+ if(TERMINAL_FAILURE.test(state))return proof?"PARTIAL":"UNVERIFIED";
+ if(TERMINAL_SUCCESS.test(state)&&proof)return"VERIFIED";
+ if(proof||TERMINAL_SUCCESS.test(state)||ACTIVE_WORK.test(state))return"PARTIAL";
+ return"UNVERIFIED";
+}
+function realityLane(rows,domain){
+ const lane=rows.filter(row=>workDomain(row)===domain);
+ const counts={VERIFIED:0,PARTIAL:0,UNVERIFIED:0};
+ lane.forEach(row=>{counts[evidenceGrade(row)]++});
+ const score=lane.length?Math.round(((counts.VERIFIED+.5*counts.PARTIAL)/lane.length)*100):null;
+ const terminal=lane.filter(row=>TERMINAL_SUCCESS.test(workState(row)));
+ const terminalWithProof=terminal.filter(hasDurableProof);
+ return {rows:lane,counts,score,terminal,terminalWithProof};
+}
+function realityProjection(rows){
+ const agentos=realityLane(rows,"agentos"),ecosystem=realityLane(rows,"ecosystem");
+ const closure=ecosystem.terminal.length?Math.round((ecosystem.terminalWithProof.length/ecosystem.terminal.length)*100):null;
+ return {contract:REALITY_CONTRACT,agentos,ecosystem,closure};
+}
 const any=(rows,re)=>rows.some(r=>re.test(txt(r)));
 const firstMeta=(rows,keys)=>{for(const r of rows){for(const k of keys){if(r?.metadata?.[k])return String(r.metadata[k])}}return null};
 function ageLabel(date){const t=Date.parse(date||"");if(!Number.isFinite(t))return"timestamp unavailable";const m=Math.max(0,Math.floor((Date.now()-t)/60000));return m<1?"just now":m<60?m+"m ago":m<1440?Math.floor(m/60)+"h ago":Math.floor(m/1440)+"d ago"}
@@ -48,7 +83,7 @@ function derive(board,commands){
  set("workspace",rows.length&&Number.isFinite(Date.parse(observed||""))?"VERIFIED":"PARTIAL",rows.length?"ASHWOOD is reading the authenticated AgentOS board projection with source freshness.":"The page is mounted, but the canonical board source is unavailable.","Keep this page projection-only and preserve source timestamps.");
  set("telemetry",age<5*60000?"VERIFIED":age<30*60000?"PARTIAL":Number.isFinite(age)?"BLOCKED":"UNVERIFIED",Number.isFinite(age)?"Latest AgentOS projection observed "+ageLabel(observed)+".":"No source observation timestamp is available.",age>=30*60000?"Restore the AgentOS → Workspace sync before trusting health.":"Add direct runtime heartbeat/evidence events.");
  const score=Math.round(WEIGHTS.reduce((sum,[id,,w])=>sum+w*SCORE[caps[id].state],0));
- return {rows,observed,assigned,providers,underway,blocked,owner,canonical,runtime,caps,score,commands:Array.isArray(commands?.commands)?commands.commands:[]}
+ return {rows,observed,assigned,providers,underway,blocked,owner,canonical,runtime,caps,score,reality:realityProjection(rows),commands:Array.isArray(commands?.commands)?commands.commands:[]}
 }
 function render(d){
  q("#autonomy-value").textContent=d.score+"%";q("#autonomy-fill").style.width=d.score+"%";q("#autonomy-track").setAttribute("aria-valuenow",d.score);
@@ -59,6 +94,15 @@ function render(d){
  q("#health-overall").textContent=health;q("#health-freshness").textContent=d.observed?"AgentOS projection · "+ageLabel(d.observed):"Source timestamp unavailable";q("#health-source-state").textContent=d.observed?"Synced · "+ageLabel(d.observed):"Projection unavailable";
  q("#stat-underway").textContent=d.underway.length;q("#stat-owner").textContent=d.owner.length;q("#stat-blocked").textContent=d.blocked.length;q("#stat-agents").textContent=d.assigned.length;q("#stat-snapshot").textContent=(d.rows.find(r=>r.snapshot_id)?.snapshot_id||"—").slice(0,12);
  q("#stat-convergence").textContent=d.caps.convergence.state;q("#stat-shas").textContent=d.canonical&&d.runtime?("main "+d.canonical.slice(0,7)+" · live "+d.runtime.slice(0,7)):"SHA evidence unavailable";
+ const reality=d.reality;
+ const laneCopy=lane=>lane.score===null?"No observed work in this lane.":lane.counts.VERIFIED+" verified · "+lane.counts.PARTIAL+" partial · "+lane.counts.UNVERIFIED+" unverified · "+lane.rows.length+" observed";
+ q("#reality-agentos-score").textContent=reality.agentos.score===null?"—":reality.agentos.score+"%";
+ q("#reality-agentos-detail").textContent=laneCopy(reality.agentos);
+ q("#reality-ecosystem-score").textContent=reality.ecosystem.score===null?"—":reality.ecosystem.score+"%";
+ q("#reality-ecosystem-detail").textContent=laneCopy(reality.ecosystem);
+ q("#reality-e2e-score").textContent=reality.ecosystem.terminal.length?(reality.ecosystem.terminalWithProof.length+"/"+reality.ecosystem.terminal.length):"—";
+ q("#reality-e2e-detail").textContent=reality.ecosystem.terminal.length?(reality.closure+"% of completed ecosystem work has durable proof."):"No completed ecosystem work is observable in this projection.";
+ q("#reality-contract").textContent=reality.contract;
  q("#capability-list").innerHTML=WEIGHTS.map(([id,name,w],i)=>{const c=d.caps[id];return '<article class="capability-row"><span class="capability-index">'+String(i+1).padStart(2,"0")+'</span><div class="capability-name"><strong>'+esc(name)+'</strong><span>'+w+'% weight</span></div><div class="capability-proof"><strong>'+esc(c.proof)+'</strong><br>'+esc(c.next)+'</div><span class="state-pill state-'+c.state+'">'+c.state+'</span></article>'}).join("");
  const accidental=Math.min(100,Math.round(((d.owner.length*2+d.blocked.length+d.commands.length)/(Math.max(1,d.rows.length+d.commands.length)))*100));
  q("#dependency-value").textContent=accidental+"%";
@@ -67,7 +111,7 @@ function render(d){
  q("#next-gate-title").textContent=constraint?constraint.name:"Rubric complete";q("#next-gate-copy").textContent=constraint?constraint.next:"Maintain proof freshness and watch for regressions.";
  const agents=d.assigned.length?d.assigned:["No assigned agents in current projection"];
  q("#agent-list").innerHTML=agents.map(a=>{const rows=d.rows.filter(r=>r.assignee===a);const active=rows.filter(r=>/running|in_progress|review|ready/i.test([r.status,r.phase,r.lane].join(" "))).length;return '<article class="agent-card"><span class="agent-state">'+(rows.length?"Observed":"Unverified")+'</span><strong>'+esc(a)+'</strong><span>'+rows.length+' work rows · '+active+' active/review</span><p>'+(rows[0]?esc(rows[0].title):"No current assignment evidence.")+'</p></article>'}).join("");
- const events=[{t:d.observed,label:"AgentOS board snapshot",detail:d.rows.length+" rows · "+(d.rows.find(r=>r.snapshot_id)?.snapshot_id||"snapshot id unavailable")},{t:new Date().toISOString(),label:"Autonomy score computed",detail:d.score+"% from autonomy-rubric.v1"},{t:d.observed,label:"Runtime convergence",detail:d.caps.convergence.proof},{t:d.observed,label:"Human intervention signal",detail:d.owner.length+" candidate rows require classification"}];
+ const events=[{t:d.observed,label:"AgentOS board snapshot",detail:d.rows.length+" rows · "+(d.rows.find(r=>r.snapshot_id)?.snapshot_id||"snapshot id unavailable")},{t:new Date().toISOString(),label:"Autonomy score computed",detail:d.score+"% from autonomy-rubric.v1"},{t:d.observed,label:"Reality lanes computed",detail:"AgentOS "+(d.reality.agentos.score===null?"unverified":d.reality.agentos.score+"%")+" · ecosystem "+(d.reality.ecosystem.score===null?"unverified":d.reality.ecosystem.score+"%")+" · "+REALITY_CONTRACT},{t:d.observed,label:"Runtime convergence",detail:d.caps.convergence.proof},{t:d.observed,label:"Human intervention signal",detail:d.owner.length+" candidate rows require classification"}];
  q("#evidence-events").innerHTML=events.map(e=>'<article class="evidence-event"><time>'+esc(e.t?new Date(e.t).toLocaleString():"unknown")+'</time><strong>'+esc(e.label)+'</strong><span>'+esc(e.detail)+'</span></article>').join("");
  if(lastScore!==null&&lastScore!==d.score){q("#health-source-state").textContent+=" · score "+(d.score>lastScore?"+":"")+String(d.score-lastScore)}lastScore=d.score
 }
