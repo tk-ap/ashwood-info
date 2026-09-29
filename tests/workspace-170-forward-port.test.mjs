@@ -25,11 +25,12 @@ test("Ops Pulse counts canonical AgentOS work and fails closed", () => {
 });
 
 test("Issue 170 forward-port uses current protected Workspace architecture", async () => {
-  const [html, pulse, views, health] = await Promise.all([
+  const [html, pulse, views, health, healthHtml] = await Promise.all([
     readFile(new URL("../workspace/index.html", import.meta.url), "utf8"),
     readFile(new URL("../workspace/ops-pulse.mjs", import.meta.url), "utf8"),
     readFile(new URL("../workspace/views.mjs", import.meta.url), "utf8"),
-    readFile(new URL("../workspace/agentos/agentos-health.mjs", import.meta.url), "utf8")
+    readFile(new URL("../workspace/agentos/agentos-health.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../workspace/agentos/index.html", import.meta.url), "utf8")
   ]);
   assert.match(html, /ops-pulse\.css\?v=20260924-forward1/);
   assert.match(html, /v4-atmosphere\.css\?v=20260924-forward1/);
@@ -41,4 +42,13 @@ test("Issue 170 forward-port uses current protected Workspace architecture", asy
   assert.match(views, /AgentOS Health/);
   assert.match(health, /\/api\/workspace-agentos/);
   assert.match(health, /autonomy-rubric\.v1/);
+  assert.match(health, /reality-evidence\.v1/);
+  assert.match(health, /work_domain/);
+  assert.match(healthHtml, /AgentOS infrastructure/);
+  assert.match(healthHtml, /Ecosystem execution/);
+  assert.match(healthHtml, /E2E proof closure/);
+  assert.doesNotMatch(html, /reality-check-score/);
+  assert.doesNotMatch(html, /Reality check · Theranos test/);
+  assert.match(html, /AgentOS Health/);
+  assert.match(html, /Open AgentOS Reality/);
 });
