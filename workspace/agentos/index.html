@@ -26,6 +26,13 @@
       </div>
     </header>
 
+    <nav class="health-subnav" aria-label="AgentOS views">
+      <a href="#health-title">Health</a>
+      <a href="/workspace/build/agentos/">Work</a>
+      <a href="#health-evidence">Evidence</a>
+      <a href="#runtime">Runtime</a>
+    </nav>
+
     <section class="health-hero" aria-labelledby="health-title">
       <div class="health-hero-copy">
         <p class="health-kicker">AgentOS · autonomous persistence</p>
@@ -55,6 +62,34 @@
         <p><span>Rubric</span><strong>autonomy-rubric.v1</strong></p>
         <p><span>Scoring</span><strong>Verified = full weight · Partial = ½ · Blocked/Unverified = 0</strong></p>
       </div>
+    </section>
+
+    <section class="reality-panel" id="reality" aria-labelledby="reality-title">
+      <div class="section-head">
+        <div>
+          <p class="health-kicker">Reality · Theranos test</p>
+          <h2 id="reality-title">Build the machine ≠ prove the machine builds.</h2>
+        </div>
+        <p>Two evidence lanes prevent AgentOS infrastructure progress from masking whether AgentOS is actually closing ecosystem work with durable proof.</p>
+      </div>
+      <div class="reality-grid">
+        <article class="reality-card">
+          <span>AgentOS infrastructure</span>
+          <strong id="reality-agentos-score">—</strong>
+          <p id="reality-agentos-detail">Reading machine-building evidence…</p>
+        </article>
+        <article class="reality-card">
+          <span>Ecosystem execution</span>
+          <strong id="reality-ecosystem-score">—</strong>
+          <p id="reality-ecosystem-detail">Reading product-execution evidence…</p>
+        </article>
+        <article class="reality-card">
+          <span>E2E proof closure</span>
+          <strong id="reality-e2e-score">—</strong>
+          <p id="reality-e2e-detail">Reading completed ecosystem work…</p>
+        </article>
+      </div>
+      <p class="reality-contract">Contract <strong id="reality-contract">reality-evidence.v1</strong> · Lane scores do not compensate for one another.</p>
     </section>
 
     <section class="health-stat-grid" aria-label="AgentOS top-line metrics">
@@ -93,7 +128,7 @@
       </aside>
     </section>
 
-    <section class="runtime-panel">
+    <section class="runtime-panel" id="runtime">
       <div class="section-head">
         <div><p class="health-kicker">Runtime / workforce</p><h2>Observed agent activity</h2></div>
         <p id="runtime-note">Read-only. AgentOS remains canonical.</p>
@@ -101,7 +136,7 @@
       <div id="agent-list" class="agent-list"></div>
     </section>
 
-    <section class="evidence-panel">
+    <section class="evidence-panel" id="health-evidence">
       <div class="section-head">
         <div><p class="health-kicker">Evidence freshness</p><h2>Why the score moved</h2></div>
         <p>No silent green state: stale or unavailable telemetry degrades the view.</p>
