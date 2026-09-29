@@ -50,5 +50,5 @@ test("Issue 170 forward-port uses current protected Workspace architecture", asy
   assert.doesNotMatch(html, /reality-check-score/);
   assert.doesNotMatch(html, /Reality check · Theranos test/);
   assert.match(html, /AgentOS Health/);
-  assert.match(html, /Open AgentOS Reality/);
+  assert.match(html, /system-level Reality metric now lives/);
 });
