@@ -1,0 +1,93 @@
+{
+  "work_id": "ashwood-modeling-tiktok-v3-2026-09-08",
+  "routing_source": "registry/product-routing.yaml",
+  "source_product": "ashwood",
+  "owning_product": "ashwood",
+  "owning_agent": "designer",
+  "contributing_agents": ["scout"],
+  "workspace": "tk-ap/ashwood-info",
+  "problem_or_opportunity": {
+    "summary": "TK's first modeling TikTok has an agreed nine-frame arc but no cut timing, no render pipeline, and no frames available to an agent that only has repository access.",
+    "detail": "The full-resolution masters are a 4.4GB archive on TK's workstation and are deliberately not committed. Codex can reach the repository but not the archive, so the work stalled on resources rather than on judgement. A third batch of transfers completed the archive on 2026-09-08, which also opened up four photographic registers the original nine frames did not cover."
+  },
+  "originating_signal": {
+    "type": "human_request",
+    "detail": "TK asked for the repository to carry clear instructions and resources so Codex can update the modeling page and finish the TikTok video."
+  },
+  "priority": {
+    "level": "p2",
+    "confidence": 0.7,
+    "rationale": "Content work with no external deadline. Blocked nothing else, but the archive verification that gated it is now complete."
+  },
+  "evidence": [
+    {
+      "kind": "archive_verification",
+      "detail": "Decode pass over all 292 archived files: 291 healthy, 1 corrupt (IMG_6089-edited.jpg, truncated to 4194304 bytes).",
+      "reference": "docs/CLAUDE_MEDIA_MIGRATION_HANDOFF.md"
+    },
+    {
+      "kind": "defect",
+      "detail": "assets/campaigns/barelysain/IMG_6881-edited.jpg is a corrupt JPEG: 4005 extraneous bytes and a premature end of data segment. Used as campaign frame 7 on the modeling page. A clean master exists in the archive.",
+      "reference": "portfolio/index.html"
+    },
+    {
+      "kind": "render_check",
+      "detail": "tools/build-tiktok.sh renders 1080x1920 h264 at 30fps, duration 10.300s, from the committed derivatives. Verified on Omarchy 2026-09-08.",
+      "reference": "tools/build-tiktok.sh"
+    }
+  ],
+  "desired_outcome": {
+    "summary": "A rendered 9:16 BarelySain TikTok cut TK can review, and a modeling page with its corrupt asset resolved.",
+    "artifacts": [
+      "Rendered 1080x1920 silent mp4 following docs/tiktok-v3-frames.json",
+      "A stated concern or confirmation on the frame 5 crop",
+      "Resolution path for the corrupt IMG_6881-edited.jpg web asset"
+    ]
+  },
+  "required_capabilities": [
+    "static-repository-analysis",
+    "image-processing",
+    "video-encoding",
+    "html-editing"
+  ],
+  "required_tools": ["ffmpeg", "python3", "imagemagick"],
+  "context_references": [
+    "docs/CODEX_MODELING_TIKTOK_BRIEF.md",
+    "docs/tiktok-v3-frames.json",
+    "docs/CLAUDE_MEDIA_MIGRATION_HANDOFF.md",
+    "assets/tiktok/source/",
+    "tools/build-tiktok.sh"
+  ],
+  "authority_class": "produce-for-human-acceptance",
+  "constraints": {
+    "no_browser_verification": "The Codex browser adapter in tk-ap/agent-os (adapters/codex/browser.py) fails closed and returns BLOCKED. Visual confirmation of the live page must come from TK or another authorized surface.",
+    "no_baked_text": "On-screen text and caption are added natively in TikTok and must never be burned into the render.",
+    "render_silent": "No audio track. Audio is chosen in TikTok and overrides all frame durations.",
+    "masters_not_in_repo": "Full-resolution masters stay at ~/ASHWOOD/Modeling/BarelySain/Originals and in the ~/ASHWOOD/tiktok Drive folder. Do not commit them; the archive is 4.4GB against a 45MB repository.",
+    "selection_not_approved": "The twelve-frame arc, the per-frame durations and the IMG_5539 to IMG_5538 swap are proposals. Rendering them is not approval of them.",
+    "crop_is_a_judgement": "Centre-crop is the script default, not a decision. Frame 5 (IMG_5538) is known to be weakened by it."
+  },
+  "human_oversight": {
+    "acceptance_gate": "required",
+    "gate_rationale": "Frame selection, ordering and crop are materially aesthetic. Per policies/HANDOFF_POLICY.md an agent may surface evidence and concerns but must not manufacture visual approval.",
+    "gate_owner": "TK",
+    "decisions_reserved_to_human": [
+      "Final frame selection and order",
+      "Per-frame crop position within the 9:16 window",
+      "Audio choice",
+      "Whether to ship the nine-frame or twelve-frame arc"
+    ]
+  },
+  "acceptance_criteria": [
+    "tools/build-tiktok.sh completes without error and reports a total matching the sum of frames[].seconds in docs/tiktok-v3-frames.json",
+    "The rendered file is 1080x1920, 30fps, 9:16, with no audio stream",
+    "No text is burned into any frame of the render",
+    "Every frames[].file entry in the manifest resolves to a file in assets/tiktok/source/",
+    "Every image referenced by portfolio/index.html exists and decodes without a corruption warning, or the exceptions are reported with the failing identify output",
+    "The frame 5 crop is either confirmed acceptable with evidence or raised as a specific concern, not silently accepted",
+    "No full-resolution master is added to the repository"
+  ],
+  "evidence_destination": "docs/CODEX_MODELING_TIKTOK_BRIEF.md",
+  "status": "proposed",
+  "created_at": "2026-09-08T21:00:00Z"
+}
