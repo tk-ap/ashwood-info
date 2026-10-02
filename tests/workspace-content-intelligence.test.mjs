@@ -22,7 +22,7 @@ test("unfinished AgentOS work becomes an observation, not a shipped claim", () =
     sourceLabel:"agent-os",
     title:"E2E proof remains blocked after runtime restart",
     notes:"agent must verify what actually happened",
-    status:"COMPLETED",
+    status:"IN_PROGRESS",
     date:new Date().toISOString(),
     confidence:.9
   };
@@ -34,13 +34,13 @@ test("unfinished AgentOS work becomes an observation, not a shipped claim", () =
   assert.match(recommendation.drafts.Gist,/observation from the work|Reality check/i);
 });
 
-test("unverified language never upgrades an unfinished claim", () => {
+test("explicitly unverified language never upgrades a completed task into a capability claim", () => {
   const item = {
     source:"board",
     sourceLabel:"agent-os",
     title:"E2E result remains unverified",
     notes:"verification pending",
-    status:"IN_PROGRESS",
+    status:"COMPLETED",
     date:new Date().toISOString(),
     confidence:1
   };
