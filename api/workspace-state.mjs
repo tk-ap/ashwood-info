@@ -291,16 +291,24 @@ export default async function handler(req, res) {
         `;
         return json(res, 200, { ok: true, relationships });
       }
-      await ensureContentFeedbackTable(sql);
       const evidence = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes FROM workspace_evidence ORDER BY occurred_at DESC LIMIT 500`;
       const overrides = await sql`SELECT evidence_id, goal_id FROM workspace_goal_overrides`;
-      const contentFeedback = await sql`SELECT evidence_id, decision, channel, truth_state, draft, created_at, updated_at
-        FROM workspace_content_feedback ORDER BY updated_at DESC LIMIT 500`;
+      let contentFeedback = [];
+      let contentFeedbackAvailable = true;
+      try {
+        await ensureContentFeedbackTable(sql);
+        contentFeedback = await sql`SELECT evidence_id, decision, channel, truth_state, draft, created_at, updated_at
+          FROM workspace_content_feedback ORDER BY updated_at DESC LIMIT 500`;
+      } catch (error) {
+        contentFeedbackAvailable = false;
+        console.error('content feedback state unavailable', error);
+      }
       return json(res, 200, {
         ok: true,
         evidence,
         overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])),
-        content_feedback: contentFeedback
+        content_feedback: contentFeedback,
+        content_feedback_available: contentFeedbackAvailable
       });
     }
 
