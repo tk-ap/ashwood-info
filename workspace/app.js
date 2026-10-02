@@ -154,19 +154,25 @@ import { buildContentRecommendation } from './content-intelligence.mjs';
 
 
   async function recordContentFeedback(evidenceId, decision, channel = null, draft = null, truthState = null) {
-    const result = await api('/api/workspace-state', {
-      method:'POST',
-      body:JSON.stringify({
-        action:'record_content_feedback',
-        evidence_id:evidenceId,
-        decision,
-        channel,
-        draft,
-        truth_state:truthState
-      })
-    });
-    state.contentFeedback[evidenceId] = result.feedback;
-    return result.feedback;
+    try {
+      const result = await api('/api/workspace-state', {
+        method:'POST',
+        body:JSON.stringify({
+          action:'record_content_feedback',
+          evidence_id:evidenceId,
+          decision,
+          channel,
+          draft,
+          truth_state:truthState
+        })
+      });
+      state.contentFeedback[evidenceId] = result.feedback;
+      return result.feedback;
+    } catch (error) {
+      const status=$('#content-intelligence-status');
+      if(status) status.textContent='Recommendation feedback could not be saved. The rest of Workspace is unaffected.';
+      throw error;
+    }
   }
 
   function renderFromWork(){
