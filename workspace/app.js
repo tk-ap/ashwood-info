@@ -230,7 +230,7 @@ import { recommendContent } from './content-intelligence.mjs';
       </article>`;
     }).join('');
 
-    $('[data-content-channel]').forEach(sel=>sel.addEventListener('change',async()=>{
+    $$('[data-content-channel]').forEach(sel=>sel.addEventListener('change',async()=>{
       const i=sel.dataset.contentChannel;
       const data=JSON.parse(document.querySelector(`[data-drafts="${i}"]`).textContent);
       document.querySelector(`[data-content-draft="${i}"]`).value=data[sel.value]||'';
@@ -241,14 +241,14 @@ import { recommendContent } from './content-intelligence.mjs';
       }
     }));
 
-    $('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       const ta=document.querySelector(`[data-content-draft="${btn.dataset.copyContent}"]`);
       await navigator.clipboard.writeText(ta.value);
       btn.textContent='Copied';
       setTimeout(()=>btn.textContent='Copy draft starter',1200);
     }));
 
-    $('[data-develop-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-develop-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       const article=btn.closest('.content-opportunity');
       const draft=article?.querySelector('[data-content-draft-wrap]');
       if(draft) draft.hidden=false;
@@ -265,7 +265,7 @@ import { recommendContent } from './content-intelligence.mjs';
       }
     }));
 
-    $('[data-save-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-save-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       btn.disabled=true;
       try{
         await saveContentFeedback(btn.dataset.saveContent,'SAVE',btn.dataset.channel);
@@ -276,7 +276,7 @@ import { recommendContent } from './content-intelligence.mjs';
       }
     }));
 
-    $('[data-no-post-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-no-post-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       btn.disabled=true;
       try{
         await saveContentFeedback(btn.dataset.noPostContent,'DO_NOT_POST',null);
