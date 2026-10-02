@@ -1,5 +1,6 @@
 import { renderOverview } from './overview.mjs';
 import { renderFrame, mountCheckin } from './frame.mjs';
+import { recommendContent } from './content-intelligence.mjs';
 (() => {
   'use strict';
 
@@ -17,7 +18,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
 
   let GOALS = [];
   let goalModel = null;
-  const state = { repos: [], githubEvidence: [], persistedEvidence: [], overrides: {}, ailhat: null, board: [], filter: 'all', selectedGoal: null, lastRefresh: null, error: null };
+  const state = { repos: [], githubEvidence: [], persistedEvidence: [], overrides: {}, contentFeedback: {}, ailhat: null, board: [], filter: 'all', selectedGoal: null, lastRefresh: null, error: null };
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
 
@@ -70,6 +71,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     const data = await api('/api/workspace-state');
     state.persistedEvidence = (data.evidence||[]).map(x=>({ id:x.id, source:x.source, sourceLabel:x.source_label, title:x.title, date:x.occurred_at, status:x.status, goal:x.goal_id, secondaryGoals:x.secondary_goals||[], confidence:Number(x.confidence||1), url:x.url, notes:x.notes }));
     state.overrides = data.overrides || {};
+    state.contentFeedback = Object.fromEntries((data.content_feedback || []).map(item => [item.evidence_id, item]));
   }
 
   async function github(path) {
@@ -151,65 +153,133 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   function goalStats(goal){const ev=allEvidence().filter(x=>x.goal===goal.id||x.secondaryGoals?.includes(goal.id)),recent=ev.filter(x=>daysSince(x.date)<=30),weighted=recent.reduce((s,x)=>s+weight(x)*(x.goal===goal.id?1:.35),0),momentum=Math.min(100,Math.round(weighted*22)),newest=ev[0]?.date||null;let status='IN_PROGRESS';if(!newest||daysSince(newest)>30)status='STALE';else if(daysSince(newest)>14||momentum<18)status='NEEDS_ATTENTION';return{ev,recent,momentum,newest,status};}
 
 
-  function contentCandidateScore(x){
-    if(!x?.date || daysSince(x.date)>14) return 0;
-    const t=`${x.sourceLabel||''} ${x.title||''} ${x.notes||''}`.toLowerCase();
-    let score=(14-daysSince(x.date))*2 + (x.confidence||.5)*10;
-    if(/fix|fail|break|regress|block|deny|proof|verify|test|learn|change|decision|launch|ship|deploy|merge|complete|evidence|boundary|context|route|approval|agent/.test(t)) score+=14;
-    if(/docs|chore|typo|dependency|cache|metadata/.test(t)) score-=8;
-    if(x.status==='COMPLETED') score+=5;
-    if(x.source==='board' && /running|in_progress/i.test(x.status||'')) score-=4;
-    return score;
-  }
-
-  function contentAngle(x){
-    const t=`${x.title||''}`.replace(/^(feat|fix|docs|chore|refactor|test)(\([^)]*\))?:\s*/i,'').trim();
-    const repo=PRODUCT_ROLES[x.sourceLabel]?.label || x.sourceLabel || x.source;
-    const lower=t.toLowerCase();
-    if(/fix|regress|fail|broken|bug/.test(lower)) return {why:'A failure or correction is usually more informative than a generic progress update.',hook:`I hit a problem in ${repo}: ${t}`};
-    if(/proof|verify|test|evidence|boundary|deny/.test(lower)) return {why:'This has a concrete proof/evidence angle instead of relying on a product claim.',hook:`A useful proof point from ${repo}: ${t}`};
-    if(/decision|change|route|approval|architecture/.test(lower)) return {why:'This records a decision that changed how the system is being built.',hook:`A build decision I made in ${repo}: ${t}`};
-    return {why:'This is recent work with a traceable source. The draft stays close to the evidence rather than inventing a lesson.',hook:`Something that changed in ${repo}: ${t}`};
-  }
-
-  function contentDrafts(x){
-    const a=contentAngle(x), source=x.url?' The receipt is in the linked build evidence.':'';
-    return {
-      TikTok:`On-screen / spoken hook: ${a.hook}.\n\nShow: the actual build evidence or before/after state when it is safe to display.\n\nBeat: what I expected → what actually happened → what I changed → what I’m testing next.\n\nCaption: Building this in public, but keeping the receipts attached to the claim.`,
-      Instagram:`Carousel / Reel angle: ${a.hook}.\n\nSlide 1: the tension or discovery.\nSlide 2: the actual evidence.\nSlide 3: what changed in the build.\nSlide 4: the next test.\n\nCaption: ${a.hook}. The useful part is what the evidence changed, not the status update.`,
-      Threads:`${a.hook}. Still figuring out what it means beyond this specific build, but this is the part I want to keep watching.`,
-      LinkedIn:`${a.hook}. What matters to me is the evidence behind the change, not the status update itself.${source} The next test is whether the change holds up in actual use.`,
-      'Build Journal':`What I was trying to do: [add the goal].\n\nWhat actually happened: ${x.title}.\n\nWhat I learned: [owner interpretation].\n\nWhat changed because of it: [next decision/test].`
-    };
+  async function saveContentFeedback(evidenceId, decision, channel = null) {
+    const payload = await api('/api/workspace-state', {
+      method:'POST',
+      body:JSON.stringify({
+        action:'record_content_feedback',
+        evidence_id:evidenceId,
+        decision,
+        channel
+      })
+    });
+    state.contentFeedback[evidenceId] = payload.feedback;
+    return payload.feedback;
   }
 
   function renderFromWork(){
     const host=$('#from-work-queue'); if(!host) return;
-    const dismissed=new Set(JSON.parse(localStorage.getItem('ashwood.dismissedContentEvidence')||'[]'));
-    const candidates=allEvidence().filter(x=>!dismissed.has(x.id)).map(x=>({...x,_score:contentCandidateScore(x)})).filter(x=>x._score>18).sort((a,b)=>b._score-a._score).slice(0,6);
-    host.innerHTML=candidates.length?candidates.map((x,i)=>{
-      const a=contentAngle(x), drafts=contentDrafts(x), first=Object.entries(drafts)[0];
+
+    const candidates=allEvidence()
+      .map(x=>({...x,_rec:recommendContent(x,{productRoles:PRODUCT_ROLES})}))
+      .filter(x=>x._rec.shareState!=='DO_NOT_POST')
+      .filter(x=>state.contentFeedback[x.id]?.decision!=='DO_NOT_POST')
+      .sort((a,b)=>{
+        const aDecision=state.contentFeedback[a.id]?.decision;
+        const bDecision=state.contentFeedback[b.id]?.decision;
+        const aBias=aDecision==='DEVELOP'?5:aDecision==='SAVE'?-5:0;
+        const bBias=bDecision==='DEVELOP'?5:bDecision==='SAVE'?-5:0;
+        return (b._rec.score+bBias)-(a._rec.score+aBias);
+      })
+      .slice(0,3);
+
+    if(!candidates.length){
+      host.innerHTML='<p class="workstream-empty"><strong>No strong new candidate right now.</strong><span>ASHWOOD checked current evidence and found nothing strong enough to turn into content. Silence is a valid recommendation.</span></p>';
+      return;
+    }
+
+    host.innerHTML=candidates.map((x,i)=>{
+      const rec=x._rec;
+      const feedback=state.contentFeedback[x.id]||{};
+      const channel=rec.drafts[feedback.channel]?feedback.channel:rec.primaryChannel;
+      const developed=feedback.decision==='DEVELOP';
+      const saved=feedback.decision==='SAVE';
+      const alternates=rec.alternateChannels.filter(Boolean).join(' · ');
       return `<article class="content-opportunity" data-content-id="${escapeHtml(x.id)}">
-        <div class="content-opportunity__meta"><span>${escapeHtml(x.sourceLabel||x.source)} · ${relativeDate(x.date)}</span><span>evidence score ${Math.round(x._score)}</span></div>
-        <h3>${escapeHtml(x.title)}</h3>
-        <p class="content-opportunity__why"><strong>Why it may be worth sharing:</strong> ${escapeHtml(a.why)}</p>
-        <div class="content-opportunity__draft">
+        <div class="content-opportunity__meta">
+          <span>${escapeHtml(x.sourceLabel||x.source)} · ${relativeDate(x.date)}</span>
+          <span>${escapeHtml(rec.shareState)} · evidence score ${Math.round(rec.score)}</span>
+        </div>
+        <div class="content-opportunity__signals" aria-label="Recommendation context">
+          <span>truth · ${escapeHtml(rec.truthState)}</span>
+          <span>territory · ${escapeHtml(rec.territory)}</span>
+          <span>best fit · ${escapeHtml(rec.primaryChannel)}</span>
+        </div>
+        <h3>${escapeHtml(rec.angle.hook)}</h3>
+        <p class="content-opportunity__why"><strong>Why now:</strong> ${escapeHtml(rec.angle.why)}</p>
+        <p class="content-opportunity__evidence"><strong>Evidence:</strong> ${escapeHtml(x.title||'Untitled evidence')}.</p>
+        <p class="content-opportunity__fit"><strong>Other fits:</strong> ${escapeHtml(alternates||'none')}</p>
+        <div class="content-opportunity__draft" data-content-draft-wrap="${i}" ${developed?'':'hidden'}>
           <label>Draft channel
-            <select data-content-channel="${i}">${Object.keys(drafts).map(k=>`<option>${escapeHtml(k)}</option>`).join('')}</select>
+            <select data-content-channel="${i}" data-content-id="${escapeHtml(x.id)}">
+              ${Object.keys(rec.drafts).map(k=>`<option ${k===channel?'selected':''}>${escapeHtml(k)}</option>`).join('')}
+            </select>
           </label>
-          <textarea rows="5" data-content-draft="${i}">${escapeHtml(first[1])}</textarea>
+          <div class="content-opportunity__draft-body">
+            <textarea rows="8" data-content-draft="${i}">${escapeHtml(rec.drafts[channel])}</textarea>
+            <button type="button" data-copy-content="${i}">Copy draft starter</button>
+          </div>
         </div>
         <div class="content-opportunity__actions">
           ${x.url?`<a href="${escapeHtml(x.url)}" target="_blank" rel="noopener">Source evidence ↗</a>`:''}
-          <button type="button" data-copy-content="${i}">Copy draft</button>
-          <button type="button" data-dismiss-content="${escapeHtml(x.id)}">Dismiss</button>
+          <button type="button" data-develop-content="${escapeHtml(x.id)}" data-channel="${escapeHtml(channel)}">${developed?'Developing':'Develop thought'}</button>
+          <button type="button" data-save-content="${escapeHtml(x.id)}" data-channel="${escapeHtml(channel)}">${saved?'Saved for later':'Save for later'}</button>
+          <button type="button" data-no-post-content="${escapeHtml(x.id)}">Don't post</button>
         </div>
-        <script type="application/json" data-drafts="${i}">${JSON.stringify(drafts).replace(/</g,'\\u003c')}</script>
+        <script type="application/json" data-drafts="${i}">${JSON.stringify(rec.drafts).replace(/</g,'\\u003c')}</script>
       </article>`;
-    }).join(''):'<p class="workstream-empty"><strong>No strong new candidate right now.</strong><span>ASHWOOD checked the current evidence sources and did not find a recent item strong enough to turn into a post. That is a valid outcome.</span></p>';
-    $('[data-content-channel]').forEach(sel=>sel.addEventListener('change',()=>{const i=sel.dataset.contentChannel;const data=JSON.parse(document.querySelector(`[data-drafts="${i}"]`).textContent);document.querySelector(`[data-content-draft="${i}"]`).value=data[sel.value]||'';}));
-    $('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{const ta=document.querySelector(`[data-content-draft="${btn.dataset.copyContent}"]`);await navigator.clipboard.writeText(ta.value);btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy draft',1200);}));
-    $('[data-dismiss-content]').forEach(btn=>btn.addEventListener('click',()=>{dismissed.add(btn.dataset.dismissContent);localStorage.setItem('ashwood.dismissedContentEvidence',JSON.stringify([...dismissed].slice(-200)));renderFromWork();}));
+    }).join('');
+
+    $('[data-content-channel]').forEach(sel=>sel.addEventListener('change',async()=>{
+      const i=sel.dataset.contentChannel;
+      const data=JSON.parse(document.querySelector(`[data-drafts="${i}"]`).textContent);
+      document.querySelector(`[data-content-draft="${i}"]`).value=data[sel.value]||'';
+      const current=state.contentFeedback[sel.dataset.contentId];
+      if(current?.decision==='DEVELOP'){
+        try{ await saveContentFeedback(sel.dataset.contentId,'DEVELOP',sel.value); }
+        catch(error){ $('#live-state').textContent='Content feedback could not be saved · '+error.message; }
+      }
+    }));
+
+    $('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const ta=document.querySelector(`[data-content-draft="${btn.dataset.copyContent}"]`);
+      await navigator.clipboard.writeText(ta.value);
+      btn.textContent='Copied';
+      setTimeout(()=>btn.textContent='Copy draft starter',1200);
+    }));
+
+    $('[data-develop-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      btn.disabled=true;
+      try{
+        await saveContentFeedback(btn.dataset.developContent,'DEVELOP',btn.dataset.channel);
+        renderFromWork();
+      }catch(error){
+        btn.disabled=false;
+        $('#live-state').textContent='Content feedback could not be saved · '+error.message;
+      }
+    }));
+
+    $('[data-save-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      btn.disabled=true;
+      try{
+        await saveContentFeedback(btn.dataset.saveContent,'SAVE',btn.dataset.channel);
+        renderFromWork();
+      }catch(error){
+        btn.disabled=false;
+        $('#live-state').textContent='Content feedback could not be saved · '+error.message;
+      }
+    }));
+
+    $('[data-no-post-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      btn.disabled=true;
+      try{
+        await saveContentFeedback(btn.dataset.noPostContent,'DO_NOT_POST',null);
+        renderFromWork();
+      }catch(error){
+        btn.disabled=false;
+        $('#live-state').textContent='Content feedback could not be saved · '+error.message;
+      }
+    }));
   }
 
   function classifyReality(x){
