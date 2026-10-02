@@ -36,11 +36,12 @@ export function contentCandidateScore(x, daysSince) {
 export function contentTruthState(x) {
   const t = textOf(x);
   const status = String(x?.status || "").toUpperCase();
-  if (status === "COMPLETED" && /production|deployed|shipped|released|live\b/.test(t)) return "shipped";
-  if (status === "COMPLETED" && /end[- ]to[- ]end|e2e|working|works|passed/.test(t)) return "working";
+  const explicitlyUnverified = /\bunverified\b|not verified|not yet verified|verification pending|needs verification|pending proof|unproven/.test(t);
+  if (status === "COMPLETED" && /\bdeployed\b|\bshipped\b|\breleased\b|production live/.test(t) && !explicitlyUnverified) return "shipped";
+  if (status === "COMPLETED" && /end[- ]to[- ]end|\be2e\b|\bworking\b|\bworks\b|\bpassed\b/.test(t) && !explicitlyUnverified) return "working";
   if (status === "COMPLETED") return "evidenced";
-  if (/verified\b|passed\b|smoke test passed|readback confirmed|independently verified/.test(t)) return "evidenced";
-  if (/experiment|prototype|attempt|trying|test\b|trial/.test(t) && !/verified|passed/.test(t)) return "experiment";
+  if (!explicitlyUnverified && (/\bverified\b|\bpassed\b|smoke test passed|readback confirmed|independently verified/.test(t))) return "evidenced";
+  if (/experiment|prototype|attempt|trying|\btest\b|trial/.test(t) && !/\bverified\b|\bpassed\b/.test(t)) return "experiment";
   return "observation";
 }
 
