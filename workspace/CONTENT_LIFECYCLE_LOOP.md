@@ -12,6 +12,31 @@ ASHWOOD should treat them as one continuous lifecycle grounded in real work:
 
 The loop exists to help the owner notice real progress, communicate selectively, and maintain oversight without turning creative/public presence into a generic content-marketing treadmill.
 
+
+## TK editorial contract — owner approved 2026-10-01
+
+The content system serves TK's authored point of view. It does not turn TK into a founder-content account.
+
+Core rules:
+
+- **Human first.** Life, creative practice, and building are parts of one person rather than separate public personas.
+- **Products are evidence, not identity.** ALVIRA, AgentOS, ledgato, ailhat, and other builds may appear when they produce an observation, tension, question, failure, decision, or verified result worth discussing.
+- **Unfinished is publishable; overclaiming is not.** It is valid to talk about an experiment or failure before the infrastructure works end-to-end. Keep the state visible: `observation → experiment → evidenced → working → shipped`.
+- **Explain the problem before the solution.** Prefer what the work revealed about trust, reliability, creativity, autonomy, or human experience over product marketing.
+- **Interesting and true beats frequent.** There is no posting quota. `DO_NOT_POST` and silence are valid outputs.
+- **Do not force a content ratio.** ASHWOOD may notice imbalance across being alive, making things, and building/understanding the future, but those territories are lenses rather than quotas.
+
+Channel roles:
+
+- **Gist:** developed thought / public notebook; use when an observation benefits from context, uncertainty, or discussion.
+- **Threads:** compressed or unfinished thought.
+- **TikTok / Reel:** experience, story, demonstration, or visually legible process.
+- **Instagram:** authored visual/creative presence first.
+- **LinkedIn:** only when there is a genuinely professional lesson or evidenced result worth translating.
+- **Build Journal:** durable build record with provenance; not a social-post duplicate.
+
+The recommendation layer should decide **what may be worth saying before drafting how to say it**. Draft generation is downstream of owner intent (`Develop thought`), not the default response to every piece of evidence.
+
 ## 1. Progress reveal is the upstream trigger
 
 A meaningful progress reveal may create a `content.opportunity` only when the underlying event is supported by actual evidence.

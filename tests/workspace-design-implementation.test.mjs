@@ -122,5 +122,5 @@ test("the Workspace menu runtime fix is present and cache-busted", () => {
   const app = read("workspace/app.js");
   assert.match(app, /\$\$\('\.workspace-menu-panel \.text-button'\)\.forEach/);
   assert.doesNotMatch(app, /[^$]\$\('\.workspace-menu-panel \.text-button'\)\.forEach/);
-  assert.match(read("workspace/index.html"), /app\.js\?v=20260921-menufix1/);
+  assert.match(read("workspace/index.html"), /app\.js\?v=20261001-content-intelligence1/);
 });

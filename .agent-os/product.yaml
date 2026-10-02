@@ -85,6 +85,25 @@ content_architecture:
     allowed: true
     rule: related-thinking-and-build-evidence-may-link-to-each-other-without-collapsing-content-lanes
 
+content_intelligence:
+  contract: workspace/CONTENT_LIFECYCLE_LOOP.md
+  owner_approved: 2026-10-01
+  purpose: surface evidence-grounded thoughts worth developing without turning the owner into a founder-content account
+  truth_states:
+    - observation
+    - experiment
+    - evidenced
+    - working
+    - shipped
+  rules:
+    - human-first-authored-point-of-view
+    - products-are-evidence-not-public-identity
+    - unfinished-work-may-be-discussed-with-state-visible
+    - explain-problem-before-solution
+    - do-not-post-is-a-valid-output
+    - gist-is-the-developed-thought-surface-not-a-posting-obligation
+
+
 rules:
   canonical_product_role_from_routing_source: true
   local_metadata_may_narrow_or_add_implementation_detail: true
