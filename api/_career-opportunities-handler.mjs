@@ -186,21 +186,25 @@ export default async function handler(req, res) {
     }
 
     const declinedRows = await sql`
-      SELECT source, opportunity_id
+      SELECT source, opportunity_id, company, role
       FROM workspace_career_opportunity_dispositions
       WHERE disposition = 'DECLINED'
     `;
     const declinedKeys = new Set(
       declinedRows.map(row => `${sourceKey(row.source)}::${String(row.opportunity_id)}`)
     );
+    const declinedPairs = new Set(
+      declinedRows
+        .filter(row => row.company && row.role)
+        .map(row => `${String(row.company).trim().toLowerCase()}::${String(row.role).trim().toLowerCase()}`)
+    );
+    const wasDeclined = item =>
+      declinedKeys.has(`${sourceKey(item.source)}::${String(item.id)}`) ||
+      declinedPairs.has(`${String(item.company).trim().toLowerCase()}::${String(item.role).trim().toLowerCase()}`);
 
     const queues = rankOpportunityQueues(sourceJobs, tracked);
-    const ranked = queues.recommended.filter(item =>
-      !declinedKeys.has(`${sourceKey(item.source)}::${String(item.id)}`)
-    );
-    const reviewRanked = queues.review.filter(item =>
-      !declinedKeys.has(`${sourceKey(item.source)}::${String(item.id)}`)
-    );
+    const ranked = queues.recommended.filter(item => !wasDeclined(item));
+    const reviewRanked = queues.review.filter(item => !wasDeclined(item));
     const opportunities = rotateOpportunities(ranked, cursor, 8);
     const reviewOpportunities = rotateOpportunities(reviewRanked, cursor, 4);
 
