@@ -31,8 +31,8 @@ test('relevant business execution roles outrank unrelated engineering roles', ()
 
 test('rankOpportunities excludes already tracked postings', () => {
   const jobs = [
-    { id:1, url:'https://example.com/a', title:'Business Analyst', company_name:'A Co', candidate_required_location:'USA', publication_date:new Date().toISOString(), description:'Business analysis and process improvement.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } },
-    { id:2, url:'https://example.com/b', title:'Compliance Program Manager', company_name:'B Co', candidate_required_location:'USA', publication_date:new Date().toISOString(), description:'Compliance governance and controls.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } }
+    { id:1, url:'https://example.com/a', title:'Business Analyst', company_name:'A Co', candidate_required_location:'USA', work_arrangement:'remote', publication_date:new Date().toISOString(), description:'Business analysis and process improvement.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } },
+    { id:2, url:'https://example.com/b', title:'Compliance Program Manager', company_name:'B Co', candidate_required_location:'USA', work_arrangement:'remote', publication_date:new Date().toISOString(), description:'Compliance governance and controls.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } }
   ];
   const ranked = rankOpportunities(jobs, [{ company:'A Co', role:'Business Analyst', posting_url:'https://example.com/a' }]);
   assert.equal(ranked.length, 1);
@@ -101,6 +101,7 @@ test('ranked opportunities carry a suggested resume version', () => {
     title:'Senior Operational Risk Manager',
     company_name:'Risk Co',
     candidate_required_location:'USA',
+    work_arrangement:'remote',
     publication_date:new Date().toISOString(),
     description:'Own controls, governance, audit, resiliency and cross-functional process improvement.',
     requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] }
@@ -119,6 +120,7 @@ test('ranked opportunities preserve source identity and dedupe the same role acr
       title:'Senior Business Analyst',
       company_name:'Example Co',
       candidate_required_location:'USA',
+      work_arrangement:'remote',
       publication_date:now,
       description:'Business analysis, stakeholder management, controls and process improvement.',
       requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] },
@@ -131,6 +133,7 @@ test('ranked opportunities preserve source identity and dedupe the same role acr
       title:'Senior Business Analyst',
       company_name:'Example Co',
       candidate_required_location:'USA',
+      work_arrangement:'remote',
       publication_date:now,
       description:'Business analysis, stakeholder management, controls and process improvement.',
       requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] },
@@ -252,7 +255,7 @@ test('analytics consultant is a supported target lane', () => {
     description:'Coordinate analytics, business teams and subject-matter experts to turn data into operational insight.'
   });
   assert.ok(analytics.score >= 8);
-  assert.equal(analytics.gate, 'unknown');
+  assert.equal(analytics.gate, 'insufficient_posting_detail');
   assert.equal(analytics.requirements.status, 'unknown');
   const recommendation = resumeRecommendation({
     title:'Senior Analytics Consultant',
@@ -324,7 +327,7 @@ test('thin posting summaries have unknown requirement health and receive reduced
   assert.equal(assessment.status, 'unknown');
   const score = scoreOpportunity(job);
   assert.equal(score.requirements.status, 'unknown');
-  assert.equal(score.gate, 'unknown');
+  assert.equal(score.gate, 'insufficient_posting_detail');
 });
 
 test('explicit unsupported required certification is a hard requirement mismatch', () => {
@@ -400,4 +403,46 @@ test('primary ranking refuses qualified but weak-fit roles', () => {
   }], []);
   assert.equal(queues.recommended.length, 0);
   assert.equal(queues.review.length, 0);
+});
+
+
+test('low-confidence requirement parsing stays in review rather than primary recommendations', () => {
+  const body = 'Business analysis role supporting controls, stakeholder management, process improvement, reporting, and financial-services operations. '.repeat(2);
+  const job = {
+    id:'low-confidence',
+    url:'https://example.com/low-confidence',
+    title:'Senior Business Analyst',
+    company_name:'Low Confidence Co',
+    candidate_required_location:'USA',
+    work_arrangement:'remote',
+    salary:'$105,000 - $125,000 a year',
+    publication_date:new Date().toISOString(),
+    description:body
+  };
+  const assessment = assessRequirements(job);
+  assert.equal(assessment.status, 'qualified');
+  assert.equal(assessment.confidence, 'low');
+  const queues = rankOpportunityQueues([job], []);
+  assert.equal(queues.recommended.length, 0);
+  assert.equal(queues.review.length, 1);
+  assert.equal(queues.review[0].eligibility_reason, 'requirements_low_confidence');
+});
+
+test('materially below-reference compensation prevents a primary recommendation', () => {
+  const job = {
+    id:'low-pay',
+    url:'https://example.com/low-pay',
+    title:'Senior Operational Risk Program Manager',
+    company_name:'Low Pay Co',
+    candidate_required_location:'USA',
+    work_arrangement:'remote',
+    salary:'$70,000 - $80,000 a year',
+    publication_date:new Date().toISOString(),
+    description:'Own operational risk, controls, governance, compliance, process improvement and program execution.',
+    requirements_review:{ status:'qualified', checks:['Employer requirements checked.'], reasons:[] }
+  };
+  const scored = scoreOpportunity(job);
+  assert.equal(scored.fit.status, 'strong');
+  assert.equal(scored.practicality.status, 'poor');
+  assert.equal(scored.recommendation_bucket, 'filtered');
 });
