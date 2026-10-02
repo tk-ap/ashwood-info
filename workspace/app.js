@@ -235,38 +235,38 @@ import { buildContentRecommendation } from './content-intelligence.mjs';
     const selectedChannel=i=>document.querySelector(`[data-content-channel="${i}"]`)?.value || null;
     const draftValue=i=>document.querySelector(`[data-content-draft="${i}"]`)?.value || null;
 
-    $('[data-develop-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-develop-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       const i=btn.dataset.developContent, payload=payloadFor(i), editor=document.querySelector(`[data-content-editor="${i}"]`);
       editor.hidden=false;
       await recordContentFeedback(payload.evidenceId,'develop',selectedChannel(i),draftValue(i),payload.truthState);
       btn.textContent='Developing';
     }));
 
-    $('[data-save-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-save-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       const i=btn.dataset.saveContent, payload=payloadFor(i);
       await recordContentFeedback(payload.evidenceId,'save',selectedChannel(i),draftValue(i),payload.truthState);
       btn.textContent='Saved';
     }));
 
-    $('[data-dont-post-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-dont-post-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       const i=btn.dataset.dontPostContent, payload=payloadFor(i);
       await recordContentFeedback(payload.evidenceId,'do_not_post',selectedChannel(i),draftValue(i),payload.truthState);
       renderFromWork();
     }));
 
-    $('[data-content-channel]').forEach(sel=>sel.addEventListener('change',()=>{
+    $$('[data-content-channel]').forEach(sel=>sel.addEventListener('change',()=>{
       const i=sel.dataset.contentChannel, payload=payloadFor(i), ta=document.querySelector(`[data-content-draft="${i}"]`);
       ta.value=payload.drafts[sel.value]||'';
     }));
 
-    $('[data-save-draft]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-save-draft]').forEach(btn=>btn.addEventListener('click',async()=>{
       const i=btn.dataset.saveDraft, payload=payloadFor(i);
       await recordContentFeedback(payload.evidenceId,'develop',selectedChannel(i),draftValue(i),payload.truthState);
       btn.textContent='Saved';
       setTimeout(()=>btn.textContent='Save draft',1200);
     }));
 
-    $('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+    $$('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{
       const i=btn.dataset.copyContent, payload=payloadFor(i), draft=draftValue(i);
       await recordContentFeedback(payload.evidenceId,'develop',selectedChannel(i),draft,payload.truthState);
       await navigator.clipboard.writeText(draft);
