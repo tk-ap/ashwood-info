@@ -13,7 +13,8 @@ const TITLE_RULES = [
   [/strategy|strategic operations|special projects/i, 8, 'strategy'],
   [/financial analyst|finance operations|financial operations/i, 8, 'finance'],
   [/fraud|audit/i, 7, 'risk / audit'],
-  [/implementation manager|change management/i, 6, 'implementation / change']
+  [/implementation manager|change management/i, 6, 'implementation / change'],
+  [/product operations|product strategy|product program/i, 10, 'product / business operations']
 ];
 
 const BODY_RULES = [
@@ -308,116 +309,296 @@ export function resumeRecommendation(job={}, matches=[]) {
   };
 }
 
-export function scoreOpportunity(job={}, now=Date.now()) {
+const CAREER_REFERENCE_SALARY = 95000;
+
+function salaryRange(label='') {
+  const text = String(label || '');
+  if (!text || /hour|\/hr|hourly/i.test(text)) return { min:null, max:null, known:false };
+  const values = [...text.matchAll(/(?:\$|USD\s*)?([\d,.]+(?:\.\d+)?)\s*([kKmM]?)/g)]
+    .map(match => {
+      let value = Number(String(match[1]).replaceAll(',', ''));
+      if (!Number.isFinite(value)) return null;
+      if (/k/i.test(match[2] || '')) value *= 1000;
+      if (/m/i.test(match[2] || '')) value *= 1000000;
+      return Math.round(value);
+    })
+    .filter(value => Number.isFinite(value) && value >= 20000);
+  return {
+    min:values[0] || null,
+    max:values[1] || values[0] || null,
+    known:Boolean(values.length)
+  };
+}
+
+export function assessFit(job={}) {
   const title = String(job.title || '');
   const body = stripHtml(job.description || '');
-  const requirements = assessRequirements(job);
-  const gate = qualificationGate(job, requirements);
-  if (!title || !gate.pass) return { score:-100, matches:[], gate:gate.reason, requirements };
-  if (!isUsCompatible(job.candidate_required_location)) return { score:-100, matches:[], gate:'location', requirements };
-
-  let fitScore = job.curated && requirements.status === 'qualified' ? 8 : 0;
+  let score = 0;
   const matches = [];
-  if (job.curated) matches.push('curated');
-  if (requirements.status === 'needs_review') fitScore -= 4;
-  if (requirements.status === 'unknown') fitScore -= 7;
+
   TITLE_RULES.forEach(([pattern, points, label]) => {
-    if (pattern.test(title)) { fitScore += points; matches.push(label); }
+    if (pattern.test(title)) { score += points; matches.push(label); }
   });
   BODY_RULES.forEach(([pattern, points, label]) => {
-    if (pattern.test(body)) { fitScore += points; matches.push(label); }
+    if (pattern.test(body)) { score += points; matches.push(label); }
   });
+  if (/senior|lead|manager|principal/i.test(title)) score += 2;
+  if (/director|vice president|\bvp\b|chief/i.test(title)) score -= 2;
 
-  if (/senior|lead|manager|principal/i.test(title)) fitScore += 2;
-  if (/director|vice president|\bvp\b|chief/i.test(title)) fitScore -= 2;
+  const uniqueMatches = [...new Set(matches)].slice(0,5);
+  let status = 'weak';
+  if (score >= 14) status = 'strong';
+  else if (score >= 9) status = 'credible';
+  else if (score >= 6) status = 'stretch';
 
+  return {
+    status,
+    score,
+    matches:uniqueMatches,
+    summary:uniqueMatches.length
+      ? `Matches ${uniqueMatches.join(', ')}.`
+      : 'The posting does not strongly match the current target lanes.'
+  };
+}
+
+export function assessPracticality(job={}, now=Date.now()) {
+  const arrangement = workArrangementPreference(job);
+  const location = locationPreference(job.candidate_required_location);
+  const salary = salaryRange(job.salary);
   const published = new Date(job.publication_date || 0).getTime();
-  if (Number.isFinite(published) && published > 0) {
-    const ageDays = Math.max(0, Math.floor((now - published) / 86400000));
-    if (ageDays <= 3) fitScore += 4;
-    else if (ageDays <= 7) fitScore += 3;
-    else if (ageDays <= 14) fitScore += 1;
-    else if (ageDays > 45) fitScore -= 4;
+  const ageDays = Number.isFinite(published) && published > 0
+    ? Math.max(0, Math.floor((now - published) / 86400000))
+    : null;
+
+  let score = 0;
+  const positives = [];
+  const frictions = [];
+
+  if (arrangement.tier === 'remote') {
+    score += 5;
+    positives.push('remote');
+  } else if (arrangement.tier === 'hybrid') {
+    score += 3;
+    positives.push('hybrid');
+  } else if (arrangement.tier === 'onsite') {
+    if (location.tier === 'walkable-dtla') {
+      score += 1;
+      positives.push('walkable DTLA');
+    } else {
+      score -= 4;
+      frictions.push('on-site outside the preferred walkable DTLA area');
+    }
+  } else {
+    frictions.push('work arrangement not verified');
   }
 
-  const arrangement = workArrangementPreference(job);
-  if (arrangement.tier === 'onsite' && fitScore < 22) {
+  if (salary.known) {
+    if ((salary.min || 0) >= CAREER_REFERENCE_SALARY) {
+      score += 2;
+      positives.push('compensation meets the current reference');
+    } else if ((salary.max || 0) >= CAREER_REFERENCE_SALARY) {
+      score += 1;
+      positives.push('compensation range reaches the current reference');
+    } else if ((salary.max || 0) < 85000) {
+      score -= 3;
+      frictions.push('listed compensation is materially below the current reference');
+    } else {
+      frictions.push('listed compensation is below the current reference');
+    }
+  } else {
+    frictions.push('compensation not verified');
+  }
+
+  if (ageDays !== null) {
+    if (ageDays <= 7) {
+      score += 2;
+      positives.push('fresh posting');
+    } else if (ageDays <= 21) {
+      score += 1;
+    } else if (ageDays > 45) {
+      score -= 4;
+      frictions.push('posting is older than 45 days');
+    } else if (ageDays > 30) {
+      score -= 1;
+      frictions.push('posting is aging');
+    }
+  } else {
+    frictions.push('posting date not verified');
+  }
+
+  let status = 'poor';
+  if (score >= 6) status = 'strong';
+  else if (score >= 2) status = 'practical';
+  else if (score >= 0) status = 'friction';
+
+  // A high arithmetic score must not hide a practical unknown or a clearly
+  // below-target salary. Primary recommendations should be usable, not merely
+  // interesting.
+  if (arrangement.tier === 'unknown' && status !== 'poor') status = 'friction';
+  if (salary.known && (salary.max || 0) < 85000) status = 'poor';
+  else if (salary.known && (salary.max || 0) < CAREER_REFERENCE_SALARY && status !== 'poor') status = 'friction';
+
+  return {
+    status,
+    score,
+    work_arrangement:arrangement.tier,
+    work_arrangement_rank:arrangement.rank,
+    location:location.tier,
+    salary,
+    age_days:ageDays,
+    positives,
+    frictions
+  };
+}
+
+function eligibilityAssessment(job={}, requirements=assessRequirements(job)) {
+  const gate = qualificationGate(job, requirements);
+  if (!gate.pass) {
+    return { status:'excluded', reason:gate.reason };
+  }
+  if (!isUsCompatible(job.candidate_required_location)) {
+    return { status:'excluded', reason:'location' };
+  }
+  if (requirements.status === 'qualified' && requirements.confidence !== 'low') {
+    return { status:'eligible', reason:'requirements_checked' };
+  }
+  if (requirements.status === 'qualified') {
+    return { status:'review', reason:'requirements_low_confidence' };
+  }
+  return {
+    status:'review',
+    reason:requirements.reasons?.[0] || requirements.status || 'requirements_unverified'
+  };
+}
+
+export function scoreOpportunity(job={}, now=Date.now()) {
+  const title = String(job.title || '');
+  const requirements = assessRequirements(job);
+  const eligibility = eligibilityAssessment(job, requirements);
+  if (!title || eligibility.status === 'excluded') {
     return {
       score:-100,
-      fit_score:fitScore,
-      matches:[...new Set(matches)].slice(0,4),
-      gate:'onsite_requires_great_fit',
-      work_arrangement_preference:arrangement.tier,
-      work_arrangement_rank:arrangement.rank,
-      requirements
+      fit_score:-100,
+      matches:[],
+      gate:eligibility.reason || 'missing_title',
+      requirements,
+      eligibility,
+      fit:{ status:'weak', score:-100, matches:[] },
+      practicality:assessPracticality(job, now),
+      recommendation_bucket:'excluded'
     };
   }
 
-  const locationPref = locationPreference(job.candidate_required_location);
-  const score = fitScore + arrangement.points + locationPref.points;
-  if (arrangement.label) matches.push(arrangement.label);
-  if (locationPref.label) matches.push(locationPref.label);
+  const fit = assessFit(job);
+  const practicality = assessPracticality(job, now);
+  const score = fit.score + practicality.score;
+  const recommendationBucket =
+    eligibility.status === 'eligible' && fit.status === 'strong' && ['strong','practical'].includes(practicality.status)
+      ? 'recommended'
+      : eligibility.status === 'review' && ['strong','credible'].includes(fit.status) && practicality.status !== 'poor'
+        ? 'review'
+        : 'filtered';
 
   return {
     score,
-    fit_score:fitScore,
-    matches:[...new Set(matches)].slice(0,4),
-    gate:gate.reason,
-    location_preference:locationPref.tier,
-    work_arrangement_preference:arrangement.tier,
-    work_arrangement_rank:arrangement.rank,
-    requirements
+    fit_score:fit.score,
+    matches:fit.matches,
+    gate:eligibility.reason,
+    location_preference:practicality.location,
+    work_arrangement_preference:practicality.work_arrangement,
+    work_arrangement_rank:practicality.work_arrangement_rank,
+    requirements,
+    eligibility,
+    fit,
+    practicality,
+    recommendation_bucket:recommendationBucket
+  };
+}
+
+function normalizedOpportunity(job, scored) {
+  const {
+    score, fit_score, matches, gate, location_preference,
+    work_arrangement_preference, work_arrangement_rank, requirements,
+    eligibility, fit, practicality, recommendation_bucket
+  } = scored;
+  const url = String(job.url || '').trim();
+  const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
+  const source = String(job.source_name || job.source || 'Remotive').trim() || 'Remotive';
+  const id = String(job.id || url || pair);
+  return {
+    id,
+    pair,
+    company:String(job.company_name || '').trim(),
+    role:String(job.title || '').trim(),
+    url,
+    location:String(job.candidate_required_location || 'Remote').trim(),
+    job_type:String(job.job_type || '').trim(),
+    salary:String(job.salary || '').trim(),
+    published_at:job.publication_date || null,
+    source,
+    source_url:String(job.source_url || url).trim() || url,
+    score,
+    fit_score:fit_score ?? score,
+    matches,
+    qualification_gate:gate,
+    eligibility_status:eligibility?.status || 'review',
+    eligibility_reason:eligibility?.reason || 'requirements_unverified',
+    fit_status:fit?.status || 'weak',
+    fit_summary:fit?.summary || '',
+    practicality_status:practicality?.status || 'poor',
+    practicality_score:practicality?.score ?? 0,
+    practicality_positives:practicality?.positives || [],
+    practicality_frictions:practicality?.frictions || [],
+    recommendation_bucket,
+    requirements_status:requirements?.status || 'unknown',
+    requirements_reasons:requirements?.reasons || [],
+    requirements_checked:requirements?.checks || [],
+    requirements_confidence:requirements?.confidence || 'low',
+    requirements_source:requirements?.source || String(job.source_url || job.url || ''),
+    why_this_is_here:[...new Set(matches.filter(value => value !== 'curated'))].slice(0,3),
+    location_preference:location_preference || 'other',
+    work_arrangement_preference:work_arrangement_preference || 'unknown',
+    work_arrangement_rank:Number.isFinite(work_arrangement_rank) ? work_arrangement_rank : 2,
+    summary:stripHtml(job.description || '').slice(0, 700),
+    resume_recommendation:resumeRecommendation(job, matches)
+  };
+}
+
+export function rankOpportunityQueues(jobs=[], tracked=[], now=Date.now()) {
+  const trackedUrls = new Set(tracked.map(item => String(item.posting_url || '').trim()).filter(Boolean));
+  const trackedPairs = new Set(tracked.map(item => `${String(item.company || '').toLowerCase()}::${String(item.role || '').toLowerCase()}`));
+  const seenPairs = new Set();
+  const recommended = [];
+  const review = [];
+
+  for (const job of jobs) {
+    const scored = scoreOpportunity(job, now);
+    if (!['recommended','review'].includes(scored.recommendation_bucket)) continue;
+    const item = normalizedOpportunity(job, scored);
+    if (!item.company || !item.role || !item.url) continue;
+    if (seenPairs.has(item.pair) || trackedUrls.has(item.url) || trackedPairs.has(item.pair)) continue;
+    seenPairs.add(item.pair);
+    delete item.pair;
+    if (item.recommendation_bucket === 'recommended') recommended.push(item);
+    else review.push(item);
+  }
+
+  const sortFn = (a,b) =>
+    b.fit_score - a.fit_score ||
+    b.practicality_score - a.practicality_score ||
+    new Date(b.published_at || 0) - new Date(a.published_at || 0);
+
+  recommended.sort(sortFn);
+  review.sort(sortFn);
+
+  return {
+    recommended:recommended.slice(0,60),
+    review:review.slice(0,40)
   };
 }
 
 export function rankOpportunities(jobs=[], tracked=[], now=Date.now()) {
-  const trackedUrls = new Set(tracked.map(item => String(item.posting_url || '').trim()).filter(Boolean));
-  const trackedPairs = new Set(tracked.map(item => `${String(item.company || '').toLowerCase()}::${String(item.role || '').toLowerCase()}`));
-  const seen = new Set();
-  const seenPairs = new Set();
-
-  return jobs.map(job => {
-    const { score, fit_score, matches, gate, location_preference, work_arrangement_preference, work_arrangement_rank, requirements } = scoreOpportunity(job, now);
-    if (score < 8) return null;
-    const url = String(job.url || '').trim();
-    const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
-    const source = String(job.source_name || job.source || 'Remotive').trim() || 'Remotive';
-    const sourceKey = source.toLowerCase().replace(/\s+/g,'-');
-    const id = String(job.id || url || pair);
-    const seenKey = `${sourceKey}::${id}`;
-    if (seen.has(seenKey) || seenPairs.has(pair) || trackedUrls.has(url) || trackedPairs.has(pair)) return null;
-    seen.add(seenKey);
-    seenPairs.add(pair);
-    return {
-      id,
-      company:String(job.company_name || '').trim(),
-      role:String(job.title || '').trim(),
-      url,
-      location:String(job.candidate_required_location || 'Remote').trim(),
-      job_type:String(job.job_type || '').trim(),
-      salary:String(job.salary || '').trim(),
-      published_at:job.publication_date || null,
-      source,
-      source_url:String(job.source_url || url).trim() || url,
-      score,
-      fit_score:fit_score ?? score,
-      matches,
-      qualification_gate:gate,
-      requirements_status:requirements?.status || 'unknown',
-      requirements_reasons:requirements?.reasons || [],
-      requirements_checked:requirements?.checks || [],
-      requirements_confidence:requirements?.confidence || 'low',
-      requirements_source:requirements?.source || String(job.source_url || job.url || ''),
-      why_this_is_here:[...new Set(matches.filter(value => value !== 'curated'))].slice(0,3),
-      location_preference:location_preference || 'other',
-      work_arrangement_preference:work_arrangement_preference || 'unknown',
-      work_arrangement_rank:Number.isFinite(work_arrangement_rank) ? work_arrangement_rank : 2,
-      summary:stripHtml(job.description || '').slice(0, 700),
-      resume_recommendation:resumeRecommendation(job, matches)
-    };
-  }).filter(item => item && item.company && item.role && item.url && item.score >= 8)
-    .sort((a,b) => a.work_arrangement_rank - b.work_arrangement_rank || b.score - a.score || new Date(b.published_at || 0) - new Date(a.published_at || 0))
-    .slice(0, 60);
+  return rankOpportunityQueues(jobs, tracked, now).recommended;
 }
 
 export function rotateOpportunities(items=[], cursor=0, size=8) {

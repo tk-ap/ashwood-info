@@ -88,3 +88,29 @@ html[data-ashwood-theme="paper-light"]{--career-ink:#171713;--career-muted:#706f
 }
 
 @media(max-width:600px){.career-resume-setup{grid-template-columns:1fr}.career-resume-setup label{width:100%}}
+
+
+/* Career recommendation triage: eligibility != fit != practicality. */
+.career-opportunity-group-head{grid-column:1/-1;display:flex;align-items:end;justify-content:space-between;gap:20px;padding:18px 20px;border-right:1px solid var(--career-line);border-bottom:1px solid var(--career-line);background:color-mix(in srgb,var(--career-card) 96%,transparent)}
+.career-opportunity-group-head>div{display:grid;gap:4px}
+.career-opportunity-group-head span{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--career-muted)}
+.career-opportunity-group-head strong{font-size:15px;font-weight:600}
+.career-opportunity-group-head small{color:var(--career-muted);font-size:11px}
+.career-opportunity-group-head.is-review{margin-top:14px;border-top:1px solid var(--career-line)}
+.career-opportunity-card.is-review{background:transparent}
+.career-decision-dimensions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:16px 0;border:1px solid var(--career-line)}
+.career-decision-dimensions article{display:grid;align-content:start;gap:6px;padding:12px;border-right:1px solid var(--career-line)}
+.career-decision-dimensions article:last-child{border-right:0}
+.career-decision-dimensions span{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--career-muted)}
+.career-decision-dimensions strong{font-size:12px;font-weight:600;line-height:1.25}
+.career-decision-dimensions small{font-size:10px;line-height:1.4;color:var(--career-muted)}
+.career-decision-dimensions [data-dimension-status="review"] strong,
+.career-decision-dimensions [data-dimension-status="friction"] strong,
+.career-decision-dimensions [data-dimension-status="stretch"] strong{color:var(--career-accent)}
+.career-decision-dimensions [data-dimension-status="poor"]{opacity:.7}
+@media(max-width:700px){
+  .career-opportunity-group-head{align-items:start;flex-direction:column}
+  .career-decision-dimensions{grid-template-columns:1fr}
+  .career-decision-dimensions article{border-right:0;border-bottom:1px solid var(--career-line)}
+  .career-decision-dimensions article:last-child{border-bottom:0}
+}

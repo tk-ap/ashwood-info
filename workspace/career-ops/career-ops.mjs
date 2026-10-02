@@ -18,6 +18,7 @@ const state = {
   events: [],
   selectedId: null,
   opportunities: [],
+  reviewOpportunities: [],
   opportunityCursor: 0,
   opportunityMeta: null,
   inboxSync: null,
@@ -181,7 +182,7 @@ function renderHeader() {
     [ratio(counts.denied), 'rejected / submitted'],
     [ratio(counts.noResponse), 'no response / submitted'],
     [ratio(counts.interviews), 'interview requests / submitted'],
-    [state.newJobsSinceSession, 'new jobs found']
+    [state.newJobsSinceSession, 'recommended jobs found']
   ];
   const markup = cards.map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
   $('#career-summary').innerHTML = markup;
@@ -503,132 +504,139 @@ async function generateResumeArtifact(opportunity, button) {
   }, 1400);
 }
 
-function requirementsHealthMarkup(opportunity={}) {
-  const status = String(opportunity.requirements_status || 'unknown');
-  const labels = {
-    qualified:'Requirements checked',
-    needs_review:'Requirements need review',
-    unknown:'Requirements not fully verified'
-  };
-  const detail = Array.isArray(opportunity.requirements_checked) && opportunity.requirements_checked.length
-    ? opportunity.requirements_checked[0]
-    : status === 'qualified'
-      ? 'No conflicting hard requirement was detected in the available posting.'
-      : 'Open the employer posting before applying.';
-  const why = Array.isArray(opportunity.why_this_is_here) && opportunity.why_this_is_here.length
-    ? `Why this is here: ${opportunity.why_this_is_here.join(' · ')}`
-    : '';
-  return `
-    <div class="career-requirements-health" data-requirements-status="${escapeHtml(status)}">
-      <strong>${escapeHtml(labels[status] || labels.unknown)}</strong>
-      <span>${escapeHtml(detail)}</span>
-      ${why ? `<small>${escapeHtml(why)}</small>` : ''}
-    </div>`;
+
+function decisionDimensionsMarkup(opportunity={}) {
+  const eligibilityLabels = { eligible:'Eligible', review:'Needs requirement review', excluded:'Not eligible' };
+  const fitLabels = { strong:'Strong fit', credible:'Credible fit', stretch:'Stretch', weak:'Weak fit' };
+  const practicalityLabels = { strong:'Highly practical', practical:'Practical', friction:'Practicality friction', poor:'Poor practical fit' };
+  const requirementDetail = opportunity.eligibility_reason === 'requirements_low_confidence'
+    ? 'No conflict was detected, but the available posting text is too thin to call eligibility verified.'
+    : Array.isArray(opportunity.requirements_checked) && opportunity.requirements_checked.length
+      ? opportunity.requirements_checked[0]
+      : opportunity.eligibility_status === 'eligible'
+        ? 'No conflicting hard requirement was detected in the available posting.'
+        : 'The full employer requirements need review before applying.';
+  const practicalDetail = [
+    ...(opportunity.practicality_positives || []).slice(0,2),
+    ...(opportunity.practicality_frictions || []).slice(0,2)
+  ].join(' · ') || 'Practicality evidence is incomplete.';
+  return '<div class="career-decision-dimensions">' +
+    '<article data-dimension-status="' + escapeHtml(opportunity.eligibility_status || 'review') + '">' +
+      '<span>Eligibility</span><strong>' + escapeHtml(eligibilityLabels[opportunity.eligibility_status] || eligibilityLabels.review) + '</strong><small>' + escapeHtml(requirementDetail) + '</small></article>' +
+    '<article data-dimension-status="' + escapeHtml(opportunity.fit_status || 'weak') + '">' +
+      '<span>Fit</span><strong>' + escapeHtml(fitLabels[opportunity.fit_status] || fitLabels.weak) + '</strong><small>' + escapeHtml(opportunity.fit_summary || 'Fit evidence is incomplete.') + '</small></article>' +
+    '<article data-dimension-status="' + escapeHtml(opportunity.practicality_status || 'poor') + '">' +
+      '<span>Practicality</span><strong>' + escapeHtml(practicalityLabels[opportunity.practicality_status] || practicalityLabels.poor) + '</strong><small>' + escapeHtml(practicalDetail) + '</small></article>' +
+    '</div>';
+}
+
+function opportunityCardMarkup(opportunity={}, options={}) {
+  const review = Boolean(options.review);
+  const actions = review
+    ? '<a href="' + escapeHtml(opportunity.url) + '" target="_blank" rel="noopener">Review employer requirements ↗</a>'
+    : '<button type="button" data-apply-opportunity="' + escapeHtml(opportunity.id) + '">Apply ↗</button>' +
+      '<button type="button" data-track-opportunity="' + escapeHtml(opportunity.id) + '">Track target</button>';
+  return '<article class="career-opportunity-card ' + (review ? 'is-review' : 'is-recommended') + '">' +
+    '<div class="career-opportunity-topline"><span>' + escapeHtml(opportunity.company) + '</span><time>' + escapeHtml(fmtDate(opportunity.published_at)) + '</time></div>' +
+    '<h3>' + escapeHtml(opportunity.role) + '</h3>' +
+    '<p class="career-opportunity-location">' + escapeHtml([opportunity.location || 'Remote', opportunity.job_type].filter(Boolean).join(' · ')) + '</p>' +
+    (opportunity.salary ? '<p class="career-opportunity-salary">' + escapeHtml(opportunity.salary) + '</p>' : '') +
+    '<p class="career-opportunity-summary">' + escapeHtml(opportunity.summary || '') + '</p>' +
+    decisionDimensionsMarkup(opportunity) +
+    (review ? '' : resumeArtifactMarkup(opportunity)) +
+    '<div class="career-opportunity-actions">' + actions +
+      '<button type="button" data-decline-opportunity="' + escapeHtml(opportunity.id) + '">Decline</button></div>' +
+    '<small>Source: <a href="' + escapeHtml(opportunity.source_url || opportunity.url) + '" target="_blank" rel="noopener">' + escapeHtml(opportunity.source || 'job feed') + '</a></small>' +
+    '</article>';
+}
+
+function allVisibleOpportunityChoices() {
+  return [...state.opportunities, ...state.reviewOpportunities];
+}
+
+function wireOpportunityActions(root) {
+  root.querySelectorAll('[data-generate-resume]').forEach(button => button.addEventListener('click', async () => {
+    const opportunity = allVisibleOpportunityChoices().find(item => String(item.id) === String(button.dataset.generateResume || ''));
+    if (!opportunity) return;
+    await generateResumeArtifact(opportunity, button);
+  }));
+
+  root.querySelectorAll('[data-decline-opportunity]').forEach(button => button.addEventListener('click', async () => {
+    const id = String(button.dataset.declineOpportunity || '');
+    const opportunity = allVisibleOpportunityChoices().find(item => String(item.id) === id);
+    if (!id || !opportunity) return;
+    button.disabled = true;
+    button.textContent = 'Declining…';
+    try {
+      const declineReason = opportunity.eligibility_status === 'review'
+        ? 'owner_declined_after_requirements_review:' + ((opportunity.requirements_reasons || [])[0] || opportunity.eligibility_reason || 'unspecified')
+        : 'owner_declined';
+      const { source } = await persistOpportunityDecline(opportunity, declineReason);
+      state.declinedOpportunityIds.add(opportunityStorageKey(opportunity));
+      state.declinedOpportunityIds.delete(id);
+      localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
+      state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', reason:declineReason, updated_at:new Date().toISOString() });
+      state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
+      state.reviewOpportunities = state.reviewOpportunities.filter(item => String(item.id) !== id);
+      renderOpportunities();
+      renderHistoryPreferences();
+      await loadOpportunities();
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = 'Decline';
+      $('#career-opportunity-meta').textContent = 'Decline was not saved: ' + error.message;
+    }
+  }));
+
+  root.querySelectorAll('[data-apply-opportunity]').forEach(button => button.addEventListener('click', async () => {
+    const opportunity = state.opportunities.find(item => String(item.id) === button.dataset.applyOpportunity);
+    if (!opportunity) return;
+    const applicationTab = window.open('about:blank', '_blank');
+    if (applicationTab) applicationTab.opener = null;
+    const tracked = await trackOpportunity(opportunity, button, { reload:false, nextAction:'Complete the employer application; Gmail confirmation will update this record automatically.' });
+    if (!tracked) {
+      applicationTab?.close();
+      return;
+    }
+    if (applicationTab) applicationTab.location.replace(opportunity.url);
+    else window.location.href = opportunity.url;
+    await load();
+  }));
+
+  root.querySelectorAll('[data-track-opportunity]').forEach(button => button.addEventListener('click', async () => {
+    const opportunity = state.opportunities.find(item => String(item.id) === button.dataset.trackOpportunity);
+    if (!opportunity) return;
+    await trackOpportunity(opportunity, button);
+  }));
 }
 
 function renderOpportunities() {
   const root = $('#career-opportunity-grid');
   const meta = $('#career-opportunity-meta');
   const data = state.opportunityMeta || {};
+  const recommended = state.opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
+  const review = state.reviewOpportunities.filter(opportunity => !isLocallyDeclined(opportunity));
 
-  if (!state.opportunities.length) {
-    root.innerHTML = resumeProfileSetupMarkup() + `<div class="career-opportunity-empty"><strong>No qualified recommendation is available in this source window.</strong><span>The tracker will not substitute unrelated engineering roles just to keep the grid full. Use Next recommendations to move through the eligible pool.</span></div>`;
-  } else {
-    const visibleOpportunities = state.opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
-    root.innerHTML = resumeProfileSetupMarkup() + visibleOpportunities.map(opportunity => `
-      <article class="career-opportunity-card">
-        <div class="career-opportunity-topline">
-          <span>${escapeHtml(opportunity.company)}</span>
-          <time>${escapeHtml(fmtDate(opportunity.published_at))}</time>
-        </div>
-        <h3>${escapeHtml(opportunity.role)}</h3>
-        <p class="career-opportunity-location">${escapeHtml([opportunity.location || 'Remote', opportunity.job_type].filter(Boolean).join(' · '))}</p>
-        ${opportunity.salary ? `<p class="career-opportunity-salary">${escapeHtml(opportunity.salary)}</p>` : ''}
-        ${opportunity.matches?.length ? `<div class="career-opportunity-tags">${opportunity.matches.map(match => `<span>${escapeHtml(match)}</span>`).join('')}</div>` : ''}
-        <p class="career-opportunity-summary">${escapeHtml(opportunity.summary || '')}</p>
-        ${requirementsHealthMarkup(opportunity)}
-        ${resumeArtifactMarkup(opportunity)}
-        <div class="career-opportunity-actions">
-          ${opportunity.requirements_status === 'qualified'
-            ? `<button type="button" data-apply-opportunity="${escapeHtml(opportunity.id)}">Apply ↗</button>
-               <button type="button" data-track-opportunity="${escapeHtml(opportunity.id)}">Track target</button>`
-            : `<a href="${escapeHtml(opportunity.url)}" target="_blank" rel="noopener">Review requirements ↗</a>`}
-          <button type="button" data-decline-opportunity="${escapeHtml(opportunity.id)}">Decline</button>
-        </div>
-        <small>Source: <a href="${escapeHtml(opportunity.source_url || opportunity.url)}" target="_blank" rel="noopener">${escapeHtml(opportunity.source || 'job feed')}</a></small>
-      </article>`).join('');
+  const recommendedMarkup = recommended.length
+    ? '<div class="career-opportunity-group-head"><div><span>High-confidence recommendations</span><strong>Eligible + strong fit + practical</strong></div><small>' + recommended.length + ' shown</small></div>' +
+      recommended.map(opportunity => opportunityCardMarkup(opportunity)).join('')
+    : '<div class="career-opportunity-empty"><strong>No high-confidence recommendation in this source window.</strong><span>ASHWOOD will leave the primary list empty rather than promote a role with uncertain requirements, weak fit, or poor practical constraints.</span></div>';
 
-    root.querySelectorAll('[data-generate-resume]').forEach(button => button.addEventListener('click', async () => {
-      const opportunity = state.opportunities.find(item => String(item.id) === String(button.dataset.generateResume || ''));
-      if (!opportunity) return;
-      await generateResumeArtifact(opportunity, button);
-    }));
+  const reviewMarkup = review.length
+    ? '<div class="career-opportunity-group-head is-review"><div><span>Review queue</span><strong>Promising, but a hard requirement is not verified</strong></div><small>' + review.length + ' shown</small></div>' +
+      review.map(opportunity => opportunityCardMarkup(opportunity,{review:true})).join('')
+    : '';
 
-    root.querySelectorAll('[data-decline-opportunity]').forEach(button => button.addEventListener('click', async () => {
-      const id = String(button.dataset.declineOpportunity || '');
-      const opportunity = state.opportunities.find(item => String(item.id) === id);
-      if (!id || !opportunity) return;
-      button.disabled = true;
-      button.textContent = 'Declining…';
-      try {
-        const declineReason = opportunity.requirements_status === 'needs_review'
-          ? `owner_declined_after_requirements_review:${(opportunity.requirements_reasons || [])[0] || 'unspecified'}`
-          : 'owner_declined';
-        const { source } = await persistOpportunityDecline(opportunity, declineReason);
-        state.declinedOpportunityIds.add(opportunityStorageKey(opportunity));
-        state.declinedOpportunityIds.delete(id);
-        localStorage.setItem('ashwood.career.declined-opportunities.v1', JSON.stringify([...state.declinedOpportunityIds]));
-        state.opportunityDispositions.unshift({ source, opportunity_id:id, company:opportunity.company, role:opportunity.role, url:opportunity.url, disposition:'DECLINED', reason:declineReason, updated_at:new Date().toISOString() });
-        state.opportunities = state.opportunities.filter(item => String(item.id) !== id);
-        renderOpportunities();
-        renderHistoryPreferences();
-        await loadOpportunities();
-      } catch (error) {
-        button.disabled = false;
-        button.textContent = 'Decline';
-        $('#career-opportunity-meta').textContent = `Decline was not saved: ${error.message}`;
-      }
-    }));
-
-    root.querySelectorAll('[data-apply-opportunity]').forEach(button => button.addEventListener('click', async () => {
-      const opportunity = state.opportunities.find(item => String(item.id) === button.dataset.applyOpportunity);
-      if (!opportunity) return;
-      const applicationTab = window.open('about:blank', '_blank');
-      if (applicationTab) applicationTab.opener = null;
-      const tracked = await trackOpportunity(opportunity, button, { reload:false, nextAction:'Complete the employer application; Gmail confirmation will update this record automatically.' });
-      if (!tracked) {
-        applicationTab?.close();
-        return;
-      }
-      if (applicationTab) applicationTab.location.replace(opportunity.url);
-      else window.location.href = opportunity.url;
-      await load();
-    }));
-
-    root.querySelectorAll('[data-track-opportunity]').forEach(button => button.addEventListener('click', async () => {
-      const opportunity = state.opportunities.find(item => String(item.id) === button.dataset.trackOpportunity);
-      if (!opportunity) return;
-      await trackOpportunity(opportunity, button);
-    }));
-  }
-
+  root.innerHTML = resumeProfileSetupMarkup() + recommendedMarkup + reviewMarkup;
+  wireOpportunityActions(root);
   wireResumeProfileImport(root);
 
-  const sourceStamp = data.source_fetched_at ? `sources checked ${fmtDateTime(data.source_fetched_at)}` : 'source time unavailable';
-  const sourceLabel = data.source ? `${data.source} · ` : '';
+  const sourceStamp = data.source_fetched_at ? 'sources checked ' + fmtDateTime(data.source_fetched_at) : 'source time unavailable';
+  const sourceLabel = data.source ? data.source + ' · ' : '';
   const pool = Number(data.pool_count || 0);
-  const warning = data.warning ? ` · ${data.warning}` : '';
-  const healthCounts = state.opportunities.reduce((acc, opportunity) => {
-    const key = String(opportunity.requirements_status || 'unknown');
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {});
-  const health = [
-    healthCounts.qualified ? `${healthCounts.qualified} requirements checked` : '',
-    healthCounts.needs_review ? `${healthCounts.needs_review} need review` : '',
-    healthCounts.unknown ? `${healthCounts.unknown} unverified` : ''
-  ].filter(Boolean).join(' · ');
-  meta.textContent = `${state.opportunities.length || 0} options shown · ${pool} matched in the current pool${health ? ` · ${health}` : ''} · ${sourceLabel}${sourceStamp}${warning}`;
+  const reviewPool = Number(data.review_pool_count || 0);
+  const warning = data.warning ? ' · ' + data.warning : '';
+  meta.textContent = recommended.length + ' high-confidence shown · ' + pool + ' high-confidence in pool · ' + reviewPool + ' held for requirement review · ' + sourceLabel + sourceStamp + warning;
 }
 
 async function loadOpportunities({ refresh=false }={}) {
@@ -639,8 +647,10 @@ async function loadOpportunities({ refresh=false }={}) {
     if (refresh) state.opportunityCursor += 1;
     let data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
     let opportunities = data.opportunities || [];
+    let reviewOpportunities = data.review_opportunities || [];
+    let allIncoming = [...opportunities, ...reviewOpportunities];
 
-    const legacyDeclines = opportunities.filter(opportunity =>
+    const legacyDeclines = allIncoming.filter(opportunity =>
       isLocallyDeclined(opportunity) &&
       !state.opportunityDispositions.some(item =>
         item.disposition === 'DECLINED' &&
@@ -670,9 +680,11 @@ async function loadOpportunities({ refresh=false }={}) {
     if (migratedLegacyDecline) {
       data = await opportunityApi({ cursor:state.opportunityCursor, refresh:false });
       opportunities = data.opportunities || [];
+      reviewOpportunities = data.review_opportunities || [];
     }
 
     state.opportunities = opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
+    state.reviewOpportunities = reviewOpportunities.filter(opportunity => !isLocallyDeclined(opportunity));
     state.opportunityMeta = data;
     state.newJobsSinceSession = Number(data.pool_count || state.opportunities.length || 0);
     renderHeader();

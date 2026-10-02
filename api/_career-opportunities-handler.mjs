@@ -1,5 +1,5 @@
 import { getSql, json, requireSession } from './_workspace.mjs';
-import { rankOpportunities, rotateOpportunities } from './_career-opportunities.mjs';
+import { rankOpportunityQueues, rotateOpportunities } from './_career-opportunities.mjs';
 import { CURATED_CAREER_OPPORTUNITIES } from './_career-curated-opportunities.mjs';
 
 const CACHE_HOURS = 6;
@@ -186,18 +186,27 @@ export default async function handler(req, res) {
     }
 
     const declinedRows = await sql`
-      SELECT source, opportunity_id
+      SELECT source, opportunity_id, company, role
       FROM workspace_career_opportunity_dispositions
       WHERE disposition = 'DECLINED'
     `;
     const declinedKeys = new Set(
       declinedRows.map(row => `${sourceKey(row.source)}::${String(row.opportunity_id)}`)
     );
-
-    const ranked = rankOpportunities(sourceJobs, tracked).filter(item =>
-      !declinedKeys.has(`${sourceKey(item.source)}::${String(item.id)}`)
+    const declinedPairs = new Set(
+      declinedRows
+        .filter(row => row.company && row.role)
+        .map(row => `${String(row.company).trim().toLowerCase()}::${String(row.role).trim().toLowerCase()}`)
     );
+    const wasDeclined = item =>
+      declinedKeys.has(`${sourceKey(item.source)}::${String(item.id)}`) ||
+      declinedPairs.has(`${String(item.company).trim().toLowerCase()}::${String(item.role).trim().toLowerCase()}`);
+
+    const queues = rankOpportunityQueues(sourceJobs, tracked);
+    const ranked = queues.recommended.filter(item => !wasDeclined(item));
+    const reviewRanked = queues.review.filter(item => !wasDeclined(item));
     const opportunities = rotateOpportunities(ranked, cursor, 8);
+    const reviewOpportunities = rotateOpportunities(reviewRanked, cursor, 4);
 
     const fetchedTimes = loaded
       .map(item => new Date(item.fetched_at || 0).getTime())
@@ -208,8 +217,11 @@ export default async function handler(req, res) {
     return json(res, 200, {
       ok:true,
       opportunities,
+      review_opportunities:reviewOpportunities,
       count:opportunities.length,
+      review_count:reviewOpportunities.length,
       pool_count:ranked.length,
+      review_pool_count:reviewRanked.length,
       source:['Curated Career Search', ...loaded.map(item => item.name)].join(' + '),
       sources:[
         {
