@@ -38,7 +38,8 @@ export function contentTruthState(x) {
   const status = String(x?.status || "").toUpperCase();
   if (status === "COMPLETED" && /production|deployed|shipped|released|live\b/.test(t)) return "shipped";
   if (status === "COMPLETED" && /end[- ]to[- ]end|e2e|working|works|passed/.test(t)) return "working";
-  if (status === "COMPLETED" || /verified|proof|evidence|smoke test|readback/.test(t)) return "evidenced";
+  if (status === "COMPLETED") return "evidenced";
+  if (/verified\b|passed\b|smoke test passed|readback confirmed|independently verified/.test(t)) return "evidenced";
   if (/experiment|prototype|attempt|trying|test\b|trial/.test(t) && !/verified|passed/.test(t)) return "experiment";
   return "observation";
 }
