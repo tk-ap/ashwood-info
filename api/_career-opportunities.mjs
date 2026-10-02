@@ -13,7 +13,8 @@ const TITLE_RULES = [
   [/strategy|strategic operations|special projects/i, 8, 'strategy'],
   [/financial analyst|finance operations|financial operations/i, 8, 'finance'],
   [/fraud|audit/i, 7, 'risk / audit'],
-  [/implementation manager|change management/i, 6, 'implementation / change']
+  [/implementation manager|change management/i, 6, 'implementation / change'],
+  [/product operations|product strategy|product program/i, 10, 'product / business operations']
 ];
 
 const BODY_RULES = [
@@ -429,6 +430,13 @@ export function assessPracticality(job={}, now=Date.now()) {
   if (score >= 6) status = 'strong';
   else if (score >= 2) status = 'practical';
   else if (score >= 0) status = 'friction';
+
+  // A high arithmetic score must not hide a practical unknown or a clearly
+  // below-target salary. Primary recommendations should be usable, not merely
+  // interesting.
+  if (arrangement.tier === 'unknown' && status !== 'poor') status = 'friction';
+  if (salary.known && (salary.max || 0) < 85000) status = 'poor';
+  else if (salary.known && (salary.max || 0) < CAREER_REFERENCE_SALARY && status !== 'poor') status = 'friction';
 
   return {
     status,
