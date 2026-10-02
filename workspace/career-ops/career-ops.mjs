@@ -509,11 +509,13 @@ function decisionDimensionsMarkup(opportunity={}) {
   const eligibilityLabels = { eligible:'Eligible', review:'Needs requirement review', excluded:'Not eligible' };
   const fitLabels = { strong:'Strong fit', credible:'Credible fit', stretch:'Stretch', weak:'Weak fit' };
   const practicalityLabels = { strong:'Highly practical', practical:'Practical', friction:'Practicality friction', poor:'Poor practical fit' };
-  const requirementDetail = Array.isArray(opportunity.requirements_checked) && opportunity.requirements_checked.length
-    ? opportunity.requirements_checked[0]
-    : opportunity.eligibility_status === 'eligible'
-      ? 'No conflicting hard requirement was detected in the available posting.'
-      : 'The full employer requirements need review before applying.';
+  const requirementDetail = opportunity.eligibility_reason === 'requirements_low_confidence'
+    ? 'No conflict was detected, but the available posting text is too thin to call eligibility verified.'
+    : Array.isArray(opportunity.requirements_checked) && opportunity.requirements_checked.length
+      ? opportunity.requirements_checked[0]
+      : opportunity.eligibility_status === 'eligible'
+        ? 'No conflicting hard requirement was detected in the available posting.'
+        : 'The full employer requirements need review before applying.';
   const practicalDetail = [
     ...(opportunity.practicality_positives || []).slice(0,2),
     ...(opportunity.practicality_frictions || []).slice(0,2)
