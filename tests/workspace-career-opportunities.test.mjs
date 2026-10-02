@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assessRequirements, isUsCompatible, locationPreference, rankOpportunities, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml, workArrangementPreference } from '../api/_career-opportunities.mjs';
+import { assessFit, assessPracticality, assessRequirements, isUsCompatible, locationPreference, rankOpportunities, rankOpportunityQueues, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml, workArrangementPreference } from '../api/_career-opportunities.mjs';
 
 test('stripHtml creates a compact readable summary', () => {
   assert.equal(stripHtml('<p>Risk &amp; controls</p><ul><li>PMO</li></ul>'), 'Risk & controls PMO');
@@ -31,8 +31,8 @@ test('relevant business execution roles outrank unrelated engineering roles', ()
 
 test('rankOpportunities excludes already tracked postings', () => {
   const jobs = [
-    { id:1, url:'https://example.com/a', title:'Business Analyst', company_name:'A Co', candidate_required_location:'USA', publication_date:new Date().toISOString(), description:'Business analysis and process improvement.' },
-    { id:2, url:'https://example.com/b', title:'Compliance Program Manager', company_name:'B Co', candidate_required_location:'USA', publication_date:new Date().toISOString(), description:'Compliance governance and controls.' }
+    { id:1, url:'https://example.com/a', title:'Business Analyst', company_name:'A Co', candidate_required_location:'USA', publication_date:new Date().toISOString(), description:'Business analysis and process improvement.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } },
+    { id:2, url:'https://example.com/b', title:'Compliance Program Manager', company_name:'B Co', candidate_required_location:'USA', publication_date:new Date().toISOString(), description:'Compliance governance and controls.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } }
   ];
   const ranked = rankOpportunities(jobs, [{ company:'A Co', role:'Business Analyst', posting_url:'https://example.com/a' }]);
   assert.equal(ranked.length, 1);
@@ -102,7 +102,8 @@ test('ranked opportunities carry a suggested resume version', () => {
     company_name:'Risk Co',
     candidate_required_location:'USA',
     publication_date:new Date().toISOString(),
-    description:'Own controls, governance, audit, resiliency and cross-functional process improvement.'
+    description:'Own controls, governance, audit, resiliency and cross-functional process improvement.',
+    requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] }
   }], []);
   assert.equal(ranked.length, 1);
   assert.equal(ranked[0].resume_recommendation.variant, 'Risk, Controls & Governance');
@@ -120,6 +121,7 @@ test('ranked opportunities preserve source identity and dedupe the same role acr
       candidate_required_location:'USA',
       publication_date:now,
       description:'Business analysis, stakeholder management, controls and process improvement.',
+      requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] },
       source_name:'Jobicy',
       source_url:'https://jobicy.com/jobs/example-business-analyst'
     },
@@ -131,6 +133,7 @@ test('ranked opportunities preserve source identity and dedupe the same role acr
       candidate_required_location:'USA',
       publication_date:now,
       description:'Business analysis, stakeholder management, controls and process improvement.',
+      requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] },
       source_name:'Remotive',
       source_url:'https://remotive.com/remote-jobs/example-business-analyst'
     }
@@ -171,7 +174,8 @@ test('remote ranks ahead of hybrid, and hybrid ahead of onsite even when onsite 
   const base = {
     title:'Senior Business Analyst',
     publication_date:now,
-    description:'Business analysis, controls, stakeholder management, financial services and process improvement.'
+    description:'Business analysis, controls, stakeholder management, financial services and process improvement.',
+    requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] }
   };
   const ranked = rankOpportunities([
     {
@@ -205,26 +209,26 @@ test('remote ranks ahead of hybrid, and hybrid ahead of onsite even when onsite 
   assert.equal(ranked[2].work_arrangement_preference, 'onsite');
 });
 
-test('onsite roles are hidden unless core fit is unusually strong', () => {
+test('onsite roles only reach the primary queue when fit and practicality are both strong enough', () => {
   const weakOnsite = scoreOpportunity({
     title:'Change Management Manager',
-    candidate_required_location:'Downtown Los Angeles, CA',
+    candidate_required_location:'Los Angeles, CA',
     publication_date:new Date().toISOString(),
-    description:'On-site five days per week. Change management and stakeholder coordination.'
+    description:'On-site five days per week. Change management and stakeholder coordination.',
+    requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] }
   });
-  assert.equal(weakOnsite.score, -100);
-  assert.equal(weakOnsite.gate, 'onsite_requires_great_fit');
+  assert.equal(weakOnsite.recommendation_bucket, 'filtered');
 
   const strongOnsite = scoreOpportunity({
     title:'Senior Operational Risk Program Manager',
     candidate_required_location:'Financial District, Los Angeles, CA 90071',
     publication_date:new Date().toISOString(),
-    description:'On-site five days per week. Own operational risk, controls, governance, compliance, process improvement and cross-functional stakeholder management.'
+    description:'On-site five days per week. Own operational risk, controls, governance, compliance, process improvement and cross-functional stakeholder management.',
+    requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] }
   });
-  assert.ok(strongOnsite.score > 0);
-  assert.equal(strongOnsite.gate, 'unknown');
-  assert.equal(strongOnsite.requirements.status, 'unknown');
-  assert.equal(strongOnsite.work_arrangement_preference, 'onsite');
+  assert.equal(strongOnsite.fit.status, 'strong');
+  assert.equal(strongOnsite.practicality.status, 'practical');
+  assert.equal(strongOnsite.recommendation_bucket, 'recommended');
 });
 
 test('work arrangement classifier recognizes remote and hybrid evidence', () => {
@@ -266,9 +270,9 @@ test('curated target-lane roles can enter the queue without inventing work arran
     curated:true
   });
   assert.ok(curated.score >= 8);
-  assert.equal(curated.gate, 'unknown');
   assert.equal(curated.requirements.status, 'unknown');
-  assert.ok(curated.matches.includes('curated'));
+  assert.equal(curated.eligibility.status, 'review');
+  assert.equal(curated.recommendation_bucket, 'review');
 });
 
 
@@ -331,4 +335,69 @@ test('explicit unsupported required certification is a hard requirement mismatch
   });
   assert.equal(assessment.status, 'requirement_mismatch');
   assert.ok(assessment.reasons.includes('certification'));
+});
+
+
+test('recommendation queues do not equate technically plausible with recommended', () => {
+  const now = new Date().toISOString();
+  const jobs = [
+    {
+      id:'checked',
+      url:'https://example.com/checked',
+      title:'Senior Business Analyst',
+      company_name:'Checked Co',
+      candidate_required_location:'USA',
+      work_arrangement:'remote',
+      salary:'$100,000 - $120,000 a year',
+      publication_date:now,
+      description:'Business analysis, controls, stakeholder management, financial services and process improvement.',
+      requirements_review:{ status:'qualified', checks:['Employer requirements checked.'], reasons:[] }
+    },
+    {
+      id:'thin',
+      url:'https://example.com/thin',
+      title:'Senior Business Analyst',
+      company_name:'Thin Co',
+      candidate_required_location:'USA',
+      work_arrangement:'remote',
+      salary:'$105,000 - $125,000 a year',
+      publication_date:now,
+      description:'Remote senior business analyst role.'
+    }
+  ];
+  const queues = rankOpportunityQueues(jobs, []);
+  assert.deepEqual(queues.recommended.map(item => item.company), ['Checked Co']);
+  assert.deepEqual(queues.review.map(item => item.company), ['Thin Co']);
+  assert.equal(queues.recommended[0].eligibility_status, 'eligible');
+  assert.equal(queues.review[0].eligibility_status, 'review');
+});
+
+test('fit and practicality are independent dimensions', () => {
+  const job = {
+    title:'Senior Operational Risk Program Manager',
+    candidate_required_location:'San Diego, CA',
+    work_arrangement:'onsite',
+    salary:'$70,000 - $80,000 a year',
+    publication_date:new Date().toISOString(),
+    description:'Operational risk, governance, controls, compliance, program management and process improvement.'
+  };
+  assert.equal(assessFit(job).status, 'strong');
+  assert.equal(assessPracticality(job).status, 'poor');
+});
+
+test('primary ranking refuses qualified but weak-fit roles', () => {
+  const queues = rankOpportunityQueues([{
+    id:'weak',
+    url:'https://example.com/weak',
+    title:'Change Management Manager',
+    company_name:'Weak Fit Co',
+    candidate_required_location:'USA',
+    work_arrangement:'remote',
+    salary:'$110,000 a year',
+    publication_date:new Date().toISOString(),
+    description:'Change management and stakeholder coordination.',
+    requirements_review:{ status:'qualified', checks:['Employer requirements checked.'], reasons:[] }
+  }], []);
+  assert.equal(queues.recommended.length, 0);
+  assert.equal(queues.review.length, 0);
 });
