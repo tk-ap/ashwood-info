@@ -1,1 +1,24 @@
 .content-studio{display:grid;gap:18px}.content-studio__head{display:flex;justify-content:space-between;gap:20px;align-items:end}.content-capture-form{display:grid;gap:10px;padding:16px;border:1px solid var(--vc-border);border-radius:14px;background:rgba(255,255,255,.025)}.content-capture-form textarea{width:100%;min-height:92px;background:rgba(0,0,0,.18);color:var(--ink);border:1px solid var(--vc-border);border-radius:10px;padding:12px}.content-capture-form>div,.content-pipeline{display:flex;gap:8px;flex-wrap:wrap}.content-pipeline span{padding:7px 10px;border:1px solid var(--vc-border);border-radius:999px;color:var(--muted);font-size:12px}.content-feed{display:grid;gap:10px}.content-feed article{padding:14px;border:1px solid var(--vc-border);border-radius:12px;background:rgba(255,255,255,.02)}.content-feed article>div{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px}.content-feed article button{float:right}@media(max-width:700px){.content-studio__head{align-items:start;flex-direction:column}.content-capture-form>div{display:grid}}
+
+/* Content Intelligence MVP — evidence first, copy second. */
+.content-intelligence-status{max-width:260px;color:var(--muted);font-size:11px;line-height:1.45;text-align:right}
+.content-editorial-note{display:grid;grid-template-columns:minmax(170px,.32fr) minmax(0,1fr);gap:18px;padding:16px 0 18px;border-block:1px solid var(--vc-border);font-size:12px;line-height:1.55}
+.content-editorial-note strong{font-weight:600}
+.content-editorial-note span{color:var(--muted)}
+.from-work-queue{display:grid}
+.content-opportunity__fit,.content-opportunity__source{max-width:820px;margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.content-opportunity__fit strong,.content-opportunity__source strong{color:var(--ink);font-weight:600}
+.content-opportunity__draft[hidden]{display:none}
+.content-opportunity__draft-actions{display:flex;gap:8px;align-items:center}
+.content-opportunity__draft-actions button{min-height:40px;padding:0 13px;border:1px solid var(--vc-border);background:transparent;color:inherit;cursor:pointer}
+.content-capture{margin-top:22px;padding-top:14px;border-top:1px solid var(--vc-border)}
+.content-capture>summary{cursor:pointer;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.content-empty{display:grid;gap:5px;padding:18px 0;border-block:1px solid var(--vc-border);color:var(--muted);font-size:12px;line-height:1.5}
+.content-empty strong{color:var(--ink);font-size:14px;font-weight:600}
+@media(max-width:700px){
+  .content-intelligence-status{text-align:left}
+  .content-editorial-note{grid-template-columns:1fr}
+  .content-opportunity__actions{display:grid}
+  .content-opportunity__actions a,.content-opportunity__actions button{width:100%}
+  .content-opportunity__draft-actions{display:grid}
+}
