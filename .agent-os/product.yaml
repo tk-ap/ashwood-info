@@ -85,9 +85,31 @@ content_architecture:
     allowed: true
     rule: related-thinking-and-build-evidence-may-link-to-each-other-without-collapsing-content-lanes
 
+content_intelligence:
+  status: live-private-workspace
+  owner_approved: 2026-10-01
+  contract: workspace/CONTENT_LIFECYCLE_LOOP.md
+  executable_contract: workspace/content-intelligence.mjs
+  purpose: surface evidence-grounded thoughts worth developing without turning TK into a founder-content account
+  truth_states:
+    - observation
+    - experiment
+    - evidenced
+    - working
+    - shipped
+  channel_role:
+    Gist: developed-thought / public-notebook surface
+  non_goals:
+    - autonomous-publishing
+    - posting-quota
+    - engagement-maximization
+    - widening-unverified-product-claims
+
+
 rules:
   canonical_product_role_from_routing_source: true
   local_metadata_may_narrow_or_add_implementation_detail: true
   local_metadata_must_not_redefine_canonical_role: true
   cross_product_writes_require_explicit_task_authorization: true
-  content_architecture_is-backend-guidance-until-separately-approved-for-live-implementation: true
+  content_architecture_is-backend-guidance-until-separately-approved-for-live-implementation: false
+  content_intelligence_live_private_workspace_owner_approved: true
