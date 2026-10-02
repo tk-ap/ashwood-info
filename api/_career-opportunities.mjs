@@ -459,8 +459,11 @@ function eligibilityAssessment(job={}, requirements=assessRequirements(job)) {
   if (!isUsCompatible(job.candidate_required_location)) {
     return { status:'excluded', reason:'location' };
   }
-  if (requirements.status === 'qualified') {
+  if (requirements.status === 'qualified' && requirements.confidence !== 'low') {
     return { status:'eligible', reason:'requirements_checked' };
+  }
+  if (requirements.status === 'qualified') {
+    return { status:'review', reason:'requirements_low_confidence' };
   }
   return {
     status:'review',
