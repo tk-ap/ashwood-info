@@ -182,7 +182,7 @@ function renderHeader() {
     [ratio(counts.denied), 'rejected / submitted'],
     [ratio(counts.noResponse), 'no response / submitted'],
     [ratio(counts.interviews), 'interview requests / submitted'],
-    [state.newJobsSinceSession, 'new jobs found']
+    [state.newJobsSinceSession, 'recommended jobs found']
   ];
   const markup = cards.map(([value,label]) => `<article><strong>${value}</strong><span>${label}</span></article>`).join('');
   $('#career-summary').innerHTML = markup;
