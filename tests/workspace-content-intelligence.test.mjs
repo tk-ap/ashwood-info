@@ -34,6 +34,19 @@ test("unfinished AgentOS work becomes an observation, not a shipped claim", () =
   assert.match(recommendation.drafts.Gist,/observation from the work|Reality check/i);
 });
 
+test("unverified language never upgrades an unfinished claim", () => {
+  const item = {
+    source:"board",
+    sourceLabel:"agent-os",
+    title:"E2E result remains unverified",
+    notes:"verification pending",
+    status:"IN_PROGRESS",
+    date:new Date().toISOString(),
+    confidence:1
+  };
+  assert.equal(contentTruthState(item),"observation");
+});
+
 test("verified production evidence can be described as shipped", () => {
   const item = {
     source:"github",
