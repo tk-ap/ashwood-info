@@ -113,6 +113,24 @@ async function ensureNetworkTable(sql) {
   await sql`CREATE INDEX IF NOT EXISTS workspace_network_relationships_status_idx ON workspace_network_relationships(status, updated_at DESC)`;
 }
 
+const CONTENT_DECISIONS = new Set(['develop','save','do_not_post']);
+const CONTENT_TRUTH_STATES = new Set(['observation','experiment','evidenced','working','shipped']);
+
+async function ensureContentFeedbackTable(sql) {
+  await sql`CREATE TABLE IF NOT EXISTS workspace_content_feedback (
+    evidence_id TEXT PRIMARY KEY,
+    decision TEXT NOT NULL,
+    channel TEXT,
+    truth_state TEXT,
+    draft TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+  await sql`CREATE INDEX IF NOT EXISTS workspace_content_feedback_updated_idx
+    ON workspace_content_feedback(updated_at DESC)`;
+}
+
+
 const COMMAND_RUNTIME_STATES = new Set([
   'routing',
   'governance_unavailable',
@@ -275,7 +293,23 @@ export default async function handler(req, res) {
       }
       const evidence = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes FROM workspace_evidence ORDER BY occurred_at DESC LIMIT 500`;
       const overrides = await sql`SELECT evidence_id, goal_id FROM workspace_goal_overrides`;
-      return json(res, 200, { ok: true, evidence, overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])) });
+      let contentFeedback = [];
+      let contentFeedbackAvailable = true;
+      try {
+        await ensureContentFeedbackTable(sql);
+        contentFeedback = await sql`SELECT evidence_id, decision, channel, truth_state, draft, created_at, updated_at
+          FROM workspace_content_feedback ORDER BY updated_at DESC LIMIT 500`;
+      } catch (error) {
+        contentFeedbackAvailable = false;
+        console.error('content feedback state unavailable', error);
+      }
+      return json(res, 200, {
+        ok: true,
+        evidence,
+        overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])),
+        content_feedback: contentFeedback,
+        content_feedback_available: contentFeedbackAvailable
+      });
     }
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
@@ -514,6 +548,30 @@ export default async function handler(req, res) {
       const updated = await sql`UPDATE workspace_evidence SET status = ${status}, updated_at = NOW() WHERE id = ${id} AND source IN ('ailhat', 'agent-os', 'board', 'github', 'ledgato', 'alvira') RETURNING id`;
       if (!updated[0]) return json(res, 404, { ok: false, error: 'Feed item not found' });
       return json(res, 200, { ok: true, id, status });
+    }
+
+    if (action === 'record_content_feedback') {
+      await ensureContentFeedbackTable(sql);
+      const evidenceId = String(body.evidence_id || '').trim().slice(0, 250);
+      const decision = String(body.decision || '').trim().toLowerCase();
+      const channel = String(body.channel || '').trim().slice(0, 80) || null;
+      const truthStateRaw = String(body.truth_state || '').trim().toLowerCase();
+      const truthState = CONTENT_TRUTH_STATES.has(truthStateRaw) ? truthStateRaw : null;
+      const draft = String(body.draft || '').trim().slice(0, 12000) || null;
+      if (!evidenceId || !CONTENT_DECISIONS.has(decision)) {
+        return json(res, 400, { ok: false, error: 'Invalid content feedback' });
+      }
+      const rows = await sql`INSERT INTO workspace_content_feedback
+        (evidence_id, decision, channel, truth_state, draft, updated_at)
+        VALUES (${evidenceId}, ${decision}, ${channel}, ${truthState}, ${draft}, NOW())
+        ON CONFLICT (evidence_id) DO UPDATE SET
+          decision = EXCLUDED.decision,
+          channel = COALESCE(EXCLUDED.channel, workspace_content_feedback.channel),
+          truth_state = COALESCE(EXCLUDED.truth_state, workspace_content_feedback.truth_state),
+          draft = COALESCE(EXCLUDED.draft, workspace_content_feedback.draft),
+          updated_at = NOW()
+        RETURNING evidence_id, decision, channel, truth_state, draft, created_at, updated_at`;
+      return json(res, 200, { ok: true, feedback: rows[0] });
     }
 
     if (action === 'add_evidence') {

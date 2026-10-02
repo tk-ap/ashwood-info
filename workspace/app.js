@@ -1,5 +1,6 @@
 import { renderOverview } from './overview.mjs';
 import { renderFrame, mountCheckin } from './frame.mjs';
+import { buildContentRecommendation } from './content-intelligence.mjs';
 (() => {
   'use strict';
 
@@ -17,7 +18,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
 
   let GOALS = [];
   let goalModel = null;
-  const state = { repos: [], githubEvidence: [], persistedEvidence: [], overrides: {}, ailhat: null, board: [], filter: 'all', selectedGoal: null, lastRefresh: null, error: null };
+  const state = { repos: [], githubEvidence: [], persistedEvidence: [], overrides: {}, contentFeedback: {}, ailhat: null, board: [], filter: 'all', selectedGoal: null, lastRefresh: null, error: null };
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
 
@@ -70,6 +71,7 @@ import { renderFrame, mountCheckin } from './frame.mjs';
     const data = await api('/api/workspace-state');
     state.persistedEvidence = (data.evidence||[]).map(x=>({ id:x.id, source:x.source, sourceLabel:x.source_label, title:x.title, date:x.occurred_at, status:x.status, goal:x.goal_id, secondaryGoals:x.secondary_goals||[], confidence:Number(x.confidence||1), url:x.url, notes:x.notes }));
     state.overrides = data.overrides || {};
+    state.contentFeedback = Object.fromEntries((data.content_feedback || []).map(row => [row.evidence_id, row]));
   }
 
   async function github(path) {
@@ -151,65 +153,132 @@ import { renderFrame, mountCheckin } from './frame.mjs';
   function goalStats(goal){const ev=allEvidence().filter(x=>x.goal===goal.id||x.secondaryGoals?.includes(goal.id)),recent=ev.filter(x=>daysSince(x.date)<=30),weighted=recent.reduce((s,x)=>s+weight(x)*(x.goal===goal.id?1:.35),0),momentum=Math.min(100,Math.round(weighted*22)),newest=ev[0]?.date||null;let status='IN_PROGRESS';if(!newest||daysSince(newest)>30)status='STALE';else if(daysSince(newest)>14||momentum<18)status='NEEDS_ATTENTION';return{ev,recent,momentum,newest,status};}
 
 
-  function contentCandidateScore(x){
-    if(!x?.date || daysSince(x.date)>14) return 0;
-    const t=`${x.sourceLabel||''} ${x.title||''} ${x.notes||''}`.toLowerCase();
-    let score=(14-daysSince(x.date))*2 + (x.confidence||.5)*10;
-    if(/fix|fail|break|regress|block|deny|proof|verify|test|learn|change|decision|launch|ship|deploy|merge|complete|evidence|boundary|context|route|approval|agent/.test(t)) score+=14;
-    if(/docs|chore|typo|dependency|cache|metadata/.test(t)) score-=8;
-    if(x.status==='COMPLETED') score+=5;
-    if(x.source==='board' && /running|in_progress/i.test(x.status||'')) score-=4;
-    return score;
-  }
-
-  function contentAngle(x){
-    const t=`${x.title||''}`.replace(/^(feat|fix|docs|chore|refactor|test)(\([^)]*\))?:\s*/i,'').trim();
-    const repo=PRODUCT_ROLES[x.sourceLabel]?.label || x.sourceLabel || x.source;
-    const lower=t.toLowerCase();
-    if(/fix|regress|fail|broken|bug/.test(lower)) return {why:'A failure or correction is usually more informative than a generic progress update.',hook:`I hit a problem in ${repo}: ${t}`};
-    if(/proof|verify|test|evidence|boundary|deny/.test(lower)) return {why:'This has a concrete proof/evidence angle instead of relying on a product claim.',hook:`A useful proof point from ${repo}: ${t}`};
-    if(/decision|change|route|approval|architecture/.test(lower)) return {why:'This records a decision that changed how the system is being built.',hook:`A build decision I made in ${repo}: ${t}`};
-    return {why:'This is recent work with a traceable source. The draft stays close to the evidence rather than inventing a lesson.',hook:`Something that changed in ${repo}: ${t}`};
-  }
-
-  function contentDrafts(x){
-    const a=contentAngle(x), source=x.url?' The receipt is in the linked build evidence.':'';
-    return {
-      TikTok:`On-screen / spoken hook: ${a.hook}.\n\nShow: the actual build evidence or before/after state when it is safe to display.\n\nBeat: what I expected → what actually happened → what I changed → what I’m testing next.\n\nCaption: Building this in public, but keeping the receipts attached to the claim.`,
-      Instagram:`Carousel / Reel angle: ${a.hook}.\n\nSlide 1: the tension or discovery.\nSlide 2: the actual evidence.\nSlide 3: what changed in the build.\nSlide 4: the next test.\n\nCaption: ${a.hook}. The useful part is what the evidence changed, not the status update.`,
-      Threads:`${a.hook}. Still figuring out what it means beyond this specific build, but this is the part I want to keep watching.`,
-      LinkedIn:`${a.hook}. What matters to me is the evidence behind the change, not the status update itself.${source} The next test is whether the change holds up in actual use.`,
-      'Build Journal':`What I was trying to do: [add the goal].\n\nWhat actually happened: ${x.title}.\n\nWhat I learned: [owner interpretation].\n\nWhat changed because of it: [next decision/test].`
-    };
+  async function recordContentFeedback(evidenceId, decision, channel = null, draft = null, truthState = null) {
+    try {
+      const result = await api('/api/workspace-state', {
+        method:'POST',
+        body:JSON.stringify({
+          action:'record_content_feedback',
+          evidence_id:evidenceId,
+          decision,
+          channel,
+          draft,
+          truth_state:truthState
+        })
+      });
+      state.contentFeedback[evidenceId] = result.feedback;
+      return result.feedback;
+    } catch (error) {
+      const status=$('#content-intelligence-status');
+      if(status) status.textContent='Recommendation feedback could not be saved. The rest of Workspace is unaffected.';
+      throw error;
+    }
   }
 
   function renderFromWork(){
-    const host=$('#from-work-queue'); if(!host) return;
-    const dismissed=new Set(JSON.parse(localStorage.getItem('ashwood.dismissedContentEvidence')||'[]'));
-    const candidates=allEvidence().filter(x=>!dismissed.has(x.id)).map(x=>({...x,_score:contentCandidateScore(x)})).filter(x=>x._score>18).sort((a,b)=>b._score-a._score).slice(0,6);
+    const host=$('#from-work-queue');
+    const status=$('#content-intelligence-status');
+    if(!host) return;
+
+    const candidates=allEvidence()
+      .map(x=>{
+        const productLabel=PRODUCT_ROLES[x.sourceLabel]?.label || x.sourceLabel || x.source;
+        const recommendation=buildContentRecommendation(x,{daysSince,productLabel});
+        return {...x,_content:recommendation};
+      })
+      .filter(x=>x._content.score>18)
+      .filter(x=>state.contentFeedback[x.id]?.decision!=='do_not_post')
+      .sort((a,b)=>b._content.score-a._content.score)
+      .slice(0,5);
+
+    if(status){
+      status.textContent=candidates.length
+        ? `${candidates.length} evidence-grounded thought${candidates.length===1?'':'s'} worth considering`
+        : 'No strong new thought surfaced from current evidence.';
+    }
+
     host.innerHTML=candidates.length?candidates.map((x,i)=>{
-      const a=contentAngle(x), drafts=contentDrafts(x), first=Object.entries(drafts)[0];
+      const r=x._content;
+      const feedback=state.contentFeedback[x.id] || {};
+      const chosen=feedback.channel && r.drafts[feedback.channel] ? feedback.channel : r.channels[0];
+      const draft=feedback.draft || r.drafts[chosen] || '';
+      const isDeveloping=feedback.decision==='develop';
+      const isSaved=feedback.decision==='save';
       return `<article class="content-opportunity" data-content-id="${escapeHtml(x.id)}">
-        <div class="content-opportunity__meta"><span>${escapeHtml(x.sourceLabel||x.source)} · ${relativeDate(x.date)}</span><span>evidence score ${Math.round(x._score)}</span></div>
-        <h3>${escapeHtml(x.title)}</h3>
-        <p class="content-opportunity__why"><strong>Why it may be worth sharing:</strong> ${escapeHtml(a.why)}</p>
-        <div class="content-opportunity__draft">
-          <label>Draft channel
-            <select data-content-channel="${i}">${Object.keys(drafts).map(k=>`<option>${escapeHtml(k)}</option>`).join('')}</select>
-          </label>
-          <textarea rows="5" data-content-draft="${i}">${escapeHtml(first[1])}</textarea>
+        <div class="content-opportunity__meta">
+          <span>${escapeHtml(x.sourceLabel||x.source)} · ${relativeDate(x.date)}</span>
+          <span>truth · ${escapeHtml(r.truthState)}</span>
         </div>
+        <h3>${escapeHtml(r.angle.hook)}</h3>
+        <p class="content-opportunity__why"><strong>Why now:</strong> ${escapeHtml(r.angle.why)}</p>
+        <p class="content-opportunity__fit"><strong>Best fit:</strong> ${r.bestFit.map(escapeHtml).join(' → ')}</p>
+        <p class="content-opportunity__source"><strong>Underlying evidence:</strong> ${escapeHtml(x.title)}</p>
         <div class="content-opportunity__actions">
+          <button type="button" data-develop-content="${i}">${isDeveloping?'Developing':'Develop thought'}</button>
+          <button type="button" data-save-content="${i}">${isSaved?'Saved':'Save for later'}</button>
+          <button type="button" data-dont-post-content="${i}">Don’t post</button>
           ${x.url?`<a href="${escapeHtml(x.url)}" target="_blank" rel="noopener">Source evidence ↗</a>`:''}
-          <button type="button" data-copy-content="${i}">Copy draft</button>
-          <button type="button" data-dismiss-content="${escapeHtml(x.id)}">Dismiss</button>
         </div>
-        <script type="application/json" data-drafts="${i}">${JSON.stringify(drafts).replace(/</g,'\\u003c')}</script>
+        <div class="content-opportunity__draft" data-content-editor="${i}" ${isDeveloping?'':'hidden'}>
+          <label>Channel
+            <select data-content-channel="${i}">${r.channels.map(k=>`<option ${k===chosen?'selected':''}>${escapeHtml(k)}</option>`).join('')}</select>
+          </label>
+          <textarea rows="8" data-content-draft="${i}">${escapeHtml(draft)}</textarea>
+          <div class="content-opportunity__draft-actions">
+            <button type="button" data-save-draft="${i}">Save draft</button>
+            <button type="button" data-copy-content="${i}">Copy</button>
+          </div>
+        </div>
+        <script type="application/json" data-content-payload="${i}">${JSON.stringify({
+          evidenceId:x.id,
+          truthState:r.truthState,
+          drafts:r.drafts
+        }).replace(/</g,'\\u003c')}</script>
       </article>`;
-    }).join(''):'<p class="workstream-empty"><strong>No strong new candidate right now.</strong><span>ASHWOOD checked the current evidence sources and did not find a recent item strong enough to turn into a post. That is a valid outcome.</span></p>';
-    $('[data-content-channel]').forEach(sel=>sel.addEventListener('change',()=>{const i=sel.dataset.contentChannel;const data=JSON.parse(document.querySelector(`[data-drafts="${i}"]`).textContent);document.querySelector(`[data-content-draft="${i}"]`).value=data[sel.value]||'';}));
-    $('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{const ta=document.querySelector(`[data-content-draft="${btn.dataset.copyContent}"]`);await navigator.clipboard.writeText(ta.value);btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy draft',1200);}));
-    $('[data-dismiss-content]').forEach(btn=>btn.addEventListener('click',()=>{dismissed.add(btn.dataset.dismissContent);localStorage.setItem('ashwood.dismissedContentEvidence',JSON.stringify([...dismissed].slice(-200)));renderFromWork();}));
+    }).join(''):'<p class="content-empty"><strong>Nothing worth forcing right now.</strong><span>ASHWOOD checked current ecosystem evidence and did not find a recent item strong enough to develop. That is a valid outcome.</span></p>';
+
+    const payloadFor=i=>JSON.parse(document.querySelector(`[data-content-payload="${i}"]`).textContent);
+    const selectedChannel=i=>document.querySelector(`[data-content-channel="${i}"]`)?.value || null;
+    const draftValue=i=>document.querySelector(`[data-content-draft="${i}"]`)?.value || null;
+
+    $$('[data-develop-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const i=btn.dataset.developContent, payload=payloadFor(i), editor=document.querySelector(`[data-content-editor="${i}"]`);
+      editor.hidden=false;
+      await recordContentFeedback(payload.evidenceId,'develop',selectedChannel(i),draftValue(i),payload.truthState);
+      btn.textContent='Developing';
+    }));
+
+    $$('[data-save-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const i=btn.dataset.saveContent, payload=payloadFor(i);
+      await recordContentFeedback(payload.evidenceId,'save',selectedChannel(i),draftValue(i),payload.truthState);
+      btn.textContent='Saved';
+    }));
+
+    $$('[data-dont-post-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const i=btn.dataset.dontPostContent, payload=payloadFor(i);
+      await recordContentFeedback(payload.evidenceId,'do_not_post',selectedChannel(i),draftValue(i),payload.truthState);
+      renderFromWork();
+    }));
+
+    $$('[data-content-channel]').forEach(sel=>sel.addEventListener('change',()=>{
+      const i=sel.dataset.contentChannel, payload=payloadFor(i), ta=document.querySelector(`[data-content-draft="${i}"]`);
+      ta.value=payload.drafts[sel.value]||'';
+    }));
+
+    $$('[data-save-draft]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const i=btn.dataset.saveDraft, payload=payloadFor(i);
+      await recordContentFeedback(payload.evidenceId,'develop',selectedChannel(i),draftValue(i),payload.truthState);
+      btn.textContent='Saved';
+      setTimeout(()=>btn.textContent='Save draft',1200);
+    }));
+
+    $$('[data-copy-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const i=btn.dataset.copyContent, payload=payloadFor(i), draft=draftValue(i);
+      await recordContentFeedback(payload.evidenceId,'develop',selectedChannel(i),draft,payload.truthState);
+      await navigator.clipboard.writeText(draft);
+      btn.textContent='Copied';
+      setTimeout(()=>btn.textContent='Copy',1200);
+    }));
   }
 
   function classifyReality(x){

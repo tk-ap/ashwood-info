@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="/workspace/sources.css?v=20260925-sources1" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
-  <script type="module" src="/workspace/app.js?v=20260921-menufix1"></script>
+  <script type="module" src="/workspace/app.js?v=20261001-content-intelligence1"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260922-activity1"></script>
   <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
   <script type="module" src="/workspace/ops-pulse.mjs?v=20260924-forward1"></script>
@@ -48,7 +48,7 @@
   <script type="module" src="/workspace/elitk-page.mjs?v=20260922-toggle2"></script>
   <script src="/workspace/intelligence-hero.js?v=20260924-no-constellation1" defer></script>
   <script src="/workspace/drop.js?v=20260909-delete1" defer></script>
-  <link rel="stylesheet" href="/workspace/content-studio.css?v=20260925-content1" />
+  <link rel="stylesheet" href="/workspace/content-studio.css?v=20261001-content-intelligence1" />
   <link rel="stylesheet" href="/workspace/runway.css?v=20260925-runway1" />
   <link rel="stylesheet" href="/workspace/meos-self.css?v=20260925-meos2" />
   <link rel="stylesheet" href="/workspace/self-daily-wisdom.css?v=20260925-1" />
@@ -83,6 +83,7 @@
       <a href="#today" data-workspace-nav="today">Today</a>
       <a href="#build" data-workspace-nav="build">Build</a>
       <a href="#career" data-workspace-nav="career">Career</a>
+      <a href="#content" data-workspace-nav="content">Content</a>
       <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
       <a href="#self" data-workspace-nav="self">Self</a>
     </nav>
@@ -109,10 +110,31 @@
     </section>
 
     <section id="content" class="content-studio" aria-labelledby="content-studio-title">
-      <div class="content-studio__head"><div><p class="section-kicker">Content · private capture system</p><h2 id="content-studio-title">Capture first. Decide later.</h2><p>Keep the story without turning every hard moment into a post.</p></div><button type="button" id="content-capture-focus">Capture</button></div>
-      <form id="content-capture-form" class="content-capture-form"><label for="content-capture-input">What happened?</label><textarea id="content-capture-input" rows="3" placeholder="A moment, thought, photo/video context, build milestone, rejection, win…"></textarea><div><select id="content-storyline"><option>Rebuilding / stability</option><option>Building the ecosystem</option><option>Career transition</option><option>LA / life</option><option>Modeling / creative</option></select><button type="submit">Save privately</button></div></form>
-      <div class="content-pipeline" aria-label="Content pipeline"><span>Captured</span><span>Develop</span><span>Draft</span><span>Ready</span><span>Published</span></div>
-      <div id="content-feed" class="content-feed" aria-live="polite"></div>
+      <div class="content-studio__head">
+        <div>
+          <p class="section-kicker">Content intelligence · from the work</p>
+          <h2 id="content-studio-title">What is actually worth saying?</h2>
+          <p>ASHWOOD watches real ecosystem evidence and surfaces thoughts worth developing. Interesting and true beats promotional and frequent.</p>
+        </div>
+        <span id="content-intelligence-status" class="content-intelligence-status" aria-live="polite">Reading current evidence…</span>
+      </div>
+
+      <div class="content-editorial-note">
+        <strong>TK is not a founder-content account.</strong>
+        <span>Products are evidence and recurring characters. Explain the problem before the solution. Unfinished infrastructure can produce an observation; it cannot be marketed as working end to end.</span>
+      </div>
+
+      <div id="from-work-queue" class="from-work-queue" aria-live="polite"></div>
+
+      <details class="content-capture" open>
+        <summary>Capture something the system cannot see</summary>
+        <form id="content-capture-form" class="content-capture-form">
+          <label for="content-capture-input">What happened?</label>
+          <textarea id="content-capture-input" rows="3" placeholder="A moment, thought, photo/video context, build milestone, rejection, win…"></textarea>
+          <div><select id="content-storyline"><option>Rebuilding / stability</option><option>Building the ecosystem</option><option>Career transition</option><option>LA / life</option><option>Modeling / creative</option></select><button type="submit">Save privately</button></div>
+        </form>
+        <div id="content-feed" class="content-feed" aria-live="polite"></div>
+      </details>
     </section>
 
     <section class="operator-console" id="operator" aria-labelledby="operator-title">
@@ -803,6 +825,7 @@
     <a href="#build" data-workspace-nav="build">Build</a>
     <a href="#career" data-workspace-nav="career">Career</a>
     <a href="#funding" data-workspace-nav="funding">Funding</a>
+    <a href="#content" data-workspace-nav="content">Content</a>
     <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
     <a href="#self" data-workspace-nav="self">Self</a>
     <button type="button" id="mobile-add-evidence" aria-label="Add evidence">Add</button>
@@ -842,7 +865,7 @@
       <div class="dialog-actions"><button type="button" data-close-dialog class="secondary-button">Cancel</button><button type="submit" class="primary-button">Change passphrase</button></div>
     </form>
   </dialog>
-  <script type="module" src="/workspace/content-studio.mjs?v=20260925-content1"></script>
+  <script type="module" src="/workspace/content-studio.mjs?v=20261001-content-intelligence1"></script>
   <script type="module" src="/workspace/runway.mjs?v=20260925-runway1"></script>
 </body>
 </html>
