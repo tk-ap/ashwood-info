@@ -249,12 +249,18 @@ import { recommendContent } from './content-intelligence.mjs';
     }));
 
     $('[data-develop-content]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const article=btn.closest('.content-opportunity');
+      const draft=article?.querySelector('[data-content-draft-wrap]');
+      if(draft) draft.hidden=false;
       btn.disabled=true;
+      btn.textContent='Developing';
       try{
         await saveContentFeedback(btn.dataset.developContent,'DEVELOP',btn.dataset.channel);
-        renderFromWork();
-      }catch(error){
         btn.disabled=false;
+      }catch(error){
+        if(draft) draft.hidden=true;
+        btn.disabled=false;
+        btn.textContent='Develop thought';
         $('#live-state').textContent='Content feedback could not be saved · '+error.message;
       }
     }));
