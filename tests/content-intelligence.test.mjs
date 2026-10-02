@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { recommendContent, truthStateForEvidence } from "../workspace/content-intelligence.mjs";
 
 const now = Date.parse("2026-10-02T02:00:00Z");
@@ -72,4 +73,22 @@ test("creative work stays human-first instead of becoming founder content", () =
   assert.equal(recommendation.territory, "making things");
   assert.ok(["Instagram","Gist","TikTok / Reel"].includes(recommendation.primaryChannel));
   assert.match(recommendation.angle.why, /authored observation/i);
+});
+
+
+test("Workspace mounts the queue and persists owner feedback through the existing state API", async () => {
+  const [html, app, api] = await Promise.all([
+    readFile(new URL("../workspace/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../workspace/app.js", import.meta.url), "utf8"),
+    readFile(new URL("../api/workspace-state.mjs", import.meta.url), "utf8")
+  ]);
+
+  assert.match(html, /id="from-work-queue"/);
+  assert.match(html, /data-workspace-nav="content"/);
+  assert.match(html, /observation ≠ working/);
+  assert.match(app, /recommendContent/);
+  assert.match(app, /record_content_feedback/);
+  assert.match(api, /workspace_content_feedback/);
+  assert.match(api, /DO_NOT_POST/);
+  assert.match(api, /Gist/);
 });
