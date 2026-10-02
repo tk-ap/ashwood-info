@@ -113,6 +113,20 @@ async function ensureNetworkTable(sql) {
   await sql`CREATE INDEX IF NOT EXISTS workspace_network_relationships_status_idx ON workspace_network_relationships(status, updated_at DESC)`;
 }
 
+const CONTENT_FEEDBACK_DECISIONS = new Set(['DEVELOP','SAVE','DO_NOT_POST']);
+const CONTENT_FEEDBACK_CHANNELS = new Set(['Gist','Threads','TikTok / Reel','Instagram','LinkedIn','Build Journal']);
+
+async function ensureContentFeedbackTable(sql) {
+  await sql`CREATE TABLE IF NOT EXISTS workspace_content_feedback (
+    evidence_id TEXT PRIMARY KEY,
+    decision TEXT NOT NULL,
+    channel TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+  await sql`CREATE INDEX IF NOT EXISTS workspace_content_feedback_decision_idx
+    ON workspace_content_feedback(decision, updated_at DESC)`;
+}
 const COMMAND_RUNTIME_STATES = new Set([
   'routing',
   'governance_unavailable',
@@ -273,9 +287,16 @@ export default async function handler(req, res) {
         `;
         return json(res, 200, { ok: true, relationships });
       }
+      await ensureContentFeedbackTable(sql);
       const evidence = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes FROM workspace_evidence ORDER BY occurred_at DESC LIMIT 500`;
       const overrides = await sql`SELECT evidence_id, goal_id FROM workspace_goal_overrides`;
-      return json(res, 200, { ok: true, evidence, overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])) });
+      const contentFeedback = await sql`SELECT evidence_id, decision, channel, updated_at FROM workspace_content_feedback ORDER BY updated_at DESC LIMIT 500`;
+      return json(res, 200, {
+        ok: true,
+        evidence,
+        overrides: Object.fromEntries(overrides.map(row => [row.evidence_id, row.goal_id])),
+        content_feedback: contentFeedback,
+      });
     }
 
     if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
@@ -516,6 +537,31 @@ export default async function handler(req, res) {
       return json(res, 200, { ok: true, id, status });
     }
 
+    if (action === 'record_content_feedback') {
+      await ensureContentFeedbackTable(sql);
+      const evidenceId = String(body.evidence_id || '').trim().slice(0, 250);
+      const decision = String(body.decision || '').trim().toUpperCase();
+      const channelRaw = String(body.channel || '').trim().slice(0, 80);
+      const channel = channelRaw && CONTENT_FEEDBACK_CHANNELS.has(channelRaw) ? channelRaw : null;
+
+      if (!evidenceId || !CONTENT_FEEDBACK_DECISIONS.has(decision)) {
+        return json(res, 400, { ok: false, error: 'Invalid content feedback' });
+      }
+      if (decision === 'DEVELOP' && !channel) {
+        return json(res, 400, { ok: false, error: 'Developed content requires a supported channel' });
+      }
+
+      const rows = await sql`
+        INSERT INTO workspace_content_feedback(evidence_id, decision, channel, updated_at)
+        VALUES(${evidenceId}, ${decision}, ${channel}, NOW())
+        ON CONFLICT(evidence_id) DO UPDATE SET
+          decision = EXCLUDED.decision,
+          channel = EXCLUDED.channel,
+          updated_at = NOW()
+        RETURNING evidence_id, decision, channel, updated_at
+      `;
+      return json(res, 200, { ok: true, feedback: rows[0] });
+    }
     if (action === 'add_evidence') {
       const title = String(body.title || '').trim().slice(0, 500);
       const goalId = String(body.goal_id || '').trim().slice(0, 80);
