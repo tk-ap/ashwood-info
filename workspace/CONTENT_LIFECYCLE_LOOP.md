@@ -29,6 +29,34 @@ Eligible evidence may include:
 
 Do not create a content opportunity merely because activity exists.
 
+## 1.5 Editorial contract
+
+The operational content-intelligence layer must preserve this framing:
+
+- TK is not a founder-content account.
+- Products are evidence and recurring characters, not the organizing identity.
+- Interesting and true beats promotional and frequent.
+- Explain the problem before the solution.
+- Unfinished infrastructure may generate an observation or experiment, but must not be described as working end to end without evidence.
+- The owner should see the angle and truth state before generated copy.
+- `DO_NOT_POST` remains a successful outcome.
+
+Current content territories are descriptive, not quotas:
+
+- being alive
+- making things
+- building and trying to understand the future currently being lived through
+
+### Gist
+
+Treat Gist as the developed-thought / public-notebook surface:
+
+**too developed for Threads, too human for founder content**
+
+Recommend Gist when an evidence-backed thought benefits from explanation, uncertainty, context, or discussion. Do not create a Gist posting cadence merely because the channel exists.
+
+The executable version of this contract lives in `workspace/content-intelligence.mjs`; this document records the product intent behind it.
+
 ## 2. Worth Sharing decision
 
 For a progress reveal, ASHWOOD should answer:
