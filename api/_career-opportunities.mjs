@@ -313,7 +313,7 @@ const CAREER_REFERENCE_SALARY = 95000;
 
 function salaryRange(label='') {
   const text = String(label || '');
-  if (!text || /hour|/hr|hourly/i.test(text)) return { min:null, max:null, known:false };
+  if (!text || /hour|\/hr|hourly/i.test(text)) return { min:null, max:null, known:false };
   const values = [...text.matchAll(/(?:\$|USD\s*)?([\d,.]+(?:\.\d+)?)\s*([kKmM]?)/g)]
     .map(match => {
       let value = Number(String(match[1]).replaceAll(',', ''));
