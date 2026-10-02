@@ -39,8 +39,9 @@ export function contentTruthState(x) {
   const explicitlyUnverified = /\bunverified\b|not verified|not yet verified|verification pending|needs verification|pending proof|unproven/.test(t);
   if (status === "COMPLETED" && /\bdeployed\b|\bshipped\b|\breleased\b|production live/.test(t) && !explicitlyUnverified) return "shipped";
   if (status === "COMPLETED" && /end[- ]to[- ]end|\be2e\b|\bworking\b|\bworks\b|\bpassed\b/.test(t) && !explicitlyUnverified) return "working";
+  if (explicitlyUnverified) return /experiment|prototype|attempt|trying|\btest\b|trial/.test(t) ? "experiment" : "observation";
   if (status === "COMPLETED") return "evidenced";
-  if (!explicitlyUnverified && (/\bverified\b|\bpassed\b|smoke test passed|readback confirmed|independently verified/.test(t))) return "evidenced";
+  if (/\bverified\b|\bpassed\b|smoke test passed|readback confirmed|independently verified/.test(t)) return "evidenced";
   if (/experiment|prototype|attempt|trying|\btest\b|trial/.test(t) && !/\bverified\b|\bpassed\b/.test(t)) return "experiment";
   return "observation";
 }
@@ -102,7 +103,7 @@ export function contentAngle(x, productLabel = "") {
 
 export function contentChannelOrder(x, truthState, angleType) {
   const t = textOf(x);
-  if (/music|audio|song|record|track|model|campaign|photo|painting|art|visual/.test(t)) {
+  if (/music|audio|song|record|track|modeling|campaign|photo|painting|visual art|creative/.test(t)) {
     return ["TikTok / Reel","Instagram","Gist","Threads","Build Journal"];
   }
   if (truthState === "shipped" || truthState === "working") {
