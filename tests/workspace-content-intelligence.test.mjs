@@ -22,7 +22,7 @@ test("unfinished AgentOS work becomes an observation, not a shipped claim", () =
     sourceLabel:"agent-os",
     title:"E2E proof remains blocked after runtime restart",
     notes:"agent must verify what actually happened",
-    status:"IN_PROGRESS",
+    status:"COMPLETED",
     date:new Date().toISOString(),
     confidence:.9
   };
@@ -74,4 +74,6 @@ test("workspace keeps the evidence-driven queue and durable feedback endpoint wi
   assert.match(api,/workspace_content_feedback/);
   assert.match(api,/record_content_feedback/);
   assert.match(api,/do_not_post/);
+  assert.match(api,/content_feedback_available/);
+  assert.match(api,/content feedback state unavailable/);
 });
