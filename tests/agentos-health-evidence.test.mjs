@@ -31,6 +31,8 @@ test('AgentOS health snapshot distinguishes repository state from live proof', (
 test('health ownership keeps telemetry authoritative and roles separated', () => {
   assert.equal(evidence.health_ownership.dedicated_health_agent, false);
   assert.equal(evidence.health_ownership.systemic_monitor, 'W Dog');
+  assert.match(evidence.health_ownership.systemic_monitor_role, /remediation owner/i);
   assert.equal(evidence.health_ownership.operator_surface, 'Milchik');
   assert.match(evidence.health_ownership.design_rule, /telemetry/i);
+  assert.match(evidence.health_ownership.design_rule, /independent verification/i);
 });
