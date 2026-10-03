@@ -40,5 +40,6 @@ test("Issue 170 forward-port uses current protected Workspace architecture", asy
   assert.doesNotMatch(pulse, /#deployment-budget/);
   assert.match(views, /AgentOS Health/);
   assert.match(health, /\/api\/workspace-agentos/);
-  assert.match(health, /autonomy-rubric\.v1/);
+  assert.match(health, /agentos-health-rubric\.v2/);
+  assert.match(health, /health-evidence\.json/);
 });
