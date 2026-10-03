@@ -15,6 +15,17 @@ const txt=row=>[row.title,row.summary,row.blocker,row.next_gate,row.phase,row.st
 const any=(rows,re)=>rows.some(r=>re.test(txt(r)));
 const firstMeta=(rows,keys)=>{for(const r of rows){for(const k of keys){if(r?.metadata?.[k])return String(r.metadata[k])}}return null};
 function ageLabel(date){const t=Date.parse(date||"");if(!Number.isFinite(t))return"timestamp unavailable";const m=Math.max(0,Math.floor((Date.now()-t)/60000));return m<1?"just now":m<60?m+"m ago":m<1440?Math.floor(m/60)+"h ago":Math.floor(m/1440)+"d ago"}
+const clip=(value,max=190)=>{const text=String(value||"").trim();return text.length>max?text.slice(0,max-1)+"…":text};
+const validScore=value=>{const n=Number(value);return Number.isFinite(n)&&n>=0&&n<=100?n:null};
+function evidenceState(d,evidence){
+ const score=validScore(evidence?.overall_score);
+ const assessedAt=evidence?.assessed_at||null;
+ const assessedAge=Number.isFinite(Date.parse(assessedAt||""))?Date.now()-Date.parse(assessedAt):Infinity;
+ const liveMismatch=Boolean(d.runtime&&evidence?.latest_proven_runtime_sha&&d.runtime!==evidence.latest_proven_runtime_sha);
+ const canonicalMoved=Boolean(d.canonical&&evidence?.canonical_main_at_assessment_sha&&d.canonical!==evidence.canonical_main_at_assessment_sha);
+ const stale=assessedAge>72*60*60*1000;
+ return {score:score??d.score,assessedAt,assessedAge,liveMismatch,canonicalMoved,stale};
+}
 function derive(board,commands){
  const rows=Array.isArray(board?.rows)?board.rows:[];
  const observed=board?.observed_at||null;
@@ -50,15 +61,37 @@ function derive(board,commands){
  const score=Math.round(WEIGHTS.reduce((sum,[id,,w])=>sum+w*SCORE[caps[id].state],0));
  return {rows,observed,assigned,providers,underway,blocked,owner,canonical,runtime,caps,score,commands:Array.isArray(commands?.commands)?commands.commands:[]}
 }
-function render(d){
- q("#autonomy-value").textContent=d.score+"%";q("#autonomy-fill").style.width=d.score+"%";q("#autonomy-track").setAttribute("aria-valuenow",d.score);
- const ranked=WEIGHTS.map(([id,name,w])=>({id,name,w,...d.caps[id]})).filter(x=>x.state!=="VERIFIED").sort((a,b)=>b.w-a.w);
- const constraint=ranked[0];q("#autonomy-constraint").textContent=constraint?constraint.name+" — "+constraint.state:"No unresolved capability in rubric";
+function render(d,evidence){
+ const ev=evidenceState(d,evidence);
+ q("#autonomy-value").textContent=ev.score+" / 100";q("#autonomy-fill").style.width=ev.score+"%";q("#autonomy-track").setAttribute("aria-valuenow",ev.score);
+ q("#autonomy-constraint").textContent=evidence?.highest_value_proof||"No evidence-weighted next proof is recorded.";
+ q("#health-rubric").textContent=evidence?.rubric||"agentos-health-rubric.v2";
+ q("#health-assessment-age").textContent=ev.assessedAt?"Assessed "+ageLabel(ev.assessedAt):"Assessment timestamp unavailable";
  const fresh=Date.parse(d.observed||"");const age=Number.isFinite(fresh)?Date.now()-fresh:Infinity;
- const health=age>30*60000?"STALE":d.caps.convergence.state==="BLOCKED"?"DEGRADED":d.score>=75?"STRONG":d.score>=45?"BUILDING":"EARLY";
- q("#health-overall").textContent=health;q("#health-freshness").textContent=d.observed?"AgentOS projection · "+ageLabel(d.observed):"Source timestamp unavailable";q("#health-source-state").textContent=d.observed?"Synced · "+ageLabel(d.observed):"Projection unavailable";
+ const health=age>30*60000||ev.stale?"STALE":d.caps.convergence.state==="BLOCKED"||ev.liveMismatch?"REVERIFY":ev.score>=80?"STRONG":ev.score>=60?"BUILDING":"EARLY";
+ q("#health-overall").textContent=health;
+ q("#health-freshness").textContent=(d.observed?"Projection "+ageLabel(d.observed):"Projection timestamp unavailable")+(ev.assessedAt?" · assessment "+ageLabel(ev.assessedAt):"");
+ q("#health-source-state").textContent=d.observed?"Synced · "+ageLabel(d.observed)+(ev.stale?" · assessment stale":""):"Projection unavailable";
+ const scoreRows=Array.isArray(evidence?.scores)?evidence.scores:[];
+ for(const item of scoreRows){
+  const scoreNode=q("#score-"+item.id),proofNode=q("#proof-"+item.id);
+  if(scoreNode)scoreNode.textContent=String(validScore(item.score)??"—");
+  if(proofNode){proofNode.textContent=clip(item.proof);proofNode.title=[item.proof,item.next].filter(Boolean).join(" Next: ")}
+ }
+ const ownership=evidence?.health_ownership||{};
+ if(q("#health-truth-source"))q("#health-truth-source").textContent=ownership.truth_source||"Deterministic telemetry";
+ if(q("#health-systemic-monitor"))q("#health-systemic-monitor").textContent=ownership.systemic_monitor||"W Dog";
+ if(q("#health-systemic-role"))q("#health-systemic-role").textContent=ownership.systemic_monitor_role||"Systemic degradation and root-cause analysis.";
+ if(q("#health-operator-surface"))q("#health-operator-surface").textContent=ownership.operator_surface||"Milchik";
+ if(q("#health-operator-role"))q("#health-operator-role").textContent=ownership.operator_surface_role||"Operator-facing health and escalation surface.";
+ if(q("#health-operations-support"))q("#health-operations-support").textContent=ownership.operations_support||"Bill / Eugene / Router as normally routed";
+ const ranked=WEIGHTS.map(([id,name,w])=>({id,name,w,...d.caps[id]})).filter(x=>x.state!=="VERIFIED").sort((a,b)=>b.w-a.w);
+ const constraint=ranked[0];
  q("#stat-underway").textContent=d.underway.length;q("#stat-owner").textContent=d.owner.length;q("#stat-blocked").textContent=d.blocked.length;q("#stat-agents").textContent=d.assigned.length;q("#stat-snapshot").textContent=(d.rows.find(r=>r.snapshot_id)?.snapshot_id||"—").slice(0,12);
- q("#stat-convergence").textContent=d.caps.convergence.state;q("#stat-shas").textContent=d.canonical&&d.runtime?("main "+d.canonical.slice(0,7)+" · live "+d.runtime.slice(0,7)):"SHA evidence unavailable";
+ q("#stat-convergence").textContent=d.caps.convergence.state;
+ const mainSha=d.canonical||evidence?.canonical_main_at_assessment_sha||null;
+ const liveSha=d.runtime||evidence?.latest_proven_runtime_sha||null;
+ q("#stat-shas").textContent=mainSha&&liveSha?((d.canonical?"main ":"assessed main ")+mainSha.slice(0,7)+" · "+(d.runtime?"live ":"proven live ")+liveSha.slice(0,7)):"SHA evidence unavailable";
  q("#capability-list").innerHTML=WEIGHTS.map(([id,name,w],i)=>{const c=d.caps[id];return '<article class="capability-row"><span class="capability-index">'+String(i+1).padStart(2,"0")+'</span><div class="capability-name"><strong>'+esc(name)+'</strong><span>'+w+'% weight</span></div><div class="capability-proof"><strong>'+esc(c.proof)+'</strong><br>'+esc(c.next)+'</div><span class="state-pill state-'+c.state+'">'+c.state+'</span></article>'}).join("");
  const accidental=Math.min(100,Math.round(((d.owner.length*2+d.blocked.length+d.commands.length)/(Math.max(1,d.rows.length+d.commands.length)))*100));
  q("#dependency-value").textContent=accidental+"%";
@@ -67,15 +100,25 @@ function render(d){
  q("#next-gate-title").textContent=constraint?constraint.name:"Rubric complete";q("#next-gate-copy").textContent=constraint?constraint.next:"Maintain proof freshness and watch for regressions.";
  const agents=d.assigned.length?d.assigned:["No assigned agents in current projection"];
  q("#agent-list").innerHTML=agents.map(a=>{const rows=d.rows.filter(r=>r.assignee===a);const active=rows.filter(r=>/running|in_progress|review|ready/i.test([r.status,r.phase,r.lane].join(" "))).length;return '<article class="agent-card"><span class="agent-state">'+(rows.length?"Observed":"Unverified")+'</span><strong>'+esc(a)+'</strong><span>'+rows.length+' work rows · '+active+' active/review</span><p>'+(rows[0]?esc(rows[0].title):"No current assignment evidence.")+'</p></article>'}).join("");
- const events=[{t:d.observed,label:"AgentOS board snapshot",detail:d.rows.length+" rows · "+(d.rows.find(r=>r.snapshot_id)?.snapshot_id||"snapshot id unavailable")},{t:new Date().toISOString(),label:"Autonomy score computed",detail:d.score+"% from autonomy-rubric.v1"},{t:d.observed,label:"Runtime convergence",detail:d.caps.convergence.proof},{t:d.observed,label:"Human intervention signal",detail:d.owner.length+" candidate rows require classification"}];
+ const events=[
+  {t:d.observed,label:"AgentOS board snapshot",detail:d.rows.length+" rows · "+(d.rows.find(r=>r.snapshot_id)?.snapshot_id||"snapshot id unavailable")},
+  {t:ev.assessedAt,label:"Evidence-weighted health assessment",detail:ev.score+"/100 · "+(evidence?.rubric||"agentos-health-rubric.v2")},
+  {t:d.observed,label:"Runtime convergence",detail:d.caps.convergence.proof},
+  {t:evidence?.canonical_main_observed_at,label:"Repository/runtime proof boundary",detail:evidence?.evidence_note||"Repository progress is not live proof until runtime convergence is observed."},
+  {t:d.observed,label:"Human intervention signal",detail:d.owner.length+" candidate rows require classification"}
+ ];
  q("#evidence-events").innerHTML=events.map(e=>'<article class="evidence-event"><time>'+esc(e.t?new Date(e.t).toLocaleString():"unknown")+'</time><strong>'+esc(e.label)+'</strong><span>'+esc(e.detail)+'</span></article>').join("");
- if(lastScore!==null&&lastScore!==d.score){q("#health-source-state").textContent+=" · score "+(d.score>lastScore?"+":"")+String(d.score-lastScore)}lastScore=d.score
+ if(lastScore!==null&&lastScore!==ev.score){q("#health-source-state").textContent+=" · score "+(ev.score>lastScore?"+":"")+String(ev.score-lastScore)}lastScore=ev.score
 }
 async function refresh(){
  q("#health-source-state").textContent="Refreshing…";
  try{
-  const [board,commands]=await Promise.all([read("/api/workspace-agentos"),read("/api/workspace-state?view=commands").catch(()=>({commands:[]}))]);
-  render(derive(board,commands));
+  const [board,commands,evidence]=await Promise.all([
+   read("/api/workspace-agentos"),
+   read("/api/workspace-state?view=commands").catch(()=>({commands:[]})),
+   read("/workspace/agentos/health-evidence.json").catch(()=>null)
+  ]);
+  render(derive(board,commands),evidence);
  }catch(e){
   q("#health-source-state").textContent=e.status===401?"Workspace locked":"Projection unavailable";
   q("#health-overall").textContent="UNVERIFIED";q("#health-freshness").textContent="No health claim made without canonical data";

@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "rubric": "agentos-health-rubric.v2",
+  "assessed_at": "2026-10-03T17:12:07Z",
+  "overall_score": 83,
+  "status": "STRONG_BUT_NOT_E2E_PROVEN",
+  "scores": [
+    {
+      "id": "infrastructure",
+      "label": "Infrastructure",
+      "score": 94,
+      "weight": 30,
+      "proof": "Last direct Runtime Doctor reported ok=true with healthy canonical fleet state, fresh board projection, active fallback timer and Milchik listener, reachable Ledgato, healthy host access, and runtime/mirror convergence at c613757d.",
+      "next": "Re-prove live runtime convergence against the canonical main current at assessment before treating newer repository fixes as active host evidence."
+    },
+    {
+      "id": "governed_execution",
+      "label": "Governed execution",
+      "score": 82,
+      "weight": 25,
+      "proof": "Verifier independence, capacity handling, non-pass acceptance gating, terminal inspection handling, scoped approval evidence, and Telegram-to-Ledgato owner approval are implemented with passing tests and bounded live evidence.",
+      "next": "Carry one existing canonical task through normal independent verification without manual verifier launch or task reconstruction."
+    },
+    {
+      "id": "autonomy_recovery",
+      "label": "Autonomy / recovery",
+      "score": 68,
+      "weight": 20,
+      "proof": "Persistent state, fallback clock, reconciliation, capacity parking, and recovery primitives exist, but the full same-task recovery-to-terminal-verdict sequence remains open.",
+      "next": "Prove existing work recovers, routes to an eligible independent verifier, and reaches a durable terminal verdict."
+    },
+    {
+      "id": "reboot_exactly_once",
+      "label": "Reboot / exactly-once",
+      "score": 58,
+      "weight": 15,
+      "proof": "Reboot-safe runtime components and exactly-once approval consumption exist, but the canonical reboot continuation proof is not yet closed.",
+      "next": "After a clean verifier verdict, prove owner checkpoint, exactly-once resume, autonomous second task, reboot, and no duplicate execution."
+    },
+    {
+      "id": "governance_fail_closed",
+      "label": "Governance / fail-closed",
+      "score": 91,
+      "weight": 10,
+      "proof": "Recent defects have failed closed: unavailable verification does not create acceptance, owner boundaries do not widen authority, and protected host actions execute only after scoped Ledgato approval.",
+      "next": "Preserve verifier independence and fail-closed behavior through the remaining recovery and reboot proofs."
+    }
+  ],
+  "latest_proven_runtime_sha": "c613757df102ec4685aafbc0e5e72216c51892b6",
+  "canonical_main_at_assessment_sha": "72aef659a3aa7eeac523a7cc558b611e1e9fd3b2",
+  "canonical_main_observed_at": "2026-10-03T15:22:10Z",
+  "highest_value_proof": "existing work → independent verifier → exactly-once resume → second task → reboot",
+  "health_ownership": {
+    "truth_source": "Deterministic runtime telemetry, canonical AgentOS state, verifier evidence, and Runtime Doctor",
+    "systemic_monitor": "W Dog",
+    "systemic_monitor_role": "Watchdog — systemic degradation, contradiction detection, root-cause analysis, prevention, and verification integrity",
+    "operator_surface": "Milchik",
+    "operator_surface_role": "Floor Manager & Human↔Fleet Liaison — surfaces health and escalation state to TK; does not invent or authorize health",
+    "operations_support": "Bill / Eugene / Router as normally routed",
+    "dedicated_health_agent": false,
+    "design_rule": "Do not make an agent self-report authoritative health. Deterministic telemetry classifies health; agents interpret, diagnose, repair, and communicate it."
+  },
+  "evidence_note": "Repository main evidence is newer than the latest direct host proof. Do not imply the canonical main at assessment is live until the runtime projection proves convergence."
+}

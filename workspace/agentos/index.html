@@ -8,10 +8,10 @@
   <title>AgentOS Health — ASHWOOD Workspace</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
-  <link rel="stylesheet" href="/workspace/agentos/agentos-health.css?v=20260924-forward1" />
+  <link rel="stylesheet" href="/workspace/agentos/agentos-health.css?v=20261003-health2" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
-  <script type="module" src="/workspace/agentos/agentos-health.mjs?v=20260924-forward1"></script>
+  <script type="module" src="/workspace/agentos/agentos-health.mjs?v=20261003-health2"></script>
 </head>
 <body class="agentos-health-page">
   <main class="health-shell">
@@ -28,12 +28,12 @@
 
     <section class="health-hero" aria-labelledby="health-title">
       <div class="health-hero-copy">
-        <p class="health-kicker">AgentOS · autonomous persistence</p>
-        <h1 id="health-title">How far is the system from running without TK as the message bus?</h1>
-        <p class="health-deck">A live readout of what is actually persisted, governed, routed, verified and recoverable. Implemented is not the same as proven.</p>
+        <p class="health-kicker">AgentOS · evidence-weighted system health</p>
+        <h1 id="health-title">What is healthy, what is proven, and what still fails closed?</h1>
+        <p class="health-deck">A protected readout of runtime health, governed execution, recovery, durability and fail-closed governance. Repository progress is not treated as live proof until the runtime catches up.</p>
       </div>
       <aside class="health-now" aria-label="Current AgentOS health">
-        <span class="health-now-label">System health</span>
+        <span class="health-now-label">Evidence status</span>
         <strong id="health-overall">Reading</strong>
         <span id="health-freshness">Waiting for protected sources</span>
       </aside>
@@ -42,18 +42,39 @@
     <section class="autonomy-card" aria-labelledby="autonomy-title">
       <div class="autonomy-topline">
         <div>
-          <p class="health-kicker">Distance to autonomous persistence</p>
-          <h2 id="autonomy-title">Autonomy</h2>
+          <p class="health-kicker">Evidence-weighted health</p>
+          <h2 id="autonomy-title">AgentOS Health</h2>
         </div>
-        <strong id="autonomy-value" class="autonomy-value">—%</strong>
+        <strong id="autonomy-value" class="autonomy-value">— / 100</strong>
       </div>
       <div class="autonomy-track" role="progressbar" aria-labelledby="autonomy-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="autonomy-track">
         <span id="autonomy-fill"></span>
       </div>
       <div class="autonomy-meta">
-        <p><span>Current constraint</span><strong id="autonomy-constraint">Establishing evidence baseline…</strong></p>
-        <p><span>Rubric</span><strong>autonomy-rubric.v1</strong></p>
-        <p><span>Scoring</span><strong>Verified = full weight · Partial = ½ · Blocked/Unverified = 0</strong></p>
+        <p><span>Highest-value proof</span><strong id="autonomy-constraint">Establishing evidence baseline…</strong></p>
+        <p><span>Rubric</span><strong id="health-rubric">agentos-health-rubric.v2</strong></p>
+        <p><span>Assessment</span><strong id="health-assessment-age">Waiting for evidence snapshot</strong></p>
+      </div>
+    </section>
+
+    <section class="health-score-grid" aria-label="AgentOS health dimensions">
+      <article><span>Infrastructure</span><strong id="score-infrastructure">—</strong><small id="proof-infrastructure">Waiting for evidence</small></article>
+      <article><span>Governed execution</span><strong id="score-governed_execution">—</strong><small id="proof-governed_execution">Waiting for evidence</small></article>
+      <article><span>Autonomy / recovery</span><strong id="score-autonomy_recovery">—</strong><small id="proof-autonomy_recovery">Waiting for evidence</small></article>
+      <article><span>Reboot / exactly-once</span><strong id="score-reboot_exactly_once">—</strong><small id="proof-reboot_exactly_once">Waiting for evidence</small></article>
+      <article><span>Governance / fail-closed</span><strong id="score-governance_fail_closed">—</strong><small id="proof-governance_fail_closed">Waiting for evidence</small></article>
+    </section>
+
+    <section class="health-ownership" aria-labelledby="health-ownership-title">
+      <div class="section-head">
+        <div><p class="health-kicker">Health ownership</p><h2 id="health-ownership-title">Who watches the OS?</h2></div>
+        <p>Health truth is machine-derived. Agents may diagnose, repair and communicate it, but no agent self-report can make the system healthy.</p>
+      </div>
+      <div class="health-ownership-grid">
+        <article><span>Truth source</span><strong id="health-truth-source">Deterministic telemetry</strong></article>
+        <article><span>Systemic monitor</span><strong id="health-systemic-monitor">W Dog</strong><small id="health-systemic-role"></small></article>
+        <article><span>Operator surface</span><strong id="health-operator-surface">Milchik</strong><small id="health-operator-role"></small></article>
+        <article><span>Repair / operations</span><strong id="health-operations-support">Normal routing</strong><small>No dedicated self-scoring health agent.</small></article>
       </div>
     </section>
 
