@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "rubric": "agentos-health-rubric.v2",
-  "assessed_at": "2026-10-03T17:12:07Z",
+  "assessed_at": "2026-10-03T17:38:13Z",
   "overall_score": 83,
   "status": "STRONG_BUT_NOT_E2E_PROVEN",
   "scores": [
@@ -47,18 +47,18 @@
     }
   ],
   "latest_proven_runtime_sha": "c613757df102ec4685aafbc0e5e72216c51892b6",
-  "canonical_main_at_assessment_sha": "72aef659a3aa7eeac523a7cc558b611e1e9fd3b2",
-  "canonical_main_observed_at": "2026-10-03T15:22:10Z",
+  "canonical_main_at_assessment_sha": "b71935b821dfbe4e9c1a5f4ad0cd26554097a2a2",
+  "canonical_main_observed_at": "2026-10-03T17:38:13Z",
   "highest_value_proof": "existing work → independent verifier → exactly-once resume → second task → reboot",
   "health_ownership": {
     "truth_source": "Deterministic runtime telemetry, canonical AgentOS state, verifier evidence, and Runtime Doctor",
     "systemic_monitor": "W Dog",
-    "systemic_monitor_role": "Watchdog — systemic degradation, contradiction detection, root-cause analysis, prevention, and verification integrity",
+    "systemic_monitor_role": "Watchdog / systemic remediation owner — diagnoses degradation, applies bounded authorized repairs, drives closure, and cannot terminally verify its own remediation",
     "operator_surface": "Milchik",
     "operator_surface_role": "Floor Manager & Human↔Fleet Liaison — surfaces health and escalation state to TK; does not invent or authorize health",
-    "operations_support": "Bill / Eugene / Router as normally routed",
+    "operations_support": "W Dog repairs bounded systemic defects directly; Bill / Eugene / Router handle domain-specific remediation when required",
     "dedicated_health_agent": false,
-    "design_rule": "Do not make an agent self-report authoritative health. Deterministic telemetry classifies health; agents interpret, diagnose, repair, and communicate it."
+    "design_rule": "Deterministic telemetry classifies health. W Dog owns bounded systemic remediation and closure; material W Dog repairs require independent verification. Milchik surfaces only owner-only, critical, or exhausted-recovery conditions."
   },
-  "evidence_note": "Repository main evidence is newer than the latest direct host proof. Do not imply the canonical main at assessment is live until the runtime projection proves convergence."
+  "evidence_note": "Canonical repository main includes W Dog bounded-remediation changes newer than the latest direct host proof. Do not imply those changes are live until runtime convergence is re-proved."
 }
