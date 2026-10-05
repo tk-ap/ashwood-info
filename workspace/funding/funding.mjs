@@ -84,7 +84,7 @@ function render() {
   const host=document.querySelector('#funding-list');
   host.innerHTML=items.map(e=>{
     const {item,action,fit}=e;
-    return `<article class="funding-card" data-opportunity="${escapeHtml(item.id)}">
+    return `<article tabindex="-1" class="funding-card" data-opportunity="${escapeHtml(item.id)}">
       <div class="funding-card__top"><div><p class="funding-card__meta">${escapeHtml(item.funder)} · ${escapeHtml(label(item.type))}</p><h3>${escapeHtml(item.name)}</h3></div><span class="funding-match">${e.disposition} · ${escapeHtml(label(action.status))}</span></div>
       <p class="funding-value">${escapeHtml(item.value)}</p>
       <p>${escapeHtml(e.reason)}</p>
@@ -112,7 +112,14 @@ async function loadRegistry() {
   try {
     const res=await fetch('/workspace/funding/opportunities.json?ts='+Date.now(),{cache:'no-store'});
     if(!res.ok) throw new Error('Registry unavailable');
-    registry=await res.json(); renderProfile(); render();
+    registry=await res.json();
+    const requested=new URLSearchParams(location.search).get('funding_opportunity');
+    if(requested && registry.opportunities.some(item=>item.id===requested)) {view='all';typeFilter='all';search='';renderFilters();}
+    renderProfile(); render();
+    if(requested) {
+      const card=[...document.querySelectorAll('[data-opportunity]')].find(node=>node.dataset.opportunity===requested);
+      if(card) {card.scrollIntoView({block:'center'});card.focus({preventScroll:true});}
+    }
     state.textContent='Loaded'; stamp.textContent=`Registry updated ${registry.generated_at}. Reloading does not verify upstream sources.`;
   } catch(error) {state.textContent='Unavailable';stamp.textContent=error.message;}
 }

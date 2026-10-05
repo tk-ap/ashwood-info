@@ -6,7 +6,13 @@
 <meta http-equiv="refresh" content="0;url=/workspace/#funding">
 <link rel="canonical" href="/workspace/#funding">
 <title>Funding · ASHWOOD</title>
-<script>location.replace('/workspace/#funding');</script>
+<script>
+const target = new URL('/workspace/', location.origin);
+const opportunity = new URLSearchParams(location.search).get('opportunity');
+if (opportunity) target.searchParams.set('funding_opportunity', opportunity);
+target.hash = 'funding';
+location.replace(target.href);
+</script>
 </head>
 <body><a href="/workspace/#funding">Open Funding in Workspace</a></body>
 </html>

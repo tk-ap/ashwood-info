@@ -1,5 +1,9 @@
 # Agent Instructions
 
+For desktop/AgentOS recommendation projection, read `workspace/DESKTOP_RECOMMENDATIONS.md`.
+Reuse canonical Career/Funding evaluators; Funding's server lane stays empty until the
+same private owner profile/action state is available to the authenticated producer.
+
 ## Product Role
 
 ASHWOOD is the public creative portfolio and founder build archive.
