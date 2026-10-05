@@ -39,6 +39,37 @@ test('rankOpportunities excludes already tracked postings', () => {
   assert.equal(ranked[0].company, 'B Co');
 });
 
+test('TARGET applications stay in recommendations until the lifecycle advances', () => {
+  const job = {
+    id:'active-target',
+    url:'https://example.com/active-target',
+    title:'Principal, Business Operations and Strategy',
+    company_name:'Instructure',
+    candidate_required_location:'United States',
+    work_arrangement:'remote',
+    salary:'$145,000 - $180,000 a year',
+    publication_date:new Date().toISOString(),
+    description:'Lead enterprise strategy, planning, execution governance, cross-functional initiatives, operating rhythms, and data-informed business operations.',
+    requirements_review:{ status:'qualified', checks:['Employer requirements checked.'], reasons:[], confidence:'high' }
+  };
+
+  const target = rankOpportunityQueues([job], [{
+    company:'Instructure',
+    role:job.title,
+    posting_url:job.url,
+    status:'TARGET'
+  }]);
+  assert.equal(target.recommended.length, 1);
+
+  const applied = rankOpportunityQueues([job], [{
+    company:'Instructure',
+    role:job.title,
+    posting_url:job.url,
+    status:'APPLIED'
+  }]);
+  assert.equal(applied.recommended.length, 0);
+});
+
 test('rotation returns a new page of up to eight opportunities', () => {
   const items = Array.from({ length:20 }, (_, i) => ({ id:String(i) }));
   const first = rotateOpportunities(items, 0, 8);

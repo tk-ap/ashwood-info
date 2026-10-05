@@ -152,7 +152,7 @@ async function loadSource(sql, source, forceRefresh=false) {
 
 async function trackedApplications(sql) {
   return sql`
-    SELECT company, role, posting_url
+    SELECT company, role, posting_url, status
     FROM workspace_career_applications
   `;
 }

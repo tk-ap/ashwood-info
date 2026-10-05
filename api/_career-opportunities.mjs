@@ -565,8 +565,12 @@ function normalizedOpportunity(job, scored) {
 }
 
 export function rankOpportunityQueues(jobs=[], tracked=[], now=Date.now()) {
-  const trackedUrls = new Set(tracked.map(item => String(item.posting_url || '').trim()).filter(Boolean));
-  const trackedPairs = new Set(tracked.map(item => `${String(item.company || '').toLowerCase()}::${String(item.role || '').toLowerCase()}`));
+  // TARGET means the owner is still actively considering/applying. Keep it visible
+  // in Recommended until the lifecycle advances to APPLIED or another terminal state.
+  // Legacy tracked rows without a status remain excluded for backward compatibility.
+  const completedTracked = tracked.filter(item => String(item.status || '').trim().toUpperCase() !== 'TARGET');
+  const trackedUrls = new Set(completedTracked.map(item => String(item.posting_url || '').trim()).filter(Boolean));
+  const trackedPairs = new Set(completedTracked.map(item => `${String(item.company || '').toLowerCase()}::${String(item.role || '').toLowerCase()}`));
   const seenPairs = new Set();
   const recommended = [];
   const review = [];
