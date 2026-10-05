@@ -317,6 +317,7 @@ function renderDetail() {
     ${silentPolicy?.deadline ? `<div class="career-note"><span>Silent rejection policy detected</span><p>Employer confirmation says unsuccessful applicants may not receive a rejection notice. If no meaningful employer response arrives by ${escapeHtml(fmtDate(silentPolicy.deadline))}, Career Ops will mark this <b>ASSUMED_REJECTED</b>. This remains distinguishable from an explicit rejection.</p></div>` : ''}
     ${app.next_action ? `<div class="career-next"><span>Next action</span><strong>${escapeHtml(app.next_action)}</strong><small>${app.next_action_at ? `Due ${escapeHtml(fmtDateTime(app.next_action_at))}` : 'No due date set'}</small></div>` : ''}
     ${app.fit_decision ? `<div class="career-note"><span>Fit decision</span><p>${escapeHtml(app.fit_decision)}</p></div>` : ''}
+    ${applicationResumeArtifactMarkup(app)}
     ${chips.length ? `<div class="career-materials"><span>Submitted materials</span><div>${chips.map(chip => `<b>${escapeHtml(chip)}</b>`).join('')}</div></div>` : ''}
     <div class="career-snapshot">
       <div class="career-section-title"><span>Posting snapshot</span><small>Preserved for interview prep even if the listing disappears.</small></div>
@@ -333,6 +334,11 @@ function renderDetail() {
     </div>`;
 
   $('#career-edit')?.addEventListener('click', () => openApplicationDialog(app));
+  root.querySelector('[data-generate-application-resume]')?.addEventListener('click', async event => {
+    const button = event.currentTarget;
+    const generated = await generateApplicationResumeArtifact(app, button);
+    if (generated) await refreshCareerState({ showLoading:false });
+  });
 }
 
 function syncSummaryMarkup(sync) {
@@ -458,12 +464,34 @@ function resumeArtifactMarkup(opportunity={}) {
     </div>`;
 }
 
+function applicationResumeArtifactMarkup(app={}) {
+  const snapshot = app.posting_snapshot || {};
+  const materials = app.materials || {};
+  const profileReady = Boolean(state.resumeProfile?.configured);
+  const requirementsStatus = String(snapshot.requirements_status || 'unknown');
+  const requirementsReady = requirementsStatus === 'qualified';
+  const canGenerate = profileReady && requirementsReady;
+  const variant = materials.resume_variant || 'Tailored application résumé';
+  const alreadyGenerated = Boolean(materials.resume);
+  return `
+    <div class="career-resume-artifact">
+      <div>
+        <span>Tailored résumé</span>
+        <strong>${escapeHtml(variant)}</strong>
+        <small>${!profileReady ? 'Private baseline resume is not configured.' : !requirementsReady ? 'Employer requirements must be verified before generating an application-ready résumé.' : alreadyGenerated ? `Latest artifact: ${escapeHtml(materials.resume)}` : 'Generate directly from this tracked application record.'}</small>
+      </div>
+      <button type="button" data-generate-application-resume="${escapeHtml(app.id)}" ${canGenerate ? '' : 'disabled'}>
+        ${!profileReady ? 'Resume source missing' : !requirementsReady ? 'Review requirements first' : alreadyGenerated ? 'Regenerate résumé (.docx)' : 'Generate résumé (.docx)'}
+      </button>
+    </div>`;
+}
+
 function filenameFromDisposition(value='') {
   const match=String(value).match(/filename="([^"]+)"/i);
   return match?.[1] || 'TK_Tailored_Resume.docx';
 }
 
-async function generateResumeArtifact(opportunity, button) {
+async function downloadResumeArtifact(payload, button) {
   const original = button.textContent;
   button.disabled = true;
   button.textContent = 'Generating…';
@@ -472,10 +500,7 @@ async function generateResumeArtifact(opportunity, button) {
       method:'POST',
       credentials:'same-origin',
       headers:{ 'Content-Type':'application/json' },
-      body:JSON.stringify({
-        source:String(opportunity.source || 'remotive').toLowerCase(),
-        opportunity_id:String(opportunity.id || '')
-      })
+      body:JSON.stringify(payload)
     });
     if (!response.ok) {
       const body = await response.json().catch(() => ({}));
@@ -492,16 +517,31 @@ async function generateResumeArtifact(opportunity, button) {
     link.remove();
     URL.revokeObjectURL(href);
     button.textContent = 'Downloaded';
+    button.title = '';
   } catch (error) {
     button.disabled = false;
     button.textContent = 'Try again';
     button.title = error.message;
-    return;
+    return false;
   }
   window.setTimeout(() => {
     button.disabled = false;
     button.textContent = original;
   }, 1400);
+  return true;
+}
+
+async function generateResumeArtifact(opportunity, button) {
+  return downloadResumeArtifact({
+    source:opportunitySourceKey(opportunity),
+    opportunity_id:String(opportunity.id || '')
+  }, button);
+}
+
+async function generateApplicationResumeArtifact(application, button) {
+  return downloadResumeArtifact({
+    application_id:String(application.id || '')
+  }, button);
 }
 
 
@@ -530,12 +570,27 @@ function decisionDimensionsMarkup(opportunity={}) {
     '</div>';
 }
 
+function trackedTargetFor(opportunity={}) {
+  const source = opportunitySourceKey(opportunity);
+  const id = String(opportunity.id || '');
+  return state.applications.find(app =>
+    normaliseStatus(app.status) === 'TARGET' && (
+      (String(app.source || '').trim().toLowerCase() === source && String(app.job_id || '') === id) ||
+      (app.posting_url && opportunity.url && String(app.posting_url) === String(opportunity.url))
+    )
+  ) || null;
+}
+
 function opportunityCardMarkup(opportunity={}, options={}) {
   const review = Boolean(options.review);
+  const trackedTarget = review ? null : trackedTargetFor(opportunity);
   const actions = review
     ? '<a href="' + escapeHtml(opportunity.url) + '" target="_blank" rel="noopener">Review employer requirements ↗</a>'
-    : '<button type="button" data-apply-opportunity="' + escapeHtml(opportunity.id) + '">Apply ↗</button>' +
-      '<button type="button" data-track-opportunity="' + escapeHtml(opportunity.id) + '">Track target</button>';
+    : trackedTarget
+      ? '<a href="' + escapeHtml(opportunity.url) + '" target="_blank" rel="noopener">Continue application ↗</a>' +
+        '<button type="button" data-open-tracked-target="' + escapeHtml(trackedTarget.id) + '">Open tracker record</button>'
+      : '<button type="button" data-apply-opportunity="' + escapeHtml(opportunity.id) + '">Apply ↗</button>' +
+        '<button type="button" data-track-opportunity="' + escapeHtml(opportunity.id) + '">Track target</button>';
   return '<article class="career-opportunity-card ' + (review ? 'is-review' : 'is-recommended') + '">' +
     '<div class="career-opportunity-topline"><span>' + escapeHtml(opportunity.company) + '</span><time>' + escapeHtml(fmtDate(opportunity.published_at)) + '</time></div>' +
     '<h3>' + escapeHtml(opportunity.role) + '</h3>' +
@@ -543,6 +598,7 @@ function opportunityCardMarkup(opportunity={}, options={}) {
     (opportunity.salary ? '<p class="career-opportunity-salary">' + escapeHtml(opportunity.salary) + '</p>' : '') +
     '<p class="career-opportunity-summary">' + escapeHtml(opportunity.summary || '') + '</p>' +
     decisionDimensionsMarkup(opportunity) +
+    (trackedTarget ? '<small class="career-muted">Tracked target · remains visible until the lifecycle advances.</small>' : '') +
     (review ? '' : resumeArtifactMarkup(opportunity)) +
     '<div class="career-opportunity-actions">' + actions +
       '<button type="button" data-decline-opportunity="' + escapeHtml(opportunity.id) + '">Decline</button></div>' +
@@ -555,6 +611,15 @@ function allVisibleOpportunityChoices() {
 }
 
 function wireOpportunityActions(root) {
+  root.querySelectorAll('[data-open-tracked-target]').forEach(button => button.addEventListener('click', () => {
+    const appId = String(button.dataset.openTrackedTarget || '');
+    if (!appId || !state.applications.some(item => String(item.id) === appId)) return;
+    state.selectedId = appId;
+    renderApplications();
+    renderDetail();
+    $('#career-applications')?.scrollIntoView({ behavior:'smooth', block:'start' });
+  }));
+
   root.querySelectorAll('[data-generate-resume]').forEach(button => button.addEventListener('click', async () => {
     const opportunity = allVisibleOpportunityChoices().find(item => String(item.id) === String(button.dataset.generateResume || ''));
     if (!opportunity) return;
