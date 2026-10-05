@@ -125,3 +125,7 @@ The normal chain is:
 `request → ASHWOOD boundary → governed task → agents/skills → authorized harness/host → branch/change → technical + visual verification → evidence → human merge/production gate`
 
 Agent OS / Workforce is infrastructure, not a public ASHWOOD offering. ASHWOOD can document the governed-agent build process when it is meaningful evidence, but it should not expose private operating machinery merely because it exists.
+
+## Canonical Funding load path
+
+Before any work on Funding discovery, verification, recommendations, actions or `/workspace/funding/`, read `workspace/FUNDING_INTELLIGENCE.md`. The existing opportunity registry is canonical; recurring discovery and re-verification feed it. Do not create parallel stores, destinations or scores. Preserve private browser profile/action state and evidence gates.

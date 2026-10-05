@@ -23,3 +23,11 @@
 .workspace-page .funding-controls{top:var(--workspace-sticky-offset,0);background:color-mix(in srgb,var(--page-bg,#0d0e0b) 94%,transparent);backdrop-filter:blur(16px)}
 .workspace-page .funding-card{border-radius:14px;background:color-mix(in srgb,currentColor 3%,transparent)}
 @media(max-width:820px){.workspace-page .funding-view-status{align-items:flex-start;flex-direction:column}.workspace-page .funding-summary{grid-template-columns:1fr 1fr}}
+
+/* Extend the existing Funding shell; no second destination. */
+.funding-controls{flex-wrap:wrap}.funding-controls .funding-filter-row{flex-basis:100%}
+.funding-profile-chip{display:flex;flex-direction:column;gap:6px;max-width:100%}
+.funding-profile-chip select,.funding-action-form input,.funding-action-form textarea,.funding-action-form select{background:var(--page-bg,#0d0e0b);color:inherit;border:1px solid var(--funding-line);padding:10px;font:inherit;max-width:100%;box-sizing:border-box}
+.funding-profile-chip select:focus-visible,.funding-action-form :focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.funding-action-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}.funding-action-form label{display:grid;gap:6px;min-width:0}.funding-card details{overflow-wrap:anywhere}.funding-card summary{cursor:pointer}
+@media(max-width:820px){.funding-action-form{grid-template-columns:1fr}}
