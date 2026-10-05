@@ -1,67 +1,59 @@
 {
-  "generated_at": "2026-09-28T17:27:48.210Z",
+  "generated_at": "2026-10-05T18:04:58.731Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
     "total_posts": 85,
     "latest_post_at": "2026-09-08T18:25:02.000Z",
-    "posts_30d": 2,
-    "avg_likes": 168,
+    "posts_30d": 1,
+    "avg_likes": 167,
     "avg_comments": 7,
     "recent_posts": [
       {
         "at": "2026-09-08T18:25:02.000Z",
         "caption": "guess i’m hotter than the weather called for\n\nsummer on my skin, winter on my body\n\ncoastline part of the fit btw\n\nleft the city, kept the p",
         "likes": null,
-        "comments": 2,
+        "comments": 3,
         "type": "Sidecar",
         "url": "https://www.instagram.com/p/DdCU1CCmVC3/"
-      },
-      {
-        "at": "2026-09-03T05:04:53.000Z",
-        "caption": "barely sain, somewhere in LA\n\nsun, concrete, clothes, motion.\n\nwork that doesn’t feel like work >>>\n\ncampaign behavior\n\nanother day in the s",
-        "likes": null,
-        "comments": 2,
-        "type": "Sidecar",
-        "url": "https://www.instagram.com/p/Dc0BN-lG5q8/"
       }
     ]
   },
   "tiktok": {
     "account": "tiktokoftk",
-    "followers": 69,
-    "following": 42,
+    "followers": 71,
+    "following": 58,
     "verified": false,
-    "total_videos": 23,
-    "latest_video_at": "2026-09-23T05:49:11.000Z",
-    "videos_30d": 8,
-    "avg_plays": 301,
-    "avg_likes": 25,
+    "total_videos": 31,
+    "latest_video_at": "2026-10-04T06:47:30.000Z",
+    "videos_30d": 10,
+    "avg_plays": 260,
+    "avg_likes": 20,
     "avg_comments": 2,
     "recent_videos": [
       {
-        "at": "2026-09-23T05:49:11.000Z",
-        "caption": "ran out of food that was already food so I had to become a Michelin chef n actually start cooking ingredients 😭.. behold, my world famous s",
-        "plays": 429,
-        "likes": 9,
-        "comments": 1,
+        "at": "2026-10-04T06:47:30.000Z",
+        "caption": "day treeeee #soundcloudera #musictok #wlw #fypシ゚viral #exp ",
+        "plays": 119,
+        "likes": 2,
+        "comments": 0,
         "shares": 0
       },
       {
-        "at": "2026-09-08T22:08:27.000Z",
-        "caption": "stg I be forgetting that part 😅 , let’s just work though #model #queer #streetwear #fypシ゚viral #exp ",
-        "plays": 318,
-        "likes": 23,
+        "at": "2026-10-03T15:51:06.000Z",
+        "caption": "day 2 dump #songwritersoftiktok #soundcloudera #musictok #fyp #exp",
+        "plays": 143,
+        "likes": 5,
+        "comments": 0,
+        "shares": 0
+      },
+      {
+        "at": "2026-10-02T17:57:24.000Z",
+        "caption": "LIBRA TINGS 😭✨#libra♎️ #songwritersoftiktok #soundcloudera #wlwtiktok #wlw ",
+        "plays": 156,
+        "likes": 3,
         "comments": 2,
         "shares": 0
-      },
-      {
-        "at": "2026-09-05T01:23:06.000Z",
-        "caption": "#catsoftiktok #animallover ",
-        "plays": 737,
-        "likes": 92,
-        "comments": 0,
-        "shares": 1
       }
     ]
   }
