@@ -28,32 +28,95 @@ import { buildContentRecommendation } from './content-intelligence.mjs';
   function relativeDate(d) { const n=daysSince(d); return n===0?'today':n===1?'yesterday':n<14?`${n}d ago`:shortDate(d); }
 
   async function api(path, options={}) {
-    const res = await fetch(path, { credentials:'same-origin', headers:{'Content-Type':'application/json', ...(options.headers||{})}, ...options });
+    const res = await fetch(path, { credentials:'same-origin', cache:'no-store', headers:{'Content-Type':'application/json', ...(options.headers||{})}, ...options });
     const body = await res.json().catch(()=>({}));
     if (!res.ok) { const err = new Error(body.error || `Request failed (${res.status})`); err.status=res.status; throw err; }
     return body;
   }
 
+  let authPromise = null;
+  let authEventSent = false;
+
+  function announceAuthenticated() {
+    if (authEventSent) return;
+    authEventSent = true;
+    document.body.dataset.workspaceAuth = 'authenticated';
+    window.dispatchEvent(new Event('ashwood:workspace-authenticated'));
+  }
+
   async function ensureAuth() {
-    const status = await api('/api/workspace-auth');
-    if (status.authenticated) return true;
-    return new Promise(resolve => {
-      const wrap = document.createElement('div');
-      wrap.id='workspace-auth-gate';
-      wrap.innerHTML = `<style>#workspace-auth-gate{position:fixed;inset:0;z-index:9999;background:#f5f3ef;display:grid;place-items:center;padding:24px;color:#171713}#workspace-auth-gate form{width:min(520px,100%);border:1px solid rgba(23,23,19,.2);padding:clamp(24px,5vw,48px);background:#f9f7f2}#workspace-auth-gate h1{font-size:clamp(34px,6vw,64px);margin:0 0 12px;font-weight:500;letter-spacing:-.04em}#workspace-auth-gate p{line-height:1.6}#workspace-auth-gate label{display:block;margin:18px 0;font-size:12px;text-transform:uppercase;letter-spacing:.08em}#workspace-auth-gate input{display:block;width:100%;box-sizing:border-box;margin-top:8px;padding:13px;border:1px solid rgba(23,23,19,.3);background:transparent;font:inherit}#workspace-auth-gate button{padding:12px 18px;border:1px solid #171713;background:#171713;color:#f5f3ef;cursor:pointer}.auth-error{color:#8b2d23;min-height:1.5em}</style><form><p class="eyebrow">ASHWOOD · PRIVATE WORKSPACE</p><h1>${status.configured?'Unlock workspace':'Finish private setup'}</h1><p>${status.configured?'Enter your workspace passphrase. Return using the Workspace link at the bottom of ASHWOOD, or bookmark this page.':'Use the one-time setup token from this chat, then choose a passphrase. The passphrase is stored only as a one-way hash.'}</p>${status.configured?'':`<label>Setup token<input name="bootstrap" autocomplete="off" required></label>`}<label>Passphrase<input name="passphrase" type="password" autocomplete="current-password" minlength="12" required></label><p class="auth-error" aria-live="polite"></p><button type="submit">${status.configured?'Unlock':'Create private workspace'}</button></form>`;
-      document.body.appendChild(wrap);
-      $('.workspace-shell').inert=true;
-      wrap.querySelector('input').focus();
-      wrap.querySelector('form').addEventListener('submit', async e => {
-        e.preventDefault(); const fd=new FormData(e.currentTarget); const error=wrap.querySelector('.auth-error'); error.textContent='';
-        try {
-          await api('/api/workspace-auth',{method:'POST',body:JSON.stringify({action:status.configured?'login':'setup',passphrase:fd.get('passphrase'),bootstrap:fd.get('bootstrap')})});
-          wrap.remove(); $('.workspace-shell').inert=false;
-          window.dispatchEvent(new Event('ashwood:workspace-authenticated'));
-          resolve(true);
-        } catch(err) { error.textContent=err.message; }
+    if (authPromise) return authPromise;
+
+    authPromise = (async () => {
+      document.body.dataset.workspaceAuth = 'checking';
+      const status = await api('/api/workspace-auth');
+      if (status.authenticated) {
+        $('.workspace-shell').inert = false;
+        announceAuthenticated();
+        return true;
+      }
+
+      document.body.dataset.workspaceAuth = 'locked';
+      return new Promise(resolve => {
+        const existing = document.querySelector('#workspace-auth-gate');
+        if (existing) existing.remove();
+
+        const wrap = document.createElement('div');
+        wrap.id='workspace-auth-gate';
+        wrap.innerHTML = `<style>#workspace-auth-gate{position:fixed;inset:0;z-index:9999;background:#f5f3ef;display:grid;place-items:center;padding:24px;color:#171713}#workspace-auth-gate form{width:min(520px,100%);border:1px solid rgba(23,23,19,.2);padding:clamp(24px,5vw,48px);background:#f9f7f2}#workspace-auth-gate h1{font-size:clamp(34px,6vw,64px);margin:0 0 12px;font-weight:500;letter-spacing:-.04em}#workspace-auth-gate p{line-height:1.6}#workspace-auth-gate label{display:block;margin:18px 0;font-size:12px;text-transform:uppercase;letter-spacing:.08em}#workspace-auth-gate input{display:block;width:100%;box-sizing:border-box;margin-top:8px;padding:13px;border:1px solid rgba(23,23,19,.3);background:transparent;font:inherit}#workspace-auth-gate button{padding:12px 18px;border:1px solid #171713;background:#171713;color:#f5f3ef;cursor:pointer}#workspace-auth-gate button:disabled{opacity:.58;cursor:wait}.auth-error{color:#8b2d23;min-height:1.5em}</style><form><p class="eyebrow">ASHWOOD · PRIVATE WORKSPACE</p><h1>${status.configured?'Unlock workspace':'Finish private setup'}</h1><p>${status.configured?'Enter your workspace passphrase. Return using the Workspace link at the bottom of ASHWOOD, or bookmark this page.':'Use the one-time setup token from this chat, then choose a passphrase. The passphrase is stored only as a one-way hash.'}</p>${status.configured?'':`<label>Setup token<input name="bootstrap" autocomplete="off" required></label>`}<label>Passphrase<input name="passphrase" type="password" autocomplete="current-password" minlength="12" required></label><p class="auth-error" aria-live="polite"></p><button type="submit">${status.configured?'Unlock':'Create private workspace'}</button></form>`;
+        document.body.appendChild(wrap);
+
+        const shell = $('.workspace-shell');
+        shell.inert = true;
+        const form = wrap.querySelector('form');
+        const button = form.querySelector('button[type="submit"]');
+        const firstInput = wrap.querySelector('input');
+        firstInput?.focus();
+
+        form.addEventListener('submit', async e => {
+          e.preventDefault();
+          const fd = new FormData(form);
+          const error = wrap.querySelector('.auth-error');
+          error.textContent = '';
+          button.disabled = true;
+          const idleLabel = status.configured ? 'Unlock' : 'Create private workspace';
+          button.textContent = status.configured ? 'Unlocking…' : 'Creating…';
+
+          try {
+            await api('/api/workspace-auth', {
+              method:'POST',
+              body:JSON.stringify({
+                action:status.configured?'login':'setup',
+                passphrase:fd.get('passphrase'),
+                bootstrap:fd.get('bootstrap')
+              })
+            });
+
+            // Do not expose the workspace merely because the login POST returned 200.
+            // Safari/iOS can discard a cookie in edge navigation states. Confirm that
+            // the browser actually sends the new session back before removing the gate.
+            const verified = await api('/api/workspace-auth?verify=' + Date.now());
+            if (!verified.authenticated) {
+              throw new Error('The browser did not retain the private workspace session. The workspace will stay locked instead of reloading; retry once.');
+            }
+
+            wrap.remove();
+            shell.inert = false;
+            announceAuthenticated();
+            resolve(true);
+          } catch(err) {
+            error.textContent = err.message;
+            button.disabled = false;
+            button.textContent = idleLabel;
+          }
+        });
       });
+    })().catch(error => {
+      authPromise = null;
+      throw error;
     });
+
+    return authPromise;
   }
 
   async function loadGoalModel() {
