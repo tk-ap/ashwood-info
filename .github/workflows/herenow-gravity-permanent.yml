@@ -6,6 +6,9 @@ on:
     branches:
       - ops/herenow-gravity-sandbox
     paths:
+      - "index.html"
+      - "scripts/herenow-publish-sandbox.mjs"
+      - ".github/workflows/herenow-gravity-permanent.yml"
       - "workspace-preview/**"
 
 permissions:
