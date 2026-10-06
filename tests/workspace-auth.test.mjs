@@ -126,3 +126,18 @@ test('the one-time setup token stays spent, so rotation is the only way to chang
   assert.equal(setup.statusCode, 409, 'setup cannot be replayed to reset a forgotten passphrase');
   assert.equal((await f.login(CURRENT)).statusCode, 200, 'the passphrase is untouched by the replay attempt');
 });
+
+
+test('workspace session cookie is mobile-navigation tolerant and remains protected', async () => {
+  const source = await readFile(new URL('../api/_workspace.mjs', import.meta.url), 'utf8');
+  assert.match(source, /ashwood_workspace_session=.*HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Priority=High/);
+  assert.doesNotMatch(source, /ashwood_workspace_session=.*SameSite=None/);
+});
+
+test('workspace gate verifies the issued session before it is removed', async () => {
+  const source = await readFile(new URL('../workspace/app.js', import.meta.url), 'utf8');
+  assert.match(source, /const verified = await api\('\/api\/workspace-auth\?verify=' \+ Date\.now\(\)\)/);
+  assert.match(source, /if \(!verified\.authenticated\)/);
+  assert.ok(source.indexOf('if (!verified.authenticated)') < source.indexOf('wrap.remove();'), 'verification must happen before the gate is removed');
+  assert.match(source, /if \(authPromise\) return authPromise/);
+});
