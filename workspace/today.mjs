@@ -212,7 +212,85 @@ function renderSummary(rows) {
   if (status) status.textContent = active + " underway · " + needs + " need you · " + blocked + " blocked · " + done + " recently complete";
 }
 
-let snapshot = { rows:[], priorities:[], commands:[] };
+let snapshot = { rows:[], priorities:[], commands:[], health:null };
+
+function setText(selector, value) {
+  const node = document.querySelector(selector);
+  if (node) node.textContent = value;
+}
+
+function deploymentRows(rows) {
+  const budget = rows.find(row => row && row.kind === "deployment_budget");
+  const history = budget?.metadata?.deployment_history;
+  return Array.isArray(history?.deployments) ? history.deployments : [];
+}
+
+function recentDeployments(rows, hours = 24) {
+  const cutoff = Date.now() - hours * 60 * 60 * 1000;
+  return deploymentRows(rows).filter(row => {
+    const stamp = Date.parse(row?.created_at || "");
+    return Number.isFinite(stamp) && stamp >= cutoff;
+  });
+}
+
+function renderCockpit(rows, health) {
+  const agentRows = rows.filter(isAgent);
+  const active = agentRows.filter(row => ACTIVE.has(statusOf(row))).length;
+  const needs = agentRows.filter(row => NEEDS_OWNER.has(statusOf(row)) || BLOCKED.has(statusOf(row))).length;
+  const deployments = recentDeployments(rows, 24);
+
+  setText("#today-cockpit-owner", String(needs));
+  setText("#today-cockpit-owner-note", needs ? "Approval, decision, or unblock required" : "No confirmed owner gate");
+  setText("#today-cockpit-active", String(active));
+  setText("#today-cockpit-active-note", active ? "Confirmed autonomous work" : "No active AgentOS work confirmed");
+  setText("#today-cockpit-deploys", String(deployments.length));
+  setText("#today-cockpit-deploys-note", deployments.length ? "Provider-observed events in the last 24h" : "No provider-observed deployments in the last 24h");
+
+  if (health && Number.isFinite(Number(health.overall_score))) {
+    const age = relative(health.assessed_at);
+    setText("#today-cockpit-health", String(health.overall_score));
+    setText("#today-cockpit-health-note", "Theranos / evidence-weighted · " + (age || "assessment age unavailable"));
+  } else {
+    setText("#today-cockpit-health", "—");
+    setText("#today-cockpit-health-note", "Health assessment unavailable");
+  }
+
+  const observed = rows.map(row => Date.parse(row?.updated_at || row?.observed_at || "")).filter(Number.isFinite).sort((a,b)=>b-a)[0];
+  setText("#today-cockpit-freshness", observed ? "Canonical state updated " + relative(new Date(observed).toISOString()) : "Canonical state freshness unavailable");
+}
+
+function movementRows(rows) {
+  const done = rows.filter(row => DONE.has(statusOf(row))).map(row => ({
+    at: row.updated_at || row.observed_at,
+    kind: "Completed",
+    title: row.title || row.product || "Work completed",
+    detail: row.product || row.source_system || "AgentOS"
+  }));
+  const deployments = deploymentRows(rows).map(row => ({
+    at: row.created_at,
+    kind: "Deployment",
+    title: row.summary || row.commit_message || row.project || "Deployment event",
+    detail: [row.project, row.target, row.state].filter(Boolean).join(" · ")
+  }));
+  return [...done, ...deployments]
+    .filter(item => Number.isFinite(Date.parse(item.at || "")))
+    .sort((a,b) => Date.parse(b.at) - Date.parse(a.at))
+    .slice(0,5);
+}
+
+function renderMovement(rows) {
+  const host = document.querySelector("#today-movement-list");
+  if (!host) return;
+  const items = movementRows(rows);
+  host.innerHTML = items.length ? items.map(item =>
+    '<article class="today-movement__item">' +
+      '<time>' + escapeHtml(relative(item.at)) + '</time>' +
+      '<div><strong>' + escapeHtml(item.title) + '</strong><p>' + escapeHtml(item.detail) + '</p></div>' +
+      '<small>' + escapeHtml(item.kind) + '</small>' +
+    '</article>'
+  ).join("") : '<p class="today-empty">No recent movement is confirmed by the current canonical projection.</p>';
+  setText("#today-movement-state", items.length ? items.length + " latest confirmed events" : "No confirmed movement");
+}
 
 async function loadToday() {
   const refresh = document.querySelector("#today-refresh");
@@ -221,18 +299,24 @@ async function loadToday() {
   const results = await Promise.allSettled([
     readJson("/api/workspace-board"),
     readJson("/workspace/priorities.json"),
-    readJson("/api/workspace-state?view=commands")
+    readJson("/api/workspace-state?view=commands"),
+    readJson("/workspace/agentos/health-evidence.json")
   ]);
 
   const boardResult = results[0];
   const prioritiesResult = results[1];
   const commandsResult = results[2];
+  const healthResult = results[3];
 
   snapshot = {
     rows: boardResult.status === "fulfilled" && Array.isArray(boardResult.value.rows) ? boardResult.value.rows : [],
     priorities: prioritiesResult.status === "fulfilled" && Array.isArray(prioritiesResult.value.priorities) ? prioritiesResult.value.priorities : [],
-    commands: commandsResult.status === "fulfilled" && Array.isArray(commandsResult.value.commands) ? commandsResult.value.commands : []
+    commands: commandsResult.status === "fulfilled" && Array.isArray(commandsResult.value.commands) ? commandsResult.value.commands : [],
+    health: healthResult.status === "fulfilled" ? healthResult.value : null
   };
+
+  renderCockpit(snapshot.rows, snapshot.health);
+  renderMovement(snapshot.rows);
 
   renderOwnerList(snapshot.rows, snapshot.priorities);
   renderNext(snapshot.rows, snapshot.priorities);
