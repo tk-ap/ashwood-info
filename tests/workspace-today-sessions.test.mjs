@@ -33,3 +33,23 @@ test('Workspace cache-busts the current autonomous-session and Build scripts', a
   assert.match(html, /agentos-board\.css\?v=20260922-fitboard1/);
   assert.doesNotMatch(html, /agentos-board\.mjs\?v=/, 'the legacy inline AgentOS board runtime moved to Build detail pages');
 });
+
+
+test('Today cockpit reuses canonical board, health evidence, and deployment ledger projection', async () => {
+  const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
+  const source = await readFile(new URL('../workspace/today.mjs', import.meta.url), 'utf8');
+  assert.match(html, /id="today-cockpit-owner"/);
+  assert.match(html, /id="today-cockpit-active"/);
+  assert.match(html, /id="today-cockpit-health"/);
+  assert.match(html, /id="today-cockpit-deploys"/);
+  assert.match(source, /readJson\("\/workspace\/agentos\/health-evidence\.json"\)/);
+  assert.match(source, /row && row\.kind === "deployment_budget"/);
+  assert.match(source, /recentDeployments\(rows, 24\)/);
+});
+
+test('Today cockpit exposes recent movement without inventing motion', async () => {
+  const source = await readFile(new URL('../workspace/today.mjs', import.meta.url), 'utf8');
+  assert.match(source, /No recent movement is confirmed by the current canonical projection/);
+  assert.match(source, /DONE\.has\(statusOf\(row\)\)/);
+  assert.match(source, /deploymentRows\(rows\)/);
+});
