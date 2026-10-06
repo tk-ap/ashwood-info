@@ -252,12 +252,15 @@ async function main() {
   const paritySignals = {
     status200: verify.ok,
     title: /<title>ASHWOOD<\/title>/i.test(html),
-    thesis: /I follow ideas/i.test(html),
-    manifestations: /manifestations/i.test(html),
-    instinct: /The instinct/i.test(html)
+    immersiveResumeHero: /I turn messy operating problems into systems people/i.test(html),
+    operatingLayer: /The operating layer/i.test(html),
+    throughput: /Founder \/ team throughput/i.test(html),
+    product: /Idea → build-ready product/i.test(html),
+    decision: /Information → decision/i.test(html),
+    gravityRuntimeRemoved: !/gravity-renderer\.js|gravity-sandbox\.js|ashwood-black-hole-environment/i.test(html)
   };
 
-  if (!paritySignals.status200 || !paritySignals.title || !paritySignals.thesis) {
+  if (!paritySignals.status200 || !paritySignals.title || !paritySignals.immersiveResumeHero || !paritySignals.gravityRuntimeRemoved) {
     throw new Error(`Sandbox verification failed: ${JSON.stringify(paritySignals)}`);
   }
 
