@@ -12,49 +12,67 @@
   <link rel="stylesheet" href="/home-audio-overlay.css?v=20260828-name-audio6" />
   <link rel="stylesheet" href="/v3-preview.css?v=20260907-award-edit2" />
   <link rel="stylesheet" href="/v3-live.css?v=20260909-fixes1" />
-  <link rel="stylesheet" href="/gravity-sandbox.css?v=20260923-scene1" />
-  <script src="/audio-player.js?v=20260909-playlist1" defer></script>
+<script src="/audio-player.js?v=20260909-playlist1" defer></script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script src="/v3-parity.js?v=20260908-e2e1" defer></script>
   <script src="/v3-live.js?v=20260922-anomaly1" defer></script>
-  <script src="/gravity-renderer.js?v=20260923-scene1" defer></script>
-  <script src="/gravity-sandbox.js?v=20260923-scene1" defer></script>
-  <script src="/v3-qa.js?v=20260909-docline1" defer></script>
+<script src="/v3-qa.js?v=20260909-docline1" defer></script>
   <script src="/v3-nav.js?v=20260923-workspace-preview1" defer></script>
   <script src="/v3-identity-thesis.js?v=20260909-fixes1" defer></script>
   <script src="/v3-instrument.js?v=20260908-e2e1" defer></script>
+<style id="immersive-resume-hero-styles">
+.ir-hero{--ir-ink:#f5f2ea;--ir-muted:#aaa99f;--ir-line:rgba(255,255,255,.15);--ir-panel:rgba(255,255,255,.055);--ir-accent:#c7e6d1;position:relative;z-index:2;min-height:92vh;padding:clamp(7rem,12vw,10rem) clamp(1.25rem,5vw,5rem) 4rem;background:#0d0e0b;color:var(--ir-ink);overflow:hidden}
+.ir-hero:before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 78% 18%,rgba(98,145,115,.17),transparent 27%),radial-gradient(circle at 12% 62%,rgba(255,255,255,.055),transparent 24%);filter:blur(8px)}
+.ir-shell{position:relative;max-width:1180px;margin:auto}.ir-eyebrow{font:600 .7rem/1.2 ui-sans-serif,system-ui;letter-spacing:.18em;text-transform:uppercase;color:var(--ir-accent)}
+.ir-title{max-width:1050px;margin:.75rem 0 1rem;font:500 clamp(3.2rem,8vw,7.8rem)/.88 "Avenir Next",Inter,ui-sans-serif,system-ui;letter-spacing:-.07em;color:var(--ir-ink)}
+.ir-title em{font-style:normal;color:var(--ir-accent)}.ir-lede{max-width:770px;margin:0;color:#c7c5bb;font:400 clamp(1.05rem,2vw,1.35rem)/1.55 ui-sans-serif,system-ui}
+.ir-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:2.4rem 0 1rem}.ir-mode{min-height:185px;border:1px solid var(--ir-line);border-radius:1rem;background:var(--ir-panel);color:inherit;text-align:left;padding:1.15rem;cursor:pointer;transition:.18s ease}.ir-mode:hover,.ir-mode[aria-pressed="true"]{border-color:rgba(199,230,209,.72);background:rgba(199,230,209,.08);transform:translateY(-2px)}
+.ir-mode small{display:block;color:var(--ir-muted);font-size:.67rem;letter-spacing:.13em;text-transform:uppercase;margin-bottom:.6rem}.ir-mode strong{display:block;font-size:1.08rem;line-height:1.22}.ir-mode p{margin:.75rem 0 0;color:#aaa99f;font-size:.82rem;line-height:1.5}
+.ir-flow{margin-top:1.1rem;border:1px solid var(--ir-line);border-radius:1.2rem;background:rgba(0,0,0,.24);padding:1rem}.ir-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:.55rem}.ir-step{border:1px solid var(--ir-line);border-radius:.8rem;padding:.8rem;background:rgba(255,255,255,.03);font-size:.72rem;line-height:1.35;color:#c4c2b8}.ir-step b{display:block;color:var(--ir-ink);margin-bottom:.28rem}
+.ir-detail{display:grid;grid-template-columns:1.35fr .65fr;gap:.7rem;margin-top:.7rem}.ir-card{border:1px solid var(--ir-line);border-radius:1rem;padding:1rem;background:rgba(255,255,255,.035)}.ir-card small{color:var(--ir-accent);font-size:.65rem;letter-spacing:.13em;text-transform:uppercase}.ir-card h2{margin:.45rem 0 .55rem;font:500 clamp(1.25rem,2.2vw,1.8rem)/1.15 ui-sans-serif,system-ui;letter-spacing:-.03em}.ir-card p{margin:0;color:#b9b7ad;line-height:1.6;font-size:.87rem}
+.ir-outcomes{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.7rem}.ir-outcomes span{border:1px solid var(--ir-line);border-radius:999px;padding:.48rem .68rem;color:#d2d0c7;font-size:.73rem}.ir-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.25rem}.ir-actions a{display:inline-flex;align-items:center;min-height:44px;padding:.7rem .95rem;border:1px solid var(--ir-line);border-radius:999px;color:var(--ir-ink);text-decoration:none;font-size:.8rem}.ir-actions a:first-child{background:var(--ir-accent);border-color:var(--ir-accent);color:#122019}
+.ir-note{margin-top:1rem;color:#85847d;font-size:.72rem;line-height:1.5}
+@media(max-width:780px){.ir-hero{padding-top:7.5rem}.ir-modes,.ir-steps,.ir-detail{grid-template-columns:1fr}.ir-mode{min-height:0}.ir-title{font-size:clamp(3rem,16vw,5rem)}}
+</style>
 </head>
 <body class="v3-preview ashwood-home-native" data-v3-mark="rest" data-ashwood-mode="rest">
-  <div class="ashwood-site-cosmos" data-site-cosmos aria-hidden="true">
-    <img class="ashwood-site-cosmos__plate ashwood-site-cosmos__plate--base" src="/assets/v4/ashwood-black-hole-environment.png?v=20260922-lens2" alt="" loading="eager" decoding="async" />
-    <img class="ashwood-site-cosmos__plate ashwood-site-cosmos__plate--gravity" src="/assets/v4/ashwood-black-hole-environment.png?v=20260922-lens2" alt="" loading="eager" decoding="async" />
-    <img class="ashwood-site-cosmos__plate ashwood-site-cosmos__plate--foreground" src="/assets/v4/ashwood-black-hole-environment.png?v=20260922-lens2" alt="" loading="eager" decoding="async" />
-    <div class="ashwood-site-cosmos__veil"></div>
-    <canvas class="ashwood-gravity-canvas" data-gravity-canvas aria-hidden="true"></canvas>
-  </div>
   <header class="v3-mast masthead" aria-label="ASHWOOD navigation">
-    <a class="v3-wordmark" href="/" aria-label="ASHWOOD" data-wordmark>
-      <span class="v3-wordmark__prefix">ASHW</span><span class="v3-wordmark__glyph"><span class="v3-wordmark__o">O</span><span class="v3-wordmark__eight">8</span></span><span class="v3-wordmark__glyph"><span class="v3-wordmark__o">O</span><span class="v3-wordmark__eight">8</span></span><span class="v3-wordmark__glyph v3-wordmark__glyph--emergent" aria-hidden="true"><span class="v3-wordmark__eight">8</span></span><span class="v3-wordmark__suffix">D</span>
-    </a>
-    <span class="v3-mast__meta">TK ASHWOOD / CREATIVE PRACTICE</span>
+    <a class="v3-wordmark" href="/" aria-label="ASHWOOD" data-wordmark><span class="v3-wordmark__text">ASHWOOD</span></a>
+    <span class="v3-mast__meta">TK ASHWOOD PEART / PRODUCT · OPERATIONS · AI</span>
   </header>
-
   <main>
-    <section class="v3-hero" aria-labelledby="v3-title">
-      <div class="v3-hero__copy">
-        <p class="v3-kicker">01 / WHO IS THIS?</p>
-        <h1 class="v3-title" id="v3-title">I follow ideas<br /><span class="v3-shimmer">wherever</span> they go.</h1>
-        <p class="v3-identity">1 identity; ∞ manifestations.</p>
-        <p class="v3-grounding">TK Ashwood is a creative practice moving through modeling, performance, music, writing, physical work, and technology — following the same instinct across different forms.</p>
-        <a class="v3-link" href="#thinking">Follow the instinct <span>↓</span></a>
-      </div>
-      <div class="v3-hero__image" aria-label="Current TK Ashwood portrait">
-        <img src="/assets/digitals2026/IMG_6052-homepage.webp" alt="TK Ashwood in a bright close portrait wearing BarelySain" loading="eager" />
-        <button class="v3-image-note v3-latent" type="button" data-doc-note="A portrait can be evidence, not decoration. The work is one manifestation of the same person building everything else here.">CURRENT FORM / LOS ANGELES</button>
+    <section class="ir-hero" aria-labelledby="ir-title">
+      <div class="ir-shell">
+        <div class="ir-eyebrow">Interactive résumé / operating thesis</div>
+        <h1 class="ir-title" id="ir-title">I turn messy operating problems into systems people — and <em>AI</em> — can actually execute.</h1>
+        <p class="ir-lede">My background is process ownership, readiness, controls, knowledge systems, and cross-functional execution. I now apply that same discipline to products, automation, and agentic workflows.</p>
+
+        <div class="ir-modes" role="group" aria-label="Explore where TK creates leverage">
+          <button class="ir-mode" type="button" data-ir-key="throughput" aria-pressed="true"><small>01 / Throughput</small><strong>Founder / team throughput</strong><p>When high-value judgment gets buried under context switching, coordination, and follow-through.</p></button>
+          <button class="ir-mode" type="button" data-ir-key="product" aria-pressed="false"><small>02 / Product</small><strong>Idea → build-ready product</strong><p>When a good idea reaches engineering before workflows, edge cases, or acceptance criteria are clear.</p></button>
+          <button class="ir-mode" type="button" data-ir-key="signal" aria-pressed="false"><small>03 / Decision</small><strong>Information → decision</strong><p>When teams have plenty of input but no reliable path from evidence to priority to action.</p></button>
+        </div>
+
+        <div class="ir-flow" aria-label="TK operating layer">
+          <div class="ir-eyebrow">The operating layer</div>
+          <div class="ir-steps">
+            <div class="ir-step"><b>Capture context</b>Known, missing, constrained, decided.</div>
+            <div class="ir-step"><b>Define requirements</b>Inputs, outputs, owners, success conditions.</div>
+            <div class="ir-step"><b>Build workflow</b>SOPs, handoffs, repeatable execution.</div>
+            <div class="ir-step"><b>Add controls</b>Approvals, exceptions, authority boundaries.</div>
+            <div class="ir-step"><b>Track evidence</b>Decisions, outputs, ownership, next actions.</div>
+          </div>
+          <div class="ir-detail">
+            <article class="ir-card"><small>How I would help</small><h2 id="ir-pitch-title">Make high-value judgment scalable without turning it into bureaucracy.</h2><p id="ir-pitch">I map work that currently depends on memory, email, chat, or one person’s head; identify what information must be captured; define decision and handoff points; then build a lightweight operating workflow around it. AI can absorb research, preparation, routing, and follow-up where appropriate, while consequential decisions stay behind clear human authority.</p></article>
+            <article class="ir-card"><small>Paid pilot</small><p id="ir-pilot">Give me one live workflow that feels harder to manage than it should. I map the current state, identify failure points, build the operating artifact or lightweight automation, and test whether it reduces context loss, manual coordination, or missed handoffs.</p><div class="ir-outcomes" id="ir-outcomes"><span>Less context loss</span><span>Clearer handoffs</span><span>Less manual chasing</span><span>More operating capacity</span></div></article>
+          </div>
+        </div>
+
+        <div class="ir-actions"><a href="/work/">Explore the work ↗</a><a href="#evidence">See build evidence ↓</a><a href="/about/">Career / about ↗</a></div>
+        <p class="ir-note">Agentic workforce infrastructure sits underneath this approach: bounded work, context preservation, evidence, review, and approval boundaries — not a standalone product, but an execution layer supporting the products and workflows I build.</p>
       </div>
     </section>
-
-    <section class="v3-chapter v3-thinking-stage" id="thinking" aria-labelledby="thinking-title">
+<section class="v3-chapter v3-thinking-stage" id="thinking" aria-labelledby="thinking-title">
       <div class="v3-shell">
         <div class="v3-thinking__intro v3-reveal">
           <p class="v3-kicker">02 / HOW DOES THIS PERSON THINK?</p>
@@ -141,5 +159,12 @@
       <div class="v3-continuation__actions"><a class="v3-primary" href="/work/">Explore the work ↗</a><a href="/sponsor/">Support the work</a><a href="/performance/">Performance</a><a href="/music/">Listen</a><a href="/journal/">Follow the Journal</a></div>
     </section>
   </main>
+<script id="immersive-resume-hero-script">
+(()=>{const d={
+throughput:{t:"Make high-value judgment scalable without turning it into bureaucracy.",p:"I map work that currently depends on memory, email, chat, or one person’s head; identify what information must be captured; define decision and handoff points; then build a lightweight operating workflow around it. AI can absorb research, preparation, routing, and follow-up where appropriate, while consequential decisions stay behind clear human authority.",q:"Give me one live workflow that feels harder to manage than it should. I map the current state, identify failure points, build the operating artifact or lightweight automation, and test whether it reduces context loss, manual coordination, or missed handoffs.",o:["Less context loss","Clearer handoffs","Less manual chasing","More operating capacity"]},
+product:{t:"Turn a promising idea into something engineering can execute cleanly.",p:"I translate business intent into the operating detail a build actually needs: user and business workflows, requirements, edge cases, acceptance criteria, ownership, launch-readiness checks, and approval points for material scope changes. The goal is to reduce the gap between what someone meant and what ultimately gets built.",q:"Use one active product, feature, automation, or client build. I produce the discovery brief, workflow map, requirements, acceptance criteria, decision log, approval points, and readiness checklist before the work is treated as build-ready.",o:["Clearer specs","Fewer revisions","Less scope drift","More reliable launches"]},
+signal:{t:"Turn incoming information into a reviewable, evidence-backed decision flow.",p:"I structure how information enters the system, what evidence is required, how it is prioritized, who reviews it, what decision was made, and what action follows. AI can help classify, summarize, compare, and surface changes while human judgment remains explicit where context or consequence demands it.",q:"Take one recurring intake or monitoring process. I map input → evidence → priority → review → decision → action, then build the status model and lightweight workflow needed to make that path visible and repeatable.",o:["Better triage","Traceable evidence","Less duplicate research","Faster response"]}
+};const bs=[...document.querySelectorAll("[data-ir-key]")],t=document.getElementById("ir-pitch-title"),p=document.getElementById("ir-pitch"),q=document.getElementById("ir-pilot"),o=document.getElementById("ir-outcomes");bs.forEach(b=>b.addEventListener("click",()=>{bs.forEach(x=>x.setAttribute("aria-pressed",String(x===b)));const v=d[b.dataset.irKey];t.textContent=v.t;p.textContent=v.p;q.textContent=v.q;o.replaceChildren(...v.o.map(x=>{const e=document.createElement("span");e.textContent=x;return e;}));}));})();
+</script>
 </body>
 </html>
