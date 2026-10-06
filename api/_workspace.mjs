@@ -63,11 +63,11 @@ export async function issueSession(res) {
   const token = crypto.randomBytes(32).toString('base64url');
   const tokenHash = sha256(token);
   await sql`INSERT INTO workspace_sessions (token_hash, auth_id, expires_at) VALUES (${tokenHash}, 'owner', NOW() + INTERVAL '30 days')`;
-  res.setHeader('Set-Cookie', `ashwood_workspace_session=${encodeURIComponent(token)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=2592000`);
+  res.setHeader('Set-Cookie', `ashwood_workspace_session=${encodeURIComponent(token)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Priority=High`);
 }
 
 export function clearSession(res) {
-  res.setHeader('Set-Cookie', 'ashwood_workspace_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
+  res.setHeader('Set-Cookie', 'ashwood_workspace_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0; Priority=High');
 }
 
 // Compare the browser's Origin against the host this request actually arrived on,
