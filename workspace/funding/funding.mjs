@@ -1,10 +1,14 @@
+import {actionState, LIFECYCLE, VIEWS, ranked, inView, sourceKey} from './model.mjs';
 const PROFILE_KEY = 'ashwood.funding.profile.v1';
 const STATUS_KEY = 'ashwood.funding.status.v1';
-
+const SEEN_KEY = 'ashwood.funding.seen.v1';
 const PROFILE_OPTIONS = [
   ['southern_california','Southern California resident'],
   ['los_angeles','Los Angeles / LA County'],
   ['veteran','Veteran / military-connected'],
+  ['reservist','Army Reserve service'],
+  ['housing_risk','Housing instability'],
+  ['financial_emergency','Documented financial emergency'],
   ['founder','Founder / small-business owner'],
   ['software_ai','Software / AI startup'],
   ['black_founder','Black founder / creator'],
@@ -21,177 +25,106 @@ const TYPES = [
   ['rd_funding','R&D'],
   ['build_credits','Build credits'],
   ['creative_funding','Creative'],
-  ['noncash','Non-cash']
+  ['noncash','Non-cash'],
+  ['training','Training / stipends'],
+  ['zero_interest','0% financing'],
+  ['scholarship','Scholarships']
 ];
 
-const escapeHtml = (value='') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const escapeHtml = (value='') => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const readJson = (key, fallback={}) => { try { return JSON.parse(localStorage.getItem(key) || '') || fallback; } catch { return fallback; } };
 const writeJson = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } };
-
 let registry = {opportunities:[]};
-let profile = readJson(PROFILE_KEY, {});
-let statuses = readJson(STATUS_KEY, {});
-let typeFilter = 'all';
-let search = '';
-
-async function api(path, options={}) {
-  const res = await fetch(path, {credentials:'same-origin', headers:{'Content-Type':'application/json', ...(options.headers||{})}, ...options});
-  const body = await res.json().catch(()=>({}));
-  if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
-  return body;
+let profile = readJson(PROFILE_KEY, {}), statuses = readJson(STATUS_KEY, {});
+let seenAt = readJson(SEEN_KEY,null), typeFilter='all', view='action', search='';
+const list = values => (values || []).map(x => `<li>${escapeHtml(x)}</li>`).join('');
+const label = value => String(value || '').replaceAll('_',' ');
+const safeLink = value => sourceKey(value) ? value : '#';
+function save(key,value) {
+  if (!writeJson(key,value)) document.querySelector('#funding-registry-state').textContent='Changes not saved: browser storage unavailable';
 }
-
-async function ensureAuth() {
-  const status = await api('/api/workspace-auth');
-  if (status.authenticated) return true;
-  location.replace('/workspace/');
-  return false;
+function updateAction(id,patch) {
+  const item=registry.opportunities.find(x=>x.id===id);
+  const previous=actionState(item,statuses);
+  statuses[id]={...previous,...patch,updated_at:new Date().toISOString(),history:[...(previous.history || []),{at:new Date().toISOString(),...patch}].slice(-50)};
+  save(STATUS_KEY,statuses); render();
 }
-
-function selectedTags() {
-  return Object.entries(profile).filter(([,on])=>on===true).map(([key])=>key);
-}
-
-function matchedCount(item) {
-  const selected = new Set(selectedTags());
-  return (item.match_tags || []).filter(tag => selected.has(tag)).length;
-}
-
-function effectiveStatus(item) {
-  return statuses[item.id] || item.status || 'POSSIBLE_FIT';
-}
-
-function urgency(item) {
-  if (!item.deadline) return 9999;
-  const delta = Math.ceil((new Date(item.deadline + 'T23:59:59').getTime() - Date.now()) / 86400000);
-  return Number.isFinite(delta) ? delta : 9999;
-}
-
-function ranked(items) {
-  return [...items].sort((a,b) => {
-    const am = matchedCount(a), bm = matchedCount(b);
-    if (bm !== am) return bm - am;
-    const au = urgency(a), bu = urgency(b);
-    if (au !== bu) return au - bu;
-    const order = {VERIFIED_FIT:0,READY_TO_APPLY:1,POSSIBLE_FIT:2,NEEDS_FACT:3,APPLIED:4,AWAITING_RESPONSE:5,AWARDED:6,NOT_ELIGIBLE:8,CLOSED:9};
-    return (order[effectiveStatus(a)] ?? 7) - (order[effectiveStatus(b)] ?? 7);
-  });
-}
-
 function renderProfile() {
-  const host = document.querySelector('#funding-profile-options');
-  host.innerHTML = PROFILE_OPTIONS.map(([id,label]) => `<label class="funding-profile-chip"><input type="checkbox" data-profile="${id}" ${profile[id] ? 'checked' : ''}><span>${escapeHtml(label)}</span></label>`).join('');
-  host.querySelectorAll('[data-profile]').forEach(input => input.addEventListener('change', () => {
-    profile[input.dataset.profile] = input.checked;
-    writeJson(PROFILE_KEY, profile);
-    render();
+  const rules=new Map(PROFILE_OPTIONS);
+  for(const item of registry.opportunities) for(const rule of item.eligibility_rules || []) for(const key of rule.any || [rule.fact]) if(!rules.has(key)) rules.set(key,label(key));
+  rules.set('repayment_capacity','Loan repayment capacity confirmed');
+  rules.set('assistance_coordination_confirmed','Other-assistance coordination confirmed');
+  const host=document.querySelector('#funding-profile-options');
+  const chip=([id,text])=>`<label class="funding-profile-chip"><span>${escapeHtml(text)}</span><select data-profile="${escapeHtml(id)}" aria-label="${escapeHtml(text)}"><option value="unknown" ${profile[id]===undefined?'selected':''}>Unknown</option><option value="yes" ${profile[id]===true?'selected':''}>Confirmed yes</option><option value="no" ${profile[id]===false?'selected':''}>Confirmed no</option></select></label>`;
+  const basic=new Set(PROFILE_OPTIONS.map(([id])=>id));
+  host.innerHTML=[...rules].filter(([id])=>basic.has(id)).map(chip).join('')+'<details class="funding-profile-more"><summary>Confirm required eligibility facts</summary><div class="funding-profile-options">'+[...rules].filter(([id])=>!basic.has(id)).map(chip).join('')+'</div></details>';
+  host.querySelectorAll('[data-profile]').forEach(input=>input.addEventListener('change',()=>{
+    if(input.value==='unknown') delete profile[input.dataset.profile]; else profile[input.dataset.profile]=input.value==='yes';
+    save(PROFILE_KEY,profile); render();
   }));
 }
-
 function renderFilters() {
-  const host = document.querySelector('#funding-type-filters');
-  host.innerHTML = TYPES.map(([id,label]) => `<button type="button" data-type="${id}" aria-pressed="${id===typeFilter}">${label}</button>`).join('');
-  host.querySelectorAll('[data-type]').forEach(button => button.addEventListener('click', () => {
-    typeFilter = button.dataset.type;
-    renderFilters();
-    render();
-  }));
-}
-
-function statusOptions(current) {
-  return ['POSSIBLE_FIT','NEEDS_FACT','VERIFIED_FIT','READY_TO_APPLY','APPLIED','AWAITING_RESPONSE','AWARDED','DECLINED','NOT_ELIGIBLE','CLOSED']
-    .map(value => `<option value="${value}" ${value===current?'selected':''}>${value.replaceAll('_',' ')}</option>`).join('');
-}
-
-function renderSummary(items) {
-  const available = items.filter(x => !['NOT_ELIGIBLE','CLOSED','DECLINED'].includes(effectiveStatus(x))).length;
-  const soon = items.filter(x => urgency(x) <= 30 && urgency(x) >= 0).length;
-  const active = items.filter(x => ['APPLIED','AWAITING_RESPONSE'].includes(effectiveStatus(x))).length;
-  const credits = items.filter(x => x.type === 'build_credits').length;
-  document.querySelector('#funding-summary').innerHTML = [
-    [available,'available / unresolved'],
-    [soon,'closing ≤ 30d'],
-    [active,'in progress'],
-    [credits,'credit programs']
-  ].map(([n,label])=>`<article><strong>${n}</strong><span>${label}</span></article>`).join('');
-}
-
-function visibleItems() {
-  const q = search.trim().toLowerCase();
-  return ranked(registry.opportunities.filter(item => {
-    if (typeFilter !== 'all' && item.type !== typeFilter) return false;
-    if (!q) return true;
-    return JSON.stringify(item).toLowerCase().includes(q);
-  }));
-}
-
-function render() {
-  const items = visibleItems();
-  renderSummary(registry.opportunities);
-  document.querySelector('#funding-visible-count').textContent = `${items.length} shown · ${selectedTags().length} private matching lanes active`;
-  const host = document.querySelector('#funding-list');
-  host.innerHTML = items.map(item => {
-    const current = effectiveStatus(item);
-    const matches = matchedCount(item);
-    const deadline = item.deadline ? new Date(item.deadline+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : 'Rolling / not stated';
-    return `<article class="funding-card">
-      <div class="funding-card__top">
-        <div>
-          <p class="funding-card__meta">${escapeHtml(item.funder)} · ${escapeHtml(item.applicant_lane.replaceAll('_',' '))}</p>
-          <h3>${escapeHtml(item.name)}</h3>
-        </div>
-        <span class="funding-match">${matches ? `${matches} profile match${matches===1?'':'es'}` : 'unranked'}</span>
-      </div>
-      <p class="funding-value">${escapeHtml(item.value)}</p>
-      <dl class="funding-facts">
-        <div><dt>Deadline</dt><dd>${escapeHtml(deadline)}</dd></div>
-        <div><dt>Source verified</dt><dd>${escapeHtml(item.last_verified_at)}</dd></div>
-        <div><dt>Effort</dt><dd>${escapeHtml(item.effort)}</dd></div>
-      </dl>
-      <div class="funding-columns">
-        <div><h4>What the source requires</h4><ul>${(item.criteria||[]).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>
-        <div><h4>Still unknown</h4><ul>${(item.unknowns||[]).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>
-      </div>
-      <p class="funding-next"><strong>Next:</strong> ${escapeHtml(item.next_action)}</p>
-      <div class="funding-card__actions">
-        <label>Status <select data-status="${escapeHtml(item.id)}">${statusOptions(current)}</select></label>
-        <a href="${escapeHtml(item.source_url)}" target="_blank" rel="noopener">${escapeHtml(item.source_label)} ↗</a>
-      </div>
-    </article>`;
-  }).join('') || '<p class="funding-empty">No opportunities match the current filters.</p>';
-  host.querySelectorAll('[data-status]').forEach(select => select.addEventListener('change', () => {
-    statuses[select.dataset.status] = select.value;
-    writeJson(STATUS_KEY, statuses);
-    render();
-  }));
-}
-
-async function loadRegistry() {
-  const state = document.querySelector('#funding-registry-state');
-  const stamp = document.querySelector('#funding-registry-time');
-  state.textContent = 'Refreshing';
-  try {
-    const res = await fetch('/workspace/funding/opportunities.json?ts='+Date.now(), {cache:'no-store'});
-    if (!res.ok) throw new Error('Registry unavailable');
-    registry = await res.json();
-    state.textContent = 'Loaded';
-    stamp.textContent = `Seed registry generated ${new Date(registry.generated_at).toLocaleString()}`;
-    render();
-  } catch (error) {
-    state.textContent = 'Unavailable';
-    stamp.textContent = error.message;
+  for(const [selector,values,key,current] of [['#funding-type-filters',TYPES,'type',typeFilter],['#funding-view-filters',VIEWS,'view',view]]) {
+    const host=document.querySelector(selector);
+    host.innerHTML=values.map(([id,text])=>`<button type="button" data-${key}="${id}" aria-pressed="${id===current}">${text}</button>`).join('');
+    host.querySelectorAll(`[data-${key}]`).forEach(button=>button.addEventListener('click',()=>{
+      if(key==='type') typeFilter=button.dataset.type; else view=button.dataset.view;
+      renderFilters(); render();
+    }));
   }
 }
-
+function render() {
+  const all=ranked(registry.opportunities,profile,statuses);
+  const counts=[['action','action needed'],['consult','needs consultation'],['progress','in progress'],['new','new / unverified']];
+  document.querySelector('#funding-summary').innerHTML=counts.map(([v,text])=>`<article><strong>${all.filter(e=>inView(e,v,seenAt)).length}</strong><span>${text}</span></article>`).join('');
+  const q=search.trim().toLowerCase();
+  const items=all.filter(e=>inView(e,view,seenAt) && (typeFilter==='all' || e.item.type===typeFilter) && (!q || JSON.stringify(e.item).toLowerCase().includes(q)));
+  document.querySelector('#funding-visible-count').textContent=`${items.length} shown · one registry · profile matches are not provider approval`;
+  const host=document.querySelector('#funding-list');
+  host.innerHTML=items.map(e=>{
+    const {item,action,fit}=e;
+    return `<article class="funding-card" data-opportunity="${escapeHtml(item.id)}">
+      <div class="funding-card__top"><div><p class="funding-card__meta">${escapeHtml(item.funder)} · ${escapeHtml(label(item.type))}</p><h3>${escapeHtml(item.name)}</h3></div><span class="funding-match">${e.disposition} · ${escapeHtml(label(action.status))}</span></div>
+      <p class="funding-value">${escapeHtml(item.value)}</p>
+      <p>${escapeHtml(e.reason)}</p>
+      <dl class="funding-facts"><div><dt>Source evidence</dt><dd>${e.fresh?'Current official program evidence':'Unverified / needs recheck'} · ${escapeHtml(item.last_verified_at || 'Never verified')}</dd></div><div><dt>Deadline / window</dt><dd>${escapeHtml(item.deadline || item.application_window || 'Not stated; confirm with provider')}</dd></div><div><dt>Cost / burden</dt><dd>${item.repayable===true?'Repayable':item.repayable===false?'Non-repayable support':'Repayment terms unknown'} · ${escapeHtml(item.effort || 'unknown')} effort</dd></div></dl>
+      <div class="funding-columns"><div><h4>Is it applicable?</h4><p>${escapeHtml(label(fit.state))} — ${escapeHtml(item.confidence || 'unknown confidence')}</p><ul>${list([...fit.failed,...fit.unknown,...(item.unknowns || [])])}</ul></div><div><h4>What the source requires</h4><ul>${list(item.criteria)}</ul></div></div>
+      <p class="funding-next"><strong>Next:</strong> ${escapeHtml(e.next_action)}</p>
+      <details><summary>Evidence, documents and changes</summary><ul>${list(item.documents)}</ul><p>Other assistance: ${escapeHtml((item.benefit_interactions || []).join(' '))}</p><p>Time to funding: ${escapeHtml(item.time_to_funding_days == null ? 'Unknown; confirm with provider' : item.time_to_funding_days+' days')}</p><p>Interest: ${escapeHtml(item.interest_percent == null ? 'Unknown / not applicable' : item.interest_percent+'%')} · Fees: ${escapeHtml(item.fees ?? 'Unknown / not applicable')}</p>
+      ${(item.evidence || []).map(x=>`<p><a href="${escapeHtml(safeLink(x.url))}" target="_blank" rel="noopener">Official evidence ↗</a> · ${escapeHtml(x.checked_at)}<br>${escapeHtml(x.summary)}</p>`).join('')}
+      ${(item.changes || []).map(c=>`<p>${escapeHtml(c.at)} · ${escapeHtml(c.field)}: ${escapeHtml(JSON.stringify(c.before))} → ${escapeHtml(JSON.stringify(c.after))}</p>`).join('')}
+      <p>Priority factors: ${escapeHtml(Object.entries(e.parts).filter(([,n])=>n).map(([k,n])=>k+': '+n).join(' · '))}</p></details>
+      <form data-action="${escapeHtml(item.id)}" class="funding-action-form"><label>Progress<select name="status">${LIFECYCLE.map(value=>`<option value="${value}" ${action.status===value?'selected':''}>${escapeHtml(label(value))}</option>`).join('')}</select></label>
+      <label>Owner choice<select name="disposition"><option value="">Use evidence recommendation</option>${['HOLD','SKIP'].map(value=>`<option value="${value}" ${action.disposition===value?'selected':''}>${value}</option>`).join('')}</select></label>
+      <label>Next action<input name="next_action" maxlength="1500" value="${escapeHtml(action.next_action || '')}" placeholder="${escapeHtml(e.next_action)}"></label><label>Action deadline<input name="action_deadline" type="date" value="${escapeHtml(action.action_deadline || '')}"></label><label>Outcome / reason<textarea name="outcome" maxlength="3000">${escapeHtml(action.outcome || '')}</textarea></label><button type="submit">Save action</button></form>
+      <div class="funding-card__actions"><a href="${escapeHtml(safeLink(item.source_url))}" target="_blank" rel="noopener">${escapeHtml(item.source_label)} ↗</a><small>Actions and outcomes are private to this browser.</small></div>
+    </article>`;
+  }).join('') || '<p class="funding-empty">No records in this view. Try All or Watching to see pending verification.</p>';
+  host.querySelectorAll('[data-action]').forEach(form=>form.addEventListener('submit',event=>{
+    event.preventDefault(); const values=Object.fromEntries(new FormData(form));
+    updateAction(form.dataset.action,{...values,reason:values.outcome || null,completed_at:['AWARDED','DENIED','COMPLETED','CLOSED','DECLINED'].includes(values.status)?new Date().toISOString():null});
+  }));
+}
+async function loadRegistry() {
+  const state=document.querySelector('#funding-registry-state'), stamp=document.querySelector('#funding-registry-time');
+  state.textContent='Refreshing';
+  try {
+    const res=await fetch('/workspace/funding/opportunities.json?ts='+Date.now(),{cache:'no-store'});
+    if(!res.ok) throw new Error('Registry unavailable');
+    registry=await res.json(); renderProfile(); render();
+    state.textContent='Loaded'; stamp.textContent=`Registry updated ${registry.generated_at}. Reloading does not verify upstream sources.`;
+  } catch(error) {state.textContent='Unavailable';stamp.textContent=error.message;}
+}
 async function start() {
-  if (!(await ensureAuth())) return;
-  const shell = document.querySelector('.funding-shell');
-  if (shell) shell.inert = false;
-  renderProfile();
+  const response=await fetch('/api/workspace-auth',{credentials:'same-origin'});
+  if(!response.ok) throw new Error('Workspace authentication unavailable');
+  const status=await response.json();
+  if(!status.authenticated) {location.replace('/workspace/');return;}
   renderFilters();
-  document.querySelector('#funding-search').addEventListener('input', event => { search = event.target.value; render(); });
-  document.querySelector('#funding-refresh').addEventListener('click', loadRegistry);
+  document.querySelector('#funding-search').addEventListener('input',event=>{search=event.target.value;render();});
+  document.querySelector('#funding-refresh').addEventListener('click',loadRegistry);
+  document.querySelector('#funding-mark-reviewed').addEventListener('click',()=>{seenAt=new Date().toISOString();save(SEEN_KEY,seenAt);render();});
   await loadRegistry();
 }
-
-start();
+start().catch(error=>{document.querySelector('#funding-registry-state').textContent=error.message;});

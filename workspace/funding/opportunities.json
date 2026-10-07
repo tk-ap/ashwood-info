@@ -1,45 +1,249 @@
 {
-  "version": 1,
-  "generated_at": "2026-09-24T23:48:00Z",
-  "source_note": "Seed registry only. Every item is presented with a last-verified timestamp and authoritative source. Refreshing this file is not the same as re-verifying the upstream program.",
+  "version": 2,
+  "generated_at": "2026-10-07T15:02:53.838Z",
+  "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
+      "categories": [
+        "housing",
+        "personal_support",
+        "employment",
+        "veteran",
+        "utility_assistance"
+      ],
+      "aliases": [
+        "Village for Vets Emergency Fund"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.villageforvets.org/efund",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Provider offers short-term emergency grants to Southern California veterans for housing, employment or health emergencies. Application and consent form are linked; reserve-only eligibility, award and capacity remain unconfirmed."
+        },
+        {
+          "url": "https://www.villageforvets.org/efund",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current provider page links EFund intake and Release of Information, offers Southern California veteran emergency grants for housing/employment/health, and requires supporting documents. Award and capacity remain case-specific."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "veteran",
+          "label": "Provider accepts military service"
+        },
+        {
+          "fact": "southern_california",
+          "label": "Southern California resident"
+        },
+        {
+          "fact": "financial_emergency",
+          "label": "Documented emergency"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; remaining personal eligibility, capacity and coordination questions require consultation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-09-24T23:48:00Z",
       "id": "village-for-vets-efund",
-      "name": "Village for Vets Emergency Fund",
+      "name": "Village for Vets Emergency Financial Assistance",
       "funder": "Village for Vets",
       "type": "emergency_cash",
       "applicant_lane": "individual",
-      "value": "Short-term emergency financial assistance; amount case-specific",
+      "value": "Short-term emergency grants; award case-specific",
       "deadline": null,
       "availability": "open",
       "status": "POSSIBLE_FIT",
       "criteria": [
-        "Veteran",
-        "Resides in Southern California",
-        "Financial emergency threatens housing, employment, or health",
-        "Supporting documentation required"
+        "Veteran in Southern California",
+        "Financial emergency affects housing, employment or health",
+        "Application, supporting documents and Release of Information"
       ],
       "match_tags": [
+        "housing",
+        "employment",
         "veteran",
-        "southern_california",
-        "housing"
+        "utility_assistance"
       ],
       "unknowns": [
-        "Exact award amount",
-        "Whether current arrears and active unlawful-detainer posture meet this fund's approval criteria"
+        "Reserve-only service acceptance",
+        "Current funding capacity",
+        "Coordination with SSVF and overlapping expenses"
       ],
       "documents": [
-        "Emergency Fund application",
-        "Supporting documentation",
-        "Release of Information"
+        "Confirm the current program document checklist before submitting personal information."
       ],
       "effort": "medium",
-      "next_action": "Review the live application and assemble the required housing/emergency documentation.",
-      "last_verified_at": "2026-09-24",
+      "next_action": "Ask the provider to confirm reserve service eligibility and coordination with existing assistance.",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "source_url": "https://www.villageforvets.org/efund",
-      "source_label": "Village for Vets — Emergency Assistance"
+      "source_label": "Village for Vets — program details",
+      "program_key": "village-for-vets-efund",
+      "changes": [
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "open",
+          "after": "unknown"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "value",
+          "before": "Short-term emergency financial assistance; amount case-specific",
+          "after": "Short-term emergency grants; award case-specific"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "criteria",
+          "before": [
+            "Veteran",
+            "Resides in Southern California",
+            "Financial emergency threatens housing, employment, or health",
+            "Supporting documentation required"
+          ],
+          "after": [
+            "Veteran in Southern California",
+            "Financial emergency affects housing, employment or health",
+            "Application, supporting documents and Release of Information"
+          ]
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "eligibility_rules",
+          "before": [],
+          "after": [
+            {
+              "fact": "veteran",
+              "label": "Provider accepts military service"
+            },
+            {
+              "fact": "southern_california",
+              "label": "Southern California resident"
+            },
+            {
+              "fact": "financial_emergency",
+              "label": "Documented emergency"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "unknowns",
+          "before": [
+            "Exact award amount",
+            "Whether current arrears and active unlawful-detainer posture meet this fund's approval criteria"
+          ],
+          "after": [
+            "Reserve-only service acceptance",
+            "Current funding capacity",
+            "Coordination with SSVF and overlapping expenses"
+          ]
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "verification",
+          "before": "NEEDS_REVIEW",
+          "after": "VERIFIED"
+        }
+      ]
     },
     {
+      "categories": [
+        "housing",
+        "personal_support"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://lacahsa.gov/get-help/",
+          "authoritative": true,
+          "checked_at": "2026-10-05T16:38:00Z",
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "LACAHSA funds partner organizations for emergency rental assistance rather than serving individuals directly. Its help page lists provider links. Intake capacity and provider-specific limits remain unconfirmed."
+        },
+        {
+          "url": "https://lacahsa.gov/get-help/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current help page routes individuals to funded emergency rental-assistance partners; LACAHSA cannot serve individuals directly. Provider intake, award limits and capacity need confirmation."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "los_angeles",
+          "label": "LA County resident"
+        },
+        {
+          "fact": "housing_risk",
+          "label": "Housing instability"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; applicant facts, benefit coordination and capacity remain unresolved.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-09-24T23:48:00Z",
       "id": "lacahsa-rphp",
       "name": "LACAHSA Emergency Rental & Flexible Financial Assistance",
       "funder": "L.A. County Affordable Housing Solutions Agency",
@@ -68,24 +272,129 @@
       ],
       "effort": "medium",
       "next_action": "Contact an awarded provider and ask for emergency rental-assistance intake.",
-      "last_verified_at": "2026-09-24",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "source_url": "https://lacahsa.gov/get-help/",
-      "source_label": "LACAHSA — Get Help"
+      "source_label": "LACAHSA — Get Help",
+      "program_key": "lacahsa-rphp",
+      "changes": [
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "eligibility_rules",
+          "before": [],
+          "after": [
+            {
+              "fact": "los_angeles",
+              "label": "LA County resident"
+            },
+            {
+              "fact": "housing_risk",
+              "label": "Housing instability"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "verification",
+          "before": "NEEDS_REVIEW",
+          "after": "VERIFIED"
+        }
+      ]
     },
     {
+      "categories": [
+        "business",
+        "founder_cash"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "authoritative": true,
+          "checked_at": "2026-10-05T16:38:00Z",
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Official 2026 cycle closes October 15. Twenty-five finalists receive a $1,000 microgrant and one program. US veteran/spouse ownership, an active US business, revenue up to $5M, 2–100 employees and one year in business are required. Payments depend on documentation, program requirements and funding."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "2026 page retains October 15 close and 2–100 employee/one-year requirements. $1,000 microgrant plus one free program; first payment Net 60 after required documentation, subject to approvals/funds."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "any": [
+            "veteran",
+            "military_spouse"
+          ],
+          "label": "Veteran or military spouse"
+        },
+        {
+          "fact": "business_us_active",
+          "label": "Active US business"
+        },
+        {
+          "fact": "business_owner",
+          "label": "CEO, president or owner"
+        },
+        {
+          "fact": "employees_2_100",
+          "label": "2–100 employees"
+        },
+        {
+          "fact": "business_one_year",
+          "label": "One year in business"
+        },
+        {
+          "fact": "revenue_under_5m",
+          "label": "Annual revenue at or below $5M"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "Full applications September 15–October 15, 2026; finalists November 10; first payment Net 60 after completed required documents",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; applicant facts, benefit coordination and capacity remain unresolved.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-09-24T23:48:00Z",
       "id": "founders-first-tadlock-2026",
       "name": "Kenneth B. and Stephen L. Tadlock Veteran Business Grant",
       "funder": "Founders First CDC",
       "type": "founder_cash",
       "applicant_lane": "business",
       "value": "$1,000 micro-grant + program access for finalists",
-      "deadline": null,
-      "availability": "open_2026_cycle",
+      "deadline": "2026-10-15",
+      "availability": "open",
       "status": "NEEDS_FACT",
       "criteria": [
-        "U.S. veteran or military spouse business owner",
-        "2–100 employees",
-        "At least 1 year in business"
+        "US military veteran or military spouse",
+        "CEO, president or business owner with active US business",
+        "Annual revenue no more than $5 million",
+        "2–100 employees and minimum one year in business"
       ],
       "match_tags": [
         "veteran",
@@ -96,16 +405,152 @@
         "Whether the current application window is still accepting full submissions"
       ],
       "documents": [
-        "Business eligibility information",
-        "Application materials required by Founders First"
+        "Business eligibility application materials",
+        "If selected: signed terms where applicable, program enrollment, W-9 and verified Bill.com account"
       ],
       "effort": "medium",
-      "next_action": "Verify employee-count eligibility before spending time on the application.",
-      "last_verified_at": "2026-09-24",
+      "next_action": "Before October 15, check the 2–100 employee and one-year business requirements. Do not treat this as immediate housing cash.",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
-      "source_label": "Founders First CDC — Tadlock Veteran Business Grant"
+      "source_label": "Founders First CDC — Tadlock Veteran Business Grant",
+      "program_key": "founders-first-tadlock-2026",
+      "changes": [
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "availability",
+          "before": "open_2026_cycle",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "deadline",
+          "before": null,
+          "after": "2026-10-15"
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "application_window",
+          "before": null,
+          "after": "Full applications September 15–October 15, 2026"
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "criteria",
+          "before": [
+            "U.S. veteran or military spouse business owner",
+            "2–100 employees",
+            "At least 1 year in business"
+          ],
+          "after": [
+            "US military veteran or military spouse",
+            "CEO, president or business owner with active US business",
+            "Annual revenue no more than $5 million",
+            "2–100 employees and minimum one year in business"
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "eligibility_rules",
+          "before": [],
+          "after": [
+            {
+              "any": [
+                "veteran",
+                "military_spouse"
+              ],
+              "label": "Veteran or military spouse"
+            },
+            {
+              "fact": "business_us_active",
+              "label": "Active US business"
+            },
+            {
+              "fact": "business_owner",
+              "label": "CEO, president or owner"
+            },
+            {
+              "fact": "employees_2_100",
+              "label": "2–100 employees"
+            },
+            {
+              "fact": "business_one_year",
+              "label": "One year in business"
+            },
+            {
+              "fact": "revenue_under_5m",
+              "label": "Annual revenue at or below $5M"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "verification",
+          "before": "NEEDS_REVIEW",
+          "after": "VERIFIED"
+        },
+        {
+          "at": "2026-10-07T15:02:53.838Z",
+          "field": "application_window",
+          "before": "Full applications September 15–October 15, 2026",
+          "after": "Full applications September 15–October 15, 2026; finalists November 10; first payment Net 60 after completed required documents"
+        }
+      ]
     },
     {
+      "categories": [
+        "business",
+        "rd_funding"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://www.nsf.gov/funding/opportunities/small-business-innovation-research-small-business-technology/nsf26-510/solicitation",
+          "authoritative": true,
+          "checked_at": "2026-10-05T16:38:00Z",
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "NSF lists this solicitation active, with November 4, 2026 deadline and Phase I grants up to $305,000. Eligible small businesses need a Phase I pitch invitation. PI primary employment must be with the applicant company; STTR requires a research partner."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "sbir_small_business",
+          "label": "SBIR/STTR eligible small business"
+        },
+        {
+          "fact": "nsf_pitch_invitation",
+          "label": "Current Phase I project-pitch invitation"
+        },
+        {
+          "fact": "pi_primary_employment",
+          "label": "PI primary-employment requirements feasible"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": "PI primary employment at the applicant company (at least 51%) at award and during performance; other employment over 19.6 hours/week normally conflicts.",
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "HOLD",
+      "reason": "R&D grant remains relevant longer term; PI primary-employment requirements may conflict with full-time professional employment. Screen before drafting.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-09-24T23:48:00Z",
       "id": "nsf-sbir-26-510",
       "name": "NSF SBIR/STTR — Deep Technologies",
       "funder": "U.S. National Science Foundation",
@@ -116,10 +561,10 @@
       "availability": "open",
       "status": "NEEDS_FACT",
       "criteria": [
-        "Eligible U.S. small business",
-        "High-risk technology R&D with commercial potential",
-        "Program-specific PI/company requirements",
-        "One proposal per organization at a time"
+        "SBIR/STTR eligible small business with affiliates counted toward size limit",
+        "Phase I requires a current official project-pitch invitation",
+        "PI primary employment at applicant business at award and during award",
+        "STTR requires research institution partner; legal right to work and effort requirements apply"
       ],
       "match_tags": [
         "founder",
@@ -139,11 +584,117 @@
       ],
       "effort": "high",
       "next_action": "Run an eligibility and project-fit screen for ALVIRA, ledgato, and governed-agent infrastructure before drafting anything.",
-      "last_verified_at": "2026-09-24",
+      "last_verified_at": "2026-10-05T16:38:00Z",
       "source_url": "https://www.nsf.gov/funding/opportunities/small-business-innovation-research-small-business-technology/nsf26-510/solicitation",
-      "source_label": "NSF 26-510"
+      "source_label": "NSF 26-510",
+      "program_key": "nsf-sbir-26-510",
+      "changes": [
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "criteria",
+          "before": [
+            "Eligible U.S. small business",
+            "High-risk technology R&D with commercial potential",
+            "Program-specific PI/company requirements",
+            "One proposal per organization at a time"
+          ],
+          "after": [
+            "SBIR/STTR eligible small business with affiliates counted toward size limit",
+            "Phase I requires a current official project-pitch invitation",
+            "PI primary employment at applicant business at award and during award",
+            "STTR requires research institution partner; legal right to work and effort requirements apply"
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "eligibility_rules",
+          "before": [],
+          "after": [
+            {
+              "fact": "sbir_small_business",
+              "label": "SBIR/STTR eligible small business"
+            },
+            {
+              "fact": "nsf_pitch_invitation",
+              "label": "Current Phase I project-pitch invitation"
+            },
+            {
+              "fact": "pi_primary_employment",
+              "label": "PI primary-employment requirements feasible"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "verification",
+          "before": "NEEDS_REVIEW",
+          "after": "VERIFIED"
+        }
+      ]
     },
     {
+      "categories": [
+        "business",
+        "build_credits"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://aws.amazon.com/startups/credits?lang=en-US",
+          "authoritative": true,
+          "checked_at": "2026-10-05T16:38:00Z",
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "AWS Founders is open for self-funded startups, starting at $1,000 and potentially up to $5,000 promotional credits. AWS requires pre-Series B status, founding within ten years, a paid-tier account and eligible prior-credit history. Credits are not cash; billing exposure needs review."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "self_funded_startup",
+          "label": "Self-funded startup"
+        },
+        {
+          "fact": "pre_series_b",
+          "label": "Pre-Series B"
+        },
+        {
+          "fact": "startup_under_10_years",
+          "label": "Founded within ten years"
+        },
+        {
+          "fact": "aws_paid_tier",
+          "label": "AWS paid-tier account"
+        },
+        {
+          "fact": "activate_credit_eligible",
+          "label": "Prior credits satisfy program eligibility"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; applicant facts, benefit coordination and capacity remain unresolved.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-09-24T23:48:00Z",
       "id": "aws-activate-founders",
       "name": "AWS Activate Founders",
       "funder": "Amazon Web Services",
@@ -176,11 +727,97 @@
       ],
       "effort": "low",
       "next_action": "Check prior AWS Activate usage and legal startup/account readiness.",
-      "last_verified_at": "2026-09-24",
+      "last_verified_at": "2026-10-05T16:38:00Z",
       "source_url": "https://aws.amazon.com/startups/credits?lang=en-US",
-      "source_label": "AWS Activate Credits"
+      "source_label": "AWS Activate Credits",
+      "program_key": "aws-activate-founders",
+      "changes": [
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "eligibility_rules",
+          "before": [],
+          "after": [
+            {
+              "fact": "self_funded_startup",
+              "label": "Self-funded startup"
+            },
+            {
+              "fact": "pre_series_b",
+              "label": "Pre-Series B"
+            },
+            {
+              "fact": "startup_under_10_years",
+              "label": "Founded within ten years"
+            },
+            {
+              "fact": "aws_paid_tier",
+              "label": "AWS paid-tier account"
+            },
+            {
+              "fact": "activate_credit_eligible",
+              "label": "Prior credits satisfy program eligibility"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "verification",
+          "before": "NEEDS_REVIEW",
+          "after": "VERIFIED"
+        }
+      ]
     },
     {
+      "categories": [
+        "business",
+        "build_credits"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://cloud.google.com/startup/faq",
+          "authoritative": true,
+          "checked_at": "2026-10-05T16:38:00Z",
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Google offers Start and Scale tiers, with up to $200,000 cloud credits or $350,000 for qualifying AI Scale startups. A billing ID and matching website/business email are required. Tier, funding and AI eligibility are reviewed; credits cannot generally pay third-party services."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "google_startup_tier_eligible",
+          "label": "Google confirms startup tier eligibility"
+        },
+        {
+          "fact": "cloud_billing_domain_match",
+          "label": "Cloud billing account and business-domain requirements met"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; applicant facts, benefit coordination and capacity remain unresolved.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-09-24T23:48:00Z",
       "id": "google-startups-cloud",
       "name": "Google for Startups Cloud Program",
       "funder": "Google Cloud",
@@ -213,11 +850,101 @@
       ],
       "effort": "medium",
       "next_action": "Determine the correct tier and whether an existing billing account affects the application path.",
-      "last_verified_at": "2026-09-24",
+      "last_verified_at": "2026-10-05T16:38:00Z",
       "source_url": "https://cloud.google.com/startup/faq",
-      "source_label": "Google for Startups Cloud Program"
+      "source_label": "Google for Startups Cloud Program",
+      "program_key": "google-startups-cloud",
+      "changes": [
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "eligibility_rules",
+          "before": [],
+          "after": [
+            {
+              "fact": "google_startup_tier_eligible",
+              "label": "Google confirms startup tier eligibility"
+            },
+            {
+              "fact": "cloud_billing_domain_match",
+              "label": "Cloud billing account and business-domain requirements met"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "verification",
+          "before": "NEEDS_REVIEW",
+          "after": "VERIFIED"
+        }
+      ]
     },
     {
+      "categories": [
+        "business",
+        "build_credits"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://learn.microsoft.com/en-us/azure/signups/overview",
+          "authoritative": true,
+          "checked_at": "2026-10-05T16:38:00Z",
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Microsoft accepts eligible privately held for-profit software startups and offers credits scaling up to $150,000 over time. Country availability, previous credits and funding-stage criteria apply; consultancies, agencies and several other organization types are excluded. Value depends on verified progress and Azure use."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "company_owned_software",
+          "label": "Company-owned software product"
+        },
+        {
+          "fact": "private_for_profit",
+          "label": "Privately held for-profit company"
+        },
+        {
+          "fact": "azure_eligible_country",
+          "label": "Azure-available headquarters country"
+        },
+        {
+          "fact": "azure_credits_below_cap",
+          "label": "Prior free Azure credits within cap"
+        },
+        {
+          "fact": "pre_series_c",
+          "label": "No Series C or later"
+        },
+        {
+          "fact": "eligible_company_type",
+          "label": "Not an excluded company type"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; applicant facts, benefit coordination and capacity remain unresolved.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-09-24T23:48:00Z",
       "id": "microsoft-for-startups",
       "name": "Microsoft for Startups",
       "funder": "Microsoft",
@@ -251,9 +978,1221 @@
       ],
       "effort": "low",
       "next_action": "Check company/legal-entity readiness and previous Azure-credit history.",
-      "last_verified_at": "2026-09-24",
+      "last_verified_at": "2026-10-05T16:38:00Z",
       "source_url": "https://learn.microsoft.com/en-us/azure/signups/overview",
-      "source_label": "Microsoft for Startups"
+      "source_label": "Microsoft for Startups",
+      "program_key": "microsoft-for-startups",
+      "changes": [
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "eligibility_rules",
+          "before": [],
+          "after": [
+            {
+              "fact": "company_owned_software",
+              "label": "Company-owned software product"
+            },
+            {
+              "fact": "private_for_profit",
+              "label": "Privately held for-profit company"
+            },
+            {
+              "fact": "azure_eligible_country",
+              "label": "Azure-available headquarters country"
+            },
+            {
+              "fact": "azure_credits_below_cap",
+              "label": "Prior free Azure credits within cap"
+            },
+            {
+              "fact": "pre_series_c",
+              "label": "No Series C or later"
+            },
+            {
+              "fact": "eligible_company_type",
+              "label": "Not an excluded company type"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-05T16:38:00Z",
+          "field": "verification",
+          "before": "NEEDS_REVIEW",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "veteran",
+        "personal_support"
+      ],
+      "aliases": [
+        "Existing SSVF assistance"
+      ],
+      "evidence": [
+        {
+          "url": "https://department.va.gov/homeless/supportive-services-for-veteran-families/",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "VA describes housing stabilization for low-income veteran families experiencing or facing homelessness. Household access is through local grantees. Closed provider grant competitions do not mean household assistance is closed."
+        },
+        {
+          "url": "https://department.va.gov/homeless/supportive-services-for-veteran-families/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "VA describes low-income veteran family housing stabilization and local awarded providers. The closed FY2027 provider NOFO is separate from household assistance; local capacity and personal eligibility remain unconfirmed."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "ssvf_service_eligible",
+          "label": "SSVF qualifying service confirmed by provider"
+        },
+        {
+          "fact": "low_income_eligible",
+          "label": "Provider income limit met"
+        },
+        {
+          "fact": "housing_risk",
+          "label": "Housing instability documented"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; remaining personal eligibility, capacity and coordination questions require consultation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "ssvf",
+      "program_key": "ssvf",
+      "name": "Supportive Services for Veteran Families (SSVF)",
+      "funder": "VA-funded local SSVF provider",
+      "type": "emergency_cash",
+      "source_url": "https://department.va.gov/homeless/supportive-services-for-veteran-families/",
+      "source_label": "VA-funded local SSVF provider — program details",
+      "value": "Housing stabilization and case-specific temporary assistance",
+      "criteria": [
+        "Low-income veteran household homeless or at imminent risk",
+        "Local provider assesses program eligibility and assistance"
+      ],
+      "unknowns": [
+        "Local provider capacity and approved expenses",
+        "Service qualification and income limits",
+        "Payment status and other-assistance coordination"
+      ],
+      "next_action": "Continue with the existing case manager if already enrolled; confirm approved expenses, payment status and employment plan.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "veteran",
+        "personal_support"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-07T15:02:45Z",
+      "changes": [
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "employment",
+        "training",
+        "transportation",
+        "veteran"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://jvs-socal.org/veteran-services/",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "JVS advertises no-cost Southern California veteran services. VSTA includes reservists and spouses; its listed supports include employment, housing and transportation. Individual support eligibility and placement timing require consultation."
+        },
+        {
+          "url": "https://jvs-socal.org/veteran-services/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "JVS lists free Southern California veteran employment services; VSTA expressly includes reservists and offers employment/housing/transportation support. AJCC contact and outreach pathway remain available; support-specific screening applies."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "any": [
+            "veteran",
+            "reservist",
+            "military_spouse"
+          ],
+          "label": "Veteran, reservist or military spouse"
+        },
+        {
+          "fact": "southern_california",
+          "label": "Southern California service area"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; remaining personal eligibility, capacity and coordination questions require consultation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "jvs-vsta-ajcc",
+      "program_key": "jvs-vsta-ajcc",
+      "name": "JVS SoCal VSTA / Veterans AJCC",
+      "funder": "JVS SoCal",
+      "type": "noncash",
+      "source_url": "https://jvs-socal.org/veteran-services/",
+      "source_label": "JVS SoCal — program details",
+      "value": "No-cost career support; assistance scope depends on program eligibility",
+      "criteria": [
+        "VSTA serves veterans, reservists and spouses",
+        "AJCC supports civilian workforce transition"
+      ],
+      "unknowns": [
+        "Specific VSTA supports and referral requirements",
+        "Time to professional placement",
+        "Training or transportation assistance available now"
+      ],
+      "next_action": "Request VSTA/AJCC consultation focused on professional placement and supportive services.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "low",
+      "match_tags": [
+        "housing",
+        "employment",
+        "training",
+        "transportation",
+        "veteran"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-07T15:02:45Z",
+      "changes": [
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "veteran",
+        "zero_interest",
+        "personal_support"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://www.jfla.org/personal-loans/veteran-loans",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Official veteran page offers loans up to $7,500 with one guarantor or $15,000 with two, at 0% interest and no fees. Residency, documented need and repayment ability are required; repayment generally starts 30–45 days after funding."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "veteran",
+          "label": "JFLA accepts service"
+        },
+        {
+          "fact": "adult_ca_id",
+          "label": "Adult with CA ID"
+        },
+        {
+          "fact": "los_angeles",
+          "label": "Qualifying county residency"
+        },
+        {
+          "fact": "repayment_capacity",
+          "label": "Repayment capacity confirmed"
+        },
+        {
+          "fact": "qualified_guarantor",
+          "label": "Qualified guarantor"
+        },
+        {
+          "fact": "documented_need",
+          "label": "Documented loan need"
+        },
+        {
+          "fact": "jfla_no_existing_obligation",
+          "label": "Not a current JFLA borrower or guarantor"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": "Must demonstrate repayment ability; consult regarding acceptable income.",
+      "employment_requirements": null,
+      "repayable": true,
+      "interest_percent": 0,
+      "fees": 0,
+      "amount": {
+        "currency": "USD",
+        "maximum": 15000
+      },
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Loan terms verified; repayment capacity, service acceptance and guarantors require confirmation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "jfla-veteran-loan",
+      "program_key": "jfla-veteran-loan",
+      "name": "JFLA Veteran 0% Loan",
+      "funder": "Jewish Free Loan Association",
+      "type": "zero_interest",
+      "source_url": "https://www.jfla.org/personal-loans/veteran-loans",
+      "source_label": "Jewish Free Loan Association — program details",
+      "value": "Up to $7,500 with one qualified guarantor; $15,000 with two; 0% interest and $0 fees",
+      "criteria": [
+        "Adult with California ID, SSN or ITIN and qualifying county residency",
+        "Demonstrated need and consistent mailing address",
+        "Ability to repay; generally 36 months, payments start 30–45 days after funding",
+        "At least one qualified guarantor; cannot already be a JFLA borrower or guarantor"
+      ],
+      "unknowns": [
+        "Reserve-only service acceptance",
+        "Repayment capacity and qualified guarantor availability",
+        "Benefit interactions and program-specific income assessment"
+      ],
+      "next_action": "Ask JFLA to confirm veteran-specific terms, income exceptions and guarantor requirements before applying.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "veteran",
+        "zero_interest",
+        "personal_support"
+      ],
+      "status": "CANDIDATE",
+      "last_verified_at": "2026-10-05T16:30:00Z"
+    },
+    {
+      "categories": [
+        "housing",
+        "veteran",
+        "transportation",
+        "personal_support"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://www.villageforvets.org/veteranstreetacademy",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "VSA provides gap support for LA County at-risk or unhoused veterans. Case managers can request intake. EFund is an existing linked benefit; no additional emergency-grant award is counted here."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "veteran",
+          "label": "Provider accepts service"
+        },
+        {
+          "fact": "los_angeles",
+          "label": "LA County resident"
+        },
+        {
+          "fact": "housing_risk",
+          "label": "Unhoused or at risk"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; remaining personal eligibility, capacity and coordination questions require consultation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "village-veteran-street-academy",
+      "program_key": "village-veteran-street-academy",
+      "name": "Village for Vets Veteran Street Academy",
+      "funder": "Village for Vets",
+      "type": "noncash",
+      "source_url": "https://www.villageforvets.org/veteranstreetacademy",
+      "source_label": "Village for Vets — program details",
+      "value": "Wraparound support and referrals; EFund dollars are tracked on the existing EFund record",
+      "criteria": [
+        "Unhoused or at-risk veteran in LA County",
+        "Case-manager intake; rideshare requires designated VA referral"
+      ],
+      "unknowns": [
+        "Reserve-only service acceptance",
+        "Appropriate referral and available services"
+      ],
+      "next_action": "Ask the case manager about gap support and referrals; use the EFund record for emergency-grant actions.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "veteran",
+        "transportation",
+        "personal_support"
+      ],
+      "related_ids": [
+        "village-for-vets-efund",
+        "ssvf"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-05T16:30:00Z",
+      "changes": [
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "employment",
+        "training",
+        "veteran"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://www.va.gov/careers-employment/vocational-rehabilitation/eligibility/",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "VA accepts veteran applications with no dishonorable discharge and a service-connected disability rating of at least 10%. A counselor determines entitlement; employment and training tracks are available."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "non_dishonorable",
+          "label": "Not dishonorably discharged"
+        },
+        {
+          "fact": "va_rating_10",
+          "label": "VA service-connected rating of at least 10%"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": "Veteran applicants need a VA service-connected disability rating of at least 10%; Reserve discharge alone does not establish eligibility.",
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; remaining personal eligibility, capacity and coordination questions require consultation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "va-vre",
+      "program_key": "va-vre",
+      "name": "VA Veteran Readiness and Employment (VR&E)",
+      "funder": "Department of Veterans Affairs",
+      "type": "training",
+      "source_url": "https://www.va.gov/careers-employment/vocational-rehabilitation/eligibility/",
+      "source_label": "Department of Veterans Affairs — program details",
+      "value": "Employment services, rehabilitation and potential training support; entitlement assessed by counselor",
+      "criteria": [
+        "No dishonorable discharge",
+        "VA service-connected disability rating of at least 10% for veteran applicants",
+        "Counselor determines entitlement"
+      ],
+      "unknowns": [
+        "Qualifying service and VA rating",
+        "Rapid employment track versus longer training",
+        "Benefit interaction and counselor assessment"
+      ],
+      "next_action": "Confirm VA eligibility; ask about Rapid Access to Employment before considering a long training program.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "medium",
+      "match_tags": [
+        "employment",
+        "training",
+        "veteran"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-05T16:30:00Z",
+      "changes": [
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "employment",
+        "training",
+        "veteran"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://in2veep.com/cohorts/",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Official cohort table lists LA16 closed and LA17 open, with math starting December 7, 2026 and graduation March 12, 2027. LA on-base housing is listed unavailable. Admission and paid placement remain unconfirmed."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "separated_within_5_years",
+          "label": "Within five years of separation"
+        },
+        {
+          "fact": "non_dishonorable",
+          "label": "Program accepts discharge character"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "LA17 listed open; online math 2026-12-07; graduation 2027-03-12. LA16 closed.",
+      "time_to_funding_days": null,
+      "training_weeks": 14,
+      "employment_ready_at": "2027-03-12",
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; remaining personal eligibility, capacity and coordination questions require consultation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "veep-los-angeles",
+      "program_key": "veep-los-angeles",
+      "name": "VEEP Los Angeles",
+      "funder": "Veterans Electrical Entry Program",
+      "type": "training",
+      "source_url": "https://in2veep.com/cohorts/",
+      "source_label": "Veterans Electrical Entry Program — program details",
+      "value": "Free pre-apprenticeship; LA on-base housing unavailable; next open cohort graduates March 2027",
+      "criteria": [
+        "Within five years of separation and qualifying discharge",
+        "Program admission and apprenticeship requirements"
+      ],
+      "unknowns": [
+        "Reserve-only qualification",
+        "Admission, wages and placement timing",
+        "Travel and living-cost coverage"
+      ],
+      "next_action": "Hold for current employment target; consult only if the training timeline and living costs become feasible.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "medium",
+      "match_tags": [
+        "employment",
+        "training",
+        "veteran"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-05T16:30:00Z",
+      "changes": [
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "veteran",
+        "utility_assistance"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://www.armyemergencyrelief.org/assistance/",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "AER lists active duty, qualifying retired soldiers, eligible dependents and Reserve soldiers on Title 10 orders over 30 days. Assistance may be grants or zero-interest loans; former Reserve membership alone is insufficient."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "any": [
+            "active_duty",
+            "qualifying_retired",
+            "title10_over30",
+            "eligible_military_dependent"
+          ],
+          "label": "Current AER qualifying category"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": "Discharged Reserve service alone is not a listed qualifying category.",
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": null,
+      "interest_percent": 0,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official program checked; remaining personal eligibility, capacity and coordination questions require consultation.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "army-emergency-relief",
+      "program_key": "army-emergency-relief",
+      "name": "Army Emergency Relief",
+      "funder": "Army Emergency Relief",
+      "type": "emergency_cash",
+      "source_url": "https://www.armyemergencyrelief.org/assistance/",
+      "source_label": "Army Emergency Relief — program details",
+      "value": "Grants, zero-interest loans or combination; case-specific",
+      "criteria": [
+        "Active duty, qualifying retirement, qualifying dependents or eligible Title 10 Reserve activation",
+        "Reserve activation must exceed 30 days; historical Reserve service alone does not establish eligibility"
+      ],
+      "unknowns": [
+        "Current qualifying service/retirement category",
+        "Grant versus loan terms",
+        "Other-assistance coordination"
+      ],
+      "next_action": "Check whether an eligible current service, retirement or family category applies before starting an application.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "veteran",
+        "utility_assistance"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-05T16:30:00Z",
+      "changes": [
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-05T16:30:00Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "veteran",
+        "personal_support"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://operationhomefront.org/cfa-eligibility/",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "criteria"
+          ],
+          "summary": "CFA distinguishes wounded/ill/injured, deployed, and general military categories. Post-9/11 line-of-duty injury and separation timing matter for discharged applicants. Assistance types differ by category."
+        },
+        {
+          "url": "https://operationhomefront.org/critical-financial-assistance/",
+          "checked_at": "2026-10-05T16:30:00Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "value"
+          ],
+          "summary": "Operation Homefront offers short-term critical financial assistance with an application, review and case evaluation process. Individual assistance amount, capacity and processing time are not guaranteed."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "homefront_category_eligible",
+          "label": "Provider confirms a CFA qualifying military category"
+        }
+      ],
+      "geography": [],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Specific CFA qualifying categories must be confirmed; prior Reserve service alone does not establish eligibility.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-05T16:30:00Z",
+      "id": "operation-homefront-cfa",
+      "program_key": "operation-homefront-cfa",
+      "name": "Operation Homefront Critical Financial Assistance",
+      "funder": "Operation Homefront",
+      "type": "emergency_cash",
+      "source_url": "https://operationhomefront.org/critical-financial-assistance/",
+      "source_label": "Operation Homefront — program details",
+      "value": "Short-term assistance; amount and qualification case-specific",
+      "criteria": [
+        "Wounded/ill/injured route: post-9/11 active service, line-of-duty condition, qualifying discharge and separation within ten years if discharged",
+        "Deployed route: E1–E6 with eligible dependents and specified deployment/Title 10 conditions",
+        "General route: active-duty E1–E6 with dependents; limited assistance types"
+      ],
+      "unknowns": [
+        "Exact current qualifying category",
+        "Service/discharge timing and supporting documentation",
+        "Available assistance and coordination"
+      ],
+      "next_action": "Review CFA eligibility with the provider before preparing an application.",
+      "documents": [
+        "Confirm the current program document checklist before submitting personal information."
+      ],
+      "deadline": null,
+      "availability": "open",
+      "applicant_lane": "individual",
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "veteran",
+        "personal_support"
+      ],
+      "status": "CANDIDATE",
+      "last_verified_at": "2026-10-05T16:30:00Z"
+    },
+    {
+      "categories": [
+        "housing",
+        "utility_assistance",
+        "personal_support"
+      ],
+      "aliases": [
+        "LIHEAP",
+        "PACE LIHEAP Utility Bill Assistance",
+        "HEAP",
+        "Energy Crisis Intervention Program (ECIP)"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.csd.ca.gov/pages/liheapprogram.aspx",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "CSD lists one-time bill aid, crisis intervention and free weatherization. Federal funding is limited and prioritized; eligible households may receive no benefit."
+        },
+        {
+          "url": "https://www.ladwp.com/residential-services/assistance-programs/low-income-home-energy-assistance-program-liheap",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "LADWP lists up to $1,500, 2026 household income limits, age/SSN requirements, annual benefit and no impact on other benefits. Central LA is referred to PACE."
+        },
+        {
+          "url": "https://pacela.org/our-work/energy/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria"
+          ],
+          "summary": "PACE offers online or mailed applications for its service area; ordinary processing can take up to five months. In-person assistance is limited to emergency shutoffs; ID, bills, household income and rent/mortgage documents are required."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "liheap_service_area",
+          "label": "Local LIHEAP service area confirmed"
+        },
+        {
+          "fact": "liheap_household_income",
+          "label": "LIHEAP household income eligibility confirmed"
+        },
+        {
+          "fact": "liheap_applicant_requirements",
+          "label": "Provider applicant requirements met"
+        }
+      ],
+      "geography": [
+        "California",
+        "Los Angeles"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": "2026 LADWP table: one-person household monthly income limit $3,331.66; other sizes differ. Confirm local provider assessment.",
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": {
+        "max": 1500,
+        "currency": "USD"
+      },
+      "application_window": "Provider intake offered; funds limited and prioritized; no universal deadline stated",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "LADWP states assistance does not affect other benefits and is tax free.",
+        "Once per program year; provider years differ. Coordinate any duplicate utility expenses with other assistance."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "unknown",
+      "disposition": "CONSULT",
+      "reason": "Current program and application routes verified; household eligibility and local capacity require consultation. Ordinary PACE processing can take up to five months.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-07T15:02:53.838Z",
+      "id": "california-liheap",
+      "program_key": "california-liheap",
+      "name": "California Low Income Home Energy Assistance Program (LIHEAP)",
+      "funder": "California CSD through local energy providers",
+      "source_url": "https://www.csd.ca.gov/pages/liheapprogram.aspx",
+      "source_label": "California CSD — LIHEAP",
+      "type": "emergency_cash",
+      "applicant_lane": "individual",
+      "value": "Utility assistance up to $1,500 per LADWP guidance; benefit varies; free weatherization",
+      "criteria": [
+        "Local energy-provider service area and household income eligibility",
+        "LADWP guidance: applicant 18+ with Social Security number; applicant need not be named on bill",
+        "Provider prioritizes vulnerable households; eligibility does not guarantee assistance"
+      ],
+      "unknowns": [
+        "Household size, total income and provider screening",
+        "Local funds and crisis-priority availability",
+        "Utility account and previous program-year assistance"
+      ],
+      "documents": [
+        "Photo ID",
+        "Complete current electric/gas bills with at least 22 service days",
+        "Household income proof for prior 30 days",
+        "Current rent receipt or mortgage statement"
+      ],
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "utility_assistance"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "next_action": "Confirm the local energy provider, household eligibility and funds. For a shutoff emergency ask specifically about crisis assistance; do not rely on ordinary processing for immediate relief.",
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-07T15:02:45Z",
+      "changes": [
+        {
+          "at": "2026-10-07T15:02:53.838Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "employment",
+        "transportation",
+        "personal_support"
+      ],
+      "aliases": [
+        "Metro LIFE",
+        "Low Income Fare is Easy"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.metro.net/fares/life-program/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Metro offers online enrollment, 90 initial free days then 20 rides monthly or pass discounts. Income or public assistance routes apply; household limits vary."
+        },
+        {
+          "url": "https://www.metro.net/fares/life-program/life-benefits-guide/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "LIFE does not affect public assistance but cannot duplicate GoPass, College U-Pass or Employer Pass. Membership continues while eligible; after 10 business days without a response contact LIFE."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "los_angeles",
+          "label": "LA County resident"
+        },
+        {
+          "fact": "life_income_or_assistance",
+          "label": "LIFE household income or public assistance criterion confirmed"
+        },
+        {
+          "fact": "life_no_conflicting_pass",
+          "label": "No conflicting Metro transit subsidy"
+        }
+      ],
+      "geography": [
+        "Los Angeles County"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": "Metro lists annual household limits of $58,300 for one person and $66,650 for two; qualifying public assistance is an alternative.",
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "Enrollment offered; no closing date stated",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Metro says LIFE does not affect public assistance including housing, CalFresh or Medi-Cal.",
+        "Cannot enroll while using GoPass, College U-Pass or Employer Pass; interagency fare differences may remain payable."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "unknown",
+      "disposition": "CONSULT",
+      "reason": "Official transit benefit and enrollment verified; income/public assistance, existing enrollment and conflicting passes remain unknown.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-07T15:02:53.838Z",
+      "id": "metro-life",
+      "program_key": "metro-life",
+      "name": "Metro Low Income Fare is Easy (LIFE)",
+      "funder": "Los Angeles County Metropolitan Transportation Authority",
+      "source_url": "https://www.metro.net/fares/life-program/",
+      "source_label": "LA Metro — LIFE",
+      "type": "noncash",
+      "applicant_lane": "individual",
+      "value": "New enrollment: 90 days free transit; then 20 free rides monthly or participating-agency pass discounts",
+      "criteria": [
+        "Qualifying public assistance or household income within current family-size limit",
+        "LA County residency and program screening",
+        "No concurrent GoPass, College U-Pass or Employer Pass transit subsidy"
+      ],
+      "unknowns": [
+        "Current LIFE enrollment and whether initial 90-day benefit was already used",
+        "Household income/size or qualifying public assistance",
+        "Other Metro fare-program participation"
+      ],
+      "documents": [
+        "Use the current LIFE application checklist; household and TAP details may be needed"
+      ],
+      "effort": "low",
+      "match_tags": [
+        "employment",
+        "transportation"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "next_action": "Check existing LIFE enrollment and conflicting fare subsidies, then review the official application. Existing members should load monthly rides or enable auto-redemption rather than reapply.",
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-07T15:02:45Z",
+      "changes": [
+        {
+          "at": "2026-10-07T15:02:53.838Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "employment",
+        "transportation",
+        "veteran",
+        "personal_support"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "value",
+            "criteria"
+          ],
+          "summary": "August 14 announcement describes FY2027 goods on clinician recommendation and transportation dependent on contracts. This does not verify local operation or at-risk-only eligibility."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "va_emergency_aid_eligible",
+          "label": "VA confirms qualifying program eligibility"
+        }
+      ],
+      "geography": [
+        "Nationwide; local operation must be confirmed"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "UNVERIFIED",
+      "confidence": "unknown",
+      "disposition": "HOLD",
+      "reason": "Announcement is not proof of operational Greater LA intake or personal eligibility.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-07T15:02:53.838Z",
+      "id": "va-homeless-emergency-supplies-transportation",
+      "program_key": "va-homeless-emergency-supplies-transportation",
+      "name": "VA emergency goods and transportation assistance for eligible homeless Veterans",
+      "funder": "Department of Veterans Affairs",
+      "source_url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+      "source_label": "VA — August 14, 2026 program announcement",
+      "type": "noncash",
+      "applicant_lane": "individual",
+      "value": "Announced goods and free transportation support; individual benefit and LA operation unconfirmed",
+      "criteria": [
+        "Announcement targets eligible homeless Veterans and HUD-VASH participants",
+        "Goods/services distributed on VA clinician recommendation; transportation subject to operating contracts"
+      ],
+      "unknowns": [
+        "Whether Greater LA service is operational",
+        "Homeless/HUD-VASH eligibility and clinician referral",
+        "Transport contractor availability and applicable trips"
+      ],
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "employment",
+        "veteran"
+      ],
+      "availability": "unknown",
+      "next_action": "Ask the existing VA/SSVF contact whether the announced goods/transportation support is operating locally and whether a qualifying referral is possible; no duplicate SSVF enrollment.",
+      "related_ids": [
+        "ssvf"
+      ],
+      "status": "CANDIDATE",
+      "last_verified_at": null
     }
-  ]
+  ],
+  "last_scan_at": "2026-10-07T15:02:53.838Z"
 }

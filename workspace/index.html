@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="/workspace/sandbox-environments.css?v=20260922-env1" />
   <link rel="stylesheet" href="/workspace/operator-console.css?v=20260922-operator1" />
   <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20261001-triage1" />
-  <link rel="stylesheet" href="/workspace/funding/funding.css?v=20260925-native1" />
+  <link rel="stylesheet" href="/workspace/funding/funding.css?v=20261005-registry2" />
   <link rel="stylesheet" href="/workspace/elitk-page.css?v=20260920-inlineelitk1" />
   <link rel="stylesheet" href="/workspace/design-implementation.css?v=20260921-design149" />
   <link rel="stylesheet" href="/workspace/build-command-center.css?v=20260923-command-center1" />
@@ -43,7 +43,7 @@
   <script type="module" src="/workspace/sources.mjs?v=20260925-sources1"></script>
   <script type="module" src="/workspace/visual-completion.mjs?v=20260925-live201"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20261001-triage1"></script>
-  <script type="module" src="/workspace/funding/funding.mjs?v=20260925-shell1"></script>
+  <script type="module" src="/workspace/funding/funding.mjs?v=20261005-registry2"></script>
   <script type="module" src="/workspace/network.mjs?v=20260922-design153"></script>
   <script type="module" src="/workspace/elitk-page.mjs?v=20260922-toggle2"></script>
   <script src="/workspace/intelligence-hero.js?v=20260924-no-constellation1" defer></script>
@@ -477,12 +477,14 @@
         <p class="funding-private-note">Sensitive identity attributes are never sent to analytics, committed to the repository, or required to browse the registry.</p>
       </section>
       <section class="funding-controls" aria-label="Funding filters">
+        <div id="funding-view-filters" class="funding-filter-row" aria-label="Action views"></div>
         <div id="funding-type-filters" class="funding-filter-row"></div>
         <label class="funding-search">Search <input id="funding-search" type="search" placeholder="housing, AI, veteran, credits…" autocomplete="off" /></label>
         <button class="text-button" id="funding-refresh" type="button">Refresh registry</button>
+        <button class="text-button" id="funding-mark-reviewed" type="button">Mark changes reviewed</button>
       </section>
       <section class="funding-board">
-        <div class="funding-section-head"><div><p class="section-kicker">Opportunity registry</p><h2>Verified sources, explicit unknowns.</h2></div><p id="funding-visible-count" aria-live="polite"></p></div>
+        <div class="funding-section-head"><div><p class="section-kicker">Opportunity registry</p><h2>One registry. A clear next action.</h2></div><p id="funding-visible-count" aria-live="polite"></p></div>
         <div id="funding-list" class="funding-list" aria-live="polite"></div>
       </section>
     </section>

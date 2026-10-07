@@ -9,7 +9,8 @@ test('Funding Intelligence route and registry exist with explicit freshness', ()
   assert.ok(Array.isArray(data.opportunities) && data.opportunities.length >= 5);
   for (const item of data.opportunities) {
     assert.ok(item.source_url);
-    assert.ok(item.last_verified_at);
+    if (item.verification === 'VERIFIED') assert.ok(item.last_verified_at);
+    else assert.ok(item.last_verified_at === null || typeof item.last_verified_at === 'string');
     assert.ok(item.status);
     assert.ok(Array.isArray(item.unknowns));
   }
