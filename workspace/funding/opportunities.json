@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-10-05T16:38:00Z",
+  "generated_at": "2026-10-07T15:02:53.838Z",
   "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
@@ -25,6 +25,17 @@
             "value"
           ],
           "summary": "Provider offers short-term emergency grants to Southern California veterans for housing, employment or health emergencies. Application and consent form are linked; reserve-only eligibility, award and capacity remain unconfirmed."
+        },
+        {
+          "url": "https://www.villageforvets.org/efund",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current provider page links EFund intake and Release of Information, offers Southern California veteran emergency grants for housing/employment/health, and requires supporting documents. Award and capacity remain case-specific."
         }
       ],
       "eligibility_rules": [
@@ -93,7 +104,7 @@
       ],
       "effort": "medium",
       "next_action": "Ask the provider to confirm reserve service eligibility and coordination with existing assistance.",
-      "last_verified_at": "2026-10-05T16:30:00Z",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "source_url": "https://www.villageforvets.org/efund",
       "source_label": "Village for Vets — program details",
       "program_key": "village-for-vets-efund",
@@ -188,6 +199,17 @@
             "value"
           ],
           "summary": "LACAHSA funds partner organizations for emergency rental assistance rather than serving individuals directly. Its help page lists provider links. Intake capacity and provider-specific limits remain unconfirmed."
+        },
+        {
+          "url": "https://lacahsa.gov/get-help/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current help page routes individuals to funded emergency rental-assistance partners; LACAHSA cannot serve individuals directly. Provider intake, award limits and capacity need confirmation."
         }
       ],
       "eligibility_rules": [
@@ -250,7 +272,7 @@
       ],
       "effort": "medium",
       "next_action": "Contact an awarded provider and ask for emergency rental-assistance intake.",
-      "last_verified_at": "2026-10-05T16:38:00Z",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "source_url": "https://lacahsa.gov/get-help/",
       "source_label": "LACAHSA — Get Help",
       "program_key": "lacahsa-rphp",
@@ -295,6 +317,17 @@
             "value"
           ],
           "summary": "Official 2026 cycle closes October 15. Twenty-five finalists receive a $1,000 microgrant and one program. US veteran/spouse ownership, an active US business, revenue up to $5M, 2–100 employees and one year in business are required. Payments depend on documentation, program requirements and funding."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "2026 page retains October 15 close and 2–100 employee/one-year requirements. $1,000 microgrant plus one free program; first payment Net 60 after required documentation, subject to approvals/funds."
         }
       ],
       "eligibility_rules": [
@@ -334,7 +367,7 @@
       "interest_percent": null,
       "fees": null,
       "amount": null,
-      "application_window": "Full applications September 15–October 15, 2026",
+      "application_window": "Full applications September 15–October 15, 2026; finalists November 10; first payment Net 60 after completed required documents",
       "time_to_funding_days": null,
       "training_weeks": null,
       "employment_ready_at": null,
@@ -372,12 +405,12 @@
         "Whether the current application window is still accepting full submissions"
       ],
       "documents": [
-        "Business eligibility information",
-        "Application materials required by Founders First"
+        "Business eligibility application materials",
+        "If selected: signed terms where applicable, program enrollment, W-9 and verified Bill.com account"
       ],
       "effort": "medium",
-      "next_action": "Verify employee-count eligibility before spending time on the application.",
-      "last_verified_at": "2026-10-05T16:38:00Z",
+      "next_action": "Before October 15, check the 2–100 employee and one-year business requirements. Do not treat this as immediate housing cash.",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
       "source_label": "Founders First CDC — Tadlock Veteran Business Grant",
       "program_key": "founders-first-tadlock-2026",
@@ -454,6 +487,12 @@
           "field": "verification",
           "before": "NEEDS_REVIEW",
           "after": "VERIFIED"
+        },
+        {
+          "at": "2026-10-07T15:02:53.838Z",
+          "field": "application_window",
+          "before": "Full applications September 15–October 15, 2026",
+          "after": "Full applications September 15–October 15, 2026; finalists November 10; first payment Net 60 after completed required documents"
         }
       ]
     },
@@ -1003,6 +1042,17 @@
             "value"
           ],
           "summary": "VA describes housing stabilization for low-income veteran families experiencing or facing homelessness. Household access is through local grantees. Closed provider grant competitions do not mean household assistance is closed."
+        },
+        {
+          "url": "https://department.va.gov/homeless/supportive-services-for-veteran-families/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "VA describes low-income veteran family housing stabilization and local awarded providers. The closed FY2027 provider NOFO is separate from household assistance; local capacity and personal eligibility remain unconfirmed."
         }
       ],
       "eligibility_rules": [
@@ -1072,7 +1122,7 @@
         "personal_support"
       ],
       "status": "NEEDS_FACT",
-      "last_verified_at": "2026-10-05T16:30:00Z",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "changes": [
         {
           "at": "2026-10-05T16:30:00Z",
@@ -1108,6 +1158,17 @@
             "value"
           ],
           "summary": "JVS advertises no-cost Southern California veteran services. VSTA includes reservists and spouses; its listed supports include employment, housing and transportation. Individual support eligibility and placement timing require consultation."
+        },
+        {
+          "url": "https://jvs-socal.org/veteran-services/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "JVS lists free Southern California veteran employment services; VSTA expressly includes reservists and offers employment/housing/transportation support. AJCC contact and outreach pathway remain available; support-specific screening applies."
         }
       ],
       "eligibility_rules": [
@@ -1179,7 +1240,7 @@
         "veteran"
       ],
       "status": "NEEDS_FACT",
-      "last_verified_at": "2026-10-05T16:30:00Z",
+      "last_verified_at": "2026-10-07T15:02:45Z",
       "changes": [
         {
           "at": "2026-10-05T16:30:00Z",
@@ -1803,7 +1864,335 @@
       ],
       "status": "CANDIDATE",
       "last_verified_at": "2026-10-05T16:30:00Z"
+    },
+    {
+      "categories": [
+        "housing",
+        "utility_assistance",
+        "personal_support"
+      ],
+      "aliases": [
+        "LIHEAP",
+        "PACE LIHEAP Utility Bill Assistance",
+        "HEAP",
+        "Energy Crisis Intervention Program (ECIP)"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.csd.ca.gov/pages/liheapprogram.aspx",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "CSD lists one-time bill aid, crisis intervention and free weatherization. Federal funding is limited and prioritized; eligible households may receive no benefit."
+        },
+        {
+          "url": "https://www.ladwp.com/residential-services/assistance-programs/low-income-home-energy-assistance-program-liheap",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "LADWP lists up to $1,500, 2026 household income limits, age/SSN requirements, annual benefit and no impact on other benefits. Central LA is referred to PACE."
+        },
+        {
+          "url": "https://pacela.org/our-work/energy/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria"
+          ],
+          "summary": "PACE offers online or mailed applications for its service area; ordinary processing can take up to five months. In-person assistance is limited to emergency shutoffs; ID, bills, household income and rent/mortgage documents are required."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "liheap_service_area",
+          "label": "Local LIHEAP service area confirmed"
+        },
+        {
+          "fact": "liheap_household_income",
+          "label": "LIHEAP household income eligibility confirmed"
+        },
+        {
+          "fact": "liheap_applicant_requirements",
+          "label": "Provider applicant requirements met"
+        }
+      ],
+      "geography": [
+        "California",
+        "Los Angeles"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": "2026 LADWP table: one-person household monthly income limit $3,331.66; other sizes differ. Confirm local provider assessment.",
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": {
+        "max": 1500,
+        "currency": "USD"
+      },
+      "application_window": "Provider intake offered; funds limited and prioritized; no universal deadline stated",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "LADWP states assistance does not affect other benefits and is tax free.",
+        "Once per program year; provider years differ. Coordinate any duplicate utility expenses with other assistance."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "unknown",
+      "disposition": "CONSULT",
+      "reason": "Current program and application routes verified; household eligibility and local capacity require consultation. Ordinary PACE processing can take up to five months.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-07T15:02:53.838Z",
+      "id": "california-liheap",
+      "program_key": "california-liheap",
+      "name": "California Low Income Home Energy Assistance Program (LIHEAP)",
+      "funder": "California CSD through local energy providers",
+      "source_url": "https://www.csd.ca.gov/pages/liheapprogram.aspx",
+      "source_label": "California CSD — LIHEAP",
+      "type": "emergency_cash",
+      "applicant_lane": "individual",
+      "value": "Utility assistance up to $1,500 per LADWP guidance; benefit varies; free weatherization",
+      "criteria": [
+        "Local energy-provider service area and household income eligibility",
+        "LADWP guidance: applicant 18+ with Social Security number; applicant need not be named on bill",
+        "Provider prioritizes vulnerable households; eligibility does not guarantee assistance"
+      ],
+      "unknowns": [
+        "Household size, total income and provider screening",
+        "Local funds and crisis-priority availability",
+        "Utility account and previous program-year assistance"
+      ],
+      "documents": [
+        "Photo ID",
+        "Complete current electric/gas bills with at least 22 service days",
+        "Household income proof for prior 30 days",
+        "Current rent receipt or mortgage statement"
+      ],
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "utility_assistance"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "next_action": "Confirm the local energy provider, household eligibility and funds. For a shutoff emergency ask specifically about crisis assistance; do not rely on ordinary processing for immediate relief.",
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-07T15:02:45Z",
+      "changes": [
+        {
+          "at": "2026-10-07T15:02:53.838Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "employment",
+        "transportation",
+        "personal_support"
+      ],
+      "aliases": [
+        "Metro LIFE",
+        "Low Income Fare is Easy"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.metro.net/fares/life-program/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Metro offers online enrollment, 90 initial free days then 20 rides monthly or pass discounts. Income or public assistance routes apply; household limits vary."
+        },
+        {
+          "url": "https://www.metro.net/fares/life-program/life-benefits-guide/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "LIFE does not affect public assistance but cannot duplicate GoPass, College U-Pass or Employer Pass. Membership continues while eligible; after 10 business days without a response contact LIFE."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "los_angeles",
+          "label": "LA County resident"
+        },
+        {
+          "fact": "life_income_or_assistance",
+          "label": "LIFE household income or public assistance criterion confirmed"
+        },
+        {
+          "fact": "life_no_conflicting_pass",
+          "label": "No conflicting Metro transit subsidy"
+        }
+      ],
+      "geography": [
+        "Los Angeles County"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": "Metro lists annual household limits of $58,300 for one person and $66,650 for two; qualifying public assistance is an alternative.",
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "Enrollment offered; no closing date stated",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Metro says LIFE does not affect public assistance including housing, CalFresh or Medi-Cal.",
+        "Cannot enroll while using GoPass, College U-Pass or Employer Pass; interagency fare differences may remain payable."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "unknown",
+      "disposition": "CONSULT",
+      "reason": "Official transit benefit and enrollment verified; income/public assistance, existing enrollment and conflicting passes remain unknown.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-07T15:02:53.838Z",
+      "id": "metro-life",
+      "program_key": "metro-life",
+      "name": "Metro Low Income Fare is Easy (LIFE)",
+      "funder": "Los Angeles County Metropolitan Transportation Authority",
+      "source_url": "https://www.metro.net/fares/life-program/",
+      "source_label": "LA Metro — LIFE",
+      "type": "noncash",
+      "applicant_lane": "individual",
+      "value": "New enrollment: 90 days free transit; then 20 free rides monthly or participating-agency pass discounts",
+      "criteria": [
+        "Qualifying public assistance or household income within current family-size limit",
+        "LA County residency and program screening",
+        "No concurrent GoPass, College U-Pass or Employer Pass transit subsidy"
+      ],
+      "unknowns": [
+        "Current LIFE enrollment and whether initial 90-day benefit was already used",
+        "Household income/size or qualifying public assistance",
+        "Other Metro fare-program participation"
+      ],
+      "documents": [
+        "Use the current LIFE application checklist; household and TAP details may be needed"
+      ],
+      "effort": "low",
+      "match_tags": [
+        "employment",
+        "transportation"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "next_action": "Check existing LIFE enrollment and conflicting fare subsidies, then review the official application. Existing members should load monthly rides or enable auto-redemption rather than reapply.",
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-07T15:02:45Z",
+      "changes": [
+        {
+          "at": "2026-10-07T15:02:53.838Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "employment",
+        "transportation",
+        "veteran",
+        "personal_support"
+      ],
+      "aliases": [],
+      "evidence": [
+        {
+          "url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+          "checked_at": "2026-10-07T15:02:45Z",
+          "authoritative": true,
+          "supports": [
+            "value",
+            "criteria"
+          ],
+          "summary": "August 14 announcement describes FY2027 goods on clinician recommendation and transportation dependent on contracts. This does not verify local operation or at-risk-only eligibility."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "va_emergency_aid_eligible",
+          "label": "VA confirms qualifying program eligibility"
+        }
+      ],
+      "geography": [
+        "Nationwide; local operation must be confirmed"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": null,
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Confirm coordination with other assistance; no compatibility assumed."
+      ],
+      "verification": "UNVERIFIED",
+      "confidence": "unknown",
+      "disposition": "HOLD",
+      "reason": "Announcement is not proof of operational Greater LA intake or personal eligibility.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-07T15:02:53.838Z",
+      "id": "va-homeless-emergency-supplies-transportation",
+      "program_key": "va-homeless-emergency-supplies-transportation",
+      "name": "VA emergency goods and transportation assistance for eligible homeless Veterans",
+      "funder": "Department of Veterans Affairs",
+      "source_url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+      "source_label": "VA — August 14, 2026 program announcement",
+      "type": "noncash",
+      "applicant_lane": "individual",
+      "value": "Announced goods and free transportation support; individual benefit and LA operation unconfirmed",
+      "criteria": [
+        "Announcement targets eligible homeless Veterans and HUD-VASH participants",
+        "Goods/services distributed on VA clinician recommendation; transportation subject to operating contracts"
+      ],
+      "unknowns": [
+        "Whether Greater LA service is operational",
+        "Homeless/HUD-VASH eligibility and clinician referral",
+        "Transport contractor availability and applicable trips"
+      ],
+      "effort": "medium",
+      "match_tags": [
+        "housing",
+        "employment",
+        "veteran"
+      ],
+      "availability": "unknown",
+      "next_action": "Ask the existing VA/SSVF contact whether the announced goods/transportation support is operating locally and whether a qualifying referral is possible; no duplicate SSVF enrollment.",
+      "related_ids": [
+        "ssvf"
+      ],
+      "status": "CANDIDATE",
+      "last_verified_at": null
     }
   ],
-  "last_scan_at": "2026-10-05T16:38:00Z"
+  "last_scan_at": "2026-10-07T15:02:53.838Z"
 }

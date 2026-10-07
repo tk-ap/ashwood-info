@@ -54,7 +54,7 @@ test('atomic report rejects PII or malformed evidence without partially writing 
 });
 test('all existing IDs and nine requested opportunities share one canonical registry',()=>{
  const data=JSON.parse(fs.readFileSync('workspace/funding/opportunities.json'));
- validateRegistry(data);assert.equal(data.opportunities.length,15);
+ validateRegistry(data);assert.ok(data.opportunities.length>=15, 'discovery may extend the registry while preserving existing IDs');
  for(const id of ['village-for-vets-efund','lacahsa-rphp','founders-first-tadlock-2026','nsf-sbir-26-510','aws-activate-founders','google-startups-cloud','microsoft-for-startups','ssvf','jvs-vsta-ajcc','jfla-veteran-loan','village-veteran-street-academy','va-vre','veep-los-angeles','army-emergency-relief','operation-homefront-cfa'])assert.ok(data.opportunities.find(x=>x.id===id));
  assert.equal(data.opportunities.filter(x=>x.name.includes('Emergency Financial Assistance') && x.funder==='Village for Vets').length,1);
  assert.equal(evidenceCurrent(data.opportunities.find(x=>x.id==='aws-activate-founders'),now),true);
