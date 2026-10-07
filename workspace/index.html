@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260922-activity1" />
-  <link rel="stylesheet" href="/workspace/today.css?v=20260920-today1" />
+  <link rel="stylesheet" href="/workspace/today.css?v=20261006-cockpit1" />
   <link rel="stylesheet" href="/workspace/ops-pulse.css?v=20260924-forward1" />
   <link rel="stylesheet" href="/workspace/operator-actions.css?v=20260921-operator1" />
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260922-fitboard1" />
@@ -33,7 +33,7 @@
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20261001-content-intelligence1"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260922-activity1"></script>
-  <script type="module" src="/workspace/today.mjs?v=20260920-sessions1"></script>
+  <script type="module" src="/workspace/today.mjs?v=20261006-cockpit1"></script>
   <script type="module" src="/workspace/ops-pulse.mjs?v=20260924-forward1"></script>
   <script type="module" src="/workspace/operator-actions.mjs?v=20260921-operator1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
@@ -178,6 +178,28 @@
     </section>
 
     <section class="today-command-center" id="today" aria-labelledby="today-title">
+      <section class="today-cockpit" aria-label="Today cockpit">
+        <div class="today-cockpit__intro">
+          <div>
+            <p class="section-kicker">Today · live operating state</p>
+            <h2>What needs attention now.</h2>
+          </div>
+          <p id="today-cockpit-freshness" aria-live="polite">Restoring current state…</p>
+        </div>
+        <div class="today-cockpit__metrics">
+          <article><small>Needs you</small><strong id="today-cockpit-owner">…</strong><span id="today-cockpit-owner-note">Checking owner gates</span></article>
+          <article><small>Working now</small><strong id="today-cockpit-active">…</strong><span id="today-cockpit-active-note">Checking AgentOS</span></article>
+          <article><small>AgentOS health</small><strong id="today-cockpit-health">…</strong><span id="today-cockpit-health-note">Loading evidence-weighted score</span></article>
+          <article><small>Deploys · 24h</small><strong id="today-cockpit-deploys">…</strong><span id="today-cockpit-deploys-note">Reading deployment ledger</span></article>
+        </div>
+        <div class="today-cockpit__actions" aria-label="Quick actions">
+          <a href="#operator">Command AgentOS</a>
+          <a href="/workspace/agentos/">AgentOS health</a>
+          <a href="#career">Career</a>
+          <a href="/workspace/build/deployments/">Deployments</a>
+        </div>
+      </section>
+
       <section class="ops-pulse" id="ops-pulse" aria-label="Operational readout">
         <div class="ops-pulse__top">
           <div>
@@ -215,6 +237,14 @@
           <div class="today-list" id="today-agent-list" aria-live="polite"><p class="today-empty">Checking autonomous work…</p></div>
         </article>
       </div>
+
+      <section class="today-movement" aria-labelledby="today-movement-title">
+        <div class="today-movement__head">
+          <div><p class="section-kicker">Recent movement</p><h3 id="today-movement-title">What changed.</h3></div>
+          <span id="today-movement-state">Restoring evidence…</span>
+        </div>
+        <div id="today-movement-list" class="today-movement__list" aria-live="polite"></div>
+      </section>
 
       <article class="today-objective" aria-labelledby="today-next-title">
         <div>

@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { buildResumeDocx, safeResumeFilename, tailorResumeProfile } from '../api/_career-resume-docx.mjs';
 import { validateResumeProfile } from '../api/_career-resume-profile.mjs';
 
@@ -65,4 +66,12 @@ test('DOCX generator produces a real zip-based Word document with ATS text', () 
 
 test('resume filenames remain upload-safe', () => {
   assert.equal(safeResumeFilename('A&B / Co.','Strategy + Ops'), 'TK_A_B_Co_Strategy_Ops_Resume.docx');
+});
+
+
+test('Career UI can generate from a tracked application and uses canonical source keys', async () => {
+  const ui = await readFile(new URL('../workspace/career-ops/career-ops.mjs', import.meta.url), 'utf8');
+  assert.match(ui, /application_id:String\(application\.id \|\| ''\)/);
+  assert.match(ui, /source:opportunitySourceKey\(opportunity\)/);
+  assert.match(ui, /data-generate-application-resume/);
 });
