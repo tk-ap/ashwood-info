@@ -50,19 +50,47 @@ export async function loadCareerResumeProfile(sql) {
     WHERE id = 'owner'
     LIMIT 1
   `;
-  if (rows[0]?.profile) return rows[0];
 
   const raw = process.env.CAREER_RESUME_PROFILE_JSON;
-  if (!raw) return null;
-  try {
-    const profile = JSON.parse(raw);
-    const valid = validateResumeProfile(profile);
-    if (!valid.ok) throw new Error(valid.error);
-    return { profile, source:'environment', updated_at:null };
-  } catch (error) {
-    console.error('CAREER_RESUME_PROFILE_JSON is invalid', error);
-    return null;
+  let environmentProfile = null;
+  let environmentUpdatedAt = null;
+
+  if (raw) {
+    try {
+      const profile = JSON.parse(raw);
+      const valid = validateResumeProfile(profile);
+      if (!valid.ok) throw new Error(valid.error);
+      environmentProfile = profile;
+      const sourceUpdated = profile?._source_notes?.updated;
+      const parsed = sourceUpdated ? new Date(sourceUpdated) : null;
+      environmentUpdatedAt = parsed && !Number.isNaN(parsed.getTime()) ? parsed : null;
+    } catch (error) {
+      console.error('CAREER_RESUME_PROFILE_JSON is invalid', error);
+    }
   }
+
+  const stored = rows[0] || null;
+  const storedUpdatedAt = stored?.updated_at ? new Date(stored.updated_at) : null;
+  const environmentIsNewer = Boolean(
+    environmentProfile &&
+    environmentUpdatedAt &&
+    (!stored?.profile || !storedUpdatedAt || Number.isNaN(storedUpdatedAt.getTime()) || environmentUpdatedAt > storedUpdatedAt)
+  );
+
+  if (environmentIsNewer) {
+    const saved = await saveCareerResumeProfile(sql, environmentProfile, 'environment-seed');
+    if (saved.ok) {
+      return {
+        profile: environmentProfile,
+        source: 'environment-seed',
+        updated_at: new Date().toISOString()
+      };
+    }
+  }
+
+  if (stored?.profile) return stored;
+  if (environmentProfile) return { profile: environmentProfile, source:'environment', updated_at:null };
+  return null;
 }
 
 export async function saveCareerResumeProfile(sql, profile, source='workspace') {
