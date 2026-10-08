@@ -11,6 +11,10 @@ It has two distinct but connected responsibilities:
 
 Do not collapse those into one generic project feed. Public presentation should feel editorial and authored rather than like an internal operations dashboard.
 
+## Ownership and Stewardship Direction
+
+For material creative/product strategy, growth, partnerships, asset-control or continuity decisions, read [docs/OWNERSHIP_AND_STEWARDSHIP.md](docs/OWNERSHIP_AND_STEWARDSHIP.md) and its shared AgentOS policy. Preserve TK's authorship/control, build lasting value, prove quality before expansion, and make Workspace save human time. Apply only relevant considerations within existing records and preserve all evidence, privacy, product and authority boundaries.
+
 ## Living Experience Direction
 
 ASHWOOD's UI and private Workspace should feel alive: a living, breathing working copy of everything currently relevant about TK for its intended audience to consume. Keep the experience current, personal, and useful. Activity and interaction should reveal meaningful context, work, or change; preserve the distinction between public presentation and private owner state. This direction does not authorize publishing private material or adding motion for its own sake.
