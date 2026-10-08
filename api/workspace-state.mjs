@@ -196,6 +196,50 @@ export default async function handler(req, res) {
         if (!rows[0]) return json(res, 404, { ok: false, error: 'Command not found' });
         return json(res, 200, { ok: true, id, status });
       }
+
+      if (action === 'upsert_build_log') {
+        if (!machineAuthorized) return json(res, 403, { ok: false, error: 'Invalid command sync token' });
+
+        const entryType = String(body.entry_type || 'daily').trim().toLowerCase();
+        if (!['daily', 'weekly'].includes(entryType)) {
+          return json(res, 400, { ok: false, error: 'Invalid build log entry type' });
+        }
+
+        const periodField = entryType === 'weekly' ? 'week_ending' : 'date';
+        const period = String(body[periodField] || '').trim();
+        const occurredAt = /^\d{4}-\d{2}-\d{2}$/.test(period)
+          ? new Date(`${period}T12:00:00.000Z`)
+          : new Date(NaN);
+        if (Number.isNaN(occurredAt.getTime()) || occurredAt.toISOString().slice(0, 10) !== period) {
+          return json(res, 400, { ok: false, error: `Valid ${periodField} is required` });
+        }
+
+        const notes = typeof body.notes === 'string' ? body.notes : '';
+        if (!notes.trim()) return json(res, 400, { ok: false, error: 'Build log notes are required' });
+        if (notes.length > 100000) return json(res, 413, { ok: false, error: 'Build log notes exceed 100000 characters' });
+
+        const id = entryType === 'weekly' ? `founder-weekly:${period}` : `founder-log:${period}`;
+        const title = entryType === 'weekly'
+          ? `Weekly Founder Retrospective — week ending ${period}`
+          : `Founder Build Log — ${period}`;
+
+        await sql`INSERT INTO workspace_evidence
+          (id, source, source_label, title, occurred_at, status, goal_id, secondary_goals, confidence, url, notes)
+          VALUES (${id}, 'build_log', 'Founder Build Log', ${title}, ${occurredAt.toISOString()}, 'REPORTED', 'ownership', '[]'::jsonb, 1, NULL, ${notes})
+          ON CONFLICT (id) DO UPDATE SET
+            source = 'build_log',
+            source_label = 'Founder Build Log',
+            title = EXCLUDED.title,
+            occurred_at = EXCLUDED.occurred_at,
+            status = 'REPORTED',
+            goal_id = 'ownership',
+            secondary_goals = '[]'::jsonb,
+            confidence = 1,
+            url = NULL,
+            notes = EXCLUDED.notes,
+            updated_at = NOW()`;
+
+        return json(res, 200, { ok: true, id, entry_type: entryType, period, status: 'REPORTED' });
     }
 
     const session = await requireSession(req);
