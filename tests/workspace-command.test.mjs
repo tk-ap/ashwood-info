@@ -38,6 +38,24 @@ async function fixture() {
   return { db, sql, call };
 }
 
+
+async function createEvidenceTable(sql) {
+  await sql`CREATE TABLE workspace_evidence (
+    id TEXT PRIMARY KEY,
+    source TEXT NOT NULL,
+    source_label TEXT,
+    title TEXT NOT NULL,
+    occurred_at TIMESTAMPTZ NOT NULL,
+    status TEXT NOT NULL,
+    goal_id TEXT,
+    secondary_goals JSONB,
+    confidence DOUBLE PRECISION,
+    url TEXT,
+    notes TEXT,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+}
+
 test('owner command is durably queued and visible to the owner', async t => {
   const f = await fixture(); t.after(() => f.db.close());
   const previous = process.env.WORKSPACE_COMMAND_SYNC_TOKEN;
@@ -243,4 +261,101 @@ test('Kanban transition rejects incomplete or non-integer observed state', async
     },
   });
   assert.equal(res.statusCode, 400);
+});
+
+
+test('runtime can upsert deterministic private daily and weekly build-log evidence without an owner session', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  await createEvidenceTable(f.sql);
+  const previous = process.env.WORKSPACE_COMMAND_SYNC_TOKEN;
+  process.env.WORKSPACE_COMMAND_SYNC_TOKEN = 'runtime-secret';
+  t.after(() => {
+    if (previous === undefined) delete process.env.WORKSPACE_COMMAND_SYNC_TOKEN;
+    else process.env.WORKSPACE_COMMAND_SYNC_TOKEN = previous;
+  });
+
+  const first = await f.call({
+    method: 'POST',
+    headers: { authorization: 'Bearer runtime-secret' },
+    body: {
+      action: 'upsert_build_log',
+      entry_type: 'daily',
+      date: '2026-10-08',
+      notes: 'Built the narrow machine path. Evidence: https://example.com/proof',
+    },
+  });
+  assert.equal(first.statusCode, 200);
+  assert.equal(first.body.id, 'founder-log:2026-10-08');
+  assert.equal(first.body.status, 'REPORTED');
+
+  const rerun = await f.call({
+    method: 'POST',
+    headers: { authorization: 'Bearer runtime-secret' },
+    body: {
+      action: 'upsert_build_log',
+      date: '2026-10-08',
+      notes: 'Updated journal with preserved link: https://example.com/final',
+    },
+  });
+  assert.equal(rerun.statusCode, 200);
+
+  const weekly = await f.call({
+    method: 'POST',
+    headers: { authorization: 'Bearer runtime-secret' },
+    body: {
+      action: 'upsert_build_log',
+      entry_type: 'weekly',
+      week_ending: '2026-10-09',
+      notes: 'Weekly retrospective with verified events separated from interpretation.',
+    },
+  });
+  assert.equal(weekly.body.id, 'founder-weekly:2026-10-09');
+
+  const rows = await f.sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes
+    FROM workspace_evidence ORDER BY id`;
+  assert.equal(rows.length, 2, 'rerunning a date updates instead of duplicating it');
+  const daily = rows.find(row => row.id === 'founder-log:2026-10-08');
+  assert.equal(daily.source, 'build_log');
+  assert.equal(daily.source_label, 'Founder Build Log');
+  assert.equal(daily.status, 'REPORTED');
+  assert.equal(daily.goal_id, 'ownership');
+  assert.equal(daily.confidence, 1);
+  assert.equal(daily.url, null);
+  assert.equal(daily.notes, 'Updated journal with preserved link: https://example.com/final');
+  assert.equal(new Date(daily.occurred_at).toISOString(), '2026-10-08T12:00:00.000Z');
+});
+
+test('build-log machine path fails closed and derives protected evidence fields server-side', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  await createEvidenceTable(f.sql);
+  const previous = process.env.WORKSPACE_COMMAND_SYNC_TOKEN;
+  process.env.WORKSPACE_COMMAND_SYNC_TOKEN = 'runtime-secret';
+  t.after(() => {
+    if (previous === undefined) delete process.env.WORKSPACE_COMMAND_SYNC_TOKEN;
+    else process.env.WORKSPACE_COMMAND_SYNC_TOKEN = previous;
+  });
+
+  const denied = await f.call({
+    method: 'POST',
+    headers: { authorization: 'Bearer wrong' },
+    body: { action: 'upsert_build_log', date: '2026-10-08', notes: 'Must not write.' },
+  });
+  assert.equal(denied.statusCode, 403);
+
+  const invalidDate = await f.call({
+    method: 'POST',
+    headers: { authorization: 'Bearer runtime-secret' },
+    body: { action: 'upsert_build_log', date: '2026-02-30', notes: 'Must not write.' },
+  });
+  assert.equal(invalidDate.statusCode, 400);
+
+  const invalidType = await f.call({
+    method: 'POST',
+    headers: { authorization: 'Bearer runtime-secret' },
+    body: { action: 'upsert_build_log', entry_type: 'public', date: '2026-10-08', notes: 'Must not write.' },
+  });
+  assert.equal(invalidType.statusCode, 400);
+
+  const count = await f.sql`SELECT COUNT(*)::int AS n FROM workspace_evidence`;
+  assert.equal(count[0].n, 0);
 });
