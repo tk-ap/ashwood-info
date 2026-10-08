@@ -240,6 +240,7 @@ export default async function handler(req, res) {
             updated_at = NOW()`;
 
         return json(res, 200, { ok: true, id, entry_type: entryType, period, status: 'REPORTED' });
+      }
     }
 
     const session = await requireSession(req);
