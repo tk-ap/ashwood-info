@@ -64,6 +64,8 @@ async function gmailSyncApi() {
 
 async function opportunityApi({ cursor=0, refresh=false }={}) {
   const query = new URLSearchParams({ cursor:String(cursor) });
+  const requested = new URLSearchParams(location.search).get('opportunity');
+  if (requested) query.set('opportunity', requested);
   if (refresh) query.set('refresh', '1');
   const response = await fetch(`/api/workspace-career?view=opportunities&${query.toString()}`, {
     credentials:'same-origin',
@@ -591,7 +593,7 @@ function opportunityCardMarkup(opportunity={}, options={}) {
         '<button type="button" data-open-tracked-target="' + escapeHtml(trackedTarget.id) + '">Open tracker record</button>'
       : '<button type="button" data-apply-opportunity="' + escapeHtml(opportunity.id) + '">Apply ↗</button>' +
         '<button type="button" data-track-opportunity="' + escapeHtml(opportunity.id) + '">Track target</button>';
-  return '<article class="career-opportunity-card ' + (review ? 'is-review' : 'is-recommended') + '">' +
+  return '<article tabindex="-1" data-recommendation="' + escapeHtml(opportunityStorageKey(opportunity)) + '" class="career-opportunity-card ' + (review ? 'is-review' : 'is-recommended') + '">' +
     '<div class="career-opportunity-topline"><span>' + escapeHtml(opportunity.company) + '</span><time>' + escapeHtml(fmtDate(opportunity.published_at)) + '</time></div>' +
     '<h3>' + escapeHtml(opportunity.role) + '</h3>' +
     '<p class="career-opportunity-location">' + escapeHtml([opportunity.location || 'Remote', opportunity.job_type].filter(Boolean).join(' · ')) + '</p>' +
@@ -695,6 +697,11 @@ function renderOpportunities() {
   root.innerHTML = resumeProfileSetupMarkup() + recommendedMarkup + reviewMarkup;
   wireOpportunityActions(root);
   wireResumeProfileImport(root);
+  const requested = new URLSearchParams(location.search).get('opportunity');
+  if (requested) {
+    const card = [...root.querySelectorAll('[data-recommendation]')].find(item => item.dataset.recommendation === requested);
+    if (card) { card.scrollIntoView({ block:'center' }); card.focus({ preventScroll:true }); }
+  }
 
   const sourceStamp = data.source_fetched_at ? 'sources checked ' + fmtDateTime(data.source_fetched_at) : 'source time unavailable';
   const sourceLabel = data.source ? data.source + ' · ' : '';
@@ -838,6 +845,8 @@ async function refreshCareerState({ showLoading=false }={}) {
   state.events = data.events || [];
   state.opportunityDispositions = data.opportunity_dispositions || [];
   state.resumeProfile = data.resume_profile || { configured:false, source:null, updated_at:null };
+  const requested = new URLSearchParams(location.search).get('opportunity');
+  if (requested && state.applications.some(item => item.id === `career:${requested}`)) state.selectedId = `career:${requested}`;
   if (!state.selectedId && state.applications.length) state.selectedId = sortApplications(state.applications)[0].id;
   if (state.selectedId && !state.applications.some(item => item.id === state.selectedId)) {
     state.selectedId = state.applications.length ? sortApplications(state.applications)[0].id : null;
