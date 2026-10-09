@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-10-07T15:02:53.838Z",
+  "generated_at": "2026-10-09T14:34:04.565Z",
   "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
@@ -513,6 +513,17 @@
             "value"
           ],
           "summary": "NSF lists this solicitation active, with November 4, 2026 deadline and Phase I grants up to $305,000. Eligible small businesses need a Phase I pitch invitation. PI primary employment must be with the applicant company; STTR requires a research partner."
+        },
+        {
+          "url": "https://www.nsf.gov/funding/opportunities/small-business-innovation-research-small-business-technology/nsf26-510/solicitation",
+          "checked_at": "2026-10-08T14:43:43.234Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "November 4 full proposal deadline remains 5 p.m. applicant local time. Phase I up to $305,000 requires pitch invitation; PI primary employment can conflict with other full-time work."
         }
       ],
       "eligibility_rules": [
@@ -548,7 +559,7 @@
       "confidence": "official_program_only",
       "disposition": "HOLD",
       "reason": "R&D grant remains relevant longer term; PI primary-employment requirements may conflict with full-time professional employment. Screen before drafting.",
-      "action_deadline": null,
+      "action_deadline": "2026-11-04T17:00:00-08:00",
       "outcome": null,
       "discovered_at": "2026-09-24T23:48:00Z",
       "id": "nsf-sbir-26-510",
@@ -584,7 +595,7 @@
       ],
       "effort": "high",
       "next_action": "Run an eligibility and project-fit screen for ALVIRA, ledgato, and governed-agent infrastructure before drafting anything.",
-      "last_verified_at": "2026-10-05T16:38:00Z",
+      "last_verified_at": "2026-10-08T14:43:43.234Z",
       "source_url": "https://www.nsf.gov/funding/opportunities/small-business-innovation-research-small-business-technology/nsf26-510/solicitation",
       "source_label": "NSF 26-510",
       "program_key": "nsf-sbir-26-510",
@@ -2192,7 +2203,517 @@
       ],
       "status": "CANDIDATE",
       "last_verified_at": null
+    },
+    {
+      "categories": [
+        "housing",
+        "utility_assistance",
+        "personal_support"
+      ],
+      "aliases": [
+        "EZ-SAVE",
+        "Low Income Discount Program"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ladwp.com/residential-services/assistance-programs/ez-save-program",
+          "checked_at": "2026-10-08T14:43:43.234Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "LADWP offers bill discounts and online/mail enrollment with income limits effective July 2026. Enrollment requires no initial income proof; later checks apply."
+        },
+        {
+          "url": "https://www.ladwp.com/sites/default/files/2023-10/2023_EZ-SAVE_Application_and_Information_05_0.pdf",
+          "checked_at": "2026-10-08T14:43:43.234Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "Application currently linked by LADWP requires customer of record, primary residence and no tax-dependent claim; recertification and discount recovery terms apply."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "ez_save_account_eligible",
+          "label": "LADWP account and applicant requirements confirmed"
+        },
+        {
+          "fact": "ez_save_income_eligible",
+          "label": "Full household income within EZ-SAVE limits"
+        }
+      ],
+      "geography": [
+        "LADWP residential service area"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": "Effective July 1, 2026: annual gross household income limit $43,280 for one or two people; larger households have different limits. Benefits and non-cash employment income count.",
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "Online or mail/fax enrollment offered; no closing date stated",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Eligibility income includes government benefits; income changes must be reported. Improper discounts may need repayment.",
+        "Application terms authorize eligibility-data sharing with utilities/agencies; confirm coordination with LIHEAP and other assistance."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Official utility discount and enrollment routes verified; account, household and existing enrollment facts remain unknown.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-08T14:43:43.295Z",
+      "id": "ladwp-ez-save",
+      "program_key": "ladwp-ez-save",
+      "name": "LADWP EZ-SAVE",
+      "funder": "Los Angeles Department of Water and Power",
+      "source_url": "https://www.ladwp.com/residential-services/assistance-programs/ez-save-program",
+      "source_label": "LADWP — EZ-SAVE",
+      "type": "noncash",
+      "applicant_lane": "individual",
+      "value": "Ongoing utility bill discount; exact savings depend on service and rates",
+      "criteria": [
+        "Income-qualified residential LADWP customer; full household income and size assessed",
+        "Customer of record at permanent primary residence; applicant cannot be claimed as a tax dependent",
+        "Recertification every three years or earlier upon request"
+      ],
+      "unknowns": [
+        "Residential account ownership and current enrollment",
+        "Household size, gross income and tax-dependent status",
+        "Exact bill savings and other assistance coordination"
+      ],
+      "documents": [
+        "LADWP account and application details",
+        "Household income information; proof may be requested after enrollment"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "effort": "low",
+      "next_action": "Check current enrollment, account eligibility and total household income before reviewing the official application; confirm benefit coordination and consent terms.",
+      "match_tags": [
+        "housing",
+        "utility_assistance"
+      ],
+      "related_ids": [
+        "california-liheap"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-08T14:43:43.234Z",
+      "changes": [
+        {
+          "at": "2026-10-08T14:43:43.295Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "creative",
+        "training",
+        "business"
+      ],
+      "aliases": [
+        "Center for Cultural Innovation Quick Grant",
+        "Creative Capacity Fund Quick Grant"
+      ],
+      "evidence": [
+        {
+          "url": "https://cciarts.org/quick-grant/",
+          "checked_at": "2026-10-08T14:43:43.234Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October cycle open; up to $600; California creatives eligible for business skills. Deadline is October 15 at 11:59 a.m. PT; recurring notification is by November 16."
+        },
+        {
+          "url": "https://centerforculturalinnovation.submittable.com/submit",
+          "checked_at": "2026-10-08T14:43:43.234Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current October cycle notice instead promises November 15 notification. Individual applicants need secure provider ID verification; overhead and creative production are excluded."
+        },
+        {
+          "url": "https://cciarts.org/wp-content/uploads/2026/09/Quick-Grant-Guidelines-FAQ.pdf",
+          "checked_at": "2026-10-08T14:43:43.234Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "Competitive annual award limit and supporting materials apply. Funds paid after approval and documentation; exact elapsed time unknown."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "cci_california_creative",
+          "label": "Full-time California creative practitioner eligibility confirmed"
+        },
+        {
+          "fact": "cci_eligible_activity",
+          "label": "Eligible activity and start date confirmed"
+        },
+        {
+          "fact": "cci_no_current_year_award",
+          "label": "No Quick Grant award in current CCI fiscal year"
+        }
+      ],
+      "geography": [
+        "California"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": {
+        "max": 600,
+        "currency": "USD"
+      },
+      "application_window": "October 2026 cycle open; deadline October 15 at 11:59 a.m. (morning) Pacific; monthly cycles recur",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Restricted professional-development support; not rent relief. Confirm tax/benefit effects before acceptance.",
+        "One award per CCI fiscal year; avoid duplicate funding. Short group activities favored for LA County; do not commit to training delaying employment."
+      ],
+      "verification": "NEEDS_REVIEW",
+      "confidence": "official_program_only",
+      "disposition": "HOLD",
+      "reason": "HOLD pending reconciliation of official November 15/16 notification dates and eligible activity timing; this is restricted professional-development aid.",
+      "action_deadline": "2026-10-15T11:59:00-07:00",
+      "outcome": null,
+      "discovered_at": "2026-10-08T14:43:43.295Z",
+      "id": "cci-quick-grant",
+      "program_key": "cci-quick-grant",
+      "name": "CCI Quick Grant",
+      "funder": "Center for Cultural Innovation",
+      "source_url": "https://cciarts.org/quick-grant/",
+      "source_label": "CCI — Quick Grant",
+      "type": "creative_funding",
+      "applicant_lane": "individual",
+      "value": "Competitive grant up to $600 for approved professional development; partial awards possible",
+      "criteria": [
+        "Individual artist, creative, cultural practitioner or producer residing full-time in California",
+        "Approved administrative/business skills activity starting after award notification; artistic production, overhead and college-credit tuition excluded",
+        "Maximum one award per CCI fiscal year (July–June); current-cycle identity verification required"
+      ],
+      "unknowns": [
+        "Eligible activity, budget and start date",
+        "Prior CCI fiscal-year award",
+        "Cycle notice says November 15 while recurring page says by November 16; activity start must be clarified",
+        "Payment timing after award and completed documentation"
+      ],
+      "documents": [
+        "Activity title, dates, URL and budget",
+        "Unexpired government ID and camera for provider identity verification",
+        "California residency evidence and W-9 if awarded",
+        "Consultant requests also require commitment letter and consultant biography"
+      ],
+      "availability": "open",
+      "deadline": "2026-10-15",
+      "effort": "medium",
+      "next_action": "Review a short eligible group business-skills activity and confirm its start date with CCI before the October 15, 11:59 a.m. PT deadline. Do not submit identity documents through ASHWOOD.",
+      "match_tags": [
+        "creative",
+        "business"
+      ],
+      "status": "CANDIDATE",
+      "last_verified_at": "2026-10-08T14:43:43.234Z",
+      "changes": [
+        {
+          "at": "2026-10-08T14:43:43.295Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "NEEDS_REVIEW"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "housing",
+        "personal_support",
+        "employment"
+      ],
+      "aliases": [
+        "GRHSCMP",
+        "GR Housing Subsidy"
+      ],
+      "evidence": [
+        {
+          "url": "https://dpss.lacounty.gov/en/cash/gr/housing.html",
+          "checked_at": "2026-10-09T14:34:04.495Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "DPSS offers referral/walk-in routes, up to $475 single monthly subsidy, $100 GR contribution and conditional $500 move-in support. Landlord agreement is required for prevention."
+        },
+        {
+          "url": "https://my.dpss.lacounty.gov/public/en/home/epolicy/program/gr/homelessness/housing-subsidy-management-program.html",
+          "checked_at": "2026-10-09T14:34:04.495Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value",
+            "availability"
+          ],
+          "summary": "Policy caps total rent at $575 single/$1,150 couple; district slots vary. SSI retroactive payments reimburse GR/housing subsidy; move-in aid excluded."
+        },
+        {
+          "url": "https://dpss.lacounty.gov/en/cash/gr.html",
+          "checked_at": "2026-10-09T14:34:04.495Z",
+          "authoritative": true,
+          "supports": [
+            "criteria"
+          ],
+          "summary": "GR requires county residency and strict income/cash/property tests; online and in-person intake offered. Personal approval not established."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "gr_eligibility_confirmed",
+          "label": "General Relief eligibility and ongoing enrollment confirmed"
+        },
+        {
+          "fact": "gr_housing_pathway_confirmed",
+          "label": "Qualifying housing and START/benefits pathway confirmed"
+        },
+        {
+          "fact": "gr_rent_cap_confirmed",
+          "label": "Housing meets the $575 single/$1,150 couple rent cap"
+        },
+        {
+          "fact": "gr_landlord_coordination_confirmed",
+          "label": "Landlord and existing assistance coordination confirmed"
+        }
+      ],
+      "geography": [
+        "Los Angeles County"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": "GR page: individual monthly net income below $221; cash at application $100 or less; additional property, residency and other criteria apply.",
+      "employment_requirements": "Employable GR participants must enroll in START; individual requirements must be assessed by DPSS.",
+      "repayable": null,
+      "interest_percent": null,
+      "fees": null,
+      "amount": {
+        "max": 475,
+        "currency": "USD"
+      },
+      "application_window": "Referral/walk-in case-management routes published; district slots depend on funding and demand",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "$100 per person is deducted from the monthly GR grant and paid with the subsidy to the landlord; do not count it as extra cash.",
+        "SSI approval can trigger reimbursement of GR and housing subsidy from retroactive SSI; move-in assistance is excluded from that recovery. Other recovery obligations need confirmation.",
+        "Three lifetime participation occurrences; move-in aid once in a lifetime; housing support ends if GR eligibility ends. Coordinate with SSVF before considering overlapping expenses."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "HOLD",
+      "reason": "HOLD: strict total-rent cap, GR/START eligibility and benefit/recovery coordination must be screened; not general high-rent arrears coverage.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-09T14:34:04.565Z",
+      "id": "la-county-gr-housing",
+      "program_key": "la-county-gr-housing",
+      "name": "LA County General Relief Housing Subsidy and Case Management",
+      "funder": "Los Angeles County Department of Public Social Services",
+      "source_url": "https://dpss.lacounty.gov/en/cash/gr/housing.html",
+      "source_label": "LA County DPSS — GR housing",
+      "type": "emergency_cash",
+      "applicant_lane": "individual",
+      "value": "Up to $475/month subsidy for one person ($950/couple), plus a $100/person GR grant contribution; up to $500 one-time move-in assistance",
+      "criteria": [
+        "Eligible GR adult/couple without children, homeless or at risk of eviction",
+        "Employable participants must enroll in START, or qualify through the listed SSI/Veterans Benefits disability pathway",
+        "Policy maximum allowable rent $575 for one adult or $1,150 for a couple",
+        "Eviction prevention requires notice, GR grant contribution and landlord agreement not to evict"
+      ],
+      "unknowns": [
+        "GR eligibility, current enrollment and household composition",
+        "Whether proposed housing fits the strict allowable rent cap",
+        "District capacity and timing",
+        "SSVF or other rental assistance compatibility and repayment/recovery conditions"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "documents": [
+        "GR eligibility documentation requested by DPSS",
+        "Eviction or three-day notice if requesting prevention",
+        "Participant, direct-rent and landlord agreements",
+        "Move-in assistance request if applicable"
+      ],
+      "effort": "high",
+      "next_action": "Ask DPSS whether the housing rent cap and GR pathway permit assistance, and coordinate with the existing assistance contact before considering enrollment or accepting terms.",
+      "related_ids": [
+        "ssvf"
+      ],
+      "match_tags": [
+        "housing",
+        "employment"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-09T14:34:04.495Z",
+      "changes": [
+        {
+          "at": "2026-10-09T14:34:04.565Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "employment",
+        "training",
+        "veteran"
+      ],
+      "aliases": [
+        "Veteran Employment Through Technology Education Courses 2.0"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.va.gov/education/other-va-education-benefits/vet-tec-2/",
+          "checked_at": "2026-10-09T14:34:04.495Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "VA offers online application and lists FY openings dated October 1. Requires 36 active-duty months and under 62; tuition, conditional housing and books supported; once-only entitlement rules apply."
+        },
+        {
+          "url": "https://www.va.gov/education/benefit-rates/vet-tec-2-rates/",
+          "checked_at": "2026-10-09T14:34:04.495Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "2026–27 rates: private-school tuition cap $30,908.34, books up to $1,000; eligible housing paid monthly in arrears, online cap $1,261 with pursuit restrictions."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "vet_tec_active_service",
+          "label": "36 months active duty verified by VA"
+        },
+        {
+          "fact": "vet_tec_age_and_discharge",
+          "label": "Age and discharge/separation requirements confirmed"
+        },
+        {
+          "fact": "vet_tec_program_approved",
+          "label": "Approved provider/program and unused VET TEC 2.0 benefit"
+        },
+        {
+          "fact": "vet_tec_employment_timing",
+          "label": "Cohort timing supports current employment target"
+        }
+      ],
+      "geography": [
+        "Nationwide",
+        "California provider/program approval must be checked"
+      ],
+      "veteran_requirements": "36 months active duty required; Reserve membership or honorable discharge alone does not establish this.",
+      "income_requirements": null,
+      "employment_requirements": "Provider assistance with employment; post-training status and employment retention reporting required.",
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "VA offers online application; 4,000 fiscal-year slots listed as of October 1, 2026, not a real-time remaining-capacity guarantee",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Remaining DEA, Montgomery GI Bill Active Duty or Post-9/11 entitlement is charged one month per full-time training month; no prior VA education qualification required.",
+        "Housing paid at month end after enrollment verification; no housing payment on active duty, school breaks or 50%-or-less pursuit. Online allowance is capped at $1,261/month.",
+        "Confirm SSVF/other assistance interaction; no compatibility assumed. Longer cohorts delaying employment beyond December remain unsuitable under current policy."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "HOLD",
+      "reason": "HOLD until qualifying 36-month active-duty service and a cohort compatible with the December employment target are verified; no training duration assumed.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-09T14:34:04.565Z",
+      "id": "va-vet-tec-2",
+      "program_key": "va-vet-tec-2",
+      "name": "VA VET TEC 2.0",
+      "funder": "U.S. Department of Veterans Affairs",
+      "source_url": "https://www.va.gov/education/other-va-education-benefits/vet-tec-2/",
+      "source_label": "VA — VET TEC 2.0",
+      "type": "training",
+      "applicant_lane": "individual",
+      "value": "Approved non-degree tech tuition, conditional housing allowance and up to $1,000/year books; online-only housing up to $1,261/month",
+      "criteria": [
+        "At least 36 months of active-duty service and under 62 at approval",
+        "Veteran discharge other than dishonorable, or active duty within 180 days of separation",
+        "Approved VET TEC 2.0 non-degree provider/program; benefit usable once",
+        "Housing allowance requires more than 50% pursuit, monthly verification and no active-duty/break status"
+      ],
+      "unknowns": [
+        "Qualifying active-duty service history",
+        "Current approved cohort, availability and course length",
+        "In-person housing rate, pursuit level and payment timing",
+        "Remaining education entitlement and effect on other assistance"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "documents": [
+        "VA Form 22-10297 and VA-required service history",
+        "Approved training program and enrollment information",
+        "Monthly enrollment verification for housing payments"
+      ],
+      "effort": "high",
+      "next_action": "Confirm 36 months qualifying active duty with VA before comparing approved cohorts. Only consider a short program that preserves employment timing and clarify housing/entitlement effects.",
+      "related_ids": [
+        "va-vre",
+        "jvs-vsta-ajcc"
+      ],
+      "match_tags": [
+        "employment",
+        "veteran",
+        "training"
+      ],
+      "status": "NEEDS_FACT",
+      "last_verified_at": "2026-10-09T14:34:04.495Z",
+      "changes": [
+        {
+          "at": "2026-10-09T14:34:04.565Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
     }
   ],
-  "last_scan_at": "2026-10-07T15:02:53.838Z"
+  "last_scan_at": "2026-10-09T14:34:04.565Z"
 }
