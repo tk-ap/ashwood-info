@@ -1,6 +1,7 @@
 import { getSql, json, requireSession } from './_workspace.mjs';
 import { rankOpportunityQueues, rotateOpportunities } from './_career-opportunities.mjs';
 import { CURATED_CAREER_OPPORTUNITIES } from './_career-curated-opportunities.mjs';
+import { desktopRecommendations, recommendationId } from './_desktop-recommendations.mjs';
 
 const CACHE_HOURS = 6;
 const FORCE_REFRESH_MIN_HOURS = 1;
@@ -213,6 +214,17 @@ export default async function handler(req, res) {
       .filter(value => Number.isFinite(value) && value > 0);
     const oldestFetch = fetchedTimes.length ? new Date(Math.min(...fetchedTimes)).toISOString() : null;
     const warnings = loaded.map(item => item.warning).filter(Boolean);
+
+    if (url.searchParams.get('view') === 'recommendations') {
+      const sourceFreshness = Object.fromEntries(loaded.map(item => [item.name, item.fetched_at || null]));
+      return json(res, 200, desktopRecommendations(ranked, { sourceFreshness }));
+    }
+    const requestedId = url.searchParams.get('opportunity');
+    const requested = requestedId ? [...ranked, ...reviewRanked].find(item => recommendationId(item) === requestedId) : null;
+    if (requested) {
+      const list = requested.recommendation_bucket === 'recommended' ? opportunities : reviewOpportunities;
+      if (!list.some(item => recommendationId(item) === requestedId)) list.unshift(requested);
+    }
 
     return json(res, 200, {
       ok:true,
