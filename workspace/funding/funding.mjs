@@ -1,4 +1,5 @@
 import {actionState, LIFECYCLE, VIEWS, ranked, inView, sourceKey} from './model.mjs';
+import {startLiveRefresh, registryPayload} from './live-refresh.mjs';
 const PROFILE_KEY = 'ashwood.funding.profile.v1';
 const STATUS_KEY = 'ashwood.funding.status.v1';
 const SEEN_KEY = 'ashwood.funding.seen.v1';
@@ -36,6 +37,9 @@ const escapeHtml = (value='') => String(value ?? '').replace(/[&<>"']/g, c => ({
 const readJson = (key, fallback={}) => { try { return JSON.parse(localStorage.getItem(key) || '') || fallback; } catch { return fallback; } };
 const writeJson = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } };
 let registry = {opportunities:[]};
+let registryRequest=false;
+const editedActions=new Set();
+const editing=()=>editedActions.size>0 || document.querySelector('#funding')?.contains(document.activeElement);
 let profile = readJson(PROFILE_KEY, {}), statuses = readJson(STATUS_KEY, {});
 let seenAt = readJson(SEEN_KEY,null), typeFilter='all', view='action', search='';
 const list = values => (values || []).map(x => `<li>${escapeHtml(x)}</li>`).join('');
@@ -49,6 +53,7 @@ function updateAction(id,patch) {
   const previous=actionState(item,statuses);
   statuses[id]={...previous,...patch,updated_at:new Date().toISOString(),history:[...(previous.history || []),{at:new Date().toISOString(),...patch}].slice(-50)};
   save(STATUS_KEY,statuses); render();
+  editedActions.delete(id);
 }
 function renderProfile() {
   const rules=new Map(PROFILE_OPTIONS);
@@ -105,16 +110,24 @@ function render() {
     event.preventDefault(); const values=Object.fromEntries(new FormData(form));
     updateAction(form.dataset.action,{...values,reason:values.outcome || null,completed_at:['AWARDED','DENIED','COMPLETED','CLOSED','DECLINED'].includes(values.status)?new Date().toISOString():null});
   }));
+  host.querySelectorAll('[data-action]').forEach(form=>form.addEventListener('input',()=>editedActions.add(form.dataset.action)));
 }
-async function loadRegistry() {
+async function loadRegistry({automatic=false}={}) {
+  if(registryRequest || (automatic && editing())) return;
+  registryRequest=true;
   const state=document.querySelector('#funding-registry-state'), stamp=document.querySelector('#funding-registry-time');
-  state.textContent='Refreshing';
+  if(!automatic) state.textContent='Refreshing';
   try {
     const res=await fetch('/workspace/funding/opportunities.json?ts='+Date.now(),{cache:'no-store'});
     if(!res.ok) throw new Error('Registry unavailable');
-    registry=await res.json(); renderProfile(); render();
-    state.textContent='Loaded'; stamp.textContent=`Registry updated ${registry.generated_at}. Reloading does not verify upstream sources.`;
-  } catch(error) {state.textContent='Unavailable';stamp.textContent=error.message;}
+    const next=registryPayload(await res.json());
+    if(automatic && editing()) return;
+    if(JSON.stringify(next)!==JSON.stringify(registry)) {
+      registry=next; renderProfile(); render();
+    }
+    state.textContent='Loaded'; stamp.textContent=`Registry updated ${registry.generated_at}. Published changes refresh about once a minute while visible; source verification is separate.`;
+  } catch(error) {state.textContent='Refresh unavailable';stamp.textContent=error.message+'; previously loaded records retained.';}
+  finally {registryRequest=false;}
 }
 async function start() {
   const response=await fetch('/api/workspace-auth',{credentials:'same-origin'});
@@ -126,5 +139,6 @@ async function start() {
   document.querySelector('#funding-refresh').addEventListener('click',loadRegistry);
   document.querySelector('#funding-mark-reviewed').addEventListener('click',()=>{seenAt=new Date().toISOString();save(SEEN_KEY,seenAt);render();});
   await loadRegistry();
+  startLiveRefresh({refresh:()=>loadRegistry({automatic:true}),document,window});
 }
 start().catch(error=>{document.querySelector('#funding-registry-state').textContent=error.message;});
