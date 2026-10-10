@@ -158,11 +158,15 @@ The useful professional takeaway is not the milestone itself. It is [the decisio
 
 Evidence: ${title}
 Boundary: ${reality}`,
-    "Build Journal":`What I was trying to do: [goal]
+    "Build Journal":`What I was trying to build: [goal / real constraint]
 
 What actually happened: ${title}
 
-What changed in my thinking or implementation: [owner interpretation]
+What I had to learn: [concept / tool / system behavior]
+
+What I understand now: [mechanism / assumption / boundary]
+
+What I changed or will improve next: [decision / implementation / next experiment]
 
 Evidence: [source / receipt]
 Current uncertainty: [what is still unresolved]`
