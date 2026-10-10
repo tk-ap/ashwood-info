@@ -4,7 +4,7 @@ const WEIGHTS=[
 ["durable","Durable work persistence",10],["recovery","Restart / recovery reconciliation",8],["authority","Governed authority + sender provenance",8],["routing","Capacity-aware routing",7],["harness","Harness / provider interchangeability",6],["handoff","Agent-to-agent handoff",7],["verification","Independent verification",8],["evidence","Evidence persistence",7],["retry","Retry / park / resume lifecycle",7],["human","Human-interruption discipline",6],["telegram","Telegram operator interface",6],["convergence","Runtime / canonical convergence",7],["external","External-operation reconciliation",4],["workspace","Cross-domain Workspace integration",5],["telemetry","Self-observation / health telemetry",4]
 ];
 const SCORE={VERIFIED:1,PARTIAL:.5,BLOCKED:0,UNVERIFIED:0};
-let timer=null,lastScore=null;
+let timer=null,lastScore=null,refreshInFlight=false;
 async function read(url){const r=await fetch(url,{credentials:"same-origin",cache:"no-store"});const b=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(b.error||("HTTP "+r.status)),{status:r.status});return b}
 async function ensureAuth(){
  const s=await read("/api/workspace-auth"); if(s.authenticated)return true;
@@ -110,19 +110,36 @@ function render(d,evidence){
  q("#evidence-events").innerHTML=events.map(e=>'<article class="evidence-event"><time>'+esc(e.t?new Date(e.t).toLocaleString():"unknown")+'</time><strong>'+esc(e.label)+'</strong><span>'+esc(e.detail)+'</span></article>').join("");
  if(lastScore!==null&&lastScore!==ev.score){q("#health-source-state").textContent+=" · score "+(ev.score>lastScore?"+":"")+String(ev.score-lastScore)}lastScore=ev.score
 }
-async function refresh(){
- q("#health-source-state").textContent="Refreshing…";
+async function refresh({manual=false}={}){
+ if(refreshInFlight)return;
+ refreshInFlight=true;
+ const button=q("#health-refresh");
+ if(manual){
+  q("#health-source-state").textContent="Reloading saved projection…";
+  button.disabled=true;
+  button.setAttribute("aria-busy","true");
+ }
  try{
   const [board,commands,evidence]=await Promise.all([
    read("/api/workspace-agentos"),
    read("/api/workspace-state?view=commands").catch(()=>({commands:[]})),
    read("/workspace/agentos/health-evidence.json").catch(()=>null)
   ]);
-  render(derive(board,commands),evidence);
+  const derived=derive(board,commands);
+  render(derived,evidence);
+  if(manual){
+   const assessmentStale=evidenceState(derived,evidence).stale;
+   q("#health-source-state").textContent=derived.observed
+    ? "Saved projection reloaded · "+ageLabel(derived.observed)+(assessmentStale?" · assessment still stale":"")
+    : "Saved projection reloaded · timestamp unavailable";
+  }
  }catch(e){
   q("#health-source-state").textContent=e.status===401?"Workspace locked":"Projection unavailable";
   q("#health-overall").textContent="UNVERIFIED";q("#health-freshness").textContent="No health claim made without canonical data";
+ }finally{
+  refreshInFlight=false;
+  if(manual){button.disabled=false;button.removeAttribute("aria-busy")}
  }
 }
-q("#health-refresh")?.addEventListener("click",refresh);
-(async()=>{await ensureAuth();await refresh();timer=setInterval(refresh,30000)})();
+q("#health-refresh")?.addEventListener("click",()=>refresh({manual:true}));
+(async()=>{await ensureAuth();await refresh();timer=setInterval(()=>refresh(),30000)})();

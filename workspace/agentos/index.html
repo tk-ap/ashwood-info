@@ -8,10 +8,10 @@
   <title>AgentOS Health — ASHWOOD Workspace</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
-  <link rel="stylesheet" href="/workspace/agentos/agentos-health.css?v=20261003-health2" />
+  <link rel="stylesheet" href="/workspace/agentos/agentos-health.css?v=20261009-projection-reload" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
-  <script type="module" src="/workspace/agentos/agentos-health.mjs?v=20261003-health2"></script>
+  <script type="module" src="/workspace/agentos/agentos-health.mjs?v=20261009-projection-reload"></script>
 </head>
 <body class="agentos-health-page">
   <main class="health-shell">
@@ -22,7 +22,10 @@
       </div>
       <div class="health-mast-actions">
         <span id="health-source-state" class="health-source-state">Connecting…</span>
-        <button id="health-refresh" type="button">Refresh</button>
+        <div class="health-refresh-control">
+          <button id="health-refresh" type="button" aria-describedby="health-refresh-note">Reload saved projection</button>
+          <span id="health-refresh-note" class="health-refresh-note">Reloads the last AgentOS projection. A new health assessment must be published by AgentOS.</span>
+        </div>
       </div>
     </header>
 
