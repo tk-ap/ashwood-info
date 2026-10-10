@@ -36,3 +36,15 @@ test('health ownership keeps telemetry authoritative and roles separated', () =>
   assert.match(evidence.health_ownership.design_rule, /telemetry/i);
   assert.match(evidence.health_ownership.design_rule, /independent verification/i);
 });
+
+test('Health page labels its projection reload honestly', () => {
+  const [html, script] = [
+    fs.readFileSync(new URL('../workspace/agentos/index.html', import.meta.url), 'utf8'),
+    fs.readFileSync(new URL('../workspace/agentos/agentos-health.mjs', import.meta.url), 'utf8'),
+  ];
+  assert.match(html, /Reload saved projection/);
+  assert.match(html, /A new health assessment must be published by AgentOS/);
+  assert.match(script, /Reloading saved projection/);
+  assert.match(script, /Saved projection reloaded/);
+  assert.match(script, /refresh\(\{manual:true\}\)/);
+});
