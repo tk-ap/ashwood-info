@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-10-09T14:34:04.565Z",
+  "generated_at": "2026-10-10T14:48:07.853Z",
   "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
@@ -36,6 +36,17 @@
             "value"
           ],
           "summary": "Current provider page links EFund intake and Release of Information, offers Southern California veteran emergency grants for housing/employment/health, and requires supporting documents. Award and capacity remain case-specific."
+        },
+        {
+          "url": "https://www.villageforvets.org/efund",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current page links online emergency intake and consent form for Southern California veterans with housing/employment/health emergencies. Grants remain case-specific; capacity and Reserve-only acceptance are not established."
         }
       ],
       "eligibility_rules": [
@@ -104,7 +115,7 @@
       ],
       "effort": "medium",
       "next_action": "Ask the provider to confirm reserve service eligibility and coordination with existing assistance.",
-      "last_verified_at": "2026-10-07T15:02:45Z",
+      "last_verified_at": "2026-10-10T14:47:20.272Z",
       "source_url": "https://www.villageforvets.org/efund",
       "source_label": "Village for Vets — program details",
       "program_key": "village-for-vets-efund",
@@ -210,6 +221,17 @@
             "value"
           ],
           "summary": "Current help page routes individuals to funded emergency rental-assistance partners; LACAHSA cannot serve individuals directly. Provider intake, award limits and capacity need confirmation."
+        },
+        {
+          "url": "https://lacahsa.gov/get-help/",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Official help page continues to route at-risk residents to funded rental-assistance partners; no direct LACAHSA individual service. Provider capacity and limits require screening."
         }
       ],
       "eligibility_rules": [
@@ -272,7 +294,7 @@
       ],
       "effort": "medium",
       "next_action": "Contact an awarded provider and ask for emergency rental-assistance intake.",
-      "last_verified_at": "2026-10-07T15:02:45Z",
+      "last_verified_at": "2026-10-10T14:47:20.272Z",
       "source_url": "https://lacahsa.gov/get-help/",
       "source_label": "LACAHSA — Get Help",
       "program_key": "lacahsa-rphp",
@@ -328,6 +350,17 @@
             "value"
           ],
           "summary": "2026 page retains October 15 close and 2–100 employee/one-year requirements. $1,000 microgrant plus one free program; first payment Net 60 after required documentation, subject to approvals/funds."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Provider still lists October 15 close, $1,000 microgrant plus one program, veteran/spouse employer business eligibility. Payment is Net 60 after required documentation; linked application renders no readable form, so actual submission capacity remains unconfirmed."
         }
       ],
       "eligibility_rules": [
@@ -410,7 +443,7 @@
       ],
       "effort": "medium",
       "next_action": "Before October 15, check the 2–100 employee and one-year business requirements. Do not treat this as immediate housing cash.",
-      "last_verified_at": "2026-10-07T15:02:45Z",
+      "last_verified_at": "2026-10-10T14:47:20.272Z",
       "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
       "source_label": "Founders First CDC — Tadlock Veteran Business Grant",
       "program_key": "founders-first-tadlock-2026",
@@ -1064,6 +1097,17 @@
             "value"
           ],
           "summary": "VA describes low-income veteran family housing stabilization and local awarded providers. The closed FY2027 provider NOFO is separate from household assistance; local capacity and personal eligibility remain unconfirmed."
+        },
+        {
+          "url": "https://department.va.gov/homeless/supportive-services-for-veteran-families/",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "VA retains low-income veteran household housing-stability and local provider pathways. The closed provider NOFO is separate from household support; do not infer closure or duplicate an existing assistance case."
         }
       ],
       "eligibility_rules": [
@@ -1133,7 +1177,7 @@
         "personal_support"
       ],
       "status": "NEEDS_FACT",
-      "last_verified_at": "2026-10-07T15:02:45Z",
+      "last_verified_at": "2026-10-10T14:47:20.272Z",
       "changes": [
         {
           "at": "2026-10-05T16:30:00Z",
@@ -1180,6 +1224,17 @@
             "value"
           ],
           "summary": "JVS lists free Southern California veteran employment services; VSTA expressly includes reservists and offers employment/housing/transportation support. AJCC contact and outreach pathway remain available; support-specific screening applies."
+        },
+        {
+          "url": "https://jvs-socal.org/veteran-services/",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "JVS still lists no-cost Southern California veteran services; VSTA includes reservists/spouses and housing, employment, childcare and transportation assistance. Support-specific amounts and enrollment eligibility remain unresolved."
         }
       ],
       "eligibility_rules": [
@@ -1251,7 +1306,7 @@
         "veteran"
       ],
       "status": "NEEDS_FACT",
-      "last_verified_at": "2026-10-07T15:02:45Z",
+      "last_verified_at": "2026-10-10T14:47:20.272Z",
       "changes": [
         {
           "at": "2026-10-05T16:30:00Z",
@@ -2140,6 +2195,25 @@
             "criteria"
           ],
           "summary": "August 14 announcement describes FY2027 goods on clinician recommendation and transportation dependent on contracts. This does not verify local operation or at-risk-only eligibility."
+        },
+        {
+          "url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+          "checked_at": "2026-10-10T14:48:07.790097Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "VA announcement still describes clinician-recommended goods in early FY2027 and planned transportation contracts. Greater LA operational capacity for this specific program remains unverified."
+        },
+        {
+          "url": "https://www.va.gov/greater-los-angeles-health-care/health-services/homeless-veteran-care/",
+          "checked_at": "2026-10-10T14:48:07.790097Z",
+          "authoritative": true,
+          "supports": [
+            "criteria"
+          ],
+          "summary": "Greater LA VA lists existing homeless/at-risk support and referral services; this does not establish operational intake for the new goods/transportation fund."
         }
       ],
       "eligibility_rules": [
@@ -2202,7 +2276,8 @@
         "ssvf"
       ],
       "status": "CANDIDATE",
-      "last_verified_at": null
+      "last_verified_at": null,
+      "changes": []
     },
     {
       "categories": [
@@ -2359,6 +2434,28 @@
             "value"
           ],
           "summary": "Competitive annual award limit and supporting materials apply. Funds paid after approval and documentation; exact elapsed time unknown."
+        },
+        {
+          "url": "https://cciarts.org/quick-grant/",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October 15 cycle remains open, up to $600 professional development; deadline 11:59 a.m. Pacific. General guidance uses the following month’s 16th for notification/activity timing."
+        },
+        {
+          "url": "https://centerforculturalinnovation.submittable.com/submit",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October cycle still states November 15 notification, conflicting with general 16th guidance. Keep timing on HOLD pending provider clarification; no identity documents sent by this process."
         }
       ],
       "eligibility_rules": [
@@ -2713,7 +2810,253 @@
           "after": "VERIFIED"
         }
       ]
+    },
+    {
+      "categories": [
+        "personal_support",
+        "food"
+      ],
+      "aliases": [
+        "SNAP food benefits — LA County",
+        "LA County CalFresh"
+      ],
+      "evidence": [
+        {
+          "url": "https://dpss.lacounty.gov/en/food/calfresh.html",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Ongoing intake for eligible low/no-income households. Expedited screening can yield benefits within three days; interview/identity required. Some adults face current work/time limits."
+        },
+        {
+          "url": "https://dpss.lacounty.gov/en/food/calfresh/calfresh-fact-sheet.html",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "DPSS lists October 2026–September 2027 one-person maximum $306 and gross monthly income limit $2,660; actual benefit depends on case. Normal processing is within 30 days."
+        },
+        {
+          "url": "https://dpss.lacounty.gov/en/food/calfresh/work-rules.html",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "criteria"
+          ],
+          "summary": "ABAWD rules cover some adults 18–64, with a three-month/36-month limit unless work requirements or exemption met; DPSS lists screening and exemption routes."
+        },
+        {
+          "url": "https://www.cdss.ca.gov/inforesources/fraud/services",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "criteria"
+          ],
+          "summary": "CDSS describes recovery of delinquent CalFresh overissuances through federal/state income tax refund interception."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "calfresh_household_screened",
+          "label": "DPSS household income/eligibility screening confirmed"
+        },
+        {
+          "fact": "calfresh_work_rules_screened",
+          "label": "DPSS work-rule requirement or exemption confirmed"
+        },
+        {
+          "fact": "calfresh_enrollment_path",
+          "label": "Existing case or new enrollment route confirmed"
+        }
+      ],
+      "geography": [
+        "Los Angeles County"
+      ],
+      "veteran_requirements": "No veteran requirement; do not assume military service creates a current work-rule exemption.",
+      "income_requirements": "Depends on household size, income and deductions; DPSS October 2026–September 2027 fact sheet lists $2,660 gross monthly limit for one person, with exceptions for elderly/disabled households.",
+      "employment_requirements": "Some adults ages 18–64 without a dependent child under 14 must meet work rules or an exemption; unemployment alone does not establish an exemption.",
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "Ongoing online, telephone or in-person intake; no fixed annual application deadline",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Food purchasing benefit, not unrestricted housing cash. Actual award depends on household income, expenses and other case facts.",
+        "Avoid a duplicate case if already enrolled or awaiting a decision. Reporting and renewal requirements apply.",
+        "CalFresh overissuances can be recovered, including delinquent debts through tax refund interception; confirm case obligations with DPSS."
+      ],
+      "verification": "VERIFIED",
+      "confidence": "official_program_only",
+      "disposition": "CONSULT",
+      "reason": "Current public program and expedited screening routes verified; household eligibility, current enrollment and work-rule status remain unknown.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-10T14:47:20.344Z",
+      "id": "calfresh-la-county",
+      "program_key": "calfresh-la-county",
+      "name": "CalFresh food benefits — LA County",
+      "funder": "Los Angeles County Department of Public Social Services",
+      "source_url": "https://dpss.lacounty.gov/en/food/calfresh.html",
+      "source_label": "LA County DPSS — CalFresh",
+      "type": "noncash",
+      "applicant_lane": "individual",
+      "value": "Monthly food benefits based on household; DPSS lists up to $306 for one person for October 2026–September 2027",
+      "criteria": [
+        "Household income, expenses, size and citizenship/qualified immigration screening by DPSS",
+        "Interview and identity verification; photo ID is not required for expedited service",
+        "Some adults ages 18–64 face work/time-limit rules unless exempt; DPSS must determine applicability",
+        "Confirm existing enrollment or pending application before creating another case"
+      ],
+      "unknowns": [
+        "Current enrollment or pending application",
+        "Household composition, countable income and deductions",
+        "Expedited service screening and applicable work-rule exemptions",
+        "Effect of other benefits on the case and any reporting obligations"
+      ],
+      "availability": "open",
+      "deadline": null,
+      "effort": "medium",
+      "documents": [
+        "Household/income/expense information requested by DPSS",
+        "Identity verification and eligibility interview",
+        "Evidence of an applicable work-rule exemption when required"
+      ],
+      "next_action": "Check existing CalFresh enrollment first. If not enrolled, ask DPSS to screen expedited service and current work-rule exemptions; use the existing case for updates rather than duplicate enrollment.",
+      "related_ids": [
+        "metro-life",
+        "la-county-gr-housing"
+      ],
+      "match_tags": [
+        "financial_emergency",
+        "zero_budget"
+      ],
+      "last_verified_at": "2026-10-10T14:47:20.272Z",
+      "status": "NEEDS_FACT",
+      "changes": [
+        {
+          "at": "2026-10-10T14:47:20.344Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "categories": [
+        "business",
+        "build_credits",
+        "noncash"
+      ],
+      "aliases": [
+        "Claude for Startups",
+        "Anthropic Startup Program"
+      ],
+      "evidence": [
+        {
+          "url": "https://claude.com/programs/startups",
+          "checked_at": "2026-10-10T14:47:20.272Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Official FAQ reports over-capacity Team/$1,000 API offers and application re-review. Already claimed offers remain usable; member partner offers/support continue. Bootstrapped startups may apply, but award availability is not assured."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "claude_startup_eligibility",
+          "label": "Current startup program requirements confirmed"
+        },
+        {
+          "fact": "claude_offer_available",
+          "label": "Provider confirms the specific offer is available"
+        },
+        {
+          "fact": "claude_offer_terms_reviewed",
+          "label": "Costs, expiry and partner-offer terms reviewed"
+        }
+      ],
+      "geography": [
+        "Online startup program; geographic restrictions require provider confirmation"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": null,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "Application link remains published; Team/$1,000 API offers are over capacity and applications are being re-reviewed",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Noncash offers do not pay rent or replace personal assistance. Individual partner offers can have separate costs/expiry; no zero-cost commitment assumed.",
+        "Do not buy a plan, enable billable usage or migrate infrastructure to obtain an unconfirmed promotion."
+      ],
+      "verification": "NEEDS_REVIEW",
+      "confidence": "official_program_only",
+      "disposition": "HOLD",
+      "reason": "HOLD: official FAQ says the free Team/$1,000 API offers are over capacity and existing applications may change status; individual offer availability and costs need review.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-10T14:47:20.344Z",
+      "id": "anthropic-claude-startups",
+      "program_key": "anthropic-claude-startups",
+      "name": "Claude Startups",
+      "funder": "Anthropic",
+      "source_url": "https://claude.com/programs/startups",
+      "source_label": "Anthropic — Claude Startups official FAQ",
+      "type": "build_credits",
+      "applicant_lane": "business",
+      "value": "Startup Stack partner offers and member support; free Claude Team/$1,000 API offers currently over capacity, not assured for new applicants",
+      "criteria": [
+        "Startup founders building with Claude; bootstrapped, pre-seed and venture-backed startups may apply",
+        "Provider approval and individual partner-offer terms apply",
+        "Additional VC-partner credits require an eligible partner investor",
+        "First-party Claude credits cannot be used on AWS Bedrock or Google Vertex AI"
+      ],
+      "unknowns": [
+        "Whether the provider will approve a new application while reshaping the program",
+        "Current startup eligibility details and applicable partner-offer costs",
+        "Whether any Team/API offer becomes available again",
+        "Existing membership or previously claimed benefits"
+      ],
+      "availability": "limited",
+      "deadline": null,
+      "effort": "medium",
+      "next_action": "Watch the official FAQ for reopened Team/API capacity. If already a member, inspect existing entitlements in Console; do not reapply or assume the advertised credits are newly available.",
+      "related_ids": [
+        "aws-activate-founders",
+        "google-startups-cloud"
+      ],
+      "match_tags": [
+        "software_ai",
+        "founder"
+      ],
+      "last_verified_at": null,
+      "status": "CANDIDATE",
+      "changes": [
+        {
+          "at": "2026-10-10T14:47:20.344Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "NEEDS_REVIEW"
+        }
+      ]
     }
   ],
-  "last_scan_at": "2026-10-09T14:34:04.565Z"
+  "last_scan_at": "2026-10-10T14:48:07.853Z"
 }
