@@ -40,6 +40,8 @@ export const CURATED_CAREER_OPPORTUNITIES = [
     },
     source_name:'Curated Career Search',
     source_url:'https://careers.gevernova.com/controls-program-manager-remote-eligible-u-s/job/R5053117',
+    discovery_kind:'employer_listing',
+    employer_host:'careers.gevernova.com',
     curated:true
   },
   {

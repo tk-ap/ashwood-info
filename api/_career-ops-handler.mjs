@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { getSql, json, parseBody, requireSession, sameOrigin } from './_workspace.mjs';
 import { ensureCareerResumeSchema, loadCareerResumeProfile, saveCareerResumeProfile } from './_career-resume-profile.mjs';
+import { isApplicationDestinationUrl } from './_career-opportunities.mjs';
 
 const STATUS_VALUES = new Set([
   'TARGET',
@@ -35,6 +36,48 @@ const dateOrNull = value => {
 };
 
 const objectOrEmpty = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+
+function sourceKey(value='') {
+  return String(value || '').trim().toLowerCase().replace(/\s+/g, '-');
+}
+
+function canonicalUrl(value='') {
+  try {
+    const url = new URL(String(value || '').trim());
+    url.hash = '';
+    return url.href;
+  } catch {
+    return '';
+  }
+}
+
+export function canPersistApplicationPosting({ posting_url:postingUrl }={}) {
+  return isApplicationDestinationUrl(postingUrl);
+}
+
+export function requiresEmployerVerification({ source, job_id:jobId, posting_snapshot:postingSnapshot }={}) {
+  return Boolean(trim(source, 80) && trim(jobId, 120) && trim(objectOrEmpty(postingSnapshot).source_url, 1000));
+}
+
+export function matchesEmployerVerification(postingUrl, verification={}) {
+  return String(verification.status || '').toUpperCase() === 'VERIFIED' &&
+    Boolean(verification.verified_at) &&
+    canonicalUrl(postingUrl) !== '' &&
+    canonicalUrl(postingUrl) === canonicalUrl(verification.employer_url);
+}
+
+export function applicationPersistenceContext(body={}, existing={}) {
+  const priorSnapshot = objectOrEmpty(existing.posting_snapshot);
+  const incomingSnapshot = objectOrEmpty(body.posting_snapshot);
+  const keepsDiscoveryContext = Boolean(existing.job_id && trim(priorSnapshot.source_url, 1000));
+  return {
+    source:keepsDiscoveryContext
+      ? (trim(existing.source, 80) || 'manual')
+      : (trim(body.source, 80) || 'manual'),
+    jobId:trim(body.job_id, 120) || (keepsDiscoveryContext ? trim(existing.job_id, 120) : null),
+    postingSnapshot:{ ...priorSnapshot, ...incomingSnapshot }
+  };
+}
 
 export async function ensureCareerSchema(sql) {
   await sql`
@@ -94,6 +137,21 @@ export async function ensureCareerSchema(sql) {
     )
   `;
   await sql`CREATE INDEX IF NOT EXISTS workspace_career_opportunity_disposition_idx ON workspace_career_opportunity_dispositions(disposition, updated_at DESC)`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS workspace_career_opportunity_verifications (
+      source TEXT NOT NULL,
+      opportunity_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'UNVERIFIED',
+      employer_url TEXT,
+      source_url TEXT,
+      checked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      verified_at TIMESTAMPTZ,
+      failure_reason TEXT,
+      evidence JSONB NOT NULL DEFAULT '{}'::jsonb,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (source, opportunity_id)
+    )
+  `;
 }
 
 async function addEvent(sql, {
@@ -220,9 +278,32 @@ export default async function handler(req, res) {
       if (!company || !role) return json(res, 400, { ok: false, error: 'Company and role are required' });
 
       const id = trim(body.id, 250) || `career:${crypto.randomUUID()}`;
+      const before = await sql`
+        SELECT status, source, job_id, posting_snapshot
+        FROM workspace_career_applications
+        WHERE id = ${id}
+        LIMIT 1
+      `;
+      const postingUrl = trim(body.posting_url, 1000);
+      const { source, jobId, postingSnapshot } = applicationPersistenceContext(body, before[0]);
+      if (!canPersistApplicationPosting({ posting_url:postingUrl })) {
+        return json(res, 400, { ok:false, error:'A job board can be recorded as the discovery source, not as the application link. Add a verified company or employer-ATS listing first.' });
+      }
+      if (requiresEmployerVerification({ source, job_id:jobId, posting_snapshot:postingSnapshot })) {
+        const verification = await sql`
+          SELECT status, employer_url, verified_at
+          FROM workspace_career_opportunity_verifications
+          WHERE source = ${sourceKey(source)}
+            AND opportunity_id = ${jobId}
+            AND verified_at >= NOW() - INTERVAL '7 days'
+          LIMIT 1
+        `;
+        if (!matchesEmployerVerification(postingUrl, verification[0])) {
+          return json(res, 400, { ok:false, error:'This role has not passed the current company-listing check. Use the verified employer or ATS link from the Career inbox.' });
+        }
+      }
       const requestedStatus = String(body.status || 'TARGET').trim().toUpperCase();
       const status = STATUS_VALUES.has(requestedStatus) ? requestedStatus : 'TARGET';
-      const before = await sql`SELECT status FROM workspace_career_applications WHERE id = ${id} LIMIT 1`;
 
       await sql`
         INSERT INTO workspace_career_applications (
@@ -231,14 +312,14 @@ export default async function handler(req, res) {
           fit_decision, submitted_at, next_action, next_action_at, posting_snapshot,
           materials, source, notes, updated_at
         ) VALUES (
-          ${id}, ${company}, ${role}, ${trim(body.job_id, 120)}, ${trim(body.posting_url, 1000)},
+          ${id}, ${company}, ${role}, ${jobId}, ${postingUrl},
           ${trim(body.location, 300)}, ${trim(body.work_arrangement, 120)},
           ${intOrNull(body.salary_min)}, ${intOrNull(body.salary_max)}, ${trim(body.salary_currency, 10) || 'USD'},
           ${intOrNull(body.requested_salary)}, ${status}, ${trim(body.fit_decision, 500)},
           ${dateOrNull(body.submitted_at)}, ${trim(body.next_action, 1000)}, ${dateOrNull(body.next_action_at)},
-          ${JSON.stringify(objectOrEmpty(body.posting_snapshot))}::jsonb,
+          ${JSON.stringify(postingSnapshot)}::jsonb,
           ${JSON.stringify(objectOrEmpty(body.materials))}::jsonb,
-          ${trim(body.source, 80) || 'manual'}, ${trim(body.notes, 4000)}, NOW()
+          ${source}, ${trim(body.notes, 4000)}, NOW()
         )
         ON CONFLICT (id) DO UPDATE SET
           company = EXCLUDED.company,
