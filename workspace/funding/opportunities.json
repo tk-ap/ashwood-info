@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-10-10T14:48:07.853Z",
+  "generated_at": "2026-10-11T15:32:32.283Z",
   "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
@@ -232,6 +232,38 @@
             "value"
           ],
           "summary": "Official help page continues to route at-risk residents to funded rental-assistance partners; no direct LACAHSA individual service. Provider capacity and limits require screening."
+        },
+        {
+          "url": "https://lacahsa.gov/get-help/",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current agency directory still routes residents to funded prevention partners; individual services are not delivered directly by LACAHSA. Provider terms and capacity vary."
+        },
+        {
+          "url": "https://lacahsa.gov/wp-content/uploads/2026/05/Prevention-Flyer.pdf",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "PATH Collaborative flyer offers temporary rental assistance, case management and relocation support for LA County renters after a crisis or income loss within 12 months. Metro LA including Downtown routes to The People Concern. Flyer income ceilings start at $84,850 for one person; confirm current provider limits and intake."
+        },
+        {
+          "url": "https://lacahsa.gov/wp-content/uploads/2026/05/LACHASA-One-Pager_V2B.pdf",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "The agency-linked Better Angels STEP flyer describes interest-free microloans for very-low-income LA County residents facing eviction within 30 days after a financial shock. This is repayable financing, not proof that all directory assistance is a grant; fees and repayment terms are not established by the flyer."
         }
       ],
       "eligibility_rules": [
@@ -244,11 +276,13 @@
           "label": "Housing instability"
         }
       ],
-      "geography": [],
+      "geography": [
+        "Los Angeles County"
+      ],
       "veteran_requirements": null,
       "income_requirements": null,
       "employment_requirements": null,
-      "repayable": false,
+      "repayable": null,
       "interest_percent": null,
       "fees": null,
       "amount": null,
@@ -257,12 +291,13 @@
       "training_weeks": null,
       "employment_ready_at": null,
       "benefit_interactions": [
-        "Confirm coordination with other assistance; no compatibility assumed."
+        "Coordinate any rent assistance with existing housing support; do not fund the same expense twice.",
+        "The official help directory includes interest-free STEP microloans; confirm fees, repayment capacity and terms before any financing decision. No loan acceptance is authorized."
       ],
-      "verification": "VERIFIED",
+      "verification": "NEEDS_REVIEW",
       "confidence": "official_program_only",
-      "disposition": "CONSULT",
-      "reason": "Official program checked; applicant facts, benefit coordination and capacity remain unresolved.",
+      "disposition": "HOLD",
+      "reason": "Partner routing is verified, but the directory mixes rental assistance with repayable STEP financing. Confirm the selected provider offers non-repayable assistance and has capacity before proceeding.",
       "action_deadline": null,
       "outcome": null,
       "discovered_at": "2026-09-24T23:48:00Z",
@@ -271,7 +306,7 @@
       "funder": "L.A. County Affordable Housing Solutions Agency",
       "type": "emergency_cash",
       "applicant_lane": "individual",
-      "value": "Emergency rental / flexible financial assistance delivered through funded partner organizations",
+      "value": "Provider-specific temporary rental assistance and housing support; some linked pathways are loans",
       "deadline": null,
       "availability": "open",
       "status": "POSSIBLE_FIT",
@@ -285,15 +320,17 @@
         "housing"
       ],
       "unknowns": [
-        "Which funded provider currently has capacity",
-        "Provider-specific documentation and prioritization rules"
+        "Selected provider intake capacity and current income limits",
+        "Selected pathway grant versus loan, fees and repayment terms",
+        "Provider-specific documents and prioritization",
+        "Coordination with existing assistance to avoid duplicate rent coverage"
       ],
       "documents": [
         "Provider-specific intake documents",
         "Housing / arrears documentation"
       ],
       "effort": "medium",
-      "next_action": "Contact an awarded provider and ask for emergency rental-assistance intake.",
+      "next_action": "Use the official PATH Collaborative prevention flyer to identify the regional provider; Metro LA routes to The People Concern. Ask whether temporary rental assistance is non-repayable, current intake capacity and required documents; coordinate existing assistance before accepting support. Do not treat the Better Angels STEP loan as a grant.",
       "last_verified_at": "2026-10-10T14:47:20.272Z",
       "source_url": "https://lacahsa.gov/get-help/",
       "source_label": "LACAHSA — Get Help",
@@ -319,6 +356,43 @@
           "field": "verification",
           "before": "NEEDS_REVIEW",
           "after": "VERIFIED"
+        },
+        {
+          "at": "2026-10-11T15:32:32.283Z",
+          "field": "value",
+          "before": "Emergency rental / flexible financial assistance delivered through funded partner organizations",
+          "after": "Provider-specific temporary rental assistance and housing support; some linked pathways are loans"
+        },
+        {
+          "at": "2026-10-11T15:32:32.283Z",
+          "field": "unknowns",
+          "before": [
+            "Which funded provider currently has capacity",
+            "Provider-specific documentation and prioritization rules"
+          ],
+          "after": [
+            "Selected provider intake capacity and current income limits",
+            "Selected pathway grant versus loan, fees and repayment terms",
+            "Provider-specific documents and prioritization",
+            "Coordination with existing assistance to avoid duplicate rent coverage"
+          ]
+        },
+        {
+          "at": "2026-10-11T15:32:32.283Z",
+          "field": "benefit_interactions",
+          "before": [
+            "Confirm coordination with other assistance; no compatibility assumed."
+          ],
+          "after": [
+            "Coordinate any rent assistance with existing housing support; do not fund the same expense twice.",
+            "The official help directory includes interest-free STEP microloans; confirm fees, repayment capacity and terms before any financing decision. No loan acceptance is authorized."
+          ]
+        },
+        {
+          "at": "2026-10-11T15:32:32.283Z",
+          "field": "verification",
+          "before": "VERIFIED",
+          "after": "NEEDS_REVIEW"
         }
       ]
     },
@@ -361,6 +435,17 @@
             "value"
           ],
           "summary": "Provider still lists October 15 close, $1,000 microgrant plus one program, veteran/spouse employer business eligibility. Payment is Net 60 after required documentation; linked application renders no readable form, so actual submission capacity remains unconfirmed."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October 15 application close remains published; 25 finalists receive $1,000 plus one free program. Veteran or spouse employer-business rules remain 2–100 employees, at least one year, US based and at most $5M annual revenue. First disbursement is Net 60 after complete approved documentation, not immediate housing support."
         }
       ],
       "eligibility_rules": [
@@ -443,7 +528,7 @@
       ],
       "effort": "medium",
       "next_action": "Before October 15, check the 2–100 employee and one-year business requirements. Do not treat this as immediate housing cash.",
-      "last_verified_at": "2026-10-10T14:47:20.272Z",
+      "last_verified_at": "2026-10-11T15:32:23.217673Z",
       "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
       "source_label": "Founders First CDC — Tadlock Veteran Business Grant",
       "program_key": "founders-first-tadlock-2026",
@@ -828,6 +913,17 @@
             "value"
           ],
           "summary": "Google offers Start and Scale tiers, with up to $200,000 cloud credits or $350,000 for qualifying AI Scale startups. A billing ID and matching website/business email are required. Tier, funding and AI eligibility are reviewed; credits cannot generally pay third-party services."
+        },
+        {
+          "url": "https://cloud.google.com/startup/faq",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Start and VC-funded Scale tiers remain; credits up to $200K or $350K for qualifying AI Scale. Working MVP/business model and matching billing/email/domain requirements apply. Third-party services and models are not covered; no personal tier eligibility established."
         }
       ],
       "eligibility_rules": [
@@ -894,7 +990,7 @@
       ],
       "effort": "medium",
       "next_action": "Determine the correct tier and whether an existing billing account affects the application path.",
-      "last_verified_at": "2026-10-05T16:38:00Z",
+      "last_verified_at": "2026-10-11T15:32:23.217673Z",
       "source_url": "https://cloud.google.com/startup/faq",
       "source_label": "Google for Startups Cloud Program",
       "program_key": "google-startups-cloud",
@@ -939,6 +1035,17 @@
             "value"
           ],
           "summary": "Microsoft accepts eligible privately held for-profit software startups and offers credits scaling up to $150,000 over time. Country availability, previous credits and funding-stage criteria apply; consultancies, agencies and several other organization types are excluded. Value depends on verified progress and Azure use."
+        },
+        {
+          "url": "https://learn.microsoft.com/en-us/startups/microsoft-for-startups/overview",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Single entry application remains open; credits may scale to $150K with verified progress and Azure usage. Company-owned software, private for-profit, eligible country, no Series C and lifetime free Azure credit cap apply. Typical review three business days is not time to cash."
         }
       ],
       "eligibility_rules": [
@@ -1022,7 +1129,7 @@
       ],
       "effort": "low",
       "next_action": "Check company/legal-entity readiness and previous Azure-credit history.",
-      "last_verified_at": "2026-10-05T16:38:00Z",
+      "last_verified_at": "2026-10-11T15:32:23.217673Z",
       "source_url": "https://learn.microsoft.com/en-us/azure/signups/overview",
       "source_label": "Microsoft for Startups",
       "program_key": "microsoft-for-startups",
@@ -2214,6 +2321,16 @@
             "criteria"
           ],
           "summary": "Greater LA VA lists existing homeless/at-risk support and referral services; this does not establish operational intake for the new goods/transportation fund."
+        },
+        {
+          "url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "August 14 announcement still describes clinician-recommended goods starting early FY2027 and expected transportation contracts. It does not confirm current local operational intake or remaining capacity; retain UNVERIFIED/HOLD."
         }
       ],
       "eligibility_rules": [
@@ -2456,6 +2573,28 @@
             "value"
           ],
           "summary": "October cycle still states November 15 notification, conflicting with general 16th guidance. Keep timing on HOLD pending provider clarification; no identity documents sent by this process."
+        },
+        {
+          "url": "https://cciarts.org/quick-grant/",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October cycle remains listed at up to $600 for approved business-skills professional development; October 15 deadline remains 11:59 a.m. Pacific. General timing guidance uses the following month’s 16th."
+        },
+        {
+          "url": "https://centerforculturalinnovation.submittable.com/submit",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October cycle continues to state November 15 notification while the same intake page examples require activity starts on the 16th. Timing discrepancy remains unresolved; retain NEEDS_REVIEW/HOLD and previous verification date."
         }
       ],
       "eligibility_rules": [
@@ -2972,6 +3111,17 @@
             "value"
           ],
           "summary": "Official FAQ reports over-capacity Team/$1,000 API offers and application re-review. Already claimed offers remain usable; member partner offers/support continue. Bootstrapped startups may apply, but award availability is not assured."
+        },
+        {
+          "url": "https://claude.com/programs/startups",
+          "checked_at": "2026-10-11T15:32:23.217673Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "FAQ still states Claude Team and $1,000 API offers are over capacity and applications will be re-reviewed. Existing claimed offers and Startup Stack access remain; bootstrapped startups can apply. No evidence these promotional offers reopened; retain HOLD."
         }
       ],
       "eligibility_rules": [
@@ -3058,5 +3208,5 @@
       ]
     }
   ],
-  "last_scan_at": "2026-10-10T14:48:07.853Z"
+  "last_scan_at": "2026-10-11T15:32:32.283Z"
 }
