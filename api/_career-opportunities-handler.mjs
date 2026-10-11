@@ -1,9 +1,12 @@
-import { getSql, json, requireSession } from './_workspace.mjs';
+import { getSql, json, requireSession, sameOrigin } from './_workspace.mjs';
 import { rankOpportunityQueues, rotateOpportunities } from './_career-opportunities.mjs';
 import { CURATED_CAREER_OPPORTUNITIES } from './_career-curated-opportunities.mjs';
+import { verifyEmployerListing } from './_career-employer-verifier.mjs';
 
 const CACHE_HOURS = 6;
 const FORCE_REFRESH_MIN_HOURS = 1;
+const VERIFICATION_RECHECK_HOURS = 6;
+const MAX_AUTONOMOUS_VERIFICATIONS = 1;
 const SOURCES = [
   {
     key:'remotive',
@@ -13,7 +16,12 @@ const SOURCES = [
     normalize:job => ({
       ...job,
       source_name:'Remotive',
-      source_url:String(job.url || '').trim()
+      source_url:String(job.url || '').trim(),
+      discovery_kind:'job_board',
+      // A feed result is discovery evidence, not independent proof that its
+      // company listing is live. A verifier must add the employer fields.
+      direct_employer_listing_verified:false,
+      employer_listing_verified_at:null
     })
   },
   {
@@ -32,7 +40,10 @@ const SOURCES = [
       publication_date:job.pubDate || null,
       description:job.jobDescription || job.jobExcerpt || '',
       source_name:'Jobicy',
-      source_url:String(job.url || '').trim()
+      source_url:String(job.url || '').trim(),
+      discovery_kind:'job_board',
+      direct_employer_listing_verified:false,
+      employer_listing_verified_at:null
     })
   }
 ];
@@ -73,6 +84,22 @@ async function ensureSchema(sql) {
       PRIMARY KEY (source, opportunity_id)
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS workspace_career_opportunity_verifications (
+      source TEXT NOT NULL,
+      opportunity_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'UNVERIFIED',
+      employer_url TEXT,
+      source_url TEXT,
+      checked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      verified_at TIMESTAMPTZ,
+      failure_reason TEXT,
+      evidence JSONB NOT NULL DEFAULT '{}'::jsonb,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (source, opportunity_id)
+    )
+  `;
+  await sql`CREATE INDEX IF NOT EXISTS workspace_career_opportunity_verification_status_idx ON workspace_career_opportunity_verifications(status, checked_at DESC)`;
 }
 
 async function getCache(sql, source) {
@@ -161,6 +188,113 @@ function sourceKey(value='') {
   return String(value).trim().toLowerCase().replace(/\s+/g,'-');
 }
 
+function opportunityKey(job={}) {
+  return `${sourceKey(job.source_name || job.source)}::${String(job.id || '')}`;
+}
+
+function applyVerifiedEmployerListings(jobs=[], rows=[]) {
+  const verified = new Map(
+    rows
+      .filter(row => String(row.status || '').toUpperCase() === 'VERIFIED' && row.employer_url && row.verified_at)
+      .map(row => [`${sourceKey(row.source)}::${String(row.opportunity_id)}`, row])
+  );
+  return jobs.map(job => {
+    const row = verified.get(opportunityKey(job));
+    if (!row) return job;
+    return {
+      ...job,
+      employer_url:row.employer_url,
+      direct_employer_listing_verified:true,
+      employer_listing_verified_at:row.verified_at
+    };
+  });
+}
+
+async function currentVerifications(sql) {
+  return sql`
+    SELECT source, opportunity_id, status, employer_url, source_url, checked_at, verified_at, failure_reason, evidence
+    FROM workspace_career_opportunity_verifications
+    WHERE status = 'VERIFIED' AND verified_at >= NOW() - INTERVAL '7 days'
+  `;
+}
+
+async function sourceJobsForVerification(sql) {
+  const loaded = [];
+  for (const source of SOURCES) loaded.push(await loadSource(sql, source, false));
+  return [...CURATED_CAREER_OPPORTUNITIES, ...loaded.flatMap(item => item.jobs || [])];
+}
+
+async function storeVerification(sql, job, result) {
+  const status = result.status === 'verified' ? 'VERIFIED' : 'UNVERIFIED';
+  await sql`
+    INSERT INTO workspace_career_opportunity_verifications (
+      source, opportunity_id, status, employer_url, source_url, checked_at, verified_at, failure_reason, evidence, updated_at
+    ) VALUES (
+      ${sourceKey(job.source_name || job.source)}, ${String(job.id || '')}, ${status}, ${result.employer_url || null},
+      ${result.source_url || job.source_url || job.url || null}, ${result.checked_at || new Date().toISOString()},
+      ${result.verified_at || null}, ${result.reason || null}, ${JSON.stringify(result.evidence || {})}::jsonb, NOW()
+    )
+    ON CONFLICT (source, opportunity_id) DO UPDATE SET
+      status = EXCLUDED.status,
+      employer_url = EXCLUDED.employer_url,
+      source_url = EXCLUDED.source_url,
+      checked_at = EXCLUDED.checked_at,
+      verified_at = EXCLUDED.verified_at,
+      failure_reason = EXCLUDED.failure_reason,
+      evidence = EXCLUDED.evidence,
+      updated_at = NOW()
+  `;
+}
+
+export async function verifyPendingOpportunities(req, res) {
+  try {
+    if (!(await requireSession(req))) return json(res, 401, { ok:false, error:'Unauthorized' });
+    if (req.method !== 'POST') return json(res, 405, { ok:false, error:'Method not allowed' });
+    if (!sameOrigin(req)) return json(res, 403, { ok:false, error:'Origin not allowed' });
+
+    const sql = getSql();
+    await ensureSchema(sql);
+    const [rawJobs, verifiedRows, recentRows, tracked] = await Promise.all([
+      sourceJobsForVerification(sql),
+      currentVerifications(sql),
+      sql`
+        SELECT source, opportunity_id, checked_at
+        FROM workspace_career_opportunity_verifications
+        WHERE checked_at >= NOW() - (${VERIFICATION_RECHECK_HOURS} * INTERVAL '1 hour')
+      `,
+      trackedApplications(sql)
+    ]);
+    const recentlyChecked = new Set(recentRows.map(row => `${sourceKey(row.source)}::${String(row.opportunity_id)}`));
+    const jobs = applyVerifiedEmployerListings(rawJobs, verifiedRows);
+    const jobsByKey = new Map(jobs.map(job => [opportunityKey(job), job]));
+    const pending = rankOpportunityQueues(jobs, tracked).verification
+      .map(opportunity => jobsByKey.get(`${sourceKey(opportunity.source)}::${String(opportunity.id)}`))
+      .filter(Boolean)
+      .filter(job => !recentlyChecked.has(opportunityKey(job)))
+      .slice(0, MAX_AUTONOMOUS_VERIFICATIONS);
+
+    const results = await Promise.all(pending.map(async job => {
+      const result = await verifyEmployerListing(job);
+      await storeVerification(sql, job, result);
+      return {
+        source:sourceKey(job.source_name || job.source),
+        opportunity_id:String(job.id || ''),
+        status:result.status,
+        reason:result.reason || null
+      };
+    }));
+    return json(res, 200, {
+      ok:true,
+      checked:results.length,
+      verified:results.filter(item => item.status === 'verified').length,
+      results
+    });
+  } catch (error) {
+    console.error('career employer verification failed', error);
+    return json(res, 500, { ok:false, error:'Employer listing verification failed' });
+  }
+}
+
 export default async function handler(req, res) {
   try {
     const session = await requireSession(req);
@@ -180,10 +314,11 @@ export default async function handler(req, res) {
       loaded.push(await loadSource(sql, source, forceRefresh));
     }
 
-    const sourceJobs = [...CURATED_CAREER_OPPORTUNITIES, ...loaded.flatMap(item => item.jobs || [])];
-    if (!sourceJobs.length) {
+    const rawSourceJobs = [...CURATED_CAREER_OPPORTUNITIES, ...loaded.flatMap(item => item.jobs || [])];
+    if (!rawSourceJobs.length) {
       throw new Error('No opportunity source returned usable jobs');
     }
+    const sourceJobs = applyVerifiedEmployerListings(rawSourceJobs, await currentVerifications(sql));
 
     const declinedRows = await sql`
       SELECT source, opportunity_id, company, role
@@ -205,8 +340,10 @@ export default async function handler(req, res) {
     const queues = rankOpportunityQueues(sourceJobs, tracked);
     const ranked = queues.recommended.filter(item => !wasDeclined(item));
     const reviewRanked = queues.review.filter(item => !wasDeclined(item));
+    const verificationRanked = queues.verification.filter(item => !wasDeclined(item));
     const opportunities = rotateOpportunities(ranked, cursor, 8);
     const reviewOpportunities = rotateOpportunities(reviewRanked, cursor, 4);
+    const verificationOpportunities = rotateOpportunities(verificationRanked, cursor, 6);
 
     const fetchedTimes = loaded
       .map(item => new Date(item.fetched_at || 0).getTime())
@@ -218,10 +355,13 @@ export default async function handler(req, res) {
       ok:true,
       opportunities,
       review_opportunities:reviewOpportunities,
+      verification_opportunities:verificationOpportunities,
       count:opportunities.length,
       review_count:reviewOpportunities.length,
+      verification_count:verificationOpportunities.length,
       pool_count:ranked.length,
       review_pool_count:reviewRanked.length,
+      verification_pool_count:verificationRanked.length,
       source:['Curated Career Search', ...loaded.map(item => item.name)].join(' + '),
       sources:[
         {

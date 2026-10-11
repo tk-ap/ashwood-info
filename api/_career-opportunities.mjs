@@ -17,6 +17,67 @@ const TITLE_RULES = [
   [/product operations|product strategy|product program/i, 10, 'product / business operations']
 ];
 
+const JOB_BOARD_HOSTS = new Set([
+  'jobicy.com',
+  'remotive.com',
+  'indeed.com',
+  'ziprecruiter.com',
+  'linkedin.com',
+  'glassdoor.com',
+  'monster.com',
+  'careerbuilder.com',
+  'jooble.org',
+  'simplyhired.com',
+  'wellfound.com',
+  'flexjobs.com',
+  'builtin.com',
+  'themuse.com'
+]);
+const EMPLOYER_LISTING_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+
+function webUrl(value='') {
+  try {
+    const parsed = new URL(String(value || '').trim());
+    return ['http:', 'https:'].includes(parsed.protocol) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+export function isJobBoardUrl(value='') {
+  const host = webUrl(value)?.hostname.toLowerCase() || '';
+  return [...JOB_BOARD_HOSTS].some(domain => host === domain || host.endsWith(`.${domain}`));
+}
+
+export function isApplicationDestinationUrl(value='') {
+  return Boolean(webUrl(value)) && !isJobBoardUrl(value);
+}
+
+function hasCurrentEmployerVerification(job={}) {
+  if (job.direct_employer_listing_verified !== true) return false;
+  const verifiedAt = new Date(job.employer_listing_verified_at || job.direct_employer_listing_verified_at || '');
+  const age = Date.now() - verifiedAt.getTime();
+  return Number.isFinite(age) && age >= 0 && age <= EMPLOYER_LISTING_MAX_AGE_MS;
+}
+
+export function verifiedEmployerListingUrl(job={}) {
+  if (!hasCurrentEmployerVerification(job)) return '';
+  const candidates = [
+    job.employer_url,
+    job.employerUrl,
+    job.apply_url,
+    job.applyUrl,
+    job.application_url,
+    job.applicationUrl,
+    job.url
+  ];
+  for (const candidate of candidates) {
+    const parsed = webUrl(candidate);
+    if (parsed && isApplicationDestinationUrl(parsed.href)) return parsed.href;
+  }
+  return '';
+}
+
 const BODY_RULES = [
   [/analytics|data analysis|business intelligence|data-driven insights/i, 3, 'analytics'],
   [/operational risk|risk controls?|control environment/i, 4, 'operational risk'],
@@ -521,7 +582,9 @@ function normalizedOpportunity(job, scored) {
     work_arrangement_preference, work_arrangement_rank, requirements,
     eligibility, fit, practicality, recommendation_bucket
   } = scored;
-  const url = String(job.url || '').trim();
+  // A board can tell us about a role, but it can never be the apply destination.
+  // Actionable cards require a recent, independently verified company/ATS listing.
+  const url = verifiedEmployerListingUrl(job);
   const pair = `${String(job.company_name || '').toLowerCase()}::${String(job.title || '').toLowerCase()}`;
   const source = String(job.source_name || job.source || 'Remotive').trim() || 'Remotive';
   const id = String(job.id || url || pair);
@@ -536,7 +599,9 @@ function normalizedOpportunity(job, scored) {
     salary:String(job.salary || '').trim(),
     published_at:job.publication_date || null,
     source,
-    source_url:String(job.source_url || url).trim() || url,
+    source_url:String(job.source_url || job.url || url).trim() || url,
+    employer_url:url,
+    employer_listing_verified_at:job.employer_listing_verified_at || job.direct_employer_listing_verified_at || null,
     score,
     fit_score:fit_score ?? score,
     matches,
@@ -572,15 +637,24 @@ export function rankOpportunityQueues(jobs=[], tracked=[], now=Date.now()) {
   const trackedUrls = new Set(completedTracked.map(item => String(item.posting_url || '').trim()).filter(Boolean));
   const trackedPairs = new Set(completedTracked.map(item => `${String(item.company || '').toLowerCase()}::${String(item.role || '').toLowerCase()}`));
   const seenPairs = new Set();
+  const seenVerificationPairs = new Set();
   const recommended = [];
   const review = [];
+  const verification = [];
 
   for (const job of jobs) {
     const scored = scoreOpportunity(job, now);
     if (!['recommended','review'].includes(scored.recommendation_bucket)) continue;
     const item = normalizedOpportunity(job, scored);
-    if (!item.company || !item.role || !item.url) continue;
-    if (seenPairs.has(item.pair) || trackedUrls.has(item.url) || trackedPairs.has(item.pair)) continue;
+    if (!item.company || !item.role || trackedPairs.has(item.pair)) continue;
+    if (!item.url) {
+      if (seenPairs.has(item.pair) || seenVerificationPairs.has(item.pair)) continue;
+      seenVerificationPairs.add(item.pair);
+      item.verification_reason = 'A matching company listing has not been independently verified yet.';
+      verification.push(item);
+      continue;
+    }
+    if (seenPairs.has(item.pair) || trackedUrls.has(item.url)) continue;
     seenPairs.add(item.pair);
     delete item.pair;
     if (item.recommendation_bucket === 'recommended') recommended.push(item);
@@ -594,10 +668,18 @@ export function rankOpportunityQueues(jobs=[], tracked=[], now=Date.now()) {
 
   recommended.sort(sortFn);
   review.sort(sortFn);
+  const verificationOnly = verification
+    .filter(item => !seenPairs.has(item.pair))
+    .sort(sortFn)
+    .map(item => {
+      delete item.pair;
+      return item;
+    });
 
   return {
     recommended:recommended.slice(0,60),
-    review:review.slice(0,40)
+    review:review.slice(0,40),
+    verification:verificationOnly.slice(0,40)
   };
 }
 

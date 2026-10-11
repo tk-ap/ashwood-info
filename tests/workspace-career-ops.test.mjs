@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { needsAttention, normaliseStatus, salaryLabel, sortApplications, summaryCounts } from '../workspace/career-ops/model.mjs';
+import { isApplicationDestinationUrl } from '../api/_career-opportunities.mjs';
+import { applicationPersistenceContext, matchesEmployerVerification, requiresEmployerVerification } from '../api/_career-ops-handler.mjs';
 
 test('normaliseStatus falls back safely', () => {
   assert.equal(normaliseStatus('screening'), 'SCREENING');
@@ -54,4 +56,52 @@ test('sortApplications prioritizes interviews and recruiter activity', () => {
     { id:'c', status:'RECRUITER' }
   ]);
   assert.deepEqual(rows.map(row => row.id), ['b','c','a']);
+});
+
+test('the canonical application API refuses job-board URLs as apply destinations', () => {
+  assert.equal(isApplicationDestinationUrl('https://jobicy.com/jobs/example'), false);
+  assert.equal(isApplicationDestinationUrl('https://www.linkedin.com/jobs/view/123'), false);
+  assert.equal(isApplicationDestinationUrl('not a URL'), false);
+  assert.equal(isApplicationDestinationUrl('https://jobs.example.co/openings/123'), true);
+});
+
+test('a discovered role can be tracked only with its current verified employer listing', () => {
+  const discoveredRole = {
+    source:'jobicy',
+    job_id:'job-123',
+    posting_snapshot:{ source_url:'https://jobicy.com/jobs/job-123' }
+  };
+  assert.equal(requiresEmployerVerification(discoveredRole), true);
+  assert.equal(matchesEmployerVerification('https://jobs.example.co/openings/123', {
+    status:'VERIFIED',
+    verified_at:'2026-10-10T12:00:00.000Z',
+    employer_url:'https://jobs.example.co/openings/123'
+  }), true);
+  assert.equal(matchesEmployerVerification('https://jobs.example.co/openings/other', {
+    status:'VERIFIED',
+    verified_at:'2026-10-10T12:00:00.000Z',
+    employer_url:'https://jobs.example.co/openings/123'
+  }), false);
+  assert.equal(requiresEmployerVerification({ source:'workspace', job_id:'', posting_snapshot:{} }), false);
+});
+
+test('editing a tracked discovery keeps its verification source and snapshot', () => {
+  const context = applicationPersistenceContext({
+    source:'workspace',
+    job_id:'job-123',
+    posting_snapshot:{ summary:'Updated note' }
+  }, {
+    source:'jobicy',
+    job_id:'job-123',
+    posting_snapshot:{
+      source_url:'https://jobicy.com/jobs/job-123',
+      employer_url:'https://jobs.example.co/openings/123',
+      employer_listing_verified_at:'2026-10-10T12:00:00.000Z'
+    }
+  });
+  assert.equal(context.source, 'jobicy');
+  assert.equal(context.jobId, 'job-123');
+  assert.equal(context.postingSnapshot.source_url, 'https://jobicy.com/jobs/job-123');
+  assert.equal(context.postingSnapshot.employer_url, 'https://jobs.example.co/openings/123');
+  assert.equal(context.postingSnapshot.summary, 'Updated note');
 });

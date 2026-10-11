@@ -12,6 +12,32 @@ const fmtDateTime = value => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
 };
+const JOB_BOARD_HOSTS = new Set([
+  'jobicy.com', 'remotive.com', 'indeed.com', 'ziprecruiter.com', 'linkedin.com',
+  'glassdoor.com', 'monster.com', 'careerbuilder.com', 'jooble.org', 'simplyhired.com',
+  'wellfound.com', 'flexjobs.com', 'builtin.com', 'themuse.com'
+]);
+function isJobBoardUrl(value='') {
+  try {
+    const host = new URL(String(value || '').trim()).hostname.toLowerCase();
+    return [...JOB_BOARD_HOSTS].some(domain => host === domain || host.endsWith(`.${domain}`));
+  } catch {
+    return false;
+  }
+}
+function directEmployerUrl(...candidates) {
+  for (const candidate of candidates) {
+    const value = String(candidate || '').trim();
+    if (!value || isJobBoardUrl(value)) continue;
+    try {
+      const parsed = new URL(value);
+      if (['http:', 'https:'].includes(parsed.protocol)) return parsed.href;
+    } catch {
+      // Keep malformed URLs out of clickable application actions.
+    }
+  }
+  return '';
+}
 
 const state = {
   applications: [],
@@ -19,6 +45,7 @@ const state = {
   selectedId: null,
   opportunities: [],
   reviewOpportunities: [],
+  verificationOpportunities: [],
   opportunityCursor: 0,
   opportunityMeta: null,
   inboxSync: null,
@@ -27,7 +54,7 @@ const state = {
   resumeProfile: { configured:false, source:null, updated_at:null },
   newJobsSinceSession: 0,
   gmailSyncInFlight: false,
-  gmailPollTimer: null,
+  careerPollTimer: null,
   declinedOpportunityIds: new Set(JSON.parse(localStorage.getItem('ashwood.career.declined-opportunities.v1') || '[]'))
 };
 
@@ -72,6 +99,23 @@ async function opportunityApi({ cursor=0, refresh=false }={}) {
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
     const error = new Error(body.error || `Request failed (${response.status})`);
+    error.status = response.status;
+    throw error;
+  }
+  return body;
+}
+
+async function verifyOpportunityLinks(opportunities=[]) {
+  if (!opportunities.length) return { checked:0, verified:0 };
+  const response = await fetch('/api/workspace-career?view=verify-opportunities', {
+    method:'POST',
+    credentials:'same-origin',
+    headers:{ 'Content-Type':'application/json' },
+    body:'{}'
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(body.error || `Verification failed (${response.status})`);
     error.status = response.status;
     throw error;
   }
@@ -295,6 +339,12 @@ function renderDetail() {
   const chips = materialChips(materials);
   const events = eventsFor(app.id);
   const silentPolicy = silentRejectionFor(app.id);
+  const employerListingUrl = applicationEmployerListingUrl(app);
+  const postingAction = employerListingUrl
+    ? `<a href="${escapeHtml(employerListingUrl)}" target="_blank" rel="noopener">Open employer listing ↗</a>`
+    : applicationWasFoundOnJobBoard(app)
+      ? '<span class="career-muted">Employer listing needs verification before it can be opened.</span>'
+      : '';
 
   root.innerHTML = `
     <div class="career-detail-head">
@@ -304,7 +354,7 @@ function renderDetail() {
         <p>${[app.job_id ? `Req ${app.job_id}` : null, app.location, app.work_arrangement].filter(Boolean).map(escapeHtml).join(' · ')}</p>
       </div>
       <div class="career-detail-actions">
-        ${app.posting_url ? `<a href="${escapeHtml(app.posting_url)}" target="_blank" rel="noopener">Open posting ↗</a>` : ''}
+        ${postingAction}
         <button type="button" id="career-edit">Edit</button>
       </div>
     </div>
@@ -339,6 +389,22 @@ function renderDetail() {
     const generated = await generateApplicationResumeArtifact(app, button);
     if (generated) await refreshCareerState({ showLoading:false });
   });
+}
+
+function applicationWasFoundOnJobBoard(app={}) {
+  const snapshot = app.posting_snapshot || {};
+  return isJobBoardUrl(app.posting_url) || isJobBoardUrl(snapshot.source_url);
+}
+
+function applicationEmployerListingUrl(app={}) {
+  const snapshot = app.posting_snapshot || {};
+  if (applicationWasFoundOnJobBoard(app) && !snapshot.employer_listing_verified_at) return '';
+  return directEmployerUrl(
+    snapshot.employer_url,
+    snapshot.apply_url,
+    snapshot.application_url,
+    app.posting_url
+  );
 }
 
 function syncSummaryMarkup(sync) {
@@ -581,33 +647,47 @@ function trackedTargetFor(opportunity={}) {
   ) || null;
 }
 
+function sourceAttributionMarkup(opportunity={}) {
+  const source = opportunity.source_url || opportunity.url;
+  const label = opportunity.source || 'job feed';
+  if (isJobBoardUrl(source)) return '<small>Found on ' + escapeHtml(label) + '</small>';
+  return source
+    ? '<small>Source: <a href="' + escapeHtml(source) + '" target="_blank" rel="noopener">' + escapeHtml(label) + '</a></small>'
+    : '<small>Source: ' + escapeHtml(label) + '</small>';
+}
+
 function opportunityCardMarkup(opportunity={}, options={}) {
   const review = Boolean(options.review);
-  const trackedTarget = review ? null : trackedTargetFor(opportunity);
-  const actions = review
-    ? '<a href="' + escapeHtml(opportunity.url) + '" target="_blank" rel="noopener">Review employer requirements ↗</a>'
-    : trackedTarget
-      ? '<a href="' + escapeHtml(opportunity.url) + '" target="_blank" rel="noopener">Continue application ↗</a>' +
-        '<button type="button" data-open-tracked-target="' + escapeHtml(trackedTarget.id) + '">Open tracker record</button>'
-      : '<button type="button" data-apply-opportunity="' + escapeHtml(opportunity.id) + '">Apply ↗</button>' +
-        '<button type="button" data-track-opportunity="' + escapeHtml(opportunity.id) + '">Track target</button>';
-  return '<article class="career-opportunity-card ' + (review ? 'is-review' : 'is-recommended') + '">' +
-    '<div class="career-opportunity-topline"><span>' + escapeHtml(opportunity.company) + '</span><time>' + escapeHtml(fmtDate(opportunity.published_at)) + '</time></div>' +
-    '<h3>' + escapeHtml(opportunity.role) + '</h3>' +
-    '<p class="career-opportunity-location">' + escapeHtml([opportunity.location || 'Remote', opportunity.job_type].filter(Boolean).join(' · ')) + '</p>' +
-    (opportunity.salary ? '<p class="career-opportunity-salary">' + escapeHtml(opportunity.salary) + '</p>' : '') +
-    '<p class="career-opportunity-summary">' + escapeHtml(opportunity.summary || '') + '</p>' +
-    decisionDimensionsMarkup(opportunity) +
-    (trackedTarget ? '<small class="career-muted">Tracked target · remains visible until the lifecycle advances.</small>' : '') +
-    (review ? '' : resumeArtifactMarkup(opportunity)) +
-    '<div class="career-opportunity-actions">' + actions +
-      '<button type="button" data-decline-opportunity="' + escapeHtml(opportunity.id) + '">Decline</button></div>' +
-    '<small>Source: <a href="' + escapeHtml(opportunity.source_url || opportunity.url) + '" target="_blank" rel="noopener">' + escapeHtml(opportunity.source || 'job feed') + '</a></small>' +
-    '</article>';
+  const verification = Boolean(options.verification);
+  const readyUrl = directEmployerUrl(opportunity.employer_url, opportunity.url);
+  const trackedTarget = review || verification ? null : trackedTargetFor(opportunity);
+  const status = verification ? 'Checking company listing' : review ? 'Review requirements' : 'Ready to pursue';
+  const actions = verification
+    ? '<span class="career-muted">No application link until the company listing is independently checked.</span>'
+    : review
+      ? '<a href="' + escapeHtml(readyUrl) + '" target="_blank" rel="noopener">Open employer listing ↗</a>'
+      : trackedTarget
+        ? '<a href="' + escapeHtml(readyUrl) + '" target="_blank" rel="noopener">Continue application ↗</a>' +
+          '<button type="button" data-open-tracked-target="' + escapeHtml(trackedTarget.id) + '">Open tracker record</button>'
+        : '<button type="button" data-apply-opportunity="' + escapeHtml(opportunity.id) + '">Start application ↗</button>' +
+          '<button type="button" data-track-opportunity="' + escapeHtml(opportunity.id) + '">Track target</button>';
+  return '<details class="career-opportunity-card ' + (verification ? 'is-verification' : review ? 'is-review' : 'is-recommended') + '">' +
+    '<summary><span class="career-opportunity-row"><span><small>' + escapeHtml(opportunity.company) + '</small><strong>' + escapeHtml(opportunity.role) + '</strong><em>' + escapeHtml([opportunity.location || 'Remote', opportunity.job_type].filter(Boolean).join(' · ')) + '</em></span><span><b>' + escapeHtml(status) + '</b><time>' + escapeHtml(fmtDate(opportunity.published_at)) + '</time></span></span></summary>' +
+    '<div class="career-opportunity-expanded">' +
+      (opportunity.salary ? '<p class="career-opportunity-salary">' + escapeHtml(opportunity.salary) + '</p>' : '') +
+      '<p class="career-opportunity-summary">' + escapeHtml(opportunity.summary || '') + '</p>' +
+      decisionDimensionsMarkup(opportunity) +
+      (verification ? '<p class="career-verification-note">' + escapeHtml(opportunity.verification_reason || 'This role is waiting for an independent company-listing check.') + '</p>' : '') +
+      (trackedTarget ? '<small class="career-muted">Tracked target · remains visible until the lifecycle advances.</small>' : '') +
+      (review || verification ? '' : resumeArtifactMarkup(opportunity)) +
+      '<div class="career-opportunity-actions">' + actions +
+        '<button type="button" data-decline-opportunity="' + escapeHtml(opportunity.id) + '">Decline</button></div>' +
+      sourceAttributionMarkup(opportunity) +
+    '</div></details>';
 }
 
 function allVisibleOpportunityChoices() {
-  return [...state.opportunities, ...state.reviewOpportunities];
+  return [...state.opportunities, ...state.reviewOpportunities, ...state.verificationOpportunities];
 }
 
 function wireOpportunityActions(root) {
@@ -681,27 +761,33 @@ function renderOpportunities() {
   const data = state.opportunityMeta || {};
   const recommended = state.opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
   const review = state.reviewOpportunities.filter(opportunity => !isLocallyDeclined(opportunity));
+  const verification = state.verificationOpportunities.filter(opportunity => !isLocallyDeclined(opportunity));
 
   const recommendedMarkup = recommended.length
-    ? '<div class="career-opportunity-group-head"><div><span>High-confidence recommendations</span><strong>Eligible + strong fit + practical</strong></div><small>' + recommended.length + ' shown</small></div>' +
+    ? '<div class="career-opportunity-group-head"><div><span>Ready to pursue</span><strong>Verified employer listings that fit your search</strong></div><small>' + recommended.length + ' shown</small></div>' +
       recommended.map(opportunity => opportunityCardMarkup(opportunity)).join('')
-    : '<div class="career-opportunity-empty"><strong>No high-confidence recommendation in this source window.</strong><span>ASHWOOD will leave the primary list empty rather than promote a role with uncertain requirements, weak fit, or poor practical constraints.</span></div>';
+    : '<div class="career-opportunity-empty"><strong>No verified listing is ready right now.</strong><span>Roles found through job boards stay in the company-listing check queue until a current employer page is confirmed.</span></div>';
 
   const reviewMarkup = review.length
-    ? '<div class="career-opportunity-group-head is-review"><div><span>Review queue</span><strong>Promising, but a hard requirement is not verified</strong></div><small>' + review.length + ' shown</small></div>' +
+    ? '<div class="career-opportunity-group-head is-review"><div><span>Needs a closer look</span><strong>Employer listing found; a requirement still needs review</strong></div><small>' + review.length + ' shown</small></div>' +
       review.map(opportunity => opportunityCardMarkup(opportunity,{review:true})).join('')
     : '';
 
-  root.innerHTML = resumeProfileSetupMarkup() + recommendedMarkup + reviewMarkup;
+  const verificationMarkup = verification.length
+    ? '<div class="career-opportunity-group-head is-verification"><div><span>Checking the company listing</span><strong>We will not send you to a job board</strong></div><small>' + verification.length + ' waiting</small></div>' +
+      verification.map(opportunity => opportunityCardMarkup(opportunity,{verification:true})).join('')
+    : '';
+
+  root.innerHTML = resumeProfileSetupMarkup() + recommendedMarkup + reviewMarkup + verificationMarkup;
   wireOpportunityActions(root);
   wireResumeProfileImport(root);
 
   const sourceStamp = data.source_fetched_at ? 'sources checked ' + fmtDateTime(data.source_fetched_at) : 'source time unavailable';
   const sourceLabel = data.source ? data.source + ' · ' : '';
-  const pool = Number(data.pool_count || 0);
   const reviewPool = Number(data.review_pool_count || 0);
+  const verificationPool = Number(data.verification_pool_count || 0);
   const warning = data.warning ? ' · ' + data.warning : '';
-  meta.textContent = recommended.length + ' high-confidence shown · ' + pool + ' high-confidence in pool · ' + reviewPool + ' held for requirement review · ' + sourceLabel + sourceStamp + warning;
+  meta.textContent = recommended.length + ' ready to pursue · ' + reviewPool + ' need requirement review · ' + verificationPool + ' waiting for company-listing checks · ' + sourceLabel + sourceStamp + warning;
 }
 
 async function loadOpportunities({ refresh=false }={}) {
@@ -713,7 +799,20 @@ async function loadOpportunities({ refresh=false }={}) {
     let data = await opportunityApi({ cursor:state.opportunityCursor, refresh });
     let opportunities = data.opportunities || [];
     let reviewOpportunities = data.review_opportunities || [];
-    let allIncoming = [...opportunities, ...reviewOpportunities];
+    let verificationOpportunities = data.verification_opportunities || [];
+    let allIncoming = [...opportunities, ...reviewOpportunities, ...verificationOpportunities];
+
+    // This is a bounded background check. It records only the evidence needed
+    // to promote a separately matching company/ATS URL; it never opens a job
+    // board as an application destination.
+    const verification = await verifyOpportunityLinks(verificationOpportunities);
+    if (verification.checked) {
+      data = await opportunityApi({ cursor:state.opportunityCursor, refresh:false });
+      opportunities = data.opportunities || [];
+      reviewOpportunities = data.review_opportunities || [];
+      verificationOpportunities = data.verification_opportunities || [];
+      allIncoming = [...opportunities, ...reviewOpportunities, ...verificationOpportunities];
+    }
 
     const legacyDeclines = allIncoming.filter(opportunity =>
       isLocallyDeclined(opportunity) &&
@@ -746,12 +845,14 @@ async function loadOpportunities({ refresh=false }={}) {
       data = await opportunityApi({ cursor:state.opportunityCursor, refresh:false });
       opportunities = data.opportunities || [];
       reviewOpportunities = data.review_opportunities || [];
+      verificationOpportunities = data.verification_opportunities || [];
     }
 
     state.opportunities = opportunities.filter(opportunity => !isLocallyDeclined(opportunity));
     state.reviewOpportunities = reviewOpportunities.filter(opportunity => !isLocallyDeclined(opportunity));
+    state.verificationOpportunities = verificationOpportunities.filter(opportunity => !isLocallyDeclined(opportunity));
     state.opportunityMeta = data;
-    state.newJobsSinceSession = Number(data.pool_count || state.opportunities.length || 0);
+    state.newJobsSinceSession = Number(data.pool_count || 0) + Number(data.review_pool_count || 0) + Number(data.verification_pool_count || 0);
     renderHeader();
     renderOpportunities();
     renderToday();
@@ -770,6 +871,8 @@ async function trackOpportunity(opportunity, button, { reload=true, nextAction=n
   button.disabled = true;
   button.textContent = reload ? 'Adding…' : 'Preparing…';
   try {
+    const employerUrl = directEmployerUrl(opportunity.employer_url, opportunity.url);
+    if (!employerUrl) throw new Error('A verified employer listing is required before this role can be tracked for application.');
     const salary = salaryBounds(opportunity.salary);
     const result = await api({
       method:'POST',
@@ -779,7 +882,7 @@ async function trackOpportunity(opportunity, button, { reload=true, nextAction=n
         company:opportunity.company,
         role:opportunity.role,
         job_id:String(opportunity.id),
-        posting_url:opportunity.url,
+        posting_url:employerUrl,
         location:opportunity.location,
         work_arrangement:workArrangementLabel(opportunity),
         salary_min:salary.min,
@@ -796,6 +899,8 @@ async function trackOpportunity(opportunity, button, { reload=true, nextAction=n
           preferred:[],
           source:opportunity.source || null,
           source_url:opportunity.source_url || opportunity.url,
+          employer_url:employerUrl,
+          employer_listing_verified_at:opportunity.employer_listing_verified_at || null,
           salary_label:opportunity.salary || null,
           published_at:opportunity.published_at || null
         },
@@ -990,13 +1095,20 @@ async function syncInbox({ interactive=false }={}) {
 }
 
 function startCareerLiveSync() {
-  if (state.gmailPollTimer) window.clearInterval(state.gmailPollTimer);
+  if (state.careerPollTimer) window.clearInterval(state.careerPollTimer);
   window.setTimeout(() => {
-    if (document.visibilityState === 'visible') syncInbox();
+    if (document.visibilityState === 'visible') refreshCareerAutomation();
   }, 10000);
-  state.gmailPollTimer = window.setInterval(() => {
-    if (document.visibilityState === 'visible') syncInbox();
+  state.careerPollTimer = window.setInterval(() => {
+    if (document.visibilityState === 'visible') refreshCareerAutomation();
   }, 60000);
+}
+
+async function refreshCareerAutomation() {
+  // One existing visible-page loop handles private inbox reconciliation and one
+  // bounded employer-listing check. It deliberately does not create a second
+  // high-frequency scheduler or work while the private workspace is hidden.
+  await Promise.all([syncInbox(), loadOpportunities()]);
 }
 
 $('#career-add').addEventListener('click', () => openApplicationDialog());
@@ -1005,7 +1117,7 @@ $('#career-opportunity-refresh').addEventListener('click', () => loadOpportuniti
 $('#career-form').addEventListener('submit', saveApplication);
 document.querySelectorAll('[data-career-close]').forEach(button => button.addEventListener('click', () => $('#career-dialog').close()));
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') syncInbox();
+  if (document.visibilityState === 'visible') refreshCareerAutomation();
 });
 
 load().then(startCareerLiveSync);

@@ -1,6 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assessFit, assessPracticality, assessRequirements, isUsCompatible, locationPreference, rankOpportunities, rankOpportunityQueues, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml, workArrangementPreference } from '../api/_career-opportunities.mjs';
+import { assessFit, assessPracticality, assessRequirements, isJobBoardUrl, isUsCompatible, locationPreference, rankOpportunities, rankOpportunityQueues, resumeRecommendation, rotateOpportunities, scoreOpportunity, stripHtml, workArrangementPreference } from '../api/_career-opportunities.mjs';
+
+const verified = job => ({
+  ...job,
+  employer_url:job.employer_url || job.url,
+  direct_employer_listing_verified:true,
+  employer_listing_verified_at:new Date().toISOString()
+});
 
 test('stripHtml creates a compact readable summary', () => {
   assert.equal(stripHtml('<p>Risk &amp; controls</p><ul><li>PMO</li></ul>'), 'Risk & controls PMO');
@@ -34,7 +41,7 @@ test('rankOpportunities excludes already tracked postings', () => {
     { id:1, url:'https://example.com/a', title:'Business Analyst', company_name:'A Co', candidate_required_location:'USA', work_arrangement:'remote', publication_date:new Date().toISOString(), description:'Business analysis and process improvement.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } },
     { id:2, url:'https://example.com/b', title:'Compliance Program Manager', company_name:'B Co', candidate_required_location:'USA', work_arrangement:'remote', publication_date:new Date().toISOString(), description:'Compliance governance and controls.', requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] } }
   ];
-  const ranked = rankOpportunities(jobs, [{ company:'A Co', role:'Business Analyst', posting_url:'https://example.com/a' }]);
+  const ranked = rankOpportunities(jobs.map(verified), [{ company:'A Co', role:'Business Analyst', posting_url:'https://example.com/a' }]);
   assert.equal(ranked.length, 1);
   assert.equal(ranked[0].company, 'B Co');
 });
@@ -53,7 +60,7 @@ test('TARGET applications stay in recommendations until the lifecycle advances',
     requirements_review:{ status:'qualified', checks:['Employer requirements checked.'], reasons:[], confidence:'high' }
   };
 
-  const target = rankOpportunityQueues([job], [{
+  const target = rankOpportunityQueues([verified(job)], [{
     company:'Instructure',
     role:job.title,
     posting_url:job.url,
@@ -61,7 +68,7 @@ test('TARGET applications stay in recommendations until the lifecycle advances',
   }]);
   assert.equal(target.recommended.length, 1);
 
-  const applied = rankOpportunityQueues([job], [{
+  const applied = rankOpportunityQueues([verified(job)], [{
     company:'Instructure',
     role:job.title,
     posting_url:job.url,
@@ -126,7 +133,7 @@ test('resume recommendation selects a lane without rewriting factual history', (
 });
 
 test('ranked opportunities carry a suggested resume version', () => {
-  const ranked = rankOpportunities([{
+  const ranked = rankOpportunities([verified({
     id:9,
     url:'https://example.com/risk',
     title:'Senior Operational Risk Manager',
@@ -136,7 +143,7 @@ test('ranked opportunities carry a suggested resume version', () => {
     publication_date:new Date().toISOString(),
     description:'Own controls, governance, audit, resiliency and cross-functional process improvement.',
     requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] }
-  }], []);
+  })], []);
   assert.equal(ranked.length, 1);
   assert.equal(ranked[0].resume_recommendation.variant, 'Risk, Controls & Governance');
 });
@@ -156,7 +163,10 @@ test('ranked opportunities preserve source identity and dedupe the same role acr
       description:'Business analysis, stakeholder management, controls and process improvement.',
       requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] },
       source_name:'Jobicy',
-      source_url:'https://jobicy.com/jobs/example-business-analyst'
+      source_url:'https://jobicy.com/jobs/example-business-analyst',
+      employer_url:'https://careers.example.co/jobs/business-analyst',
+      direct_employer_listing_verified:true,
+      employer_listing_verified_at:now
     },
     {
       id:202,
@@ -169,13 +179,48 @@ test('ranked opportunities preserve source identity and dedupe the same role acr
       description:'Business analysis, stakeholder management, controls and process improvement.',
       requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] },
       source_name:'Remotive',
-      source_url:'https://remotive.com/remote-jobs/example-business-analyst'
+      source_url:'https://remotive.com/remote-jobs/example-business-analyst',
+      employer_url:'https://careers.example.co/jobs/business-analyst',
+      direct_employer_listing_verified:true,
+      employer_listing_verified_at:now
     }
   ];
   const ranked = rankOpportunities(jobs, []);
   assert.equal(ranked.length, 1);
   assert.equal(ranked[0].source, 'Jobicy');
   assert.equal(ranked[0].source_url, jobs[0].url);
+  assert.equal(ranked[0].url, jobs[0].employer_url);
+});
+
+test('job-board discoveries stay out of apply actions until an independent company-listing check passes', () => {
+  const now = new Date().toISOString();
+  const boardJob = {
+    id:'jobicy-unverified',
+    url:'https://jobicy.com/jobs/example-business-analyst',
+    title:'Senior Business Analyst',
+    company_name:'Example Co',
+    candidate_required_location:'USA',
+    work_arrangement:'remote',
+    publication_date:now,
+    description:'Business analysis, stakeholder management, controls and process improvement.',
+    requirements_review:{ status:'qualified', checks:['Checked'], reasons:[] },
+    source_name:'Jobicy',
+    source_url:'https://jobicy.com/jobs/example-business-analyst'
+  };
+  const waiting = rankOpportunityQueues([boardJob], []);
+  assert.equal(waiting.recommended.length, 0);
+  assert.equal(waiting.review.length, 0);
+  assert.equal(waiting.verification.length, 1);
+  assert.equal(waiting.verification[0].url, '');
+  assert.equal(waiting.verification[0].source, 'Jobicy');
+
+  const ready = rankOpportunityQueues([verified({
+    ...boardJob,
+    employer_url:'https://jobs.example.co/openings/business-analyst'
+  })], []);
+  assert.equal(ready.recommended.length, 1);
+  assert.equal(ready.recommended[0].url, 'https://jobs.example.co/openings/business-analyst');
+  assert.equal(isJobBoardUrl(ready.recommended[0].url), false);
 });
 
 
@@ -236,7 +281,7 @@ test('remote ranks ahead of hybrid, and hybrid ahead of onsite even when onsite 
       candidate_required_location:'USA',
       description:base.description + ' Fully remote.'
     }
-  ], []);
+  ].map(verified), []);
   assert.deepEqual(ranked.map(item => item.company), ['Remote Co','Hybrid Co','Onsite Co']);
   assert.equal(ranked[0].work_arrangement_preference, 'remote');
   assert.equal(ranked[1].work_arrangement_preference, 'hybrid');
@@ -399,7 +444,7 @@ test('recommendation queues do not equate technically plausible with recommended
       description:'Remote senior business analyst role.'
     }
   ];
-  const queues = rankOpportunityQueues(jobs, []);
+  const queues = rankOpportunityQueues(jobs.map(verified), []);
   assert.deepEqual(queues.recommended.map(item => item.company), ['Checked Co']);
   assert.deepEqual(queues.review.map(item => item.company), ['Thin Co']);
   assert.equal(queues.recommended[0].eligibility_status, 'eligible');
@@ -453,7 +498,7 @@ test('low-confidence requirement parsing stays in review rather than primary rec
   const assessment = assessRequirements(job);
   assert.equal(assessment.status, 'qualified');
   assert.equal(assessment.confidence, 'low');
-  const queues = rankOpportunityQueues([job], []);
+  const queues = rankOpportunityQueues([verified(job)], []);
   assert.equal(queues.recommended.length, 0);
   assert.equal(queues.review.length, 1);
   assert.equal(queues.review[0].eligibility_reason, 'requirements_low_confidence');

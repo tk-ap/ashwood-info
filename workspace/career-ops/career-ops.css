@@ -114,3 +114,31 @@ html[data-ashwood-theme="paper-light"]{--career-ink:#171713;--career-muted:#706f
   .career-decision-dimensions article{border-right:0;border-bottom:1px solid var(--career-line)}
   .career-decision-dimensions article:last-child{border-bottom:0}
 }
+
+/* Inbox-style opportunity triage: scan a role first, then expand its evidence. */
+.career-opportunity-card{padding:0}
+.career-opportunity-card>summary{display:block;list-style:none;cursor:pointer;padding:17px 20px}
+.career-opportunity-card>summary::-webkit-details-marker{display:none}
+.career-opportunity-card>summary::marker{display:none}
+.career-opportunity-card>summary:hover{background:color-mix(in srgb,var(--career-card) 98%,var(--career-ink) 2%)}
+.career-opportunity-card[open]>summary{border-bottom:1px solid var(--career-line)}
+.career-opportunity-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center}
+.career-opportunity-row>span:first-child{min-width:0;display:grid;gap:4px}
+.career-opportunity-row small,.career-opportunity-row em{font-size:10px;font-style:normal;color:var(--career-muted);letter-spacing:.04em}
+.career-opportunity-row small{text-transform:uppercase;letter-spacing:.09em}
+.career-opportunity-row strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;font-weight:500;line-height:1.25}
+.career-opportunity-row>span:last-child{display:grid;justify-items:end;gap:5px;white-space:nowrap}
+.career-opportunity-row b{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.career-opportunity-row time{font-size:10px;color:var(--career-muted)}
+.career-opportunity-card.is-verification .career-opportunity-row b{color:var(--career-accent)}
+.career-opportunity-group-head.is-verification{margin-top:14px;border-top:1px solid var(--career-line)}
+.career-opportunity-expanded{padding:0 20px 20px}
+.career-opportunity-expanded .career-opportunity-summary{display:block;min-height:0;margin:16px 0;overflow:visible}
+.career-opportunity-expanded>small{display:block;margin-top:16px;color:var(--career-muted);font-size:10px}
+.career-verification-note{margin:16px 0;padding:12px;border-left:2px solid var(--career-accent);color:var(--career-muted);font-size:12px;line-height:1.5}
+@media(max-width:600px){
+  .career-opportunity-card>summary{padding:16px}
+  .career-opportunity-expanded{padding:0 16px 16px}
+  .career-opportunity-row{gap:12px}
+  .career-opportunity-row strong{white-space:normal}
+}
