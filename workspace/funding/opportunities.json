@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-10-11T15:32:32.283Z",
+  "generated_at": "2026-10-12T15:23:34.473Z",
   "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
@@ -264,6 +264,17 @@
             "value"
           ],
           "summary": "The agency-linked Better Angels STEP flyer describes interest-free microloans for very-low-income LA County residents facing eviction within 30 days after a financial shock. This is repayable financing, not proof that all directory assistance is a grant; fees and repayment terms are not established by the flyer."
+        },
+        {
+          "url": "https://lacounty.gov/prevention/",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "County prevention page explicitly limits LACAHSA rental/flexible assistance to LA County renters at or below 80% AMI after a crisis or unexpected event within 12 months threatening housing. Provider-specific terms and capacity remain unresolved."
         }
       ],
       "eligibility_rules": [
@@ -274,6 +285,18 @@
         {
           "fact": "housing_risk",
           "label": "Housing instability"
+        },
+        {
+          "fact": "lacahsa_renter",
+          "label": "LA County renter status confirmed"
+        },
+        {
+          "fact": "lacahsa_income_80ami",
+          "label": "Household income at or below current 80% AMI"
+        },
+        {
+          "fact": "lacahsa_recent_crisis",
+          "label": "Qualifying housing-threatening event within 12 months"
         }
       ],
       "geography": [
@@ -313,7 +336,9 @@
       "criteria": [
         "Los Angeles County renter",
         "At risk of losing housing",
-        "Apply through an awarded organization rather than directly to LACAHSA"
+        "Apply through an awarded organization rather than directly to LACAHSA",
+        "Annual household income at or below 80% of local median income",
+        "Emergency, crisis or unexpected event within the previous 12 months that threatens housing"
       ],
       "match_tags": [
         "los_angeles",
@@ -393,6 +418,58 @@
           "field": "verification",
           "before": "VERIFIED",
           "after": "NEEDS_REVIEW"
+        },
+        {
+          "at": "2026-10-12T15:23:34.473Z",
+          "field": "criteria",
+          "before": [
+            "Los Angeles County renter",
+            "At risk of losing housing",
+            "Apply through an awarded organization rather than directly to LACAHSA"
+          ],
+          "after": [
+            "Los Angeles County renter",
+            "At risk of losing housing",
+            "Apply through an awarded organization rather than directly to LACAHSA",
+            "Annual household income at or below 80% of local median income",
+            "Emergency, crisis or unexpected event within the previous 12 months that threatens housing"
+          ]
+        },
+        {
+          "at": "2026-10-12T15:23:34.473Z",
+          "field": "eligibility_rules",
+          "before": [
+            {
+              "fact": "los_angeles",
+              "label": "LA County resident"
+            },
+            {
+              "fact": "housing_risk",
+              "label": "Housing instability"
+            }
+          ],
+          "after": [
+            {
+              "fact": "los_angeles",
+              "label": "LA County resident"
+            },
+            {
+              "fact": "housing_risk",
+              "label": "Housing instability"
+            },
+            {
+              "fact": "lacahsa_renter",
+              "label": "LA County renter status confirmed"
+            },
+            {
+              "fact": "lacahsa_income_80ami",
+              "label": "Household income at or below current 80% AMI"
+            },
+            {
+              "fact": "lacahsa_recent_crisis",
+              "label": "Qualifying housing-threatening event within 12 months"
+            }
+          ]
         }
       ]
     },
@@ -446,6 +523,17 @@
             "value"
           ],
           "summary": "October 15 application close remains published; 25 finalists receive $1,000 plus one free program. Veteran or spouse employer-business rules remain 2–100 employees, at least one year, US based and at most $5M annual revenue. First disbursement is Net 60 after complete approved documentation, not immediate housing support."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October 15 close remains published for the $1,000 veteran/spouse employer-business grant plus one program. The 2–100 employee, one-year and $5M revenue ceiling rules remain. Payment is Net 60 after complete approved documents; no immediate cash or personal qualification inferred."
         }
       ],
       "eligibility_rules": [
@@ -528,7 +616,7 @@
       ],
       "effort": "medium",
       "next_action": "Before October 15, check the 2–100 employee and one-year business requirements. Do not treat this as immediate housing cash.",
-      "last_verified_at": "2026-10-11T15:32:23.217673Z",
+      "last_verified_at": "2026-10-12T15:23:34.413086Z",
       "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
       "source_label": "Founders First CDC — Tadlock Veteran Business Grant",
       "program_key": "founders-first-tadlock-2026",
@@ -1448,6 +1536,17 @@
             "value"
           ],
           "summary": "Official veteran page offers loans up to $7,500 with one guarantor or $15,000 with two, at 0% interest and no fees. Residency, documented need and repayment ability are required; repayment generally starts 30–45 days after funding."
+        },
+        {
+          "url": "https://www.jfla.org/personal-loans/veteran-loans",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Veteran intake remains published: $7,500 with one guarantor or $15,000 with two, zero interest and fees. Adult CA ID and qualifying county residency, need, repayment capacity and no existing JFLA borrower/guarantor role apply. Typical repayment 36 months begins 30–45 days after funding; service acceptance remains provider-screened."
         }
       ],
       "eligibility_rules": [
@@ -1539,7 +1638,8 @@
         "personal_support"
       ],
       "status": "CANDIDATE",
-      "last_verified_at": "2026-10-05T16:30:00Z"
+      "last_verified_at": "2026-10-12T15:23:34.413086Z",
+      "changes": []
     },
     {
       "categories": [
@@ -1560,6 +1660,17 @@
             "value"
           ],
           "summary": "VSA provides gap support for LA County at-risk or unhoused veterans. Case managers can request intake. EFund is an existing linked benefit; no additional emergency-grant award is counted here."
+        },
+        {
+          "url": "https://www.villageforvets.org/veteranstreetacademy",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "LA County unhoused/at-risk veteran support and case-manager intake remain listed. Rideshare requires a designated VA referral. EFund assistance is a referral within wraparound services, not a second cash award. Service-specific capacity and Reserve acceptance remain unknown."
         }
       ],
       "eligibility_rules": [
@@ -1633,7 +1744,7 @@
         "ssvf"
       ],
       "status": "NEEDS_FACT",
-      "last_verified_at": "2026-10-05T16:30:00Z",
+      "last_verified_at": "2026-10-12T15:23:34.413086Z",
       "changes": [
         {
           "at": "2026-10-05T16:30:00Z",
@@ -1866,6 +1977,17 @@
             "value"
           ],
           "summary": "AER lists active duty, qualifying retired soldiers, eligible dependents and Reserve soldiers on Title 10 orders over 30 days. Assistance may be grants or zero-interest loans; former Reserve membership alone is insufficient."
+        },
+        {
+          "url": "https://www.armyemergencyrelief.org/assistance/",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Current page still offers case-specific grants, zero-interest loans or both. Active duty, qualifying retirement/dependents and Title 10 Reserve activation over 30 days are eligible categories; historical Reserve service alone does not establish qualification. Rent, deposits, utilities and transportation are listed assistance purposes."
         }
       ],
       "eligibility_rules": [
@@ -1932,7 +2054,7 @@
         "utility_assistance"
       ],
       "status": "NEEDS_FACT",
-      "last_verified_at": "2026-10-05T16:30:00Z",
+      "last_verified_at": "2026-10-12T15:23:34.413086Z",
       "changes": [
         {
           "at": "2026-10-05T16:30:00Z",
@@ -1974,6 +2096,26 @@
             "value"
           ],
           "summary": "Operation Homefront offers short-term critical financial assistance with an application, review and case evaluation process. Individual assistance amount, capacity and processing time are not guaranteed."
+        },
+        {
+          "url": "https://operationhomefront.org/critical-financial-assistance/",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Critical assistance intake remains published; awards depend on case evaluation, not a fixed amount. Application, supporting documentation and approval are required."
+        },
+        {
+          "url": "https://operationhomefront.org/cfa-eligibility/",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "criteria"
+          ],
+          "summary": "Post-9/11 line-of-duty wounded/ill/injured category requires qualifying discharge and separation within ten years if discharged. Deployed E1–E6 with dependents must meet specific deployment/Title 10 conditions. General active-duty E1–E6 assistance is limited to food and dependent vision."
         }
       ],
       "eligibility_rules": [
@@ -2036,7 +2178,8 @@
         "personal_support"
       ],
       "status": "CANDIDATE",
-      "last_verified_at": "2026-10-05T16:30:00Z"
+      "last_verified_at": "2026-10-12T15:23:34.413086Z",
+      "changes": []
     },
     {
       "categories": [
@@ -2331,6 +2474,16 @@
             "value"
           ],
           "summary": "August 14 announcement still describes clinician-recommended goods starting early FY2027 and expected transportation contracts. It does not confirm current local operational intake or remaining capacity; retain UNVERIFIED/HOLD."
+        },
+        {
+          "url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "Announcement still anticipates early-FY2027 clinician-directed goods and transportation contracts. It does not establish currently operating local intake; UNVERIFIED/HOLD and null verification date retained."
         }
       ],
       "eligibility_rules": [
@@ -2595,6 +2748,28 @@
             "value"
           ],
           "summary": "October cycle continues to state November 15 notification while the same intake page examples require activity starts on the 16th. Timing discrepancy remains unresolved; retain NEEDS_REVIEW/HOLD and previous verification date."
+        },
+        {
+          "url": "https://cciarts.org/quick-grant/",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Monthly deadline remains October 15 at 11:59 a.m. Pacific; up to $600 restricted professional development. General notification and activity-start guidance still uses November 16."
+        },
+        {
+          "url": "https://centerforculturalinnovation.submittable.com/submit",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October intake still states November 15 notification while activity examples use the 16th. The unresolved official timing discrepancy keeps NEEDS_REVIEW/HOLD; prior verification date retained."
         }
       ],
       "eligibility_rules": [
@@ -3122,6 +3297,17 @@
             "value"
           ],
           "summary": "FAQ still states Claude Team and $1,000 API offers are over capacity and applications will be re-reviewed. Existing claimed offers and Startup Stack access remain; bootstrapped startups can apply. No evidence these promotional offers reopened; retain HOLD."
+        },
+        {
+          "url": "https://claude.com/programs/startups",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Official FAQ still reports Claude Team/$1,000 API offer over-capacity and application re-review. Claimed offers and partner Startup Stack benefits remain available to existing members; no reopening evidence for new promotional awards."
         }
       ],
       "eligibility_rules": [
@@ -3206,7 +3392,113 @@
           "after": "NEEDS_REVIEW"
         }
       ]
+    },
+    {
+      "categories": [
+        "business",
+        "zero_interest"
+      ],
+      "aliases": [
+        "JFLA Zero-Interest Startup Business Loan Program"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.jfla.org/business-loans/startup-business-loans",
+          "checked_at": "2026-10-12T15:23:34.413086Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Published 0%-interest/$0-fee startup financing up to $50,000. The same page conflicts on credit floors, guarantor counts and education-loan exceptions. Business documents and repayment ability are required; typical repayment starts 30–45 days after funding over 36 months. Capacity and terms need confirmation."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "jfla_startup_terms_confirmed",
+          "label": "Provider reconciles terms"
+        },
+        {
+          "fact": "repayment_capacity",
+          "label": "Repayment capacity confirmed"
+        },
+        {
+          "fact": "jfla_startup_guarantors",
+          "label": "Guarantors confirmed"
+        },
+        {
+          "fact": "jfla_startup_documents",
+          "label": "Business documents ready"
+        }
+      ],
+      "geography": [
+        "Los Angeles County",
+        "Ventura County",
+        "Orange County",
+        "Santa Barbara County"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": null,
+      "repayable": true,
+      "interest_percent": 0,
+      "fees": 0,
+      "amount": null,
+      "application_window": "Published intake; confirm terms before proceeding",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": null,
+      "benefit_interactions": [
+        "Coordinate JFLA obligations and benefits before borrowing; no financing acceptance authorized."
+      ],
+      "verification": "NEEDS_REVIEW",
+      "confidence": "official_program_only",
+      "disposition": "HOLD",
+      "reason": "Conflicting official credit, guarantor and existing-loan rules require clarification.",
+      "action_deadline": null,
+      "outcome": null,
+      "discovered_at": "2026-10-12T15:23:34.473Z",
+      "id": "jfla-startup-business-loan",
+      "program_key": "jfla-startup-business-loan",
+      "name": "JFLA Startup Business Loan",
+      "funder": "Jewish Free Loan Association",
+      "source_url": "https://www.jfla.org/business-loans/startup-business-loans",
+      "source_label": "JFLA — Startup Business Loans",
+      "type": "zero_interest",
+      "applicant_lane": "business",
+      "value": "Advertised up to $50,000; guarantor limits require clarification",
+      "availability": "unknown",
+      "deadline": null,
+      "criteria": [
+        "Adult with CA ID and SSN/ITIN; qualifying county residency",
+        "Business need, repayment capacity, guarantors and credit requirements",
+        "Business plan, cash-flow projection, tax return and issued business registration"
+      ],
+      "unknowns": [
+        "Conflicting credit floor (over 580 versus 600) and guarantor counts",
+        "Education-loan exception conflicts with no-current-borrower rule",
+        "Repayment capacity, documents and benefit interactions"
+      ],
+      "effort": "high",
+      "documents": [
+        "Provider-required business and financial documents"
+      ],
+      "related_ids": [
+        "jfla-veteran-loan"
+      ],
+      "next_action": "Clarify provider rules and repayment feasibility before considering this business loan. Keep housing and employment priorities first; no application or debt acceptance authorized.",
+      "status": "CANDIDATE",
+      "last_verified_at": null,
+      "changes": [
+        {
+          "at": "2026-10-12T15:23:34.473Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "NEEDS_REVIEW"
+        }
+      ]
     }
   ],
-  "last_scan_at": "2026-10-11T15:32:32.283Z"
+  "last_scan_at": "2026-10-12T15:23:34.473Z"
 }
