@@ -28,10 +28,15 @@ function isObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
-function boundedArray(value, mapper) {
+function filteredArray(value, mapper, dropped, key) {
   if (!Array.isArray(value) || value.length > MAX_LIST) return null;
-  const items = value.map(mapper);
-  return items.every(Boolean) ? items : null;
+  const items = [];
+  for (const entry of value) {
+    const cleaned = mapper(entry);
+    if (cleaned) items.push(cleaned);
+    else dropped[key] += 1;
+  }
+  return items;
 }
 
 function cleanFinding(value) {
@@ -71,10 +76,11 @@ function cleanItem(value) {
   const expectedUrl = videoId && VIDEO_ID.test(videoId) ? `https://www.youtube.com/watch?v=${videoId}` : null;
   const duration = value.duration_seconds;
   const analyzedAt = iso(value.analyzed_at);
-  const findings = boundedArray(value.findings, cleanFinding);
-  const relevance = boundedArray(value.ecosystem_relevance, cleanRelevance);
-  const actions = boundedArray(value.candidate_actions, cleanCandidateAction);
-  const limitations = boundedArray(value.limitations, entry => text(entry));
+  const dropped = { findings: 0, ecosystem_relevance: 0, candidate_actions: 0, limitations: 0 };
+  const findings = filteredArray(value.findings, cleanFinding, dropped, 'findings');
+  const relevance = filteredArray(value.ecosystem_relevance, cleanRelevance, dropped, 'ecosystem_relevance');
+  const actions = filteredArray(value.candidate_actions, cleanCandidateAction, dropped, 'candidate_actions');
+  const limitations = filteredArray(value.limitations, entry => text(entry), dropped, 'limitations');
   const title = optionalText(value.title, 200);
   const channel = optionalText(value.channel, 120);
   const coverage = text(value.coverage, 20);
@@ -85,21 +91,24 @@ function cleanItem(value) {
     || (duration !== null && (!Number.isInteger(duration) || duration < 0)) || analyzedAt === undefined
     || !summary || !findings || !relevance || !actions || !limitations || title === undefined || channel === undefined) return null;
   return {
-    analysis_id: analysisId,
-    video_id: videoId,
-    video_url: expectedUrl,
-    title,
-    channel,
-    duration_seconds: duration,
-    evidence_sha256: String(value.evidence_sha256),
-    coverage,
-    visual_pending: value.visual_pending,
-    analyzed_at: analyzedAt,
-    summary,
-    findings,
-    ecosystem_relevance: relevance,
-    candidate_actions: actions,
-    limitations,
+    item: {
+      analysis_id: analysisId,
+      video_id: videoId,
+      video_url: expectedUrl,
+      title,
+      channel,
+      duration_seconds: duration,
+      evidence_sha256: String(value.evidence_sha256),
+      coverage,
+      visual_pending: value.visual_pending,
+      analyzed_at: analyzedAt,
+      summary,
+      findings,
+      ecosystem_relevance: relevance,
+      candidate_actions: actions,
+      limitations,
+    },
+    dropped,
   };
 }
 
@@ -117,8 +126,18 @@ function cleanSnapshot(body) {
   if (!Array.isArray(body.items) || body.items.length > MAX_ITEMS || body.item_count !== body.items.length) return null;
   const snapshotId = text(body.snapshot_id, 128);
   const generatedAt = iso(body.generated_at);
-  const items = body.items.map(cleanItem);
-  if (!/^youtube-analyses:[a-f0-9]{16}$/.test(snapshotId || '') || generatedAt === undefined || !items.every(Boolean)) return null;
+  if (!/^youtube-analyses:[a-f0-9]{16}$/.test(snapshotId || '') || generatedAt === undefined) return null;
+  const dropped = { items: 0, findings: 0, ecosystem_relevance: 0, candidate_actions: 0, limitations: 0 };
+  const items = [];
+  for (const rawItem of body.items) {
+    const cleaned = cleanItem(rawItem);
+    if (!cleaned) {
+      dropped.items += 1;
+      continue;
+    }
+    items.push(cleaned.item);
+    for (const key of Object.keys(cleaned.dropped)) dropped[key] += cleaned.dropped[key];
+  }
   return {
     schema_version: 1,
     source_system: 'agent-os',
@@ -127,6 +146,7 @@ function cleanSnapshot(body) {
     generated_at: generatedAt,
     item_count: items.length,
     items,
+    dropped,
   };
 }
 
@@ -213,7 +233,12 @@ export default async function handler(req, res) {
       item_count = EXCLUDED.item_count,
       items = EXCLUDED.items,
       received_at = NOW()`;
-    return json(res, 200, { ok: true, snapshot_id: snapshot.snapshot_id, item_count: snapshot.item_count });
+    return json(res, 200, {
+      ok: true,
+      snapshot_id: snapshot.snapshot_id,
+      item_count: snapshot.item_count,
+      dropped: snapshot.dropped,
+    });
   } catch {
     return json(res, 500, { ok: false, error: 'Workspace analyses unavailable' });
   }

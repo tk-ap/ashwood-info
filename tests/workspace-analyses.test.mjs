@@ -104,6 +104,7 @@ test('the latest YouTube snapshot replaces the prior complete set', async t => {
   const headers = { authorization: 'Bearer board-secret' };
   const first = await f.call({ method: 'POST', headers, body: snapshot() });
   assert.equal(first.statusCode, 200);
+  assert.deepEqual(first.body.dropped, { items: 0, findings: 0, ecosystem_relevance: 0, candidate_actions: 0, limitations: 0 });
 
   const replacementItem = {
     ...snapshot().items[0],
@@ -125,4 +126,53 @@ test('the latest YouTube snapshot replaces the prior complete set', async t => {
   assert.equal(read.body.item_count, 1);
   assert.equal(read.body.snapshot_id, 'youtube-analyses:def456abc1237890');
   assert.equal(read.body.items[0].title, 'Replacement video');
+});
+
+test('a valid snapshot keeps good analyses while dropping invalid records and entries', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-secret';
+  t.after(() => {
+    if (previous === undefined) delete process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+    else process.env.WORKSPACE_BOARD_SYNC_TOKEN = previous;
+  });
+  const good = {
+    ...snapshot().items[0],
+    findings: [
+      snapshot().items[0].findings[0],
+      { id: 'bad-finding', text: 42, evidence_basis: 'Malformed finding.', confidence: 0.2 },
+    ],
+    ecosystem_relevance: [
+      snapshot().items[0].ecosystem_relevance[0],
+      { workstream: 'ASHWOOD', rationale: 'Missing risk.' },
+    ],
+    candidate_actions: [
+      snapshot().items[0].candidate_actions[0],
+      { id: 'bad-action', action: 'Missing why.' },
+    ],
+    limitations: [snapshot().items[0].limitations[0], 42],
+  };
+  const bad = { ...snapshot().items[0], video_url: 'https://example.test/not-youtube' };
+  const posted = await f.call({
+    method: 'POST',
+    headers: { authorization: 'Bearer board-secret' },
+    body: snapshot({ items: [good, bad] }),
+  });
+  assert.equal(posted.statusCode, 200);
+  assert.equal(posted.body.item_count, 1);
+  assert.deepEqual(posted.body.dropped, {
+    items: 1,
+    findings: 1,
+    ecosystem_relevance: 1,
+    candidate_actions: 1,
+    limitations: 1,
+  });
+  assert.equal(JSON.stringify(posted.body.dropped).includes('bad-'), false, 'response contains counts, not dropped content');
+
+  const read = await f.call({ owner: true });
+  assert.equal(read.body.item_count, 1);
+  assert.equal(read.body.items[0].findings.length, 1);
+  assert.equal(read.body.items[0].ecosystem_relevance.length, 1);
+  assert.equal(read.body.items[0].candidate_actions.length, 1);
+  assert.equal(read.body.items[0].limitations.length, 1);
 });
