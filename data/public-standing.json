@@ -1,56 +1,47 @@
 {
-  "generated_at": "2026-10-05T18:04:58.731Z",
+  "generated_at": "2026-10-12T18:43:40.826Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
     "total_posts": 85,
     "latest_post_at": "2026-09-08T18:25:02.000Z",
-    "posts_30d": 1,
+    "posts_30d": 0,
     "avg_likes": 167,
     "avg_comments": 7,
-    "recent_posts": [
-      {
-        "at": "2026-09-08T18:25:02.000Z",
-        "caption": "guess i’m hotter than the weather called for\n\nsummer on my skin, winter on my body\n\ncoastline part of the fit btw\n\nleft the city, kept the p",
-        "likes": null,
-        "comments": 3,
-        "type": "Sidecar",
-        "url": "https://www.instagram.com/p/DdCU1CCmVC3/"
-      }
-    ]
+    "recent_posts": []
   },
   "tiktok": {
     "account": "tiktokoftk",
     "followers": 71,
     "following": 58,
     "verified": false,
-    "total_videos": 31,
-    "latest_video_at": "2026-10-04T06:47:30.000Z",
-    "videos_30d": 10,
+    "total_videos": 33,
+    "latest_video_at": "2026-10-08T01:58:05.000Z",
+    "videos_30d": 11,
     "avg_plays": 260,
     "avg_likes": 20,
     "avg_comments": 2,
     "recent_videos": [
       {
-        "at": "2026-10-04T06:47:30.000Z",
-        "caption": "day treeeee #soundcloudera #musictok #wlw #fypシ゚viral #exp ",
-        "plays": 119,
+        "at": "2026-10-08T01:58:05.000Z",
+        "caption": "so maybe I need to make use of this fabric , but more importantly, I ran out of black pastel 😭💀 so who know how to sew? Lmao I’m trynna se",
+        "plays": 105,
         "likes": 2,
         "comments": 0,
         "shares": 0
       },
       {
-        "at": "2026-10-03T15:51:06.000Z",
-        "caption": "day 2 dump #songwritersoftiktok #soundcloudera #musictok #fyp #exp",
-        "plays": 143,
-        "likes": 5,
+        "at": "2026-10-07T22:22:55.000Z",
+        "caption": "Keep forgetting to include TikTok in this lil song series 😭😂 anyway yall few or naaaaa ? #soundcloudera #wlwtiktok #fypシ゚viral ",
+        "plays": 341,
+        "likes": 21,
         "comments": 0,
         "shares": 0
       },
       {
-        "at": "2026-10-02T17:57:24.000Z",
-        "caption": "LIBRA TINGS 😭✨#libra♎️ #songwritersoftiktok #soundcloudera #wlwtiktok #wlw ",
-        "plays": 156,
+        "at": "2026-10-04T06:47:30.000Z",
+        "caption": "day treeeee #soundcloudera #musictok #wlw #fypシ゚viral #exp ",
+        "plays": 125,
         "likes": 3,
         "comments": 2,
         "shares": 0
