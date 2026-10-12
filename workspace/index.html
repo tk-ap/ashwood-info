@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="/workspace/v4-atmosphere.css?v=20260924-forward1" />
   <link rel="stylesheet" href="/workspace/visual-completion.css?v=20260925-ruixen1" />
   <link rel="stylesheet" href="/workspace/sources.css?v=20260925-sources1" />
+  <link rel="stylesheet" href="/workspace/youtube-analyses.css?v=20261012-analyses1" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
   <script type="module" src="/workspace/app.js?v=20261001-content-intelligence1"></script>
@@ -41,6 +42,7 @@
   <script type="module" src="/workspace/build-command-center.mjs?v=20260923-command-center1"></script>
   <script type="module" src="/workspace/views.mjs?v=20260926-careerhealth1"></script>
   <script type="module" src="/workspace/sources.mjs?v=20260925-sources1"></script>
+  <script type="module" src="/workspace/youtube-analyses.mjs?v=20261012-analyses1"></script>
   <script type="module" src="/workspace/visual-completion.mjs?v=20260925-live201"></script>
   <script type="module" src="/workspace/career-ops/career-ops.mjs?v=20261001-triage1"></script>
   <script type="module" src="/workspace/funding/funding.mjs?v=20261005-registry2"></script>
@@ -806,6 +808,23 @@
       </div>
       <div class="source-registry" id="source-registry" aria-live="polite">
         <div class="workspace-state is-loading"><strong>Loading source registry…</strong>Reading the latest machine-synced evidence projection.</div>
+      </div>
+    </section>
+
+    <section class="youtube-analyses" id="youtube-analyses" aria-labelledby="youtube-analyses-title">
+      <div class="youtube-analyses__head">
+        <div>
+          <p class="section-kicker">Evidence · YouTube analyses</p>
+          <h2 id="youtube-analyses-title">What the videos actually support.</h2>
+          <p class="section-note">Review finished evidence-backed analyses, their limitations, and suggested next moves before deciding whether to send anything to AgentOS.</p>
+        </div>
+        <div>
+          <p class="youtube-analyses__status" id="youtube-analyses-status" aria-live="polite">Reading analysis feed…</p>
+          <button class="text-button" id="youtube-analyses-refresh" type="button">Refresh</button>
+        </div>
+      </div>
+      <div class="youtube-analyses__list" id="youtube-analyses-list" aria-live="polite">
+        <div class="workspace-state is-loading"><strong>Loading YouTube analyses…</strong>Reading the latest evidence-only AgentOS snapshot.</div>
       </div>
     </section>
 

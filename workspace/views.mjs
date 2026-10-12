@@ -93,6 +93,7 @@ const GROUPS = {
     "details.pulse",
     "details.workspace-connections",
     "#sources",
+    "#youtube-analyses",
     "#evidence-panel",
     "details.attention"
   ],
