@@ -14,6 +14,57 @@ function commandSyncTokenValid(req) {
   return left.length === right.length && crypto.timingSafeEqual(left, right);
 }
 
+function deploymentSyncTokenValid(req) {
+  const expected = process.env.WORKSPACE_DEPLOYMENT_SYNC_TOKEN;
+  if (!expected) return false;
+  const header = String(req.headers?.authorization || '');
+  const token = header.startsWith('Bearer ') ? header.slice(7) : '';
+  if (!token) return false;
+  const left = Buffer.from(sha256(token), 'hex');
+  const right = Buffer.from(sha256(expected), 'hex');
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
+const DEPLOYMENT_PROJECTS = new Map([
+  ['prj_p0OqGFvZZU8940ePrXIoVocuTUl7', 'ASHWOOD'],
+  ['prj_yMUW9t71FNsaFeJSNntNCV4tZZFe', 'ledgato'],
+  ['prj_ocnKA4Xr7Jd1aTjUKcRjYgsniy5l', 'ALVIRA'],
+  ['prj_dqOUuTJPaegWYi3l4f9Kx8vxyWOe', 'ailhat'],
+]);
+const DEPLOYMENT_SNAPSHOT_STALE_MS = 45 * 60 * 1000;
+
+async function ensureDeploymentSnapshotTable(sql) {
+  await sql`CREATE TABLE IF NOT EXISTS workspace_deployment_snapshots (
+    id TEXT PRIMARY KEY,
+    observed_at TIMESTAMPTZ NOT NULL,
+    window_started_at TIMESTAMPTZ NOT NULL,
+    complete BOOLEAN NOT NULL,
+    deployments JSONB NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+}
+
+function cleanDeploymentSnapshot(body) {
+  if (body.complete !== true || !Array.isArray(body.deployments)) return null;
+  const observedAt = new Date(body.observed_at);
+  const windowStartedAt = new Date(body.window_started_at);
+  if (Number.isNaN(observedAt.getTime()) || Number.isNaN(windowStartedAt.getTime()) || windowStartedAt > observedAt) return null;
+  if (body.deployments.length > 500) return null;
+  const deployments = [];
+  const ids = new Set();
+  for (const item of body.deployments) {
+    const id = String(item?.id || '').trim().slice(0, 200);
+    const projectId = String(item?.projectId || '').trim();
+    const created = Number(item?.created);
+    const state = String(item?.state || 'UNKNOWN').trim().slice(0, 50) || 'UNKNOWN';
+    const target = item?.target == null ? null : String(item.target).trim().slice(0, 80);
+    if (!id || ids.has(id) || !DEPLOYMENT_PROJECTS.has(projectId) || !Number.isFinite(created)) return null;
+    ids.add(id);
+    deployments.push({ id, projectId, projectName: DEPLOYMENT_PROJECTS.get(projectId), created, state, target });
+  }
+  return { observedAt, windowStartedAt, deployments };
+}
+
 async function ensureCommandTable(sql) {
   await sql`CREATE TABLE IF NOT EXISTS workspace_commands (
     id TEXT PRIMARY KEY,
@@ -77,6 +128,7 @@ export default async function handler(req, res) {
   try {
     const sql = getSql();
     const machineAuthorized = commandSyncTokenValid(req);
+    const deploymentSyncAuthorized = deploymentSyncTokenValid(req);
 
     if (req.method === 'GET' && req.query?.view === 'command-next' && machineAuthorized) {
       await ensureCommandTable(sql);
@@ -127,6 +179,17 @@ export default async function handler(req, res) {
         if (!rows[0]) return json(res, 404, { ok: false, error: 'Command not found' });
         return json(res, 200, { ok: true, id, status });
       }
+      if (action === 'sync_deployments') {
+        if (!deploymentSyncAuthorized) return json(res, 403, { ok: false, error: 'Invalid deployment sync token' });
+        const snapshot = cleanDeploymentSnapshot(body);
+        if (!snapshot) return json(res, 400, { ok: false, error: 'Invalid deployment snapshot' });
+        await ensureDeploymentSnapshotTable(sql);
+        await sql`INSERT INTO workspace_deployment_snapshots (id, observed_at, window_started_at, complete, deployments, updated_at)
+          VALUES ('current', ${snapshot.observedAt.toISOString()}, ${snapshot.windowStartedAt.toISOString()}, true, ${JSON.stringify(snapshot.deployments)}::jsonb, NOW())
+          ON CONFLICT (id) DO UPDATE SET observed_at = EXCLUDED.observed_at, window_started_at = EXCLUDED.window_started_at,
+            complete = EXCLUDED.complete, deployments = EXCLUDED.deployments, updated_at = NOW()`;
+        return json(res, 200, { ok: true, observed_at: snapshot.observedAt.toISOString(), deployments: snapshot.deployments.length });
+      }
     }
 
     const session = await requireSession(req);
@@ -134,33 +197,24 @@ export default async function handler(req, res) {
 
     if (req.method === 'GET') {
       if (req.query?.view === 'deployments') {
-        const token = process.env.VERCEL_TOKEN;
-        const teamId = process.env.VERCEL_TEAM_ID || 'team_o8DEWGS5bzF8jdgWsD9IfBec';
-        const projects = [
-          ['prj_p0OqGFvZZU8940ePrXIoVocuTUl7','ASHWOOD'],
-          ['prj_yMUW9t71FNsaFeJSNntNCV4tZZFe','ledgato'],
-          ['prj_ocnKA4Xr7Jd1aTjUKcRjYgsniy5l','ALVIRA'],
-          ['prj_dqOUuTJPaegWYi3l4f9Kx8vxyWOe','ailhat']
-        ];
-        if (!token) return json(res, 503, { ok:false, error:'VERCEL_TOKEN is not configured' });
-        const since = Date.now() - 86400000;
-        const deployments = [];
-        await Promise.all(projects.map(async ([projectId, projectName]) => {
-          const url = new URL('https://api.vercel.com/v6/deployments');
-          url.searchParams.set('projectId', projectId);
-          url.searchParams.set('teamId', teamId);
-          url.searchParams.set('since', String(since));
-          url.searchParams.set('limit', '100');
-          const response = await fetch(url, { headers:{ Authorization:'Bearer '+token } });
-          if (!response.ok) throw new Error('Vercel deployments '+response.status);
-          const payload = await response.json();
-          for (const item of payload.deployments || []) deployments.push({
-            id:item.uid || item.id, projectId, projectName, created:item.created || item.createdAt,
-            state:item.state || item.readyState || 'UNKNOWN', target:item.target || null
-          });
-        }));
-        deployments.sort((a,b)=>b.created-a.created);
-        return json(res, 200, { ok:true, limit:100, window_hours:24, observed_at:new Date().toISOString(), deployments });
+        await ensureDeploymentSnapshotTable(sql);
+        const rows = await sql`SELECT observed_at, window_started_at, complete, deployments FROM workspace_deployment_snapshots WHERE id = 'current' LIMIT 1`;
+        const snapshot = rows[0];
+        if (!snapshot?.complete || !Array.isArray(snapshot.deployments)) {
+          return json(res, 503, { ok: false, error: 'Deployment snapshot unavailable' });
+        }
+        const observedAt = new Date(snapshot.observed_at).getTime();
+        const stale = !Number.isFinite(observedAt) || Date.now() - observedAt > DEPLOYMENT_SNAPSHOT_STALE_MS;
+        return json(res, 200, {
+          ok: true,
+          limit: 100,
+          window_hours: 24,
+          observed_at: snapshot.observed_at,
+          window_started_at: snapshot.window_started_at,
+          complete: true,
+          stale,
+          deployments: snapshot.deployments,
+        });
       }
       if (req.query?.view === 'feed') {
         const feed = await sql`SELECT id, source, source_label, title, occurred_at, status, goal_id, confidence, url, notes FROM workspace_evidence WHERE source IN ('ailhat', 'agent-os', 'board', 'github', 'ledgato', 'alvira') ORDER BY occurred_at DESC LIMIT 250`;

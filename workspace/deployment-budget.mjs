@@ -6,15 +6,15 @@ const PROJECTS=[
   {name:"ailhat",id:"prj_dqOUuTJPaegWYi3l4f9Kx8vxyWOe"}
 ];
 function fmt(ts){return ts?new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(new Date(ts)): "—"}
-function status(n){return n>=LIMIT?"BLOCKED":n>=90?"CRITICAL":n>=75?"CAUTION":"SAFE"}
+function status(n,stale){return stale?"STALE":n>=LIMIT?"BLOCKED":n>=90?"CRITICAL":n>=75?"CAUTION":"SAFE"}
 function render(data){
  const summary=document.querySelector("#deployment-budget-summary"),projects=document.querySelector("#deployment-budget-projects");
  if(!summary||!projects)return;
  const rows=data.deployments||[], now=Date.now(), cutoff=now-86400000;
- const live=rows.filter(x=>x.created>cutoff).sort((a,b)=>a.created-b.created), used=live.length, left=Math.max(0,LIMIT-used);
+ const live=rows.filter(x=>x.created>cutoff).sort((a,b)=>a.created-b.created), used=live.length, left=Math.max(0,LIMIT-used), stale=data.stale===true||data.complete!==true;
  const next=live[0]?.created+86400000;
- const s=status(used);
- summary.innerHTML='<article><strong>'+used+' / '+LIMIT+'</strong><span>deployments used</span></article><article><strong>'+left+'</strong><span>slots available</span></article><article><strong>'+s+'</strong><span>capacity state</span></article><article><strong>'+fmt(next)+'</strong><span>next slot ages out</span></article>';
+ const s=status(used,stale), usageLabel=stale?'deployments observed':'deployments used';
+ summary.innerHTML='<article><strong>'+used+' / '+LIMIT+'</strong><span>'+usageLabel+'</span></article><article><strong>'+left+'</strong><span>slots available</span></article><article><strong>'+s+'</strong><span>capacity state</span></article><article><strong>'+fmt(next)+'</strong><span>next slot ages out</span></article>'+(stale?'<p>Snapshot last observed '+fmt(data.observed_at)+'; current capacity may have changed.</p>':'');
  projects.innerHTML=PROJECTS.map(p=>{const r=live.filter(x=>x.projectId===p.id);return '<article><strong>'+p.name+'</strong><span>'+r.length+' deployments</span><small>'+r.filter(x=>x.state==="READY").length+' ready · '+r.filter(x=>x.state==="ERROR").length+' error · '+r.filter(x=>x.state==="CANCELED").length+' canceled</small></article>'}).join("");
  document.querySelector("#deployment-budget")?.setAttribute("data-capacity-state",s.toLowerCase());
 }

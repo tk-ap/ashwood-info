@@ -1,0 +1,29 @@
+name: Deployment snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ashwood-deployment-snapshot
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Collect sanitized Vercel deployment snapshot
+        env:
+          VERCEL_DEPLOYMENT_READ_TOKEN: ${{ secrets.VERCEL_DEPLOYMENT_READ_TOKEN }}
+          WORKSPACE_DEPLOYMENT_SYNC_TOKEN: ${{ secrets.WORKSPACE_DEPLOYMENT_SYNC_TOKEN }}
+          ASHWOOD_DEPLOYMENT_SYNC_URL: https://ashwood-info.vercel.app/api/workspace-state
+        run: node scripts/collect-deployment-snapshot.mjs

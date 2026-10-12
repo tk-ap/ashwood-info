@@ -143,3 +143,39 @@ test('foreign-origin browser command submission is rejected', async t => {
   });
   assert.equal(res.statusCode, 403);
 });
+
+test('deployment snapshots require their dedicated machine token and are owner-readable', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_DEPLOYMENT_SYNC_TOKEN;
+  process.env.WORKSPACE_DEPLOYMENT_SYNC_TOKEN = 'deployment-sync-secret';
+  t.after(() => {
+    if (previous === undefined) delete process.env.WORKSPACE_DEPLOYMENT_SYNC_TOKEN;
+    else process.env.WORKSPACE_DEPLOYMENT_SYNC_TOKEN = previous;
+  });
+
+  const unavailable = await f.call({ owner: true, query: { view: 'deployments' } });
+  assert.equal(unavailable.statusCode, 503);
+
+  const denied = await f.call({
+    method: 'POST', headers: { authorization: 'Bearer wrong' },
+    body: { action: 'sync_deployments', complete: true, observed_at: new Date().toISOString(), window_started_at: new Date(Date.now() - 86_400_000).toISOString(), deployments: [] },
+  });
+  assert.equal(denied.statusCode, 403);
+
+  const observedAt = new Date().toISOString();
+  const stored = await f.call({
+    method: 'POST', headers: { authorization: 'Bearer deployment-sync-secret' },
+    body: {
+      action: 'sync_deployments', complete: true, observed_at: observedAt,
+      window_started_at: new Date(Date.now() - 86_400_000).toISOString(),
+      deployments: [{ id: 'dpl_test', projectId: 'prj_p0OqGFvZZU8940ePrXIoVocuTUl7', projectName: 'forged', created: Date.now(), state: 'READY', target: 'production' }],
+    },
+  });
+  assert.equal(stored.statusCode, 200);
+
+  const visible = await f.call({ owner: true, query: { view: 'deployments' } });
+  assert.equal(visible.statusCode, 200);
+  assert.equal(visible.body.complete, true);
+  assert.equal(visible.body.stale, false);
+  assert.equal(visible.body.deployments[0].projectName, 'ASHWOOD', 'server canonicalizes project labels');
+});
