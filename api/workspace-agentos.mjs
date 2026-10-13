@@ -1,3 +1,4 @@
+import analyses from './_workspace-analyses-handler.mjs';
 import board from './_agentos-board-handler.mjs';
 import workstreams, { sourcesHandler } from './_agentos-workstreams-handler.mjs';
 
@@ -23,6 +24,7 @@ async function selfDirective(req,res){
 export default async function handler(req,res){
   const url=new URL(req.url||'/api/workspace-agentos',`https://${req.headers?.host||'localhost'}`);
   const view=url.searchParams.get('view');
+  if(view==='analyses') return analyses(req,res);
   if(view==='self-directive') return selfDirective(req,res);
   if(view==='sources') return sourcesHandler(req,res);
   return view==='workstreams' ? workstreams(req,res) : board(req,res);
