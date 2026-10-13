@@ -70,3 +70,14 @@ test('transition payload carries stable identity and observed generation', () =>
     }
   );
 });
+
+test('withdrawn or refused work sits in Closed, outside attention and sprint views', async () => {
+  const { laneForCanonical } = await import('../workspace/agentos-board.mjs');
+  for (const state of ['REVOKED', 'DENIED', 'CANCELLED', 'SUPERSEDED']) assert.equal(laneForCanonical(state), 'closed', state);
+  for (const state of ['BLOCKED', 'FAILED', 'COLLISION']) assert.equal(laneForCanonical(state), 'stuck', state);
+  assert.equal(laneForCanonical('COMPLETE'), 'done');
+  const closed = { lane:'closed', product:'AgentOS', priority:'p0', title:'Withdrawn analysis' };
+  assert.equal(matchesView(closed, 'attention'), false);
+  assert.equal(matchesView(closed, 'sprint'), false);
+  assert.equal(kanbanTarget({ ...closed, task_id:'t', work_id:'w', phase:'READY' }, 'closed'), null);
+});

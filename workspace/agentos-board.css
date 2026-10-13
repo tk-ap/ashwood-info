@@ -86,3 +86,4 @@
   outline-style: solid;
   transform: translateY(-1px);
 }
+.agentos-board-lane[data-lane="closed"]{opacity:.82}
