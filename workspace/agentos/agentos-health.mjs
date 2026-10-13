@@ -1,3 +1,4 @@
+import { shouldPoll } from "../poll-gate.mjs";
 const q=s=>document.querySelector(s);
 const esc=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 const WEIGHTS=[
@@ -142,4 +143,4 @@ async function refresh({manual=false}={}){
  }
 }
 q("#health-refresh")?.addEventListener("click",()=>refresh({manual:true}));
-(async()=>{await ensureAuth();await refresh();timer=setInterval(()=>refresh(),30000)})();
+(async()=>{await ensureAuth();await refresh();timer=setInterval(()=>{if(shouldPoll())refresh()},120000)})();

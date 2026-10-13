@@ -1,3 +1,4 @@
+import { shouldPoll } from '../poll-gate.mjs';
 import { normaliseStatus, requestedSalaryLabel, salaryLabel, sortApplications, summaryCounts, syncSummary, needsAttention } from './model.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -1097,11 +1098,11 @@ async function syncInbox({ interactive=false }={}) {
 function startCareerLiveSync() {
   if (state.careerPollTimer) window.clearInterval(state.careerPollTimer);
   window.setTimeout(() => {
-    if (document.visibilityState === 'visible') refreshCareerAutomation();
+    if (shouldPoll()) refreshCareerAutomation();
   }, 10000);
   state.careerPollTimer = window.setInterval(() => {
-    if (document.visibilityState === 'visible') refreshCareerAutomation();
-  }, 60000);
+    if (shouldPoll()) refreshCareerAutomation();
+  }, 10 * 60 * 1000);
 }
 
 async function refreshCareerAutomation() {

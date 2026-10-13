@@ -1,3 +1,4 @@
+import { shouldPoll } from './poll-gate.mjs';
 const esc = (value = '') => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const age = value => {
   const stamp = new Date(value).getTime();
@@ -166,5 +167,5 @@ async function load() {
 }
 
 load();
-const timer = setInterval(() => { if (!document.hidden) load(); }, 60000);
+const timer = setInterval(() => { if (shouldPoll()) load(); }, 5 * 60 * 1000);
 window.addEventListener('beforeunload', () => clearInterval(timer), { once:true });
