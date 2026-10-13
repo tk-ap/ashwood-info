@@ -5,7 +5,8 @@ const LANES = [
   { id: "orphaned_pr", label: "Orphaned PRs", empty: "No open PRs are outside AgentOS/backlog tracking." },
   { id: "untriaged", label: "Untriaged", empty: "No discovered work is waiting for Milchik triage." },
   { id: "backlog", label: "Backlog", empty: "No captured backlog items are waiting." },
-  { id: "done", label: "Recently done", empty: "No recent completed work is mirrored." }
+  { id: "done", label: "Recently done", empty: "No recent completed work is mirrored." },
+  { id: "closed", label: "Closed", empty: "No withdrawn or refused work." }
 ];
 
 const VIEW_PRESETS = [
@@ -52,7 +53,8 @@ const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
 }[char]));
 
 function loadState() {
-  const fallback = { view:"all", product:"", owner:"", priority:"", search:"", collapsed:[] };
+  // Withdrawn or refused work is finished; keep it out of the way by default.
+  const fallback = { view:"all", product:"", owner:"", priority:"", search:"", collapsed:["closed"], closedDefaulted:true };
   if (typeof window === "undefined") return fallback;
   try {
     const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}");
@@ -62,7 +64,11 @@ function loadState() {
       owner: typeof parsed.owner === "string" ? parsed.owner : "",
       priority: typeof parsed.priority === "string" ? parsed.priority : "",
       search: typeof parsed.search === "string" ? parsed.search : "",
-      collapsed: Array.isArray(parsed.collapsed) ? parsed.collapsed.filter(value => LANES.some(lane => lane.id === value)) : []
+      collapsed: [
+        ...(Array.isArray(parsed.collapsed) ? parsed.collapsed.filter(value => LANES.some(lane => lane.id === value)) : []),
+        ...(parsed.closedDefaulted ? [] : ["closed"])
+      ],
+      closedDefaulted: true
     };
   } catch {
     return fallback;
@@ -91,7 +97,7 @@ export function matchesView(row, view) {
   if (view === "ecosystem") return workDomain(row) === "ecosystem";
   if (view === "attention") return ["stuck","review","orphaned_pr","untriaged"].includes(row?.lane);
   if (view === "sprint") {
-    return row?.lane !== "done" && (
+    return !["done","closed"].includes(row?.lane) && (
       ["in_progress","stuck","review"].includes(row?.lane) ||
       priorityRank(row?.priority) >= 3
     );
@@ -265,6 +271,8 @@ function renderBoard(data) {
   byLane.done = byLane.done
     .sort((a,b) => Date.parse(b.updated_at || 0) - Date.parse(a.updated_at || 0))
     .slice(0, 12);
+  byLane.closed = byLane.closed
+    .sort((a,b) => Date.parse(b.updated_at || 0) - Date.parse(a.updated_at || 0));
 
   if (counts) {
     counts.innerHTML = LANES.map(lane =>
@@ -314,12 +322,13 @@ function rowByTask(data, taskId) {
   return (Array.isArray(data?.rows) ? data.rows : []).find(row => String(row.task_id || "") === String(taskId || ""));
 }
 
-function laneForCanonical(state) {
+export function laneForCanonical(state) {
   const value = String(state || "").toUpperCase();
   if (value === "READY" || value === "AUTHORIZED" || value === "RUNNING") return "in_progress";
   if (value === "REVIEW" || value === "WAITING_APPROVAL") return "review";
-  if (["BLOCKED","FAILED","REVOKED","DENIED","COLLISION"].includes(value)) return "stuck";
-  if (["COMPLETE","ACCEPTED","CANCELLED"].includes(value)) return "done";
+  if (["REVOKED","DENIED","CANCELLED","SUPERSEDED"].includes(value)) return "closed";
+  if (["BLOCKED","FAILED","COLLISION"].includes(value)) return "stuck";
+  if (["COMPLETE","ACCEPTED"].includes(value)) return "done";
   return "backlog";
 }
 
