@@ -200,7 +200,7 @@
      in another tab — and the deployment review queue writes new items server-side. Poll
      while visible so the list reflects that without a manual reload, and refresh the
      moment the tab is looked at again, which is when returning from the live site. */
-  const POLL_MS = 15000;
+  const POLL_MS = 60000; // each poll wakes the metered Neon database
   const fingerprint = () => JSON.stringify([[...completed].sort(), notes, reviewStarted]);
 
   function editing() {

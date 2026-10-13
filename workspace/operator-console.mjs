@@ -1,3 +1,4 @@
+import { shouldPoll } from "./poll-gate.mjs";
 const THREAD_ID = "operator:primary";
 const COMMAND_TERMINAL = new Set(["completed","cancelled","governance_denied","route_failed"]);
 const TASK_TERMINAL = new Set(["accepted","done","completed","shipped","denied","revoked"]);
@@ -212,8 +213,8 @@ async function loadOperator() {
     if (ingress) ingress.textContent = "Ingress · connected";
 
     clearTimeout(timer);
-    if (active.length && document.visibilityState === "visible") {
-      timer = setTimeout(loadOperator, 5000);
+    if (active.length && shouldPoll()) {
+      timer = setTimeout(loadOperator, 30000);
     }
   } catch (error) {
     if (ingress) ingress.textContent = error.status === 401 ? "Ingress · workspace locked" : "Ingress · unavailable";

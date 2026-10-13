@@ -1,3 +1,4 @@
+import { shouldPoll } from './poll-gate.mjs';
 const esc = (value = '') => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const age = value => { const ms = Date.now() - new Date(value).getTime(); return Number.isFinite(ms) ? (ms < 60000 ? `${Math.max(1, Math.round(ms / 1000))}s ago` : `${Math.round(ms / 60000)}m ago`) : 'unknown'; };
 async function get(url) { const response = await fetch(url, { credentials:'same-origin', cache:'no-store' }); if (!response.ok) throw new Error(response.status === 401 ? 'Unlock Workspace at /workspace/ to read private Build state.' : `${url} returned ${response.status}`); return response.json(); }
@@ -22,4 +23,4 @@ async function render() {
     }
   } catch (error) { host.innerHTML = `<p class="workstream-empty"><strong>Detail unavailable.</strong><span>${esc(error.message)}</span></p>`; }
 }
-render(); const timer = setInterval(() => { if (!document.hidden) render(); }, 45000); window.addEventListener('beforeunload', () => clearInterval(timer), { once:true });
+render(); const timer = setInterval(() => { if (shouldPoll()) render(); }, 5 * 60 * 1000); window.addEventListener('beforeunload', () => clearInterval(timer), { once:true });

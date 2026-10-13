@@ -1,3 +1,4 @@
+import { shouldPoll } from './poll-gate.mjs';
 const esc = (value = '') => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const age = value => { const ms = Date.now() - new Date(value).getTime(); if (!Number.isFinite(ms)) return 'unknown'; return ms < 60000 ? `${Math.max(1, Math.round(ms / 1000))}s ago` : `${Math.round(ms / 60000)}m ago`; };
 const isBlocked = row => ['blocked', 'failed', 'stuck'].includes(String(row?.status || row?.lane || '').toLowerCase()) || Boolean(row?.blocker);
@@ -32,5 +33,5 @@ function render({ environments, workstreams, board }) {
 
 async function load() { try { render({ environments: await json('/api/workspace-environments'), workstreams: await json('/api/workspace-agentos?view=workstreams'), board: await json('/api/workspace-agentos') }); } catch (error) { const host = document.querySelector('#build-command-center'); if (host) host.innerHTML = `<p class="workstream-empty"><strong>Build state unavailable.</strong><span>${esc(error.message)}</span></p>`; } }
 load();
-let timer = setInterval(() => { if (!document.hidden) load(); }, 45000);
+let timer = setInterval(() => { if (shouldPoll()) load(); }, 5 * 60 * 1000);
 window.addEventListener('beforeunload', () => clearInterval(timer), { once: true });
