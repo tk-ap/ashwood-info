@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-10-12T15:23:34.473Z",
+  "generated_at": "2026-10-14T15:32:55.667Z",
   "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
@@ -275,6 +275,28 @@
             "value"
           ],
           "summary": "County prevention page explicitly limits LACAHSA rental/flexible assistance to LA County renters at or below 80% AMI after a crisis or unexpected event within 12 months threatening housing. Provider-specific terms and capacity remain unresolved."
+        },
+        {
+          "url": "https://lacahsa.gov/get-help/",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The official directory continues to route at-risk residents to funded emergency rental-assistance partners and states LACAHSA does not serve individuals directly. Provider-specific capacity, limits and grant-versus-loan terms remain unresolved."
+        },
+        {
+          "url": "https://lacounty.gov/prevention/",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The County prevention directory remains active and lists housing, utility and basic-needs pathways, including LACAHSA rental assistance for LA County renters at or below 80% AMI after a housing-threatening crisis within 12 months."
         }
       ],
       "eligibility_rules": [
@@ -534,6 +556,28 @@
             "value"
           ],
           "summary": "October 15 close remains published for the $1,000 veteran/spouse employer-business grant plus one program. The 2–100 employee, one-year and $5M revenue ceiling rules remain. Payment is Net 60 after complete approved documents; no immediate cash or personal qualification inferred."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The official page still lists an October 15 close for 25 finalist awards of $1,000 plus one free program. Veteran or military-spouse ownership, an active US employer business with 2–100 employees, one year in business and no more than $5 million revenue remain required; first disbursement is Net 60 after complete approved documents."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-14T15:31:02.393Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The October 15 close remains published for 25 finalist awards of $1,000 plus one free program. Veteran or military-spouse ownership, an active US employer business with 2–100 employees, one year in business and no more than $5 million revenue remain required; first disbursement is Net 60 after complete approved documents."
         }
       ],
       "eligibility_rules": [
@@ -584,7 +628,7 @@
       "confidence": "official_program_only",
       "disposition": "CONSULT",
       "reason": "Official program checked; applicant facts, benefit coordination and capacity remain unresolved.",
-      "action_deadline": null,
+      "action_deadline": "2026-10-15",
       "outcome": null,
       "discovered_at": "2026-09-24T23:48:00Z",
       "id": "founders-first-tadlock-2026",
@@ -616,7 +660,7 @@
       ],
       "effort": "medium",
       "next_action": "Before October 15, check the 2–100 employee and one-year business requirements. Do not treat this as immediate housing cash.",
-      "last_verified_at": "2026-10-12T15:23:34.413086Z",
+      "last_verified_at": "2026-10-14T15:31:02.393Z",
       "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
       "source_label": "Founders First CDC — Tadlock Veteran Business Grant",
       "program_key": "founders-first-tadlock-2026",
@@ -2224,6 +2268,37 @@
             "criteria"
           ],
           "summary": "PACE offers online or mailed applications for its service area; ordinary processing can take up to five months. In-person assistance is limited to emergency shutoffs; ID, bills, household income and rent/mortgage documents are required."
+        },
+        {
+          "url": "https://www.csd.ca.gov/pages/liheapprogram.aspx",
+          "checked_at": "2026-10-14T15:31:02.393Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "California continues to fund LIHEAP for one-time utility-bill assistance, crisis intervention and free weatherization. FY2026 funding is limited and providers prioritize vulnerable households, so eligibility does not guarantee a benefit."
+        },
+        {
+          "url": "https://www.ladwp.com/residential-services/assistance-programs/low-income-home-energy-assistance-program-liheap",
+          "checked_at": "2026-10-14T15:31:02.393Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "LADWP continues to list assistance up to $1,500, a 2026 one-person monthly income ceiling of $3,331.66, applicant age/SSN requirements, no effect on other benefits, and PACE routing for Central Los Angeles."
+        },
+        {
+          "url": "https://pacela.org/our-work/energy/",
+          "checked_at": "2026-10-14T15:31:02.393Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria"
+          ],
+          "summary": "PACE continues online, mail and drop-off intake. Starting October 15, 1055 Wilshire closes to visitors during an office move, but applications remain accepted by mail/drop-off there; processing may be temporarily delayed. Emergency disconnection assistance remains appointment-only by phone."
         }
       ],
       "eligibility_rules": [
@@ -2263,9 +2338,9 @@
         "Once per program year; provider years differ. Coordinate any duplicate utility expenses with other assistance."
       ],
       "verification": "VERIFIED",
-      "confidence": "unknown",
+      "confidence": "official_program_only",
       "disposition": "CONSULT",
-      "reason": "Current program and application routes verified; household eligibility and local capacity require consultation. Ordinary PACE processing can take up to five months.",
+      "reason": "Current program and application routes are verified; household eligibility and local capacity require consultation. PACE warns of temporary move-related delays, and ordinary processing can take up to five months.",
       "action_deadline": null,
       "outcome": null,
       "discovered_at": "2026-10-07T15:02:53.838Z",
@@ -2286,7 +2361,8 @@
       "unknowns": [
         "Household size, total income and provider screening",
         "Local funds and crisis-priority availability",
-        "Utility account and previous program-year assistance"
+        "Utility account and previous program-year assistance",
+        "Duration of PACE office move and temporary processing delays"
       ],
       "documents": [
         "Photo ID",
@@ -2301,15 +2377,30 @@
       ],
       "availability": "open",
       "deadline": null,
-      "next_action": "Confirm the local energy provider, household eligibility and funds. For a shutoff emergency ask specifically about crisis assistance; do not rely on ordinary processing for immediate relief.",
+      "next_action": "Confirm PACE service area, household eligibility and funds; use online or mail/drop-off intake during the office move. For a shutoff emergency, call PACE for an appointment rather than relying on ordinary processing.",
       "status": "NEEDS_FACT",
-      "last_verified_at": "2026-10-07T15:02:45Z",
+      "last_verified_at": "2026-10-14T15:31:02.393Z",
       "changes": [
         {
           "at": "2026-10-07T15:02:53.838Z",
           "field": "verification",
           "before": "UNVERIFIED",
           "after": "VERIFIED"
+        },
+        {
+          "at": "2026-10-14T15:32:55.667Z",
+          "field": "unknowns",
+          "before": [
+            "Household size, total income and provider screening",
+            "Local funds and crisis-priority availability",
+            "Utility account and previous program-year assistance"
+          ],
+          "after": [
+            "Household size, total income and provider screening",
+            "Local funds and crisis-priority availability",
+            "Utility account and previous program-year assistance",
+            "Duration of PACE office move and temporary processing delays"
+          ]
         }
       ]
     },
@@ -2484,6 +2575,16 @@
             "value"
           ],
           "summary": "Announcement still anticipates early-FY2027 clinician-directed goods and transportation contracts. It does not establish currently operating local intake; UNVERIFIED/HOLD and null verification date retained."
+        },
+        {
+          "url": "https://news.va.gov/press-room/va-launches-new-program-to-help-homeless-veterans-with-emergency-supplies-transportation/",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "The announcement still describes early-FY2027 clinician-recommended goods and transportation dependent on operating contracts. It does not establish current Greater Los Angeles intake or capacity, so UNVERIFIED/HOLD remains appropriate."
         }
       ],
       "eligibility_rules": [
@@ -2770,6 +2871,50 @@
             "value"
           ],
           "summary": "October intake still states November 15 notification while activity examples use the 16th. The unresolved official timing discrepancy keeps NEEDS_REVIEW/HOLD; prior verification date retained."
+        },
+        {
+          "url": "https://cciarts.org/quick-grant/",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October cycle remains open for up to $600 in approved professional development. The program page says October 15 at 11:59 a.m. Pacific and uses November 16 for recurring notification/activity timing."
+        },
+        {
+          "url": "https://centerforculturalinnovation.submittable.com/submit",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The live October intake lists an October 15 closing time of 3:00 p.m. while stating deadlines use Pacific Time, and it promises November 15 notification. These conflict with the main program page, so the earlier 11:59 a.m. cutoff remains the safe action deadline."
+        },
+        {
+          "url": "https://cciarts.org/quick-grant/",
+          "checked_at": "2026-10-14T15:31:02.393Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "October cycle remains open for up to $600 in approved professional development. The main program page still says October 15 at 11:59 a.m. Pacific and uses November 16 for recurring notification/activity timing."
+        },
+        {
+          "url": "https://centerforculturalinnovation.submittable.com/submit",
+          "checked_at": "2026-10-14T15:31:02.393Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The live October intake still displays an October 15 closing time of 3:00 p.m. while stating deadlines use Pacific Time, and it promises November 15 notification. The official conflict remains; retain HOLD and the earlier 11:59 a.m. safe cutoff."
         }
       ],
       "eligibility_rules": [
@@ -2810,7 +2955,7 @@
       "verification": "NEEDS_REVIEW",
       "confidence": "official_program_only",
       "disposition": "HOLD",
-      "reason": "HOLD pending reconciliation of official November 15/16 notification dates and eligible activity timing; this is restricted professional-development aid.",
+      "reason": "HOLD because official pages conflict on the October 15 cutoff and November notification/activity timing; this is restricted professional-development aid.",
       "action_deadline": "2026-10-15T11:59:00-07:00",
       "outcome": null,
       "discovered_at": "2026-10-08T14:43:43.295Z",
@@ -2831,7 +2976,8 @@
       "unknowns": [
         "Eligible activity, budget and start date",
         "Prior CCI fiscal-year award",
-        "Cycle notice says November 15 while recurring page says by November 16; activity start must be clarified",
+        "Official pages conflict on the October 15 cutoff (11:59 a.m. versus 3:00 p.m. Pacific)",
+        "Official pages conflict on November 15 versus November 16 notification/activity timing",
         "Payment timing after award and completed documentation"
       ],
       "documents": [
@@ -2843,7 +2989,7 @@
       "availability": "open",
       "deadline": "2026-10-15",
       "effort": "medium",
-      "next_action": "Review a short eligible group business-skills activity and confirm its start date with CCI before the October 15, 11:59 a.m. PT deadline. Do not submit identity documents through ASHWOOD.",
+      "next_action": "If an eligible short business-skills activity is already identified, use October 15 at 11:59 a.m. PT as the safe cutoff and confirm the activity start date. Do not submit identity documents through ASHWOOD.",
       "match_tags": [
         "creative",
         "business"
@@ -2856,6 +3002,23 @@
           "field": "verification",
           "before": "UNVERIFIED",
           "after": "NEEDS_REVIEW"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "unknowns",
+          "before": [
+            "Eligible activity, budget and start date",
+            "Prior CCI fiscal-year award",
+            "Cycle notice says November 15 while recurring page says by November 16; activity start must be clarified",
+            "Payment timing after award and completed documentation"
+          ],
+          "after": [
+            "Eligible activity, budget and start date",
+            "Prior CCI fiscal-year award",
+            "Official pages conflict on the October 15 cutoff (11:59 a.m. versus 3:00 p.m. Pacific)",
+            "Official pages conflict on November 15 versus November 16 notification/activity timing",
+            "Payment timing after award and completed documentation"
+          ]
         }
       ]
     },
@@ -3308,6 +3471,17 @@
             "value"
           ],
           "summary": "Official FAQ still reports Claude Team/$1,000 API offer over-capacity and application re-review. Claimed offers and partner Startup Stack benefits remain available to existing members; no reopening evidence for new promotional awards."
+        },
+        {
+          "url": "https://claude.com/programs/startups",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Application remains published for bootstrapped, pre-seed and venture-backed startups. Startup Stack advertises third-party discounts and credits worth up to $45,000, while the FAQ still says Claude Team/$1,000 API offers are over capacity and applications will be re-reviewed. Partner-backed startups may separately qualify for up to $100,000 in API credits through an eligible VC."
         }
       ],
       "eligibility_rules": [
@@ -3334,7 +3508,7 @@
       "interest_percent": null,
       "fees": null,
       "amount": null,
-      "application_window": "Application link remains published; Team/$1,000 API offers are over capacity and applications are being re-reviewed",
+      "application_window": "Application published with no deadline; first-party Team/$1,000 API offers are over capacity and applications are being re-reviewed",
       "time_to_funding_days": null,
       "training_weeks": null,
       "employment_ready_at": null,
@@ -3345,7 +3519,7 @@
       "verification": "NEEDS_REVIEW",
       "confidence": "official_program_only",
       "disposition": "HOLD",
-      "reason": "HOLD: official FAQ says the free Team/$1,000 API offers are over capacity and existing applications may change status; individual offer availability and costs need review.",
+      "reason": "HOLD: applications are published, but first-party Claude Team/$1,000 API offers remain over capacity and individual partner-offer costs and eligibility require review.",
       "action_deadline": null,
       "outcome": null,
       "discovered_at": "2026-10-10T14:47:20.344Z",
@@ -3357,23 +3531,23 @@
       "source_label": "Anthropic — Claude Startups official FAQ",
       "type": "build_credits",
       "applicant_lane": "business",
-      "value": "Startup Stack partner offers and member support; free Claude Team/$1,000 API offers currently over capacity, not assured for new applicants",
+      "value": "Startup Stack third-party offers advertised up to $45,000 plus support; first-party Claude Team/$1,000 API offers remain over capacity; eligible partner-backed startups may separately access up to $100,000 in API credits",
       "criteria": [
-        "Startup founders building with Claude; bootstrapped, pre-seed and venture-backed startups may apply",
-        "Provider approval and individual partner-offer terms apply",
-        "Additional VC-partner credits require an eligible partner investor",
+        "Bootstrapped, pre-seed and venture-backed startup founders building with Claude may apply",
+        "Provider approval and each third-party offer’s terms, costs and expiry apply",
+        "Additional API credits require backing by an eligible VC partner and must be claimed through that VC",
         "First-party Claude credits cannot be used on AWS Bedrock or Google Vertex AI"
       ],
       "unknowns": [
-        "Whether the provider will approve a new application while reshaping the program",
-        "Current startup eligibility details and applicable partner-offer costs",
-        "Whether any Team/API offer becomes available again",
+        "Whether a new application will be approved while first-party offers are over capacity",
+        "Geographic limits, deadline and costs are not stated on the official page",
+        "Which third-party offers are useful after reviewing separate costs and expiry",
         "Existing membership or previously claimed benefits"
       ],
       "availability": "limited",
       "deadline": null,
       "effort": "medium",
-      "next_action": "Watch the official FAQ for reopened Team/API capacity. If already a member, inspect existing entitlements in Console; do not reapply or assume the advertised credits are newly available.",
+      "next_action": "Review only a specific no-cost partner benefit that replaces a planned expense; do not buy a plan, enable billable usage or treat the advertised package value as cash.",
       "related_ids": [
         "aws-activate-founders",
         "google-startups-cloud"
@@ -3390,6 +3564,50 @@
           "field": "verification",
           "before": "UNVERIFIED",
           "after": "NEEDS_REVIEW"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "application_window",
+          "before": "Application link remains published; Team/$1,000 API offers are over capacity and applications are being re-reviewed",
+          "after": "Application published with no deadline; first-party Team/$1,000 API offers are over capacity and applications are being re-reviewed"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "value",
+          "before": "Startup Stack partner offers and member support; free Claude Team/$1,000 API offers currently over capacity, not assured for new applicants",
+          "after": "Startup Stack third-party offers advertised up to $45,000 plus support; first-party Claude Team/$1,000 API offers remain over capacity; eligible partner-backed startups may separately access up to $100,000 in API credits"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "criteria",
+          "before": [
+            "Startup founders building with Claude; bootstrapped, pre-seed and venture-backed startups may apply",
+            "Provider approval and individual partner-offer terms apply",
+            "Additional VC-partner credits require an eligible partner investor",
+            "First-party Claude credits cannot be used on AWS Bedrock or Google Vertex AI"
+          ],
+          "after": [
+            "Bootstrapped, pre-seed and venture-backed startup founders building with Claude may apply",
+            "Provider approval and each third-party offer’s terms, costs and expiry apply",
+            "Additional API credits require backing by an eligible VC partner and must be claimed through that VC",
+            "First-party Claude credits cannot be used on AWS Bedrock or Google Vertex AI"
+          ]
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "unknowns",
+          "before": [
+            "Whether the provider will approve a new application while reshaping the program",
+            "Current startup eligibility details and applicable partner-offer costs",
+            "Whether any Team/API offer becomes available again",
+            "Existing membership or previously claimed benefits"
+          ],
+          "after": [
+            "Whether a new application will be approved while first-party offers are over capacity",
+            "Geographic limits, deadline and costs are not stated on the official page",
+            "Which third-party offers are useful after reviewing separate costs and expiry",
+            "Existing membership or previously claimed benefits"
+          ]
         }
       ]
     },
@@ -3412,6 +3630,37 @@
             "value"
           ],
           "summary": "Published 0%-interest/$0-fee startup financing up to $50,000. The same page conflicts on credit floors, guarantor counts and education-loan exceptions. Business documents and repayment ability are required; typical repayment starts 30–45 days after funding over 36 months. Capacity and terms need confirmation."
+        },
+        {
+          "url": "https://www.jfla.org/business-loans/startup-business-loans",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "Startup-specific page has a live application link, advertises up to $50,000 at 0% interest and no fees, and requires at least two guarantors, qualifying-county residence, business documents and credit above 580 (680 above $10,000)."
+        },
+        {
+          "url": "https://www.jfla.org/business-loans/interest-free-small-business-loans",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "General business-loan page says one guarantor supports up to $7,500, two up to $36,000 and three up to $50,000; it requires credit of at least 600 (680 above $10,000), employment and no active JFLA loan. These terms conflict with the startup-specific page."
+        },
+        {
+          "url": "https://www.jfla.org/loan-help/faqs",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "criteria",
+            "value"
+          ],
+          "summary": "General FAQ confirms zero interest and fees, monthly repayment typically over 24–36 months starting 30–45 days after funding, repayment-capacity evidence and guarantor requirements. Guarantors cannot be active JFLA borrowers or guarantors."
         }
       ],
       "eligibility_rules": [
@@ -3444,8 +3693,11 @@
       "repayable": true,
       "interest_percent": 0,
       "fees": 0,
-      "amount": null,
-      "application_window": "Published intake; confirm terms before proceeding",
+      "amount": {
+        "max": 50000,
+        "currency": "USD"
+      },
+      "application_window": "Published intake with live application link; reconcile official term conflicts before proceeding",
       "time_to_funding_days": null,
       "training_weeks": null,
       "employment_ready_at": null,
@@ -3455,7 +3707,7 @@
       "verification": "NEEDS_REVIEW",
       "confidence": "official_program_only",
       "disposition": "HOLD",
-      "reason": "Conflicting official credit, guarantor and existing-loan rules require clarification.",
+      "reason": "Official pages conflict on credit, guarantor and active-loan rules; repayment capacity is also unconfirmed.",
       "action_deadline": null,
       "outcome": null,
       "discovered_at": "2026-10-12T15:23:34.473Z",
@@ -3467,18 +3719,20 @@
       "source_label": "JFLA — Startup Business Loans",
       "type": "zero_interest",
       "applicant_lane": "business",
-      "value": "Advertised up to $50,000; guarantor limits require clarification",
-      "availability": "unknown",
+      "value": "0%-interest, no-fee startup loan advertised up to $50,000; maximum varies by guarantors and official terms conflict",
+      "availability": "open",
       "deadline": null,
       "criteria": [
-        "Adult with CA ID and SSN/ITIN; qualifying county residency",
-        "Business need, repayment capacity, guarantors and credit requirements",
-        "Business plan, cash-flow projection, tax return and issued business registration"
+        "Adult with California ID and SSN/ITIN who resides in Los Angeles, Ventura, Orange or Santa Barbara County",
+        "Business need, current repayment capacity, credit review and qualified guarantors",
+        "Business plan, cash-flow projection, recent personal and business tax returns, and issued business registration",
+        "General FAQ says repayment is typically 24–36 months with monthly payments starting 30–45 days after funding"
       ],
       "unknowns": [
-        "Conflicting credit floor (over 580 versus 600) and guarantor counts",
-        "Education-loan exception conflicts with no-current-borrower rule",
-        "Repayment capacity, documents and benefit interactions"
+        "Startup page says credit above 580 while the general business page says at least 600",
+        "Startup page requires at least two guarantors while the general page allows one to three with different maximums",
+        "Education-loan exception and active-loan restrictions need reconciliation",
+        "Repayment capacity, guarantors, documents and benefit interactions"
       ],
       "effort": "high",
       "documents": [
@@ -3487,7 +3741,7 @@
       "related_ids": [
         "jfla-veteran-loan"
       ],
-      "next_action": "Clarify provider rules and repayment feasibility before considering this business loan. Keep housing and employment priorities first; no application or debt acceptance authorized.",
+      "next_action": "Clarify the startup-specific credit, guarantor and active-loan rules and calculate an affordable monthly payment before considering this debt. Keep housing and employment priorities first; no application or debt acceptance is authorized.",
       "status": "CANDIDATE",
       "last_verified_at": null,
       "changes": [
@@ -3496,9 +3750,183 @@
           "field": "verification",
           "before": "UNVERIFIED",
           "after": "NEEDS_REVIEW"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "availability",
+          "before": "unknown",
+          "after": "open"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "application_window",
+          "before": "Published intake; confirm terms before proceeding",
+          "after": "Published intake with live application link; reconcile official term conflicts before proceeding"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "value",
+          "before": "Advertised up to $50,000; guarantor limits require clarification",
+          "after": "0%-interest, no-fee startup loan advertised up to $50,000; maximum varies by guarantors and official terms conflict"
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "amount",
+          "before": null,
+          "after": {
+            "max": 50000,
+            "currency": "USD"
+          }
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "criteria",
+          "before": [
+            "Adult with CA ID and SSN/ITIN; qualifying county residency",
+            "Business need, repayment capacity, guarantors and credit requirements",
+            "Business plan, cash-flow projection, tax return and issued business registration"
+          ],
+          "after": [
+            "Adult with California ID and SSN/ITIN who resides in Los Angeles, Ventura, Orange or Santa Barbara County",
+            "Business need, current repayment capacity, credit review and qualified guarantors",
+            "Business plan, cash-flow projection, recent personal and business tax returns, and issued business registration",
+            "General FAQ says repayment is typically 24–36 months with monthly payments starting 30–45 days after funding"
+          ]
+        },
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "unknowns",
+          "before": [
+            "Conflicting credit floor (over 580 versus 600) and guarantor counts",
+            "Education-loan exception conflicts with no-current-borrower rule",
+            "Repayment capacity, documents and benefit interactions"
+          ],
+          "after": [
+            "Startup page says credit above 580 while the general business page says at least 600",
+            "Startup page requires at least two guarantors while the general page allows one to three with different maximums",
+            "Education-loan exception and active-loan restrictions need reconciliation",
+            "Repayment capacity, guarantors, documents and benefit interactions"
+          ]
+        }
+      ]
+    },
+    {
+      "categories": [
+        "creative",
+        "employment",
+        "grant"
+      ],
+      "aliases": [
+        "DCA NEAR Grant"
+      ],
+      "evidence": [
+        {
+          "url": "https://dcaredesign.org/air/",
+          "checked_at": "2026-10-13T14:54:57.081Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria"
+          ],
+          "summary": "The official page lists an October 30, 2026 11:59 p.m. deadline for freelance Los Angeles teaching-artists partnering with non-arts community hosts. Projects run July 2027–June 2028 and require at least 11 workshops, consistent attendance of 20 and a public presentation for 40 or more; current page does not state grant value, payment timing or document requirements."
+        },
+        {
+          "url": "https://dcaredesign.org/air/",
+          "checked_at": "2026-10-14T15:31:02.393Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria"
+          ],
+          "summary": "The official page still lists an October 30, 2026 11:59 p.m. deadline for freelance Los Angeles teaching-artists partnering with non-arts community hosts. Projects run July 2027–June 2028 and require at least 11 workshops, consistent attendance of 20 and a public presentation for 40 or more; grant value, payment timing and documents remain unstated."
+        }
+      ],
+      "eligibility_rules": [
+        {
+          "fact": "near_la_freelance_teaching_artist",
+          "label": "Freelance Los Angeles teaching-artist requirement confirmed"
+        },
+        {
+          "fact": "near_host_partner",
+          "label": "Eligible community host partnership confirmed"
+        },
+        {
+          "fact": "near_delivery_capacity",
+          "label": "Workshop, attendance and presentation delivery capacity confirmed"
+        }
+      ],
+      "geography": [
+        "City of Los Angeles; exact boundary requires guidelines"
+      ],
+      "veteran_requirements": null,
+      "income_requirements": null,
+      "employment_requirements": "Freelance teaching-artist role and host partnership; project delivery begins July 2027",
+      "repayable": false,
+      "interest_percent": null,
+      "fees": null,
+      "amount": null,
+      "application_window": "Applications due October 30, 2026 at 11:59 p.m.; timezone not stated on the official page",
+      "time_to_funding_days": null,
+      "training_weeks": null,
+      "employment_ready_at": "2027-07-01",
+      "benefit_interactions": [
+        "A multi-week 2027–28 teaching residency could compete with professional employment; do not let application work displace the December 2026 employment goal."
+      ],
+      "verification": "NEEDS_REVIEW",
+      "confidence": "official_program_only",
+      "disposition": "HOLD",
+      "reason": "Authoritative value and complete application terms are missing, and delivery begins after the current employment target.",
+      "action_deadline": "2026-10-30",
+      "outcome": null,
+      "discovered_at": "2026-10-13T14:55:41.242Z",
+      "id": "la-dca-near-2027-28",
+      "program_key": "la-dca-near-2027-28",
+      "name": "Neighborhood Engagement Artist Residency (NEAR) Grant",
+      "funder": "City of Los Angeles Department of Cultural Affairs",
+      "source_url": "https://dcaredesign.org/air/",
+      "source_label": "City of Los Angeles DCA — NEAR and CO-UP grants",
+      "type": "creative_funding",
+      "applicant_lane": "individual",
+      "value": "Grant amount not stated on the current official page",
+      "criteria": [
+        "Freelance Los Angeles teaching-artist",
+        "Partnership with an arts-friendly but not arts-focused community host organization",
+        "At least 11 participatory workshops with consistent attendance of 20 people",
+        "At least one public presentation promoted to an audience of 40 or more",
+        "Project runs between July 1, 2027 and June 30, 2028"
+      ],
+      "unknowns": [
+        "Grant amount, payment timing and required application documents",
+        "Exact Los Angeles residency or work-location boundary",
+        "Deadline timezone and current application portal mechanics",
+        "Qualified host partnership and feasibility alongside the December 2026 employment goal"
+      ],
+      "match_tags": [
+        "creative",
+        "employment",
+        "los_angeles"
+      ],
+      "deadline": "2026-10-30",
+      "availability": "open",
+      "documents": [
+        "Provider application materials and host partnership documentation; exact list requires current guidelines"
+      ],
+      "effort": "high",
+      "next_action": "HOLD until the current guidelines establish award value, documents, location rules and workload; do not divert urgent housing or December 2026 employment effort.",
+      "related_ids": [
+        "cci-quick-grant"
+      ],
+      "status": "CANDIDATE",
+      "last_verified_at": null,
+      "changes": [
+        {
+          "at": "2026-10-13T14:55:41.242Z",
+          "field": "verification",
+          "before": "UNVERIFIED",
+          "after": "NEEDS_REVIEW"
         }
       ]
     }
   ],
-  "last_scan_at": "2026-10-12T15:23:34.473Z"
+  "last_scan_at": "2026-10-14T15:32:55.667Z"
 }
