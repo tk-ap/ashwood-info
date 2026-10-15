@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createBrainHandler } from '../api/workspace-brain.mjs';
+import { createBrainHandler } from '../api/_brain-handler.mjs';
 
 function response() {
   return {
