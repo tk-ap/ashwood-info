@@ -1,6 +1,6 @@
 # Private Brain API staging
 
-This branch adds `GET /api/workspace-brain` (list/search), `GET ?id=...` (read), `GET ?action=export&id=...` (Markdown download), and `POST /api/workspace-brain` (create).
+This branch rewrites `/api/workspace-brain` to the existing `/api/workspace-auth?view=brain` serverless entrypoint (staying within the 12-function Hobby budget). It supports `GET /api/workspace-brain` (list/search), `GET ?id=...` (read), `GET ?action=export&id=...` (Markdown download), and `POST /api/workspace-brain` (create).
 
 Every route requires the existing server-verified ASHWOOD owner session. Owner keys are server-owned, all SQL selects are owner-scoped, writes require same-origin and there is no public anonymous fallback. Existing Workspace auth still requires its own database, so this API is **not a replacement for the down Workspace**; an isolated preview can be used only after separately verified session availability. Do not claim standalone authenticated preview access until proven.
 
