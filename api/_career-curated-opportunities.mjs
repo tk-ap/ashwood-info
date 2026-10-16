@@ -3,6 +3,35 @@
 // rankOpportunities removes them automatically once tracked or declined.
 export const CURATED_CAREER_OPPORTUNITIES = [
   {
+    id:'career-search:tilt-finance-risk-operations-transformation-lead:2026-10-16',
+    url:'https://jobs.ashbyhq.com/tilthq/26ba4a8d-8963-407a-b9a6-d6d78341ec66',
+    title:'Risk Operations Transformation Lead',
+    company_name:'Tilt Finance',
+    candidate_required_location:'Remote - United States',
+    job_type:'Full-time · Remote',
+    work_arrangement:'remote',
+    salary:'$100,000 - $115,000 a year · equity',
+    publication_date:'2026-09-30T00:00:00Z',
+    description:'98/100 match. Remote risk-operations transformation role focused on process redesign, AI-enabled automation, operating metrics, tooling, controls, partner delivery, readiness, and measurable operational improvement. Strong fit for TK’s Wells Fargo controls background, JPMorgan process/readiness work, regulated financial-services experience, and current governed AI workflow/product work.',
+    source_name:'95+ Career Match',
+    source_url:'https://jobs.ashbyhq.com/tilthq/26ba4a8d-8963-407a-b9a6-d6d78341ec66',
+    curated:true
+  },
+  {
+    id:'career-search:centivo-commercial-operations-manager:2026-10-16',
+    url:'https://jobs.ashbyhq.com/centivo/a3e68280-67ae-4e0f-864e-5af0dca04c14',
+    title:'Commercial Operations Manager',
+    company_name:'Centivo',
+    candidate_required_location:'Remote - United States',
+    job_type:'Full-time · Remote',
+    work_arrangement:'remote',
+    salary:'$110,000 - $120,000 a year · bonus · equity',
+    description:'96/100 match. Remote commercial-operations role combining project management, business analysis, process improvement, implementation, change enablement, requirements gathering, process mapping, UAT/readiness, SOPs, training, governance, and cross-functional delivery. Strong fit for TK’s JPMorgan implementation/readiness work and Wells Fargo controls and operating-process experience.',
+    source_name:'95+ Career Match',
+    source_url:'https://jobs.ashbyhq.com/centivo/a3e68280-67ae-4e0f-864e-5af0dca04c14',
+    curated:true
+  },
+  {
     id:'career-search:headway-business-operations-lead:2026-09-26',
     url:'https://to.indeed.com/aavjzz89wfwr',
     title:'Business Operations Lead',
