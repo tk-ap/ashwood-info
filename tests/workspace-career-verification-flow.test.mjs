@@ -26,8 +26,10 @@ async function fixture() {
       status:'verified',
       employer_url:`https://jobs.${job.company_name.toLowerCase().replaceAll(' ', '')}.com/${job.id}`,
       source_url:job.source_url,
-      checked_at:'2026-10-10T12:00:00.000Z',
-      verified_at:'2026-10-10T12:00:00.000Z',
+      // Relative to now: the listing only promotes links verified in the last 7 days, so a fixed
+      // date made this test start failing a week after it was written.
+      checked_at:new Date().toISOString(),
+      verified_at:new Date().toISOString(),
       evidence:{ company_matches:true, role_matches:true }
     })
   };
@@ -47,7 +49,7 @@ test('autonomous verification stores independent evidence and promotes only the 
     companyName:'Example Co',
     jobGeo:'USA',
     jobType:['Full-time'],
-    pubDate:'2026-10-10T00:00:00.000Z',
+    pubDate:new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
     jobDescription:'Business analysis, stakeholder management, controls and process improvement.',
     url:'https://jobicy.com/jobs/job-1'
   }] }), { status:200, headers:{ 'content-type':'application/json' } });
