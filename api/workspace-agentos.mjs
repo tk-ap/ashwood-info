@@ -1,6 +1,7 @@
 import analyses from './_workspace-analyses-handler.mjs';
 import board from './_agentos-board-handler.mjs';
 import workstreams, { sourcesHandler } from './_agentos-workstreams-handler.mjs';
+import { contextHandler } from './_workspace-context-handler.mjs';
 
 async function selfDirective(req,res){
   if(req.method!=='POST') return res.status(405).json({error:'POST required'});
@@ -27,5 +28,6 @@ export default async function handler(req,res){
   if(view==='analyses') return analyses(req,res);
   if(view==='self-directive') return selfDirective(req,res);
   if(view==='sources') return sourcesHandler(req,res);
+  if(view==='context') return contextHandler(req,res);
   return view==='workstreams' ? workstreams(req,res) : board(req,res);
 }
