@@ -28,6 +28,12 @@ export function cleanText(value, max) {
   return text.replace(URL_RE, url => (credentialUrl(url) ? '[link removed: it carried a credential]' : url)).slice(0, max);
 }
 
+function markedSensitive(text) {
+  let decoded = text;
+  try { decoded = decodeURIComponent(text); } catch { /* keep raw */ }
+  return SENSITIVE.test(text) || SENSITIVE.test(decoded);
+}
+
 export function safeId(value) {
   const id = String(value || '').trim();
   return /^[A-Za-z0-9._:@-]{1,120}$/.test(id) ? id : '';
@@ -60,9 +66,14 @@ export function cleanContextSnapshot(body) {
     if (value === '') continue;
     specFields[key] = { value, basis: field.basis === 'owner' ? 'owner' : 'interview' };
   }
+  // Only owner-confirmed ("ready") https sources; a link awaiting review, a credential link, or a
+  // locator/label carrying a sensitive or withheld marker (also URL-encoded) is never stored
+  // (Codex review of 1992f9f: the server must enforce confirmation, not trust the sender).
   const sources = (Array.isArray(body.sources) ? body.sources : []).map(source => {
+    if (source?.status !== 'ready') return null;
     const locator = String(source?.locator || '').trim();
-    if (!/^https:\/\//i.test(locator) || credentialUrl(locator)) return null;
+    if (!/^https:\/\//i.test(locator) || credentialUrl(locator) || markedSensitive(locator)) return null;
+    if (markedSensitive(String(source?.label || ''))) return null;
     return { type: cleanText(source?.type, 40) || 'website', label: cleanText(source?.label, 200) || locator, locator };
   }).filter(Boolean).slice(0, MAX_SOURCES);
   const provenance = body.provenance && typeof body.provenance === 'object' ? {

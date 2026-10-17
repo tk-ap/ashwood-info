@@ -15,7 +15,7 @@ const body = {
   ],
   goal_spec: { fields: { goal: { value: 'One central Context record.', basis: 'interview' }, people: { value: null, basis: 'interview' }, bogus: { value: 'x' }, done: { value: '[SENSITIVE] hidden' } } },
   sources: [
-    { type: 'website', label: 'ALVIRA', locator: 'https://alviratech.vercel.app' },
+    { type: 'website', label: 'ALVIRA', locator: 'https://alviratech.vercel.app', status: 'ready' },
     { type: 'website', label: 'Signed', locator: 'https://files.example.com/a?sig=ABC' },
     { type: 'website', label: 'Plain http', locator: 'http://example.com' },
   ],
@@ -99,4 +99,18 @@ test('the context endpoint is routed through the shared workspace function', asy
   assert.match(router, /if\(view==='context'\) return contextHandler\(req,res\);/);
   const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
   assert.ok(config.rewrites.some(r => r.source === '/api/workspace-context' && r.destination.includes('view=context')));
+});
+
+test('the server stores only owner-confirmed sources, never ones awaiting review or marked sensitive (Codex review of 1992f9f)', () => {
+  const snap = cleanContextSnapshot({ ...body, sources: [
+    { type: 'website', label: 'Confirmed', locator: 'https://alviratech.vercel.app', status: 'ready' },
+    { type: 'website', label: 'Private doc', locator: 'https://docs.google.com/document/d/PRIVATE/edit', status: 'needs-review' },
+    { type: 'website', label: 'No status', locator: 'https://example.com/nostatus' },
+    { type: 'website', label: 'Marked', locator: 'https://example.com/path-[SENSITIVE]-x', status: 'ready' },
+    { type: 'website', label: 'Encoded', locator: 'https://example.com/%5BSENSITIVE%5D-x', status: 'ready' },
+    { type: 'website', label: '[withheld: sensitive — ask]', locator: 'https://example.com/withheld-label', status: 'ready' },
+  ] });
+  const text = JSON.stringify(snap.sources);
+  assert.deepEqual(snap.sources.map(s => s.label), ['Confirmed']);
+  for (const bad of ['PRIVATE', 'nostatus', 'SENSITIVE', 'withheld-label']) assert.ok(!text.includes(bad), bad);
 });
