@@ -1,5 +1,10 @@
 # Agent Instructions
 
+## ALVIRA Interview Data → Second Brain
+
+Agents processing ALVIRA interview output for the private ASHWOOD Brain **must** follow [docs/ALVIRA_INTERVIEW_TO_BRAIN_DIRECTIVE.md](docs/ALVIRA_INTERVIEW_TO_BRAIN_DIRECTIVE.md). Preserve ALVIRA as canonical Context, delegated-actor and epistemic provenance, sensitive-data boundaries, owner review, deduplication, and authenticated import proof; do not create a parallel Context store or publish interview material.
+
+
 ## Product Role
 
 ASHWOOD is the public creative portfolio and founder build archive.
