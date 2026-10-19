@@ -349,3 +349,7 @@ body[data-workspace-current-view="work"] #network{margin-top:24px}
   .workspace-section-nav a[aria-current="page"]{box-shadow:inset 2px 0 0 var(--ink);padding-left:9px}
   .workspace-view-intro,.workspace-shell>section,.workspace-shell>details,.workspace-footer{grid-column:2}
 }
+
+/* Static here.now reviews never connect to the owner Workspace. */
+.workspace-demo-banner{position:sticky;top:0;z-index:10000;margin:0;padding:9px 16px;border-bottom:1px solid #c6a55f;background:#24221b;color:#f5eedb;text-align:center;font:600 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em}
+body[data-ashwood-demo-sandbox="true"] .workspace-legal-record{opacity:.62;cursor:default}
