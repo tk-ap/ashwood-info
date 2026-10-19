@@ -32,11 +32,11 @@ sandboxes:
     static_primary: true
     slug: mighty-yoga-pgph
     url: https://mighty-yoga-pgph.here.now/
-    current_version_id: 01M5AZ534072RY8TEZ8NRXQSW9
-    source_ref: a9da685a1fc2e7690bc37dddfb39e9c8fd5769ea
+    current_version_id: 01M5AZFT9RY43FYTMKR9DP7QG0
+    source_ref: be34383e8a79a05ee88b2347033a7cc7d140a55c
     verification:
       state: passed
-      evidence_ref: here-now:01M5AZ534072RY8TEZ8NRXQSW9 (desktop and 390px checked 2026-10-19)
+      evidence_ref: here-now:01M5AZFT9RY43FYTMKR9DP7QG0 (desktop, 390px, and section deep link checked 2026-10-19)
 
 release_rules:
   - treat-this-file-as-the-canonical-deployment-topology
