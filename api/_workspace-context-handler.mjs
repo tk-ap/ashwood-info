@@ -10,7 +10,9 @@ import { getSql, json, parseBody, requireSession, sameOrigin, sha256 } from './_
 import { cleanContextSnapshot, cleanText, safeId } from './_workspace-context-clean.mjs';
 
 export function contextSyncAuthorized(req) {
-  const expected = process.env.WORKSPACE_CONTEXT_SYNC_TOKEN || process.env.WORKSPACE_SOURCE_SYNC_TOKEN;
+  // Same fallback chain as the source registry (sourceSyncAuthorized), so the existing source/board
+  // sync token the owner already deploys also authorizes context sync.
+  const expected = process.env.WORKSPACE_CONTEXT_SYNC_TOKEN || process.env.WORKSPACE_SOURCE_SYNC_TOKEN || process.env.WORKSPACE_BOARD_SYNC_TOKEN;
   if (!expected) return false;
   const header = String(req.headers?.authorization || '');
   const token = header.startsWith('Bearer ') ? header.slice(7) : '';
