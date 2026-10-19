@@ -213,3 +213,35 @@ test('an oversized deployment row sheds the oldest deployments but keeps its his
   assert.ok(!('unrendered_blob' in meta));
   assert.ok(JSON.stringify(meta).length <= 96 * 1024);
 });
+
+test('an oversized blob inside deployment_history cannot push the row over the cap (Codex review of 8a40706)', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-secret';
+  t.after(() => { if (previous === undefined) delete process.env.WORKSPACE_BOARD_SYNC_TOKEN; else process.env.WORKSPACE_BOARD_SYNC_TOKEN = previous; });
+
+  const deployments = Array.from({ length: 10 }, (_, i) => ({ id: `dpl_${i}`, state: 'READY', created_at: new Date(Date.UTC(2026, 9, 1) + i * 3600_000).toISOString() }));
+  const pushed = await f.call({ method:'POST', headers:{ authorization:'Bearer board-secret' }, body:{
+    source_system:'agent-os', replace:true, observed_at:'2026-10-19T00:00:00Z', snapshot_id:'s3',
+    rows:[
+      { board_key:'deploy:budget', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Deployment capacity', status:'NORMAL',
+        metadata:{ deployment_history:{ deployments, total:40, extra_blob:'x'.repeat(120 * 1024) }, deployment_budget:{ used:1 } } },
+      { board_key:'deploy:odd', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Odd history', status:'NORMAL',
+        metadata:{ deployment_history:{ deployments:'not-a-list', total:7, extra_blob:'y'.repeat(120 * 1024) } } },
+    ],
+  } });
+  assert.equal(pushed.statusCode, 200);
+
+  const read = await f.call({ owner:true });
+  const meta = read.body.rows.find(row => row.board_key === 'deploy:budget').metadata;
+  assert.ok(JSON.stringify(meta).length <= 96 * 1024);
+  assert.deepEqual(meta.deployment_history.deployments.map(d => d.id), deployments.map(d => d.id).reverse());
+  assert.equal(meta.deployment_history.projected, 10);
+  assert.equal(meta.deployment_history.total, 40);
+  assert.ok(!('extra_blob' in meta.deployment_history));
+  assert.equal(meta.deployment_budget.used, 1);
+
+  const odd = read.body.rows.find(row => row.board_key === 'deploy:odd').metadata;
+  assert.ok(JSON.stringify(odd).length <= 96 * 1024);
+  assert.deepEqual(odd.deployment_history, { deployments: [], projected: 0, total: 7 });
+});
