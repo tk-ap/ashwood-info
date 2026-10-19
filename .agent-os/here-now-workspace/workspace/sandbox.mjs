@@ -10,10 +10,11 @@ document.querySelectorAll("[data-demo-handled]").forEach(input => input.addEvent
 }));
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const selectView = view => {
+const validViews = new Set(["today", "build", "work", "network", "evidence", "self"]);
+const selectView = (view, { writeHash = true } = {}) => {
   document.querySelectorAll("[data-demo-view]").forEach(node => node.classList.toggle("is-active", node.dataset.demoView === view));
   document.querySelectorAll("[data-demo-nav]").forEach(link => link.toggleAttribute("aria-current", link.dataset.demoNav === view));
-  history.replaceState(null, "", "#" + view);
+  if (writeHash) history.replaceState(null, "", "#" + view);
   if (!reducedMotion) document.querySelector(".demo-workspace")?.scrollIntoView({ behavior:"smooth", block:"start" });
 };
 
@@ -22,5 +23,10 @@ document.querySelectorAll("[data-demo-nav]").forEach(link => link.addEventListen
   selectView(link.dataset.demoNav);
 }));
 
-const initial = location.hash.slice(1);
-if (["today", "build", "work", "network", "evidence", "self"].includes(initial)) selectView(initial);
+const selectFromHash = () => {
+  const view = location.hash.slice(1);
+  if (validViews.has(view)) selectView(view, { writeHash:false });
+};
+addEventListener("hashchange", selectFromHash);
+selectFromHash();
+queueMicrotask(selectFromHash);

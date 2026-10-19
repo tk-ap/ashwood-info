@@ -34,6 +34,7 @@ test('the here.now fixture is static and labels all workspace records as demo or
   assert.match(html, /https:\/\/ashwood-info\.vercel\.app\/career/);
   assert.match(html, /Saturn Return Companion is a separate private reflection/);
   assert.doesNotMatch(runtime, /fetch\s*\(/);
+  assert.match(runtime, /addEventListener\("hashchange", selectFromHash\)/);
 });
 
 test('the public ASHWOOD menu indexes every public landing page and provides a visit guide', async () => {
