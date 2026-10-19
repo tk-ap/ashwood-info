@@ -29,13 +29,19 @@ const VIEW_META = {
       {label:"Review checklist", href:"/workspace/v3-playtest/"}
     ]
   },
-  career: {
-    title: "Career.",
-    deck: "Applications, opportunities, professional relationships, and the work of creating runway.",
-    eyebrow: "Career operations",
+  work: {
+    title: "Work.",
+    deck: "Career operations, opportunities, funding, and the work of creating runway.",
+    eyebrow: "Professional operating layer",
     tools: [
       {label:"Funding", href:"#funding"}
     ]
+  },
+  network: {
+    title: "Network.",
+    deck: "Relationships, introductions, sponsors, collaborators, and the next useful follow-through.",
+    eyebrow: "Relationship operating layer",
+    tools: []
   },
   funding: {
     title: "Funding.",
@@ -43,7 +49,7 @@ const VIEW_META = {
     eyebrow: "Funding intelligence",
     tools: []
   },
-  runway: { title:"Income.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#career"},{label:"Funding",href:"#funding"}] },
+  runway: { title:"Income.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#work"},{label:"Funding",href:"#funding"}] },
   content: { title:"Content.", deck:"Capture what is happening, develop what matters, and publish only when it serves you.", eyebrow:"Private content operating system", tools:[] },
   evidence: {
     title: "Evidence.",
@@ -79,14 +85,8 @@ const GROUPS = {
     "details.ecosystem",
     ".ecosystem-feed"
   ],
-  career: [
-    "#work",
-    "#network"
-  ],
-  funding: [
-    "#funding"
-  ],
-  runway: ["#runway"],
+  work: ["#work", "#funding", "#runway"],
+  network: ["#network"],
   content: ["#content"],
   evidence: [
     "#owner-intelligence",
@@ -114,12 +114,12 @@ const VIEW_FOR_HASH = {
   today:"today",
   build:"build",
   "ashwood-drop":"build",
-  career:"career",
-  work:"career",
-  network:"career",
+  career:"work",
+  work:"work",
+  network:"network",
   activity:"build",
-  funding:"funding",
-  runway:"runway",
+  funding:"work",
+  runway:"work",
   content:"content",
   evidence:"evidence",
   sources:"evidence",
@@ -200,7 +200,7 @@ function renderTools(view){
 function syncDataHero(view){
   const hero = q("#workspace-view-data-hero");
   if (!hero) return;
-  hero.hidden = view !== "career";
+  hero.hidden = view !== "work";
   hero.dataset.heroView = view;
 }
 
@@ -219,12 +219,13 @@ function renderIntro(view){
 function renderUtility(view){
   document.querySelectorAll(".workspace-view-utility").forEach(node => node.remove());
   const first = document.querySelector('[data-workspace-view="' + view + '"][data-workspace-active="true"]');
-  if (!first || view === "today" || view === "operator" || view === "career") return;
+  if (!first || view === "today" || view === "operator" || view === "work" || view === "network") return;
   const utility = document.createElement("div");
   utility.className = "workspace-view-utility";
   const copy = {
     build:"<strong>Build is the execution view.</strong> AgentOS state is mirrored here; authority remains in AgentOS and ledgato.",
-    career:"<strong>Career is the professional view.</strong> Applications, opportunities and relationships stay together without mixing them into product execution.",
+    work:"<strong>Work is the professional view.</strong> Applications, opportunities and funding stay together without mixing them into product execution.",
+    network:"<strong>Network is the relationship view.</strong> Follow-through stays visible without turning people into pipeline metrics.",
     funding:"<strong>Funding is the runway view.</strong> Browse verified assistance, grants, credits, and leverage without leaving the Workspace shell.",
     runway:"<strong>Income is the opportunity view.</strong> Keep immediate cash experiments visible beside jobs, funding, creative work and longer-term product revenue.",
     content:"<strong>Content is the capture loop.</strong> Keep moments private first, then develop, draft, publish, or archive deliberately.",
@@ -239,9 +240,9 @@ function renderUtility(view){
 }
 
 function enforceViewOwnership(view){
-  ["#work", "#network"].forEach(selector => {
+  [["#work", "work"], ["#network", "network"]].forEach(([selector, owner]) => {
     document.querySelectorAll(selector).forEach(node => {
-      const active = view === "career";
+      const active = view === owner;
       node.hidden = !active;
       node.setAttribute("aria-hidden", String(!active));
       if ("inert" in node) node.inert = !active;
