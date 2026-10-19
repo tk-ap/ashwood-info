@@ -114,3 +114,22 @@ test('the server stores only owner-confirmed sources, never ones awaiting review
   assert.deepEqual(snap.sources.map(s => s.label), ['Confirmed']);
   for (const bad of ['PRIVATE', 'nostatus', 'SENSITIVE', 'withheld-label']) assert.ok(!text.includes(bad), bad);
 });
+
+test('context sync accepts the same token chain as the source registry (context, then source, then board)', async () => {
+  const { contextSyncAuthorized } = await import('../api/_workspace-context-handler.mjs');
+  const keys = ['WORKSPACE_CONTEXT_SYNC_TOKEN', 'WORKSPACE_SOURCE_SYNC_TOKEN', 'WORKSPACE_BOARD_SYNC_TOKEN'];
+  const saved = Object.fromEntries(keys.map(k => [k, process.env[k]]));
+  try {
+    for (const k of keys) delete process.env[k];
+    process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-only';
+    assert.equal(contextSyncAuthorized({ headers: { authorization: 'Bearer board-only' } }), true);
+    assert.equal(contextSyncAuthorized({ headers: { authorization: 'Bearer wrong' } }), false);
+    process.env.WORKSPACE_SOURCE_SYNC_TOKEN = 'source';
+    assert.equal(contextSyncAuthorized({ headers: { authorization: 'Bearer board-only' } }), false);
+    assert.equal(contextSyncAuthorized({ headers: { authorization: 'Bearer source' } }), true);
+    for (const k of keys) delete process.env[k];
+    assert.equal(contextSyncAuthorized({ headers: { authorization: 'Bearer anything' } }), false);
+  } finally {
+    for (const k of keys) { if (saved[k] === undefined) delete process.env[k]; else process.env[k] = saved[k]; }
+  }
+});
