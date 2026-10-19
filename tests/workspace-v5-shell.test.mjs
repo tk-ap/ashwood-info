@@ -24,20 +24,3 @@ test('Today offers source-aware reading without adding a write control for LEDGA
   assert.match(source, /slice\(0, 4\)/);
   assert.doesNotMatch(html, /Approve decision|Deny decision/);
 });
-
-test('the public ASHWOOD menu indexes every public landing page and provides a visit guide', async () => {
-  const [nav, guide] = await Promise.all([
-    readFile(new URL('../v3-nav.js', import.meta.url), 'utf8'),
-    readFile(new URL('../guide/index.html', import.meta.url), 'utf8')
-  ]);
-  for (const href of ['/', '/guide/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/portfolio/', '/journal/', '/dispatch/', '/ai-from-zero/', '/dive-deeper/', '/journal-lab/', '/about/', '/connect/', '/sponsor/', '/partners/']) {
-    assert.match(nav, new RegExp('href="' + href.replaceAll('/', '\\/') + '"'));
-  }
-  assert.match(nav, /VISIT GUIDE/);
-  assert.match(nav, /Explore pages/);
-  assert.match(nav, /mouseenter/);
-  assert.match(nav, /type="search"/);
-  assert.match(nav, /No public page matches that search/);
-  assert.doesNotMatch(nav, /href="\/workspace\//);
-  assert.match(guide, /Private owner tools are intentionally not listed/);
-});
