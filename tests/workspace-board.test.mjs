@@ -181,3 +181,35 @@ test('the mirror stores only what the Workspace renders, so reads stay small (Ne
   assert.equal(execution.metadata.review.verdict, 'pass');
   assert.equal(execution.metadata.work_domain, 'agentos');
 });
+
+test('an oversized deployment row sheds the oldest deployments but keeps its history (Codex review of 508767e)', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-secret';
+  t.after(() => { if (previous === undefined) delete process.env.WORKSPACE_BOARD_SYNC_TOKEN; else process.env.WORKSPACE_BOARD_SYNC_TOKEN = previous; });
+
+  const deployments = Array.from({ length: 692 }, (_, i) => ({
+    id: `dpl_${i}`, project: 'ashwood-info', target: 'production', state: 'READY',
+    created_at: new Date(Date.UTC(2026, 8, 1) + i * 3600_000).toISOString(), summary: 's'.repeat(3000),
+  }));
+  const attempts = Array.from({ length: 50 }, (_, i) => ({ id: `att_${i}`, state: i % 2 ? 'superseded' : 'waiting_availability', mutation_attempts: 1, note: 'n'.repeat(200) }));
+  const pushed = await f.call({ method:'POST', headers:{ authorization:'Bearer board-secret' }, body:{
+    source_system:'agent-os', replace:true, observed_at:'2026-10-19T00:00:00Z', snapshot_id:'s2',
+    rows:[{ board_key:'deploy:budget', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Deployment capacity', status:'NORMAL',
+      metadata:{ deployment_history:{ deployments, projected:692, total:692 }, deployment_attempts: attempts, deployment_budget:{ used:2 }, unrendered_blob:'z'.repeat(20000) } }],
+  } });
+  assert.equal(pushed.statusCode, 200);
+
+  const read = await f.call({ owner:true });
+  const meta = read.body.rows.find(row => row.kind === 'deployment_budget').metadata;
+  const history = meta.deployment_history;
+  assert.ok(history, 'deployment_history is kept');
+  assert.ok(history.deployments.length > 0 && history.deployments.length < 75);
+  assert.equal(history.projected, history.deployments.length);
+  assert.equal(history.total, 692);
+  assert.equal(history.deployments[0].id, 'dpl_691'); // newest kept, oldest shed
+  assert.equal(meta.deployment_attempts.length, 50);  // ledger counts stay exact
+  assert.equal(meta.deployment_budget.used, 2);
+  assert.ok(!('unrendered_blob' in meta));
+  assert.ok(JSON.stringify(meta).length <= 96 * 1024);
+});

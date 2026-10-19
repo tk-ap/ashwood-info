@@ -51,12 +51,31 @@ function compactMetadata(metadata) {
     };
   }
   if (JSON.stringify(out).length <= MAX_METADATA_BYTES) return out;
-  // Backstop: an unexpectedly large row keeps only the fields the Workspace renders.
+  // Backstop: an unexpectedly large row keeps only the fields the Workspace renders, and sheds the
+  // oldest deployments until it fits. deployment_history itself is always kept, with accurate counts.
   const essential = Object.fromEntries(ESSENTIAL_METADATA.filter(key => key in out).map(key => [key, out[key]]));
-  if ('deployment_history' in out && JSON.stringify(essential).length + JSON.stringify(out.deployment_history).length <= MAX_METADATA_BYTES) {
-    essential.deployment_history = out.deployment_history;
+  const fullHistory = out.deployment_history;
+  const kept = Array.isArray(fullHistory?.deployments) ? fullHistory.deployments : null;
+  const withDeployments = count => {
+    const row = { ...essential };
+    if (fullHistory !== undefined) row.deployment_history = kept ? { ...fullHistory, deployments: kept.slice(0, count), projected: count } : fullHistory;
+    return row;
+  };
+  const fits = row => JSON.stringify(row).length <= MAX_METADATA_BYTES;
+  if (kept && !fits(withDeployments(kept.length))) {
+    let low = 0, high = kept.length; // largest count (newest first) that fits
+    while (low < high) {
+      const mid = Math.ceil((low + high) / 2);
+      if (fits(withDeployments(mid))) low = mid; else high = mid - 1;
+    }
+    const row = withDeployments(low);
+    if (fits(row)) return row;
+  } else if (fits(withDeployments(kept ? kept.length : 0))) {
+    return withDeployments(kept ? kept.length : 0);
   }
-  return JSON.stringify(essential).length <= MAX_METADATA_BYTES ? essential : { work_domain: out.work_domain, truncated: true };
+  const last = { work_domain: out.work_domain, truncated: true };
+  if (kept) last.deployment_history = { ...fullHistory, deployments: [], projected: 0 };
+  return last;
 }
 
 // Schema checks run once per warm server instance, not on every request (about 19 statements each).
