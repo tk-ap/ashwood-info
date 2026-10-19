@@ -142,3 +142,42 @@ test('bad sync token cannot overwrite the board', async t => {
   });
   assert.equal(res.statusCode, 403);
 });
+
+test('the mirror stores only what the Workspace renders, so reads stay small (Neon transfer, Oct 2026)', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-secret';
+  t.after(() => { if (previous === undefined) delete process.env.WORKSPACE_BOARD_SYNC_TOKEN; else process.env.WORKSPACE_BOARD_SYNC_TOKEN = previous; });
+
+  const deployments = Array.from({ length: 692 }, (_, i) => ({
+    id: `dpl_${i}`, project: 'ashwood-info', target: i % 2 ? 'production' : 'preview', state: 'READY',
+    created_at: new Date(Date.UTC(2026, 8, 1) + i * 3600_000).toISOString(),
+    summary: 'x'.repeat(300), git_sha: 'a'.repeat(40), first_observed_at: 't', last_observed_at: 't', project_id: 'prj',
+  }));
+  const pushed = await f.call({ method:'POST', headers:{ authorization:'Bearer board-secret' }, body:{
+    source_system:'agent-os', replace:true, observed_at:'2026-10-19T00:00:00Z', snapshot_id:'s1',
+    rows:[
+      { board_key:'deploy:budget', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Deployment capacity', status:'NORMAL',
+        metadata:{ deployment_history:{ deployments, projected:692, total:692, retention_max:5 }, deployment_budget:{ used:2 } } },
+      { board_key:'fleet:t9', source_system:'agent-os', kind:'execution', lane:'done', title:'Work', status:'closed',
+        metadata:{ recent_events:Array.from({ length:10 }, (_, i) => ({ kind:'event', summary:`e${i}` })), execution_evidence:{ big:'y'.repeat(5000) }, review:{ verdict:'pass' }, work_domain:'agentos' } },
+    ],
+  } });
+  assert.equal(pushed.statusCode, 200);
+
+  const read = await f.call({ owner:true });
+  assert.equal(read.statusCode, 200);
+  const budget = read.body.rows.find(row => row.kind === 'deployment_budget');
+  const history = budget.metadata.deployment_history;
+  assert.equal(history.deployments.length, 75);
+  assert.equal(history.projected, 75);
+  assert.equal(history.total, 692);
+  assert.equal(history.deployments[0].id, 'dpl_691'); // newest first
+  assert.ok(!('first_observed_at' in history.deployments[0]) && !('project_id' in history.deployments[0]));
+  assert.ok(JSON.stringify(budget.metadata).length < 96 * 1024);
+  const execution = read.body.rows.find(row => row.kind === 'execution');
+  assert.equal(execution.metadata.recent_events.length, 3);
+  assert.ok(!('execution_evidence' in execution.metadata));
+  assert.equal(execution.metadata.review.verdict, 'pass');
+  assert.equal(execution.metadata.work_domain, 'agentos');
+});
