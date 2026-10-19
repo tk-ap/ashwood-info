@@ -16,7 +16,77 @@ function syncTokenValid(req) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
+// Neon bills "network transfer" for every byte the database sends back. The board is read in full by
+// several Workspace pages, so the mirror stores only what those pages render; AgentOS keeps the full
+// record. Before this, one deployment_budget row carried ~592 KB of deployment history and the board
+// was ~1.3 MB per read, which exhausted the free plan's monthly transfer in October 2026.
+const MAX_DEPLOYMENTS = 75;    // deployment-ledger / today views; newest first (headroom under the cap)
+const MAX_RECENT_EVENTS = 3;   // operator console shows recent_events.slice(0, 3)
+const MAX_METADATA_BYTES = 96 * 1024;
+const UNRENDERED_DEPLOYMENT_FIELDS = ['first_observed_at', 'last_observed_at', 'project_id'];
+const UNRENDERED_METADATA = ['execution_evidence'];
+const ESSENTIAL_METADATA = ['work_domain', 'why_now', 'outcome', 'review', 'owner_decision', 'recent_events', 'deployment_budget', 'deployment_attempts'];
+
+function compactMetadata(metadata) {
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return {};
+  const out = { ...metadata };
+  for (const key of UNRENDERED_METADATA) delete out[key];
+  if (Array.isArray(out.recent_events)) out.recent_events = out.recent_events.slice(0, MAX_RECENT_EVENTS);
+  const history = out.deployment_history;
+  if (history && typeof history === 'object' && Array.isArray(history.deployments)) {
+    const deployments = [...history.deployments]
+      .sort((a, b) => String(b?.created_at || '').localeCompare(String(a?.created_at || '')))
+      .slice(0, MAX_DEPLOYMENTS)
+      .map(deployment => {
+        if (!deployment || typeof deployment !== 'object') return deployment;
+        const kept = { ...deployment };
+        for (const key of UNRENDERED_DEPLOYMENT_FIELDS) delete kept[key];
+        return kept;
+      });
+    out.deployment_history = {
+      ...history,
+      deployments,
+      projected: deployments.length,
+      total: Number.isFinite(Number(history.total)) ? Math.max(Number(history.total), history.deployments.length) : history.deployments.length,
+    };
+  }
+  if (JSON.stringify(out).length <= MAX_METADATA_BYTES) return out;
+  // Backstop: an unexpectedly large row keeps only the fields the Workspace renders. deployment_history
+  // is rebuilt from what the ledger and Today read (deployments, projected, total) and sheds its oldest
+  // deployments until the row fits; it is never dropped, and every returned row is size-checked.
+  const essential = Object.fromEntries(ESSENTIAL_METADATA.filter(key => key in out).map(key => [key, out[key]]));
+  const fullHistory = out.deployment_history;
+  const hasHistory = fullHistory && typeof fullHistory === 'object';
+  const kept = hasHistory && Array.isArray(fullHistory.deployments) ? fullHistory.deployments : [];
+  const total = hasHistory && Number.isFinite(Number(fullHistory.total)) ? Math.max(Number(fullHistory.total), kept.length) : kept.length;
+  const historyOf = count => ({ deployments: kept.slice(0, count), projected: count, total });
+  const fits = row => JSON.stringify(row).length <= MAX_METADATA_BYTES;
+  const rowWith = (base, count) => (hasHistory ? { ...base, deployment_history: historyOf(count) } : { ...base });
+  const largestFitting = base => { // newest-first deployments that fit, or -1 if even none fit
+    if (!fits(rowWith(base, 0))) return -1;
+    let low = 0, high = kept.length;
+    while (low < high) {
+      const mid = Math.ceil((low + high) / 2);
+      if (fits(rowWith(base, mid))) low = mid; else high = mid - 1;
+    }
+    return low;
+  };
+  for (const base of [essential, { work_domain: out.work_domain, truncated: true }, { truncated: true }]) {
+    const count = largestFitting(base);
+    if (count >= 0) return rowWith(base, count);
+  }
+  return { truncated: true, deployment_history: { deployments: [], projected: 0, total } };
+}
+
+// Schema checks run once per warm server instance, not on every request (about 19 statements each).
+let tableReady = null;
+
 async function ensureTable(sql) {
+  if (!tableReady) tableReady = ensureTableOnce(sql).catch(error => { tableReady = null; throw error; });
+  return tableReady;
+}
+
+async function ensureTableOnce(sql) {
   await sql`CREATE TABLE IF NOT EXISTS workspace_board (
     board_key TEXT PRIMARY KEY,
     title TEXT NOT NULL,
@@ -91,8 +161,7 @@ function cleanRow(row, fallbackObservedAt, snapshotId) {
     canonicalUrl: optionalText(row?.canonical_url, 1200),
     updatedAt: updatedAt.toISOString(),
     observedAt: observedAt.toISOString(),
-    metadata: row?.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata)
-      ? row.metadata : {},
+    metadata: compactMetadata(row?.metadata),
     snapshotId: optionalText(snapshotId || row?.snapshot_id, 128),
     workDomain: (() => {
       const explicit = optionalText(row?.work_domain || row?.metadata?.work_domain, 40);

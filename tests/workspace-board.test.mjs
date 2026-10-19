@@ -142,3 +142,106 @@ test('bad sync token cannot overwrite the board', async t => {
   });
   assert.equal(res.statusCode, 403);
 });
+
+test('the mirror stores only what the Workspace renders, so reads stay small (Neon transfer, Oct 2026)', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-secret';
+  t.after(() => { if (previous === undefined) delete process.env.WORKSPACE_BOARD_SYNC_TOKEN; else process.env.WORKSPACE_BOARD_SYNC_TOKEN = previous; });
+
+  const deployments = Array.from({ length: 692 }, (_, i) => ({
+    id: `dpl_${i}`, project: 'ashwood-info', target: i % 2 ? 'production' : 'preview', state: 'READY',
+    created_at: new Date(Date.UTC(2026, 8, 1) + i * 3600_000).toISOString(),
+    summary: 'x'.repeat(300), git_sha: 'a'.repeat(40), first_observed_at: 't', last_observed_at: 't', project_id: 'prj',
+  }));
+  const pushed = await f.call({ method:'POST', headers:{ authorization:'Bearer board-secret' }, body:{
+    source_system:'agent-os', replace:true, observed_at:'2026-10-19T00:00:00Z', snapshot_id:'s1',
+    rows:[
+      { board_key:'deploy:budget', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Deployment capacity', status:'NORMAL',
+        metadata:{ deployment_history:{ deployments, projected:692, total:692, retention_max:5 }, deployment_budget:{ used:2 } } },
+      { board_key:'fleet:t9', source_system:'agent-os', kind:'execution', lane:'done', title:'Work', status:'closed',
+        metadata:{ recent_events:Array.from({ length:10 }, (_, i) => ({ kind:'event', summary:`e${i}` })), execution_evidence:{ big:'y'.repeat(5000) }, review:{ verdict:'pass' }, work_domain:'agentos' } },
+    ],
+  } });
+  assert.equal(pushed.statusCode, 200);
+
+  const read = await f.call({ owner:true });
+  assert.equal(read.statusCode, 200);
+  const budget = read.body.rows.find(row => row.kind === 'deployment_budget');
+  const history = budget.metadata.deployment_history;
+  assert.equal(history.deployments.length, 75);
+  assert.equal(history.projected, 75);
+  assert.equal(history.total, 692);
+  assert.equal(history.deployments[0].id, 'dpl_691'); // newest first
+  assert.ok(!('first_observed_at' in history.deployments[0]) && !('project_id' in history.deployments[0]));
+  assert.ok(JSON.stringify(budget.metadata).length < 96 * 1024);
+  const execution = read.body.rows.find(row => row.kind === 'execution');
+  assert.equal(execution.metadata.recent_events.length, 3);
+  assert.ok(!('execution_evidence' in execution.metadata));
+  assert.equal(execution.metadata.review.verdict, 'pass');
+  assert.equal(execution.metadata.work_domain, 'agentos');
+});
+
+test('an oversized deployment row sheds the oldest deployments but keeps its history (Codex review of 508767e)', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-secret';
+  t.after(() => { if (previous === undefined) delete process.env.WORKSPACE_BOARD_SYNC_TOKEN; else process.env.WORKSPACE_BOARD_SYNC_TOKEN = previous; });
+
+  const deployments = Array.from({ length: 692 }, (_, i) => ({
+    id: `dpl_${i}`, project: 'ashwood-info', target: 'production', state: 'READY',
+    created_at: new Date(Date.UTC(2026, 8, 1) + i * 3600_000).toISOString(), summary: 's'.repeat(3000),
+  }));
+  const attempts = Array.from({ length: 50 }, (_, i) => ({ id: `att_${i}`, state: i % 2 ? 'superseded' : 'waiting_availability', mutation_attempts: 1, note: 'n'.repeat(200) }));
+  const pushed = await f.call({ method:'POST', headers:{ authorization:'Bearer board-secret' }, body:{
+    source_system:'agent-os', replace:true, observed_at:'2026-10-19T00:00:00Z', snapshot_id:'s2',
+    rows:[{ board_key:'deploy:budget', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Deployment capacity', status:'NORMAL',
+      metadata:{ deployment_history:{ deployments, projected:692, total:692 }, deployment_attempts: attempts, deployment_budget:{ used:2 }, unrendered_blob:'z'.repeat(20000) } }],
+  } });
+  assert.equal(pushed.statusCode, 200);
+
+  const read = await f.call({ owner:true });
+  const meta = read.body.rows.find(row => row.kind === 'deployment_budget').metadata;
+  const history = meta.deployment_history;
+  assert.ok(history, 'deployment_history is kept');
+  assert.ok(history.deployments.length > 0 && history.deployments.length < 75);
+  assert.equal(history.projected, history.deployments.length);
+  assert.equal(history.total, 692);
+  assert.equal(history.deployments[0].id, 'dpl_691'); // newest kept, oldest shed
+  assert.equal(meta.deployment_attempts.length, 50);  // ledger counts stay exact
+  assert.equal(meta.deployment_budget.used, 2);
+  assert.ok(!('unrendered_blob' in meta));
+  assert.ok(JSON.stringify(meta).length <= 96 * 1024);
+});
+
+test('an oversized blob inside deployment_history cannot push the row over the cap (Codex review of 8a40706)', async t => {
+  const f = await fixture(); t.after(() => f.db.close());
+  const previous = process.env.WORKSPACE_BOARD_SYNC_TOKEN;
+  process.env.WORKSPACE_BOARD_SYNC_TOKEN = 'board-secret';
+  t.after(() => { if (previous === undefined) delete process.env.WORKSPACE_BOARD_SYNC_TOKEN; else process.env.WORKSPACE_BOARD_SYNC_TOKEN = previous; });
+
+  const deployments = Array.from({ length: 10 }, (_, i) => ({ id: `dpl_${i}`, state: 'READY', created_at: new Date(Date.UTC(2026, 9, 1) + i * 3600_000).toISOString() }));
+  const pushed = await f.call({ method:'POST', headers:{ authorization:'Bearer board-secret' }, body:{
+    source_system:'agent-os', replace:true, observed_at:'2026-10-19T00:00:00Z', snapshot_id:'s3',
+    rows:[
+      { board_key:'deploy:budget', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Deployment capacity', status:'NORMAL',
+        metadata:{ deployment_history:{ deployments, total:40, extra_blob:'x'.repeat(120 * 1024) }, deployment_budget:{ used:1 } } },
+      { board_key:'deploy:odd', source_system:'agent-os', kind:'deployment_budget', lane:'in_progress', title:'Odd history', status:'NORMAL',
+        metadata:{ deployment_history:{ deployments:'not-a-list', total:7, extra_blob:'y'.repeat(120 * 1024) } } },
+    ],
+  } });
+  assert.equal(pushed.statusCode, 200);
+
+  const read = await f.call({ owner:true });
+  const meta = read.body.rows.find(row => row.board_key === 'deploy:budget').metadata;
+  assert.ok(JSON.stringify(meta).length <= 96 * 1024);
+  assert.deepEqual(meta.deployment_history.deployments.map(d => d.id), deployments.map(d => d.id).reverse());
+  assert.equal(meta.deployment_history.projected, 10);
+  assert.equal(meta.deployment_history.total, 40);
+  assert.ok(!('extra_blob' in meta.deployment_history));
+  assert.equal(meta.deployment_budget.used, 1);
+
+  const odd = read.body.rows.find(row => row.board_key === 'deploy:odd').metadata;
+  assert.ok(JSON.stringify(odd).length <= 96 * 1024);
+  assert.deepEqual(odd.deployment_history, { deployments: [], projected: 0, total: 7 });
+});
