@@ -46,9 +46,13 @@ test("telemetry failure is never shown as production downtime", () => {
 });
 
 test("an old observation is labelled stale, not current", () => {
-  const view = budgetView(fixture.row, OBSERVED + 2 * 60 * 60 * 1000);
+  const view = budgetView(fixture.row, OBSERVED + 3 * 60 * 60 * 1000);
   assert.equal(view.telemetry, "stale");
   assert.equal(view.used, fixture.canonical.used, "values are still the canonical ones, just labelled stale");
+});
+
+test("one missed hourly send is not stale yet (AgentOS sends at most hourly)", () => {
+  assert.notEqual(budgetView(fixture.row, OBSERVED + 90 * 60 * 1000).telemetry, "stale");
 });
 
 test("parked deployments are shown", () => {

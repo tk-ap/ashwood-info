@@ -6,7 +6,7 @@
 // no window arithmetic, no Vercel calls.
 
 export const BUDGET_KIND = "deployment_budget";
-const STALE_DISPLAY_MS = 45 * 60 * 1000; // publisher heartbeat is 15 min
+const STALE_DISPLAY_MS = 2 * 60 * 60 * 1000; // AgentOS sends a changed board at most hourly; stale after two missed sends
 
 export function selectBudgetRow(rows) {
   return (Array.isArray(rows) ? rows : []).find(row => row?.kind === BUDGET_KIND) || null;

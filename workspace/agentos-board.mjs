@@ -136,8 +136,10 @@ function freshnessState(value) {
   const ts = Date.parse(value || "");
   if (!Number.isFinite(ts)) return { label:"freshness unknown", cls:"is-stale" };
   const age = Date.now() - ts;
-  if (age <= 15 * 60 * 1000) return { label:"live", cls:"is-live" };
-  if (age <= 60 * 60 * 1000) return { label:"aging", cls:"is-aging" };
+  // AgentOS sends a changed board at most hourly (Neon cost, Oct 2026), so a
+  // board under one send interval plus projection lag is current, not aging.
+  if (age <= 75 * 60 * 1000) return { label:"live", cls:"is-live" };
+  if (age <= 3 * 60 * 60 * 1000) return { label:"aging", cls:"is-aging" };
   return { label:"stale", cls:"is-stale" };
 }
 
