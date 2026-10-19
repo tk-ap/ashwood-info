@@ -11,15 +11,15 @@ const buildLogsPath = new URL('../workspace/build-logs/index.html', import.meta.
 const careerOpsPath = new URL('../workspace/career-ops/index.html', import.meta.url);
 const productionReviewPath = new URL('../workspace/v3-playtest/index.html', import.meta.url);
 
-test('workspace exposes six primary views on desktop and mobile', async () => {
+test('workspace exposes six owner-facing sections on desktop and mobile', async () => {
   const html = await readFile(htmlPath, 'utf8');
-  for (const view of ['operator','today','build','career','evidence','self']) {
+  for (const view of ['today','build','work','network','evidence','self']) {
     const matches = html.match(new RegExp('data-workspace-nav="' + view + '"', 'g')) || [];
     assert.equal(matches.length, 2, view + ' should exist once in desktop nav and once in mobile nav');
   }
   assert.doesNotMatch(html, /data-workspace-nav="agentos"/);
   assert.doesNotMatch(html, /data-workspace-nav="activity"/);
-  assert.doesNotMatch(html, /data-workspace-nav="work"/);
+  assert.doesNotMatch(html, /data-workspace-nav="career"/);
 });
 
 test('workspace cohesion assets are loaded and escaped newline artifacts are gone', async () => {
@@ -95,8 +95,8 @@ test('ELITK engine is reversible, persistent, and observes data loaded after the
 test('Owner Constellation belongs only to Evidence', async () => {
   const source = await readFile(viewsPath, 'utf8');
   assert.match(source, /evidence:[\s\S]*"#owner-intelligence"/);
-  for (const view of ['today','build','career','self']) {
-    const block = source.match(new RegExp(view + ': \\[([\\s\\S]*?)\\n  \\]'))?.[1] || '';
+  for (const view of ['today','build','work','network','self']) {
+    const block = source.match(new RegExp(view + ': \\[([\\s\\S]*?)\\]'))?.[1] || '';
     assert.doesNotMatch(block, /#owner-intelligence/, 'Owner Constellation must not appear in ' + view);
   }
 });
@@ -130,10 +130,11 @@ test('Self is synthesis-first context intelligence rather than a manual form wal
   assert.match(html, /Confirm, correct, reject/);
 });
 
-test('Career keeps Relationships nested and list-detail in place', async () => {
+test('Work and Network keep their separate list-detail routes in place', async () => {
   const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
   const views = await readFile(viewsPath, 'utf8');
-  assert.match(views, /career:[\s\S]*"#work",[\s\S]*"#network"/);
+  assert.match(views, /work:\s*\["#work", "#funding", "#runway"\]/);
+  assert.match(views, /network:\s*\["#network"\]/);
   assert.match(html, /<h2 id="network-title">Relationships<\/h2>/);
   assert.match(html, /class="network-layout"/);
   assert.match(html, /id="network-relationships"/);
