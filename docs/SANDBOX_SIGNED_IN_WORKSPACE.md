@@ -1,6 +1,6 @@
 # Signed-in Workspace in the here.now sandbox
 
-Status: direction agreed by TK on 2026-10-19. Not built. Each phase below is a separate PR with its own review.
+Status (verified 2026-10-20): Phase 1 **synthetic DEMO bootstrap present and deployed at an older source SHA**, separate agent sign-in **not implemented**. Phase 2 remains an owner-reviewed proposal. This document alone does not confer sandbox credentials or publication authority.
 
 ## Goal
 
@@ -49,3 +49,10 @@ Make the signed-in Workspace reviewable on the stable here.now sandbox (`mighty-
 
 - The allowlist cleaner and its checks get an independent review before the first load.
 - The first loaded snapshot is inspected by TK before the site is shared with anyone else.
+
+## Current state and next gate (2026-10-20)
+- The stable `https://mighty-yoga-pgph.here.now/workspace/` returns HTTP 200 without a separate agent-account login.
+- The observed `/staging-manifest.json` identifies a static demo: `DEMO_ONLY_NO_PRIVATE_API_OR_RECORDS`, source SHA `678c98ddc59edad14c5644791e3f75fb7700a76b`, built 2026-10-20T01:50:19.700Z. This allows agent/browser UI inspection of fake Workspace data, **not** real authenticated private work or actual server-side permission tests.
+- **Public privacy problem:** the currently reachable sandbox static HTML also contains owner-specific astrological, Human Design, and numerology references. Simulating API data alone does not sanitize HTML. Restrict or replace that published version before treating the public demo as safe. A separate ASHWOOD Self branch/PR #288 now prepares complete-site demo sanitization and adds an emitted-artifact regression test; neither a PR nor a passing test updates the live here.now site.
+- Do not put a personal ChatGPT login, production Workspace auth, ALVIRA Context, private Brain, or personal natal details into agent identities or demo fixture files. When testing actual authorization/write flows becomes necessary, implement Phase 2 separately with an explicitly authorized sandbox identity and server-only credentials; do not silently create a second DB or deploy a production-linked auth proxy.
+- **Release gate:** owner-connected here.now publisher rebuilds the *entire site* from the approved current source, validates sanitized `workspace/index.html`, verifies desktop/390px demo interactions and the public source-version manifest, and records the provider version. Publish to the existing stable slug only after privacy inspection. Vercel stays production-only.
