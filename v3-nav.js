@@ -41,11 +41,11 @@
     .v3-global-nav__no-results[hidden]{display:none}
     .v3-global-nav__body{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.6fr);min-height:calc(100svh - 72px)}
     .v3-global-nav__links{display:flex;flex-direction:column;padding:clamp(34px,7vh,80px) var(--v3-pad);overflow:auto}
-    .v3-global-nav__links a{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:18px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--ashwood-rule);text-decoration:none}
+    .v3-global-nav__links a{display:grid;grid-template-columns:42px minmax(0,1fr);gap:18px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--ashwood-rule);text-decoration:none}
+    .v3-global-nav__links a:hover span,.v3-global-nav__links a:focus-visible span{text-decoration:underline;text-underline-offset:.12em}
     .v3-global-nav__links small{font-size:8px;letter-spacing:.14em;color:var(--ashwood-muted)}
     .v3-global-nav__links span{font-family:Georgia,"Times New Roman",serif;font-size:clamp(30px,4.4vw,68px);line-height:1.02}
-    .v3-global-nav__links b{font:400 14px/1 Arial,sans-serif}
-    .v3-global-nav__aside{border-left:1px solid var(--ashwood-rule);padding:clamp(34px,7vh,80px) var(--v3-pad);display:flex;flex-direction:column;justify-content:space-between;gap:36px}
+        .v3-global-nav__aside{border-left:1px solid var(--ashwood-rule);padding:clamp(34px,7vh,80px) var(--v3-pad);display:flex;flex-direction:column;justify-content:space-between;gap:36px}
     .v3-global-nav__aside p{margin:0;max-width:26ch;font-size:13px;line-height:1.55;color:var(--ashwood-muted)}
     .v3-global-nav__secondary{display:flex;gap:18px;flex-wrap:wrap}
     .v3-global-nav__secondary a{font-size:9px;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:4px}
@@ -58,7 +58,7 @@
       .v3-global-nav__body{grid-template-columns:1fr}
       .v3-global-nav__aside{border-left:0;border-top:1px solid var(--ashwood-rule);padding-top:24px;padding-bottom:28px}
       .v3-global-nav__links{padding-top:clamp(28px,5vh,48px);padding-bottom:20px}
-      .v3-global-nav__links a{grid-template-columns:34px minmax(0,1fr) auto;gap:14px}
+      .v3-global-nav__links a{grid-template-columns:34px minmax(0,1fr);gap:14px}
       .v3-global-nav__links span{font-size:clamp(28px,8vw,42px)}
       .v3-global-nav__aside p{display:none}
       .v3-global-nav__private{align-self:flex-start}
@@ -66,8 +66,7 @@
     @media(prefers-reduced-motion:reduce){.v3-global-nav{transition:none!important}}
 
     .v3-global-nav__hint{border:0;border-bottom:1px solid var(--ashwood-rule);background:transparent;color:var(--ashwood-ink);padding:3px 0 4px;font:400 8px/1 Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
-    .v3-global-nav__hint::after{content:" ↘";font-size:11px;letter-spacing:0}
-    .v3-global-nav__hint:hover,.v3-global-nav__hint:focus-visible{border-bottom-color:currentColor}
+        .v3-global-nav__hint:hover,.v3-global-nav__hint:focus-visible{border-bottom-color:currentColor}
     .v3-global-nav__hint:focus-visible{outline:1px solid currentColor;outline-offset:4px}
     @media(max-width:620px){.v3-global-nav__hint{font-size:7px}.v3-mast__meta{display:none}}
 
@@ -79,7 +78,7 @@
     .v3-global-nav__group summary::-webkit-details-marker{display:none}
     .v3-global-nav__group summary::after{content:"+";font-size:16px;font-weight:400;line-height:1}
     .v3-global-nav__group[open] summary::after{content:"−"}
-    .v3-global-nav__group a{grid-template-columns:26px minmax(0,1fr) auto;padding:10px 0}
+    .v3-global-nav__group a{grid-template-columns:26px minmax(0,1fr);padding:10px 0}
     .v3-global-nav__group a span{font-size:clamp(19px,2.6vw,34px)}
     .v3-global-nav__guide{display:grid;gap:14px}
     .v3-global-nav__guide small{font-size:9px;letter-spacing:.14em;color:var(--ashwood-muted)}
@@ -107,32 +106,31 @@
       <nav class="v3-global-nav__links" id="v3-global-nav-links" aria-label="ASHWOOD pages">
         <details class="v3-global-nav__group" open>
           <summary>Start here</summary>
-          <a href="/"><small>01</small><span>Home</span><b>↗</b></a>
-          <a href="/guide/"><small>02</small><span>Visit guide</span><b>↗</b></a>
-          <a href="/work/"><small>03</small><span>Work</span><b>↗</b></a>
-          <a href="/career/"><small>04</small><span>Career evidence</span><b>↗</b></a>
+          <a href="/"><small>01</small><span>Home</span></a>
+          <a href="/guide/"><small>02</small><span>Visit guide</span></a>
+          <a href="/work/"><small>03</small><span>Work overview</span></a>
+          <a href="/career/"><small>04</small><span>Career evidence</span></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>Creative practice</summary>
-          <a href="/modeling/"><small>05</small><span>Modeling</span><b>↗</b></a>
-          <a href="/music/"><small>06</small><span>Music</span><b>↗</b></a>
-          <a href="/performance/"><small>07</small><span>Performance</span><b>↗</b></a>
-          <a href="/portfolio/"><small>08</small><span>Portfolio</span><b>↗</b></a>
-        </details>
+          <a href="/modeling/"><small>05</small><span>Modeling</span></a>
+          <a href="/music/"><small>06</small><span>Music</span></a>
+          <a href="/performance/"><small>07</small><span>Performance</span></a>
+          </details>
         <details class="v3-global-nav__group" open>
           <summary>Ideas and builds</summary>
-          <a href="/journal/"><small>09</small><span>Build journal</span><b>↗</b></a>
-          <a href="/dispatch/"><small>10</small><span>Dispatch</span><b>↗</b></a>
-          <a href="/ai-from-zero/"><small>11</small><span>AI from Zero</span><b>↗</b></a>
-          <a href="/dive-deeper/"><small>12</small><span>Dive deeper</span><b>↗</b></a>
-          <a href="/journal-lab/"><small>13</small><span>Journal lab</span><b>↗</b></a>
+          <a href="/journal/"><small>08</small><span>Build journal</span></a>
+          <a href="/dispatch/"><small>09</small><span>Dispatch</span></a>
+          <a href="/ai-from-zero/"><small>10</small><span>AI from Zero</span></a>
+          <a href="/dive-deeper/"><small>11</small><span>Dive deeper</span></a>
+          <a href="/journal-lab/"><small>12</small><span>Journal lab</span></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>About and connect</summary>
-          <a href="/about/"><small>14</small><span>About</span><b>↗</b></a>
-          <a href="/connect/"><small>15</small><span>Connect</span><b>↗</b></a>
-          <a href="/sponsor/"><small>16</small><span>Support</span><b>↗</b></a>
-          <a href="/partners/"><small>17</small><span>Partners</span><b>↗</b></a>
+          <a href="/about/"><small>13</small><span>About</span></a>
+          <a href="/connect/"><small>14</small><span>Connect</span></a>
+          <a href="/sponsor/"><small>15</small><span>Support</span></a>
+          <a href="/partners/"><small>16</small><span>Partners</span></a>
         </details>
         <p class="v3-global-nav__no-results" hidden>No public page matches that search. Try “work,” “career,” “journal,” or “contact.”</p>
       </nav>
@@ -146,7 +144,7 @@
             <li><a href="/journal/">Following the builds<span>Read what changed and why.</span></a></li>
             <li><a href="/connect/">Getting in touch<span>Find the appropriate public route.</span></a></li>
           </ul>
-          <a href="/guide/">Full visitor guide ↗</a>
+          <a href="/guide/">Full visitor guide</a>
         </section>
         <div class="v3-global-nav__secondary" aria-label="Homepage anchors">
           <a href="/#thinking">The instinct</a>
