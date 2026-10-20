@@ -138,3 +138,7 @@ Agent OS / Workforce is infrastructure, not a public ASHWOOD offering. ASHWOOD c
 ## Canonical Funding load path
 
 Before any work on Funding discovery, verification, recommendations, actions or `/workspace/funding/`, read `workspace/FUNDING_INTELLIGENCE.md`. The existing opportunity registry is canonical; recurring discovery and re-verification feed it. Do not create parallel stores, destinations or scores. Preserve private browser profile/action state and evidence gates.
+
+## Private Self daily philosophy
+
+For changes to `workspace/#self` philosophy, affirmations, or natal/chart interpretation, load [workspace/SELF_DAILY_PRACTICE.md](workspace/SELF_DAILY_PRACTICE.md). Preserve ALVIRA Context authority, no unsourced transit claims, private-profile boundaries, and separation of spiritual reflection from observable outcomes.
