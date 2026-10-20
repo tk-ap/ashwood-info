@@ -106,7 +106,10 @@ test('Chromium converts WAV to MP3, rejects disallowed pages and stages without 
     ].join('\n'));
     assert.match(reject,/YouTube pages cannot be converted/);
   }finally{
-    conn?.ws.close();chrome.kill('SIGTERM');
-    await new Promise(resolve=>server.close(resolve));rmSync(dir,{recursive:true,force:true});
+    conn?.ws.close();
+    chrome.kill('SIGTERM');
+    if (chrome.exitCode === null) await new Promise(resolve => { chrome.once('exit', resolve); setTimeout(resolve, 2500).unref(); });
+    await new Promise(resolve=>server.close(resolve));
+    rmSync(dir,{recursive:true,force:true,maxRetries:12,retryDelay:150});
   }
 });
