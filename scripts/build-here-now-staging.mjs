@@ -91,7 +91,7 @@ function safeWorkspaceHtml(html) {
     /<a\b[^>]*\bworkspace-legal-record\b[^>]*>[\s\S]*?<\/a>/gi,
     '<span class="text-button workspace-legal-record" aria-label="Private record unavailable in demo">Private record unavailable in demo</span>'
   );
-  const bootstrap = '<script>window.__ASHWOOD_DEMO_SANDBOX__=true;</script>\n  <script src="/workspace/sandbox-demo-fixtures.js?v=20261019-demo2"></script>\n  <script src="/workspace/sandbox-bootstrap.js?v=20261019-demo2"></script>';
+  const bootstrap = '<script>window.__ASHWOOD_DEMO_SANDBOX__=true;</script>\n  <script src="/workspace/sandbox-demo-fixtures.js?v=20261019-demo2"></script>\n  <script src="/workspace/sandbox-bootstrap.js?v=20261020-demo3"></script>';
   if (!/<\/head>/i.test(withoutPrivateRecord)) throw new Error('Workspace HTML has no </head> for the DEMO sandbox bootstrap.');
   return withoutPrivateRecord.replace(/<\/head>/i, `${bootstrap}\n</head>`);
 }

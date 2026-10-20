@@ -21,6 +21,8 @@
     if (method !== 'GET' && method !== 'HEAD') {
       return response({ error: 'DEMO sandbox is read-only. No action was sent.', sandbox: true }, 405);
     }
+    if (url.origin === 'https://api.github.com') return response([]);
+    if (url.origin === 'https://ailhat.vercel.app') return response({ ok:false, sandbox:true });
     if (url.origin !== window.location.origin) {
       return response({ ok: false, sandbox: true, error: 'External data is unavailable in this DEMO sandbox.' }, 503);
     }
