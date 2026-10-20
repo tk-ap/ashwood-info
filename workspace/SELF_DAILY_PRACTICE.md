@@ -28,3 +28,10 @@ After the private ALVIRA → ASHWOOD Brain review-state and authorization contra
 4. No new persistent storage, third-party tracking, API polling, or automatic publishing.
 5. Workspace navigation, Today / Build / Work / Network / Evidence / Self, auth, and existing Self content stay intact.
 6. Verify on desktop/mobile and reduced-motion settings in here.now, then independently review, then owner-gated merge and exact-production-SHA check. A branch or PR is **not** live deployment.
+
+## Compatibility with the existing here.now staging PR / shell
+The current Self change is based on the merged Workspace shell PR #280, not on the diverged `codex/here-now-staging-integration` branch. The staging artifact builder from that branch is already on canonical `main`. We register `#self-practice` in `workspace/views.mjs` (the router is fail-closed and would otherwise hide the new section), and include both Self assets as required files in `scripts/build-here-now-staging.mjs`. Static output stays a **complete** site and receives the existing read-only synthetic DEMO bootstrap. No separate here.now slug, no second app, no Vercel Preview, and no new credentials or private Context.
+
+Do not claim this is visible on the stable here.now slug until the owner-connected publisher has built this exact branch's full artifact, updated the existing slug, verified source SHA and desktop/mobile route interactions, and recorded the actual provider version in `.agent-os/deployment.yaml`. Sandbox source/version recorded there currently predates #280 and this PR. An old version or a successful Vercel build does not prove here.now publication.
+
+The owner's 2026-10-19 reverse-engineering Markdown handed to Codex has **not** been recovered from currently accessible GitHub or Library content. `workspace/SATURN_SOURCE_NOTES.md` is the existing retrieved source baseline, not a substitute or presumed copy of that document. Merge original requirements after obtaining the actual Markdown, preserving source hierarchy.
