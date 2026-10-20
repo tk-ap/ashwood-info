@@ -95,7 +95,7 @@ function safeWorkspaceHtml(html) {
   );
   // Owner-only natal material is not a DEMO fixture. Keep the section structure,
   // but replace its actual profile before the static public artifact is emitted.
-  const privateProfileBlock = /<details class="disclosure"><summary>Underlying profile &amp; source lenses<\\/summary>[\\s\\S]*?<\\/details>/i;
+  const privateProfileBlock = /<details class="disclosure"><summary>Underlying profile &amp; source lenses<\/summary>[\s\S]*?<\/details>/i;
   if (!privateProfileBlock.test(withoutPrivateRecord)) {
     throw new Error('Cannot prove Self profile sanitization; refuse sandbox artifact.');
   }
