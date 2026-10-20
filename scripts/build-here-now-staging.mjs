@@ -93,9 +93,22 @@ function safeWorkspaceHtml(html) {
     /<a\b[^>]*\bworkspace-legal-record\b[^>]*>[\s\S]*?<\/a>/gi,
     '<span class="text-button workspace-legal-record" aria-label="Private record unavailable in demo">Private record unavailable in demo</span>'
   );
+  // Owner-only natal material is not a DEMO fixture. Keep the section structure,
+  // but replace its actual profile before the static public artifact is emitted.
+  const privateProfileBlock = /<details class="disclosure"><summary>Underlying profile &amp; source lenses<\\/summary>[\\s\\S]*?<\\/details>/i;
+  if (!privateProfileBlock.test(withoutPrivateRecord)) {
+    throw new Error('Cannot prove Self profile sanitization; refuse sandbox artifact.');
+  }
+  const scrubbedWorkspace = withoutPrivateRecord.replace(
+    privateProfileBlock,
+    '<details class="disclosure"><summary>Underlying profile &amp; source lenses · DEMO</summary><div class="workstream-list"><p><strong>Astrology:</strong> DEMO Sun · DEMO Moon · DEMO Rising.</p><p>Illustrative profile only. No owner chart, Human Design, numerology, or private Saturn Return source content is included in this sandbox demo.</p></div></details>'
+  );
+  if (/Libra Sun|Scorpio Moon|Cancer Rising|Mental Projector|Life Path 4/i.test(scrubbedWorkspace)) {
+    throw new Error('Personal natal profile detected in public Self sandbox artifact.');
+  }
   const bootstrap = '<script>window.__ASHWOOD_DEMO_SANDBOX__=true;</script>\n  <script src="/workspace/sandbox-demo-fixtures.js?v=20261019-demo2"></script>\n  <script src="/workspace/sandbox-bootstrap.js?v=20261020-demo3"></script>';
   if (!/<\/head>/i.test(withoutPrivateRecord)) throw new Error('Workspace HTML has no </head> for the DEMO sandbox bootstrap.');
-  return withoutPrivateRecord.replace(/<\/head>/i, `${bootstrap}\n</head>`);
+  return scrubbedWorkspace.replace(/<\/head>/i, `${bootstrap}\n</head>`);
 }
 
 async function writeRelative(path, data) {
