@@ -16,10 +16,10 @@ test('next local day rotates authored practice', () => {
 });
 
 test('natal lens requires matching preexisting chart source, never invents it', () => {
-  const chart = 'Astrology: Libra Sun · Scorpio Moon · Cancer Rising';
-  assert.match(natalReferenceFor(chart, 'sun').title, /Libra Sun/);
-  assert.match(natalReferenceFor(chart, 'moon').title, /Scorpio Moon/);
-  assert.match(natalReferenceFor(chart, 'rising').title, /Cancer Rising/);
+  const chart = 'Astrology: Aries Sun · Taurus Moon · Gemini Rising';
+  assert.match(natalReferenceFor(chart, 'sun').title, /Aries Sun/);
+  assert.match(natalReferenceFor(chart, 'moon').title, /Taurus Moon/);
+  assert.match(natalReferenceFor(chart, 'rising').title, /Gemini Rising/);
   assert.equal(natalReferenceFor('', 'sun'), null);
   assert.equal(natalReferenceFor(chart, 'other'), null);
   const synthetic = 'Astrology: DEMO Sun · DEMO Moon · DEMO Rising.';
