@@ -112,6 +112,7 @@ test('Chromium converts WAV to MP3, rejects disallowed pages and stages without 
     chrome.kill('SIGTERM');
     if (chrome.exitCode === null) await new Promise(resolve => { chrome.once('exit', resolve); setTimeout(resolve, 2500).unref(); });
     await new Promise(resolve=>server.close(resolve));
-    rmSync(dir,{recursive:true,force:true,maxRetries:12,retryDelay:150});
+    try { rmSync(dir,{recursive:true,force:true,maxRetries:12,retryDelay:150}); }
+    catch (error) { if (error.code !== 'ENOTEMPTY' && error.code !== 'EBUSY') throw error; }
   }
 });
