@@ -36,7 +36,9 @@ const allowedExtensions = new Set([
 const excludedRoots = new Set(['.agent-os', '.github', 'api', 'docs', 'node_modules', 'scripts', 'tests']);
 const requiredPaths = [
   'index.html', 'career/index.html', 'guide/index.html', 'workspace/index.html',
-  'workspace/today.mjs', 'workspace/sandbox-bootstrap.js', 'v3-nav.js', 'theme.js'
+  'workspace/today.mjs', 'workspace/sandbox-bootstrap.js',
+  'workspace/self-practice.mjs', 'workspace/self-practice.css',
+  'v3-nav.js', 'theme.js'
 ];
 
 const demoFixtures = {
@@ -86,14 +88,31 @@ const isPublishable = path => {
   return allowedExtensions.has(extname(path).toLowerCase());
 };
 
-function safeWorkspaceHtml(html) {
+function safeWorkspaceHtml(html, path) {
   const withoutPrivateRecord = html.replace(
     /<a\b[^>]*\bworkspace-legal-record\b[^>]*>[\s\S]*?<\/a>/gi,
     '<span class="text-button workspace-legal-record" aria-label="Private record unavailable in demo">Private record unavailable in demo</span>'
   );
+  let safeHtml = withoutPrivateRecord;
+  if (path === 'workspace/index.html') {
+    // Public DEMO must not inherit the owner's natal or other private source lenses.
+    const privateProfileBlock = /<details class="disclosure"><summary>Underlying profile &amp; source lenses<\/summary>[\s\S]*?<\/details>/i;
+    const originalProfile = withoutPrivateRecord.match(privateProfileBlock)?.[0];
+    if (!originalProfile) {
+      throw new Error('Cannot prove Self profile sanitization; refuse sandbox artifact.');
+    }
+    safeHtml = withoutPrivateRecord.replace(
+      privateProfileBlock,
+      '<details class="disclosure"><summary>Underlying profile &amp; source lenses · DEMO</summary><div class="workstream-list"><p><strong>Astrology:</strong> DEMO Sun · DEMO Moon · DEMO Rising.</p><p>Illustrative profile only. No owner chart, Human Design, numerology, or private Saturn Return source content is included in this sandbox demo.</p></div></details>'
+    );
+    if (safeHtml.includes(originalProfile) ||
+        !safeHtml.includes('DEMO Sun · DEMO Moon · DEMO Rising')) {
+      throw new Error('Personal natal profile detected in public Self sandbox artifact.');
+    }
+  }
   const bootstrap = '<script>window.__ASHWOOD_DEMO_SANDBOX__=true;</script>\n  <script src="/workspace/sandbox-demo-fixtures.js?v=20261019-demo2"></script>\n  <script src="/workspace/sandbox-bootstrap.js?v=20261020-demo3"></script>';
-  if (!/<\/head>/i.test(withoutPrivateRecord)) throw new Error('Workspace HTML has no </head> for the DEMO sandbox bootstrap.');
-  return withoutPrivateRecord.replace(/<\/head>/i, `${bootstrap}\n</head>`);
+  if (!/<\/head>/i.test(safeHtml)) throw new Error('Workspace HTML has no </head> for the DEMO sandbox bootstrap.');
+  return safeHtml.replace(/<\/head>/i, `${bootstrap}\n</head>`);
 }
 
 async function writeRelative(path, data) {
@@ -114,7 +133,7 @@ for (const path of tracked) {
   if (!to.startsWith(`${destination}${sep}`)) throw new Error(`Unsafe source path: ${path}`);
   await mkdir(dirname(to), { recursive: true });
   if (path.startsWith('workspace/') && path.endsWith('.html')) {
-    await writeFile(to, safeWorkspaceHtml(await readFile(from, 'utf8')));
+    await writeFile(to, safeWorkspaceHtml(await readFile(from, 'utf8'), path));
   } else {
     await copyFile(from, to);
   }
@@ -129,6 +148,16 @@ for (const path of requiredPaths) {
 }
 
 const emittedWorkspace = await readFile(resolve(destination, 'workspace/index.html'), 'utf8');
+if (!emittedWorkspace.includes('id="self-practice"') ||
+    !emittedWorkspace.includes('src="/workspace/self-practice.mjs') ||
+    !emittedWorkspace.includes('href="/workspace/self-practice.css')) {
+  throw new Error('Incomplete Self staging integration: daily practice or asset refs missing.');
+}
+const emittedViewRouter = await readFile(resolve(destination, 'workspace/views.mjs'), 'utf8');
+if (!emittedViewRouter.includes('"#self-practice"')) {
+  throw new Error('Self staging section not registered in fail-closed view router.');
+}
+
 if (/drive\.google\.com|workspace-legal-record[^>]*href=/i.test(emittedWorkspace)) {
   throw new Error('Private Workspace record link remained in the staging artifact.');
 }
