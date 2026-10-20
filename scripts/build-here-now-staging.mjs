@@ -36,7 +36,9 @@ const allowedExtensions = new Set([
 const excludedRoots = new Set(['.agent-os', '.github', 'api', 'docs', 'node_modules', 'scripts', 'tests']);
 const requiredPaths = [
   'index.html', 'career/index.html', 'guide/index.html', 'workspace/index.html',
-  'workspace/today.mjs', 'workspace/sandbox-bootstrap.js', 'v3-nav.js', 'theme.js'
+  'workspace/today.mjs', 'workspace/sandbox-bootstrap.js',
+  'workspace/self-practice.mjs', 'workspace/self-practice.css',
+  'v3-nav.js', 'theme.js'
 ];
 
 const demoFixtures = {
@@ -129,6 +131,16 @@ for (const path of requiredPaths) {
 }
 
 const emittedWorkspace = await readFile(resolve(destination, 'workspace/index.html'), 'utf8');
+if (!/id="self-practice"/.test(emittedWorkspace) ||
+    !/src="\\/workspace\\/self-practice\\.mjs/.test(emittedWorkspace) ||
+    !/href="\\/workspace\\/self-practice\\.css/.test(emittedWorkspace)) {
+  throw new Error('Incomplete Self staging integration: daily practice or asset refs missing.');
+}
+const emittedViewRouter = await readFile(resolve(destination, 'workspace/views.mjs'), 'utf8');
+if (!emittedViewRouter.includes('"#self-practice"')) {
+  throw new Error('Self staging section not registered in fail-closed view router.');
+}
+
 if (/drive\.google\.com|workspace-legal-record[^>]*href=/i.test(emittedWorkspace)) {
   throw new Error('Private Workspace record link remained in the staging artifact.');
 }
