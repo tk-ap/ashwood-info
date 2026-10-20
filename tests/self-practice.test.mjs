@@ -48,3 +48,39 @@ test('complete-site here.now demo artifact requires Self JS and CSS', async () =
   assert.match(builder, /Personal natal profile detected/);
   assert.match(builder, /DEMO Sun/);
 });
+
+test('complete public here.now artifact has no original Self chart disclosure and stays DEMO-only', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const { mkdtemp, readFile, rm, stat } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const repoRoot = fileURLToPath(new URL('../', import.meta.url));
+  const temp = await mkdtemp(join(tmpdir(), 'ashwood-self-demo-'));
+  const output = join(temp, 'site');
+  try {
+    execFileSync(process.execPath, ['scripts/build-here-now-staging.mjs', output], {
+      cwd: repoRoot,
+      timeout: 30000,
+      stdio: 'pipe'
+    });
+    const [original, emitted, child, manifest] = await Promise.all([
+      readFile(new URL('../workspace/index.html', import.meta.url), 'utf8'),
+      readFile(join(output, 'workspace/index.html'), 'utf8'),
+      readFile(join(output, 'workspace/sandbox/index.html'), 'utf8'),
+      readFile(join(output, 'staging-manifest.json'), 'utf8')
+    ]);
+    const privateBlock = original.match(/<details class="disclosure"><summary>Underlying profile &amp; source lenses<\/summary>[\s\S]*?<\/details>/i)?.[0];
+    assert.ok(privateBlock, 'preflight: source disclosure must be located');
+    assert.ok(!emitted.includes(privateBlock), 'real source profile must not remain in emitted public HTML');
+    assert.match(emitted, /DEMO Sun · DEMO Moon · DEMO Rising/);
+    assert.match(emitted, /id="self-practice"/);
+    assert.match(emitted, /__ASHWOOD_DEMO_SANDBOX__/);
+    assert.match(child, /__ASHWOOD_DEMO_SANDBOX__/);
+    assert.equal(JSON.parse(manifest).workspace_mode, 'DEMO_ONLY_NO_PRIVATE_API_OR_RECORDS');
+    await stat(join(output, 'workspace/self-practice.mjs'));
+    await stat(join(output, 'workspace/self-practice.css'));
+  } finally {
+    await rm(temp, {recursive:true, force:true});
+  }
+});
