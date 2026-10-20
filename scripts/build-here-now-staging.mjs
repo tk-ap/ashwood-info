@@ -131,9 +131,9 @@ for (const path of requiredPaths) {
 }
 
 const emittedWorkspace = await readFile(resolve(destination, 'workspace/index.html'), 'utf8');
-if (!/id="self-practice"/.test(emittedWorkspace) ||
-    !/src="\\/workspace\\/self-practice\\.mjs/.test(emittedWorkspace) ||
-    !/href="\\/workspace\\/self-practice\\.css/.test(emittedWorkspace)) {
+if (!emittedWorkspace.includes('id="self-practice"') ||
+    !emittedWorkspace.includes('src="/workspace/self-practice.mjs') ||
+    !emittedWorkspace.includes('href="/workspace/self-practice.css')) {
   throw new Error('Incomplete Self staging integration: daily practice or asset refs missing.');
 }
 const emittedViewRouter = await readFile(resolve(destination, 'workspace/views.mjs'), 'utf8');
