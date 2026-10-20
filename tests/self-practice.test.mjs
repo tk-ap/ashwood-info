@@ -17,11 +17,13 @@ test('next local day rotates authored practice', () => {
 
 test('natal lens requires matching preexisting chart source, never invents it', () => {
   const chart = 'Astrology: Libra Sun · Scorpio Moon · Cancer Rising';
-  assert.match(natalReferenceFor(chart, 'libra').title, /Libra Sun/);
-  assert.match(natalReferenceFor(chart, 'scorpio').title, /Scorpio Moon/);
-  assert.match(natalReferenceFor(chart, 'cancer').title, /Cancer Rising/);
-  assert.equal(natalReferenceFor('', 'libra'), null);
-  assert.equal(natalReferenceFor(chart, 'capricorn'), null);
+  assert.match(natalReferenceFor(chart, 'sun').title, /Libra Sun/);
+  assert.match(natalReferenceFor(chart, 'moon').title, /Scorpio Moon/);
+  assert.match(natalReferenceFor(chart, 'rising').title, /Cancer Rising/);
+  assert.equal(natalReferenceFor('', 'sun'), null);
+  assert.equal(natalReferenceFor(chart, 'other'), null);
+  const synthetic = 'Astrology: DEMO Sun · DEMO Moon · DEMO Rising.';
+  assert.match(natalReferenceFor(synthetic, 'sun').title, /DEMO Sun/);
 });
 
 test('Self daily practice is reachable through the fail-closed six-view Workspace shell', async () => {
@@ -42,4 +44,7 @@ test('complete-site here.now demo artifact requires Self JS and CSS', async () =
   assert.match(builder, /'workspace\/self-practice\.css'/);
   assert.match(builder, /Incomplete Self staging integration/);
   assert.match(builder, /DEMO_ONLY_NO_PRIVATE_API_OR_RECORDS/);
+  assert.match(builder, /Cannot prove Self profile sanitization/);
+  assert.match(builder, /Personal natal profile detected/);
+  assert.match(builder, /DEMO Sun/);
 });
