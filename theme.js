@@ -162,7 +162,7 @@
   };
 
   const primaryRoutes = [
-    { path: "/portfolio", label: "Modeling" },
+    { path: "/modeling", label: "Modeling" },
     { path: "/music", label: "Music" },
     { path: "/journal", label: "Builds" },
     { path: "/about", label: "About" },

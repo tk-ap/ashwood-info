@@ -117,22 +117,19 @@
           <a href="/modeling/"><small>05</small><span>Modeling</span><b>↗</b></a>
           <a href="/music/"><small>06</small><span>Music</span><b>↗</b></a>
           <a href="/performance/"><small>07</small><span>Performance</span><b>↗</b></a>
-          <a href="/portfolio/"><small>08</small><span>Portfolio</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>Ideas and builds</summary>
-          <a href="/journal/"><small>09</small><span>Build journal</span><b>↗</b></a>
-          <a href="/dispatch/"><small>10</small><span>Dispatch</span><b>↗</b></a>
-          <a href="/ai-from-zero/"><small>11</small><span>AI from Zero</span><b>↗</b></a>
-          <a href="/dive-deeper/"><small>12</small><span>Dive deeper</span><b>↗</b></a>
-          <a href="/journal-lab/"><small>13</small><span>Journal lab</span><b>↗</b></a>
+          <a href="/journal/"><small>08</small><span>Build journal</span><b>↗</b></a>
+          <a href="/dispatch/"><small>09</small><span>Dispatch</span><b>↗</b></a>
+          <a href="/ai-from-zero/"><small>10</small><span>AI from Zero</span><b>↗</b></a>
+          <a href="/journal-lab/"><small>11</small><span>Journal lab</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>About and connect</summary>
-          <a href="/about/"><small>14</small><span>About</span><b>↗</b></a>
-          <a href="/connect/"><small>15</small><span>Connect</span><b>↗</b></a>
-          <a href="/sponsor/"><small>16</small><span>Support</span><b>↗</b></a>
-          <a href="/partners/"><small>17</small><span>Partners</span><b>↗</b></a>
+          <a href="/about/"><small>12</small><span>About</span><b>↗</b></a>
+          <a href="/connect/"><small>13</small><span>Connect</span><b>↗</b></a>
+          <a href="/sponsor/"><small>14</small><span>Support</span><b>↗</b></a>
         </details>
         <p class="v3-global-nav__no-results" hidden>No public page matches that search. Try “work,” “career,” “journal,” or “contact.”</p>
       </nav>
