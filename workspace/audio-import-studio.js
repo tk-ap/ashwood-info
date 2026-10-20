@@ -20,7 +20,7 @@
     '<span class="audio-import-studio__or">Or paste a direct audio file URL</span>',
     '<label for="audio-import-url">Direct HTTPS audio URL</label>',
     '<input id="audio-import-url" type="url" inputmode="url" placeholder="https://example.org/recording.wav" />',
-    '<p class="audio-import-studio__help">YouTube/streaming pages are references, not downloadable audio files. Direct links must allow browser access (CORS). Limit: 40 MB / 6 minutes.</p>',
+    '<p class="audio-import-studio__help">YouTube/streaming pages are references, not downloadable audio files. Direct links must allow browser access (CORS). Max 40 MB; non-MP3 conversion up to 6 minutes.</p>',
     '<label class="audio-import-studio__rights"><input id="audio-import-rights" type="checkbox" /> I have permission to process and keep this recording.</label>',
     '<button id="audio-import-convert" type="button">Prepare MP3</button>',
     '<p id="audio-import-status" role="status" aria-live="polite">Ready for a source.</p></div>',
@@ -34,6 +34,7 @@
     '</div></div>'
   ].join('');
   grid.before(panel);
+  if (location.hash === '#audio-import-studio') requestAnimationFrame(() => panel.scrollIntoView({block:'start'}));
   const find = selector => panel.querySelector(selector);
   const fileInput = find('#audio-import-file');
   const urlInput = find('#audio-import-url');
