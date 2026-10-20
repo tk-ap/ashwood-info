@@ -68,7 +68,8 @@ test("workspace keeps the evidence-driven queue and durable feedback endpoint wi
   ]);
   assert.match(html,/id="from-work-queue"/);
   assert.match(html,/TK is not a founder-content account/);
-  assert.match(html,/data-workspace-nav="content"/);
+  assert.match(html,/data-workspace-nav="evidence"/);
+  assert.match(await readFile(new URL("../workspace/views.mjs", import.meta.url),"utf8"), /evidence:\s*\[[\s\S]*"#content"/);
   assert.match(app,/buildContentRecommendation/);
   assert.match(app,/record_content_feedback/);
   assert.match(api,/workspace_content_feedback/);

@@ -67,7 +67,14 @@ const demoFixtures = {
     version: 1,
     generated_at: 'DEMO',
     source_note: 'DEMO sandbox fixture. No career, funding, or owner opportunity records are published here.',
-    opportunities: []
+    opportunities: [{
+      id: 'demo-funding-001', name: 'Demo Build Grant', funder: 'Demo Foundation',
+      type: 'creative_funding', value: 'Illustrative only — no real funding record',
+      verification: 'DEMO', confidence: 'demo_fixture', disposition: 'CONSULT',
+      reason: 'This fictional record exists only so the review screen has a complete state.',
+      criteria: ['No real eligibility is represented.'], eligibility_rules: [], evidence: [], documents: [],
+      benefit_interactions: [], source_label: 'Demo source', source_url: 'https://example.invalid/'
+    }]
   }
 };
 
@@ -84,7 +91,7 @@ function safeWorkspaceHtml(html) {
     /<a\b[^>]*\bworkspace-legal-record\b[^>]*>[\s\S]*?<\/a>/gi,
     '<span class="text-button workspace-legal-record" aria-label="Private record unavailable in demo">Private record unavailable in demo</span>'
   );
-  const bootstrap = '<script>window.__ASHWOOD_DEMO_SANDBOX__=true;</script>\n  <script src="/workspace/sandbox-bootstrap.js?v=20261019-demo1"></script>';
+  const bootstrap = '<script>window.__ASHWOOD_DEMO_SANDBOX__=true;</script>\n  <script src="/workspace/sandbox-demo-fixtures.js?v=20261019-demo2"></script>\n  <script src="/workspace/sandbox-bootstrap.js?v=20261019-demo2"></script>';
   if (!/<\/head>/i.test(withoutPrivateRecord)) throw new Error('Workspace HTML has no </head> for the DEMO sandbox bootstrap.');
   return withoutPrivateRecord.replace(/<\/head>/i, `${bootstrap}\n</head>`);
 }

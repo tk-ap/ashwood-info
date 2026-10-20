@@ -1,13 +1,4 @@
 const VIEW_META = {
-  operator: {
-    title: "Operator.",
-    deck: "Direct the ecosystem, follow the work, and stay inside one human-facing control surface.",
-    eyebrow: "ASHWOOD operating layer",
-    tools: [
-      {label:"AgentOS Health", href:"/workspace/agentos/"},
-      {label:"Sandbox Studio direction", href:"https://github.com/tk-ap/ashwood-info/issues/159", external:true}
-    ]
-  },
   today: {
     title: "Today.",
     deck: "What matters. What is moving. What needs you.",
@@ -50,7 +41,6 @@ const VIEW_META = {
     tools: []
   },
   runway: { title:"Income.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#work"},{label:"Funding",href:"#funding"}] },
-  content: { title:"Content.", deck:"Capture what is happening, develop what matters, and publish only when it serves you.", eyebrow:"Private content operating system", tools:[] },
   evidence: {
     title: "Evidence.",
     deck: "Signals, proof, decisions, contradictions, and the record behind what the system believes.",
@@ -70,15 +60,13 @@ const VIEW_META = {
 };
 
 const GROUPS = {
-  operator: [
-    "#operator"
-  ],
   today: [
     "#today",
     "#operator-actions-section",
     ".actual-priorities"
   ],
   build: [
+    "#operator",
     "#sprint-directive",
     "#build",
     "#ashwood-drop",
@@ -89,6 +77,7 @@ const GROUPS = {
   network: ["#network"],
   content: ["#content"],
   evidence: [
+    "#content",
     "#owner-intelligence",
     "details.pulse",
     "details.workspace-connections",
@@ -110,7 +99,7 @@ const GROUPS = {
 };
 
 const VIEW_FOR_HASH = {
-  operator:"operator",
+  operator:"build",
   today:"today",
   build:"build",
   "ashwood-drop":"build",
@@ -120,7 +109,7 @@ const VIEW_FOR_HASH = {
   activity:"build",
   funding:"work",
   runway:"work",
-  content:"content",
+  content:"evidence",
   evidence:"evidence",
   sources:"evidence",
   "evidence-panel":"evidence",
@@ -289,7 +278,7 @@ function initialView(){
 }
 
 function openGlobalAdd(){
-  setView("operator");
+  setView("build", {anchor:"operator"});
   requestAnimationFrame(() => {
     const input = q("#today-command-input");
     input?.scrollIntoView({behavior:"smooth", block:"center"});

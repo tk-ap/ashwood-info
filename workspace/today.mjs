@@ -248,6 +248,11 @@ function renderSummary(rows) {
 
 let snapshot = { rows:[], priorities:[], commands:[], health:null };
 
+function hasHealthScore(health) {
+  const score = health?.overall_score;
+  return score !== null && score !== undefined && String(score).trim() !== "" && Number.isFinite(Number(score));
+}
+
 function editorialNode(selector) {
   return document.querySelector(selector);
 }
@@ -298,7 +303,7 @@ function renderEditorialSignals(rows, health) {
   setEditorialText("#today-editorial-active-note", active ? "Confirmed autonomous work" : "No active AgentOS work confirmed");
   setEditorialText("#today-editorial-deploys", String(deployments.length));
   setEditorialText("#today-editorial-deploys-note", deployments.length ? "Provider-observed in the last 24h" : "No provider-observed deploys in the last 24h");
-  if (health && Number.isFinite(Number(health.overall_score))) {
+  if (hasHealthScore(health)) {
     setEditorialText("#today-editorial-health", String(health.overall_score));
     setEditorialText("#today-editorial-health-note", "Evidence-weighted · " + (relative(health.assessed_at) || "age unavailable"));
   } else {
@@ -439,7 +444,7 @@ function renderCockpit(rows, health) {
   setText("#today-cockpit-deploys", String(deployments.length));
   setText("#today-cockpit-deploys-note", deployments.length ? "Provider-observed events in the last 24h" : "No provider-observed deployments in the last 24h");
 
-  if (health && Number.isFinite(Number(health.overall_score))) {
+  if (hasHealthScore(health)) {
     const age = relative(health.assessed_at);
     setText("#today-cockpit-health", String(health.overall_score));
     setText("#today-cockpit-health-note", "Theranos / evidence-weighted · " + (age || "assessment age unavailable"));
