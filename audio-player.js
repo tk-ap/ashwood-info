@@ -152,7 +152,7 @@
       </div>
       <div class="ashwood-audio__footer">
         <p class="ashwood-audio__source-note">${TRACK.source ? "Playback continues across ASHWOOD pages." : "Native audio is ready to connect."}</p>
-        <a class="ashwood-audio__dsp" href="${TRACK.dspUrl}" target="_blank" rel="noopener noreferrer">Listen on DSPs ↗</a>
+        <a class="ashwood-audio__dsp" href="${TRACK.dspUrl}" target="_blank" rel="noopener noreferrer">Listen on DSPs</a>
       </div>
     </div>
     <button class="ashwood-audio__collapse" type="button" aria-expanded="true" aria-label="Collapse audio player">−</button>`;

@@ -32,7 +32,7 @@
           Your browser does not support native audio playback.
         </audio>
         ${rights ? `<p class="listen-track__special-rights">${escapeHtml(rights)}</p>` : ''}
-        ${sourceUrl ? `<a class="listen-track__special-source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Original beat / license context on YouTube ↗</a>` : ''}
+        ${sourceUrl ? `<a class="listen-track__special-source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Original beat / license context on YouTube</a>` : ''}
       </div>`;
   }
 
@@ -97,7 +97,7 @@
             Your browser does not support native audio playback.
           </audio>
           ${rights ? `<p class="drop-music-track__rights">${escapeHtml(rights)}</p>` : ''}
-          ${sourceUrl ? `<a class="drop-music-track__source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Source / license context ↗</a>` : ''}
+          ${sourceUrl ? `<a class="drop-music-track__source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Source / license context</a>` : ''}
         </div>
       </article>`;
   }
