@@ -60,7 +60,7 @@
 
   async function getAudioUrl(rawUrl) {
     const url = new URL(rawUrl);
-    if (url.protocol !== 'https:') throw new Error('Use a direct HTTPS audio URL.');
+    if (url.protocol !== 'https:' || url.username || url.password) throw new Error('Use a direct HTTPS audio URL without embedded credentials.');
     if (/(^|\.)youtube\.com$|(^|\.)youtu\.be$|(^|\.)youtube-nocookie\.com$/i.test(url.hostname)) {
       throw new Error('YouTube pages cannot be converted here. Use YouTube Studio to download your own upload, then select the resulting file.');
     }
@@ -168,7 +168,10 @@
       let input = local;
       if (!input) {
         setStatus('Downloading permitted direct audio…');
-        input = await getAudioUrl(raw); sourceUrl = raw;
+        input = await getAudioUrl(raw);
+        // Preserve source provenance without persisting signed URLs or query tokens.
+        const source = new URL(raw);
+        sourceUrl = source.origin + source.pathname;
       }
       const output = await makeMp3(input);
       prepared = output;
