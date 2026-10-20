@@ -14,7 +14,7 @@ test('the public ASHWOOD menu indexes every public landing page and provides a v
     assert.match(nav, new RegExp('href="' + href.replaceAll('/', '\\/') + '"'));
   }
   assert.match(nav, /<span>Work overview<\/span>/);
-  assert.doesNotMatch(nav, /href="\\/portfolio\\/"/);
+  assert.equal(nav.includes('href="/portfolio/"'), false);
   assert.match(nav, /VISIT GUIDE/);
   assert.match(nav, /Explore pages/);
   assert.match(nav, /mouseenter/);
