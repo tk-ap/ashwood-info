@@ -13,7 +13,9 @@ test('studio is syntactically valid and mounted on the established Workspace int
   assert.match(shell, /workspace\/audio-import-studio\.js/);
   assert.match(shell, /workspace\/audio-import-studio\.css/);
   assert.match(source, /#ashwood-drop/);
-  assert.match(views, /"audio-import-studio":"build"/);
+  assert.match(views, /"audio-import-studio":"music"/);
+  assert.match(views, /music: \["#ashwood-drop"\]/);
+  assert.match(shell, /href="#music" data-workspace-nav="music"/);
 });
 
 test('MP3 preparation never publishes automatically or installs a downloader', () => {
