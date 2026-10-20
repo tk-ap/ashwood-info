@@ -46,6 +46,6 @@ test('Career receives the staged operating-thesis hero and its interactive modes
 
 test('standalone public landing pages load the shared discovery navigation', async () => {
   for (const page of ['guide/index.html', 'journal-lab/index.html', 'sponsor/index.html']) {
-    assert.match(await read(page), /\/theme\.js\?v=20261019-navigation1/);
+    assert.match(await read(page), /\/theme\.js\?v=20261020-nav-cleanup1/);
   }
 });
