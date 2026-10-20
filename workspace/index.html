@@ -55,6 +55,7 @@
   <link rel="stylesheet" href="/workspace/runway.css?v=20260925-runway1" />
   <link rel="stylesheet" href="/workspace/meos-self.css?v=20260925-meos2" />
   <link rel="stylesheet" href="/workspace/self-daily-wisdom.css?v=20260925-1" />
+  <link rel="stylesheet" href="/workspace/self-practice.css?v=20261020-1" />
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -669,6 +670,32 @@
 
     <span id="self" class="workspace-anchor" aria-hidden="true"></span>
 
+
+    <section class="self-practice" id="self-practice" aria-labelledby="self-practice-title">
+      <div class="self-practice__top"><p class="section-kicker">Self · daily philosophy</p><span class="self-practice__date" data-self-date></span></div>
+      <p class="self-practice__theme" data-self-theme>Daily orientation</p>
+      <h2 class="self-practice__thought" id="self-practice-title" data-self-thought>Prepare for possibility. Answer to reality.</h2>
+      <p class="self-practice__affirmation" data-self-affirmation>My circumstances are not my measure of worth.</p>
+      <div class="self-practice__grid">
+        <article class="self-practice__panel">
+          <div class="self-practice__actions" role="group" aria-label="Daily practice phase">
+            <button type="button" data-self-phase="morning" aria-pressed="true">Intention</button>
+            <button type="button" data-self-phase="evening" aria-pressed="false">Reflection</button>
+          </div>
+          <small>Ask yourself</small>
+          <p data-self-question>Which possibility deserves a practical next step?</p>
+          <div class="self-practice__step"><small data-self-step-label>One grounded action</small><p data-self-step>Take a small step you can verify.</p></div>
+        </article>
+        <article class="self-practice__panel">
+          <small>Birth-chart lens · interpretive, not predictive</small>
+          <h3 data-self-chart>Existing natal profile</h3>
+          <p data-self-chart-question>Use astrology as a reflective prompt, not a decision authority.</p>
+          <p class="self-practice__source">Natal placements are fixed; daily planetary transits are not calculated here. Consult the existing profile below for provenance.</p>
+        </article>
+      </div>
+      <p class="self-practice__source">Daily practices are original prompts inspired by <a href="https://www.youtube.com/watch?v=F4r3TPl0SkM" target="_blank" rel="noopener noreferrer">the Florence Scovel Shinn-inspired wealth-consciousness meditation</a>. Affirmations do not guarantee wealth or replace financial decisions, action, or evidence. No reflection is saved or transmitted by this view.</p>
+    </section>
+
     <section class="self-daily-wisdom" id="self-daily-wisdom" aria-labelledby="self-season-title">
       <p class="section-kicker">Self · current season</p>
       <div class="self-daily-wisdom__mark" aria-hidden="true">✦</div>
@@ -990,5 +1017,6 @@
   </dialog>
   <script type="module" src="/workspace/content-studio.mjs?v=20261001-content-intelligence1"></script>
   <script type="module" src="/workspace/runway.mjs?v=20260925-runway1"></script>
+  <script type="module" src="/workspace/self-practice.mjs?v=20261020-1"></script>
 </body>
 </html>
