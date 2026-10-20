@@ -88,29 +88,31 @@ const isPublishable = path => {
   return allowedExtensions.has(extname(path).toLowerCase());
 };
 
-function safeWorkspaceHtml(html) {
+function safeWorkspaceHtml(html, path) {
   const withoutPrivateRecord = html.replace(
     /<a\b[^>]*\bworkspace-legal-record\b[^>]*>[\s\S]*?<\/a>/gi,
     '<span class="text-button workspace-legal-record" aria-label="Private record unavailable in demo">Private record unavailable in demo</span>'
   );
-  // Owner-only natal material is not a DEMO fixture. Keep the section structure,
-  // but replace its actual profile before the static public artifact is emitted.
-  const privateProfileBlock = /<details class="disclosure"><summary>Underlying profile &amp; source lenses<\/summary>[\s\S]*?<\/details>/i;
-  const originalProfile = withoutPrivateRecord.match(privateProfileBlock)?.[0];
-  if (!originalProfile) {
-    throw new Error('Cannot prove Self profile sanitization; refuse sandbox artifact.');
-  }
-  const scrubbedWorkspace = withoutPrivateRecord.replace(
-    privateProfileBlock,
-    '<details class="disclosure"><summary>Underlying profile &amp; source lenses · DEMO</summary><div class="workstream-list"><p><strong>Astrology:</strong> DEMO Sun · DEMO Moon · DEMO Rising.</p><p>Illustrative profile only. No owner chart, Human Design, numerology, or private Saturn Return source content is included in this sandbox demo.</p></div></details>'
-  );
-  if (scrubbedWorkspace.includes(originalProfile) ||
-      !scrubbedWorkspace.includes('DEMO Sun · DEMO Moon · DEMO Rising')) {
-    throw new Error('Personal natal profile detected in public Self sandbox artifact.');
+  let safeHtml = withoutPrivateRecord;
+  if (path === 'workspace/index.html') {
+    // Public DEMO must not inherit the owner's natal or other private source lenses.
+    const privateProfileBlock = /<details class="disclosure"><summary>Underlying profile &amp; source lenses<\/summary>[\s\S]*?<\/details>/i;
+    const originalProfile = withoutPrivateRecord.match(privateProfileBlock)?.[0];
+    if (!originalProfile) {
+      throw new Error('Cannot prove Self profile sanitization; refuse sandbox artifact.');
+    }
+    safeHtml = withoutPrivateRecord.replace(
+      privateProfileBlock,
+      '<details class="disclosure"><summary>Underlying profile &amp; source lenses · DEMO</summary><div class="workstream-list"><p><strong>Astrology:</strong> DEMO Sun · DEMO Moon · DEMO Rising.</p><p>Illustrative profile only. No owner chart, Human Design, numerology, or private Saturn Return source content is included in this sandbox demo.</p></div></details>'
+    );
+    if (safeHtml.includes(originalProfile) ||
+        !safeHtml.includes('DEMO Sun · DEMO Moon · DEMO Rising')) {
+      throw new Error('Personal natal profile detected in public Self sandbox artifact.');
+    }
   }
   const bootstrap = '<script>window.__ASHWOOD_DEMO_SANDBOX__=true;</script>\n  <script src="/workspace/sandbox-demo-fixtures.js?v=20261019-demo2"></script>\n  <script src="/workspace/sandbox-bootstrap.js?v=20261020-demo3"></script>';
-  if (!/<\/head>/i.test(withoutPrivateRecord)) throw new Error('Workspace HTML has no </head> for the DEMO sandbox bootstrap.');
-  return scrubbedWorkspace.replace(/<\/head>/i, `${bootstrap}\n</head>`);
+  if (!/<\/head>/i.test(safeHtml)) throw new Error('Workspace HTML has no </head> for the DEMO sandbox bootstrap.');
+  return safeHtml.replace(/<\/head>/i, `${bootstrap}\n</head>`);
 }
 
 async function writeRelative(path, data) {
@@ -131,7 +133,7 @@ for (const path of tracked) {
   if (!to.startsWith(`${destination}${sep}`)) throw new Error(`Unsafe source path: ${path}`);
   await mkdir(dirname(to), { recursive: true });
   if (path.startsWith('workspace/') && path.endsWith('.html')) {
-    await writeFile(to, safeWorkspaceHtml(await readFile(from, 'utf8')));
+    await writeFile(to, safeWorkspaceHtml(await readFile(from, 'utf8'), path));
   } else {
     await copyFile(from, to);
   }
