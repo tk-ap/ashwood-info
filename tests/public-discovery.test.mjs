@@ -10,9 +10,11 @@ test('the public ASHWOOD menu indexes every public landing page and provides a v
     read('guide/index.html'),
     read('theme.js')
   ]);
-  for (const href of ['/', '/guide/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/portfolio/', '/journal/', '/dispatch/', '/ai-from-zero/', '/dive-deeper/', '/journal-lab/', '/about/', '/connect/', '/sponsor/', '/partners/']) {
+  for (const href of ['/', '/guide/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/dive-deeper/', '/journal-lab/', '/about/', '/connect/', '/sponsor/', '/partners/']) {
     assert.match(nav, new RegExp('href="' + href.replaceAll('/', '\\/') + '"'));
   }
+  assert.match(nav, /<span>Work overview<\/span>/);
+  assert.doesNotMatch(nav, /href="\\/portfolio\\/"/);
   assert.match(nav, /VISIT GUIDE/);
   assert.match(nav, /Explore pages/);
   assert.match(nav, /mouseenter/);
