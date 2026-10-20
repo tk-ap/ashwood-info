@@ -30,7 +30,7 @@
     '<audio id="audio-import-preview" controls preload="metadata" aria-label="Converted MP3 preview"></audio>',
     '<div class="audio-import-studio__actions"><a id="audio-import-download" download>Download MP3</a>',
     '<button id="audio-import-stage" type="button">Use in ASHWOOD library</button></div>',
-    '<p>The original is never overwritten. Retain or upload your original master separately. “Use in library” only fills the existing upload form; public release remains off by default.</p>',
+    '<p>The original is never overwritten. Retain your master separately. The existing ASHWOOD upload store uses publicly accessible file links: leaving Publish unchecked hides the track from the Music page, but does not make the file access-controlled. Do not upload confidential masters until private storage is enabled.</p>',
     '</div></div>'
   ].join('');
   grid.before(panel);
