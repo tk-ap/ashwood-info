@@ -22,12 +22,19 @@ What the Desk adds:
 
 ## Who does the scoring
 
-The Desk scored postings with the in-page Claude. ASHWOOD should not hold a model API key in Vercel. Scoring runs as an **AgentOS job** instead, the same way the `/find-matches` command already works:
-- it reads public postings and the baseline;
-- it applies the Desk's scoring prompt and gate unchanged;
-- it returns results through the existing machine-sync path as proposals.
+The Desk scored postings with the in-page Claude. ASHWOOD should not hold a model API key in Vercel. Scoring is planned as an **AgentOS job** that:
+- reads public postings and the baseline;
+- applies the Desk's scoring prompt and gate unchanged.
 
-The owner reviews and keeps or dismisses each one in the Workspace. Nothing is applied for, and nothing is added to the pipeline without the owner.
+**How its results reach ASHWOOD is a new, proposed contract, not an existing path.** Today the Career API accepts writes only from the owner's session on the same origin (`api/_career-ops-handler.mjs`), and neither ASHWOOD nor AgentOS has a machine route for career data. (`/find-matches` is a local Claude command that writes to the Desk, not to ASHWOOD.)
+
+The proposed ingress needs its own design and review before it is built:
+- a narrowly scoped machine token;
+- **proposals only**: score, verdict, lane, matches and gaps attached to a posting;
+- never creating, moving or closing an application;
+- every proposal waits for the owner to keep or dismiss it in the Workspace.
+
+It comes **after** the phase 1 import. Nothing is applied for, and nothing is added to the pipeline without the owner.
 
 ## Import (phase 1)
 
@@ -48,4 +55,4 @@ The owner reviews and keeps or dismisses each one in the Workspace. Nothing is a
 1. After ashwood-info #280 (Workspace shell) and #281 (public Career page) merge. Both touch the career views, so building on them avoids conflicts.
 2. Phase 1: the import, plus "Add a posting" with snapshot storage.
 3. Phase 2: the baseline profile in ASHWOOD, and fit score + gate fields in the UI.
-4. Phase 3: AgentOS scoring job and the extra discovery sources (Greenhouse, Lever, Ashby), with the run log.
+4. Phase 3: design and review the new owner-reviewed scoring ingress, then build the AgentOS scoring job and the extra discovery sources (Greenhouse, Lever, Ashby) with the run log.
