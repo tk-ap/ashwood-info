@@ -11,6 +11,22 @@ function database() {
   return neon(url);
 }
 function cleanText(value, max) { return String(value ?? '').trim().slice(0, max); }
+// Imports must be idempotent (ashwood-info#277): a note created from a source
+// carries an immutable source_key, and the same key never creates a second note.
+// A repeat import returns the existing note untouched, so owner edits survive.
+const SOURCE_KEY = /^[A-Za-z0-9:._-]{1,200}$/;
+const FINGERPRINT = /^[0-9a-f]{64}$/;
+let sourceColumnsReady = null;
+function ensureSourceColumns(sql) {
+  if (!sourceColumnsReady) {
+    sourceColumnsReady = (async () => {
+      await sql`ALTER TABLE brain.notes ADD COLUMN IF NOT EXISTS source_key text`;
+      await sql`ALTER TABLE brain.notes ADD COLUMN IF NOT EXISTS source_fingerprint text`;
+      await sql`CREATE UNIQUE INDEX IF NOT EXISTS brain_notes_owner_source_key ON brain.notes (owner_key, source_key) WHERE source_key IS NOT NULL`;
+    })().catch(error => { sourceColumnsReady = null; throw error; });
+  }
+  return sourceColumnsReady;
+}
 function validId(value) { return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(value)); }
 function markdown(note) {
   // Markdown is data. Never generate executable HTML in the export route.
@@ -60,8 +76,25 @@ export function createBrainHandler({ authenticate = requireSession, sqlFactory =
       if (source && (!/^https?:\/\//i.test(source) || (() => { try { new URL(source); return false; } catch { return true; } })())) {
         return json(res, 400, { ok: false, error: 'Invalid source URL' });
       }
-      const rows = await sql`INSERT INTO brain.notes(owner_key, title, body_markdown, source_url) VALUES (${OWNER}, ${title}, ${content}, ${source || null}) RETURNING id, title, created_at`;
-      return json(res, 201, { ok: true, note: rows[0] });
+      const sourceKey = body.source_key == null || body.source_key === '' ? null : String(body.source_key);
+      const fingerprint = body.source_fingerprint == null || body.source_fingerprint === '' ? null : String(body.source_fingerprint).toLowerCase();
+      if (sourceKey !== null && !SOURCE_KEY.test(sourceKey)) return json(res, 400, { ok: false, error: 'Invalid source key' });
+      if (fingerprint !== null && (!sourceKey || !FINGERPRINT.test(fingerprint))) return json(res, 400, { ok: false, error: 'Invalid source fingerprint' });
+      if (!sourceKey) {
+        const rows = await sql`INSERT INTO brain.notes(owner_key, title, body_markdown, source_url) VALUES (${OWNER}, ${title}, ${content}, ${source || null}) RETURNING id, title, created_at`;
+        return json(res, 201, { ok: true, note: rows[0] });
+      }
+      await ensureSourceColumns(sql);
+      const inserted = await sql`INSERT INTO brain.notes(owner_key, title, body_markdown, source_url, source_key, source_fingerprint)
+        VALUES (${OWNER}, ${title}, ${content}, ${source || null}, ${sourceKey}, ${fingerprint})
+        ON CONFLICT (owner_key, source_key) WHERE source_key IS NOT NULL DO NOTHING
+        RETURNING id, title, created_at`;
+      if (inserted[0]) return json(res, 201, { ok: true, note: inserted[0], imported: true });
+      // Already imported: never overwrite (the owner may have edited it). Report whether the source changed.
+      const existing = await sql`SELECT id, title, created_at, source_fingerprint FROM brain.notes WHERE owner_key = ${OWNER} AND source_key = ${sourceKey} LIMIT 1`;
+      const note = existing[0];
+      return json(res, 200, { ok: true, note: { id: note.id, title: note.title, created_at: note.created_at }, imported: false, duplicate: true,
+        source_changed: Boolean(fingerprint && note.source_fingerprint && note.source_fingerprint !== fingerprint) });
     } catch (error) {
       console.error('Brain request failed', error?.name || 'Unknown');
       return json(res, 503, { ok: false, error: 'Brain temporarily unavailable' });

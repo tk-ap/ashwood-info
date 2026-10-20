@@ -86,3 +86,48 @@ test('Brain integration: private create / list / search / read / Markdown export
   assert.equal(count[0].n,2);
  } finally {await db.close();}
 });
+
+test('Brain import is idempotent by source key and never overwrites owner edits (Codex review of #273)',async()=>{
+ const db=new PGlite();
+ try {
+  await db.exec(`CREATE SCHEMA brain;
+    CREATE TABLE brain.notes (
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      owner_key text NOT NULL,
+      title text NOT NULL DEFAULT '',
+      body_markdown text NOT NULL DEFAULT '',
+      source_url text,
+      created_at timestamptz NOT NULL DEFAULT now(),
+      updated_at timestamptz NOT NULL DEFAULT now(),
+      archived_at timestamptz
+    );`);
+  const sql=asSql(db);
+  const handler=createBrainHandler({authenticate:async r=>r.headers['x-test-auth']==='owner'?{token:'fixture'}:null,sqlFactory:()=>sql});
+  async function call(request){const res=response();await handler(request,res);return {...res,json:()=>JSON.parse(res.body)};}
+  const fp='a'.repeat(64);
+  const note={title:'Goals — ALVIRA interview, 2026-10-15',body_markdown:'Approved note text.',source_key:'alvira:378d3e82:goals:0',source_fingerprint:fp};
+  const first=await call(req('POST','/api/workspace-brain',note));
+  assert.equal(first.code,201,first.body);
+  assert.equal(first.json().imported,true);
+  const id=first.json().note.id;
+  const again=await call(req('POST','/api/workspace-brain',note));
+  assert.equal(again.code,200,again.body);
+  assert.deepEqual([again.json().imported,again.json().duplicate,again.json().note.id,again.json().source_changed],[false,true,id,false]);
+  // The owner edits the note; a re-import (even with a changed source) must not overwrite it.
+  await sql`UPDATE brain.notes SET body_markdown='Owner edited this.' WHERE id=${id}::uuid`;
+  const changed=await call(req('POST','/api/workspace-brain',{...note,body_markdown:'Newer source text.',source_fingerprint:'b'.repeat(64)}));
+  assert.equal(changed.code,200);
+  assert.equal(changed.json().source_changed,true);
+  const kept=await sql`SELECT body_markdown FROM brain.notes WHERE id=${id}::uuid`;
+  assert.equal(kept[0].body_markdown,'Owner edited this.');
+  // Another owner using the same source key is a different note (owner-scoped uniqueness).
+  await sql`INSERT INTO brain.notes(owner_key,title,source_key) VALUES ('other-owner','x','alvira:378d3e82:goals:0')`;
+  const count=await sql`SELECT count(*)::int AS n FROM brain.notes WHERE owner_key='owner'`;
+  assert.equal(count[0].n,1,'a repeated import added no row');
+  // Bad keys are refused; manual notes without a source key still work.
+  for(const bad of [{...note,source_key:'has spaces'},{...note,source_key:'alvira:x',source_fingerprint:'not-hex'},{title:'Manual',body_markdown:'x',source_fingerprint:fp}]){
+    assert.equal((await call(req('POST','/api/workspace-brain',bad))).code,400);
+  }
+  assert.equal((await call(req('POST','/api/workspace-brain',{title:'Manual note',body_markdown:'x'}))).code,201);
+ } finally {await db.close();}
+});
