@@ -110,12 +110,13 @@ test('What matters now is scoped to Today while full activity lives in Build', a
 });
 
 
-test('Global Add routes every view to the durable Operator command ingress', async () => {
+test('Global Add routes every view to the durable Operator command ingress inside Build', async () => {
   const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
   const views = await readFile(viewsPath, 'utf8');
   assert.match(html, /id="workspace-global-add"/);
   assert.match(views, /#workspace-global-add/);
-  assert.match(views, /setView\("operator"\)/);
+  assert.match(views, /operator:"build"/);
+  assert.match(views, /setView\("build", \{anchor:"operator"\}\)/);
   assert.match(views, /#today-command-input/);
 });
 
