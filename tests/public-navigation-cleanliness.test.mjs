@@ -27,3 +27,22 @@ test('site navigation has a distinct Work overview and no duplicate Portfolio en
   assert.doesNotMatch(nav, /href="\/portfolio\/"/);
   assert.equal((nav.match(/<small>\d\d<\/small>/g) || []).length, 16);
 });
+
+test('Work is an evidenced cross-medium overview, not a duplicate portfolio index', () => {
+  const work = readFileSync(path.join(root, 'work/index.html'), 'utf8');
+  const style = readFileSync(path.join(root, 'work/work.css'), 'utf8');
+  assert.match(work, /Creative overview/);
+  assert.match(work, /id="selected"/);
+  assert.match(work, /href="\/modeling\/"/);
+  assert.match(work, /href="\/performance\/"/);
+  assert.match(work, /href="\/music\/"/);
+  assert.match(work, /src="\/audio\/in-me\.mp3"/);
+  assert.match(work, /Archive in formation/);
+  for (const route of ['alvira', 'ledgato', 'ailhat']) {
+    assert.match(work, new RegExp(`href="/journal/${route}/"`));
+  }
+  assert.match(work, /href="\/journal\/"/);
+  assert.match(style, /@media\(max-width:650px\)/);
+  assert.match(style, /prefers-reduced-motion/);
+  assert.doesNotMatch(work, /href="\/portfolio\/"/);
+});
