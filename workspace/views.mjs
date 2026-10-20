@@ -26,7 +26,8 @@ const VIEW_META = {
       {label:"Design", href:"/workspace/build/design/"},
       {label:"History", href:"/workspace/build/history/"},
       {label:"Build logs", href:"/workspace/build-logs/"},
-      {label:"Review checklist", href:"/workspace/v3-playtest/"}
+      {label:"Review checklist", href:"/workspace/v3-playtest/"},
+      {label:"Music import studio", href:"#audio-import-studio"}
     ]
   },
   career: {
@@ -114,6 +115,7 @@ const VIEW_FOR_HASH = {
   today:"today",
   build:"build",
   "ashwood-drop":"build",
+  "audio-import-studio":"build",
   career:"career",
   work:"career",
   network:"career",
