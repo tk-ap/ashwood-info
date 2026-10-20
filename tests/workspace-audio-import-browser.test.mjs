@@ -42,15 +42,17 @@ test('Chromium converts WAV to MP3, rejects disallowed pages and stages without 
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const port=server.address().port, dir=mkdtempSync(join(tmpdir(),'ashwood-chrome-'));
-  const chrome=spawn(chromeBinary,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--remote-debugging-port=0','--user-data-dir='+dir,'about:blank'],{stdio:'ignore'});
+  const chrome=spawn(chromeBinary,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--no-first-run','--disable-extensions','--remote-allow-origins=*','--remote-debugging-port=0','--user-data-dir='+dir,'about:blank'],{stdio:['ignore','ignore','pipe']});
+  let chromeError = '';
+  chrome.stderr.on('data', chunk => { chromeError = (chromeError + String(chunk)).slice(-4000); });
   let conn;
   try {
     let dbgPort=0;
-    for(let n=0;n<100;n++){
+    for(let n=0;n<150;n++){
       try {dbgPort=Number(readFileSync(join(dir,'DevToolsActivePort'),'utf8').split('\n')[0]);break;}
       catch {await new Promise(resolve=>setTimeout(resolve,80));}
     }
-    assert.ok(dbgPort>0,'Browser debugging port unavailable');
+    assert.ok(dbgPort>0,'Browser debugging port unavailable: exit=' + chrome.exitCode + ' stderr=' + chromeError);
     const pages=await fetch('http://127.0.0.1:'+dbgPort+'/json/list').then(r=>r.json());
     const page=pages.find(p=>p.type==='page');assert.ok(page);
     conn=cdp(page.webSocketDebuggerUrl);await conn.opened;
