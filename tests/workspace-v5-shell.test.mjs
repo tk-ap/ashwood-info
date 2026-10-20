@@ -24,3 +24,16 @@ test('Today offers source-aware reading without adding a write control for LEDGA
   assert.match(source, /slice\(0, 4\)/);
   assert.doesNotMatch(html, /Approve decision|Deny decision/);
 });
+
+test('the public sandbox has a source-controlled DEMO fixture layer before its API bootstrap', async () => {
+  const [builder, fixtures, bootstrap] = await Promise.all([
+    readFile(new URL('../scripts/build-here-now-staging.mjs', import.meta.url), 'utf8'),
+    readFile(new URL('../workspace/sandbox-demo-fixtures.js', import.meta.url), 'utf8'),
+    readFile(new URL('../workspace/sandbox-bootstrap.js', import.meta.url), 'utf8')
+  ]);
+  assert.match(builder, /sandbox-demo-fixtures\.js/);
+  assert.match(fixtures, /Every value is invented/);
+  assert.match(fixtures, /DEMO fixture/);
+  assert.match(bootstrap, /DEMO sandbox is read-only/);
+  assert.match(bootstrap, /External data is unavailable/);
+});

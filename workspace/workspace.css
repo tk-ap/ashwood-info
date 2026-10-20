@@ -348,6 +348,11 @@ body[data-workspace-current-view="work"] #network{margin-top:24px}
   .workspace-section-nav a:hover,.workspace-section-nav a:focus-visible,.workspace-section-nav a[aria-current="page"]{background:transparent;color:var(--ink)}
   .workspace-section-nav a[aria-current="page"]{box-shadow:inset 2px 0 0 var(--ink);padding-left:9px}
   .workspace-view-intro,.workspace-shell>section,.workspace-shell>details,.workspace-footer{grid-column:2}
+  /* The rail gets its own column. The hero must never inherit that narrow
+     measure or squeeze its display heading into a word-by-word stack. */
+  .workspace-view-intro{min-width:0;grid-template-columns:minmax(0,1fr)!important}
+  .workspace-view-intro__copy{min-width:0;max-width:none}
+  .workspace-view-tools{justify-content:flex-start;max-width:none}
 }
 
 /* Static here.now reviews never connect to the owner Workspace. */

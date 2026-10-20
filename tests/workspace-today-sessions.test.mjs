@@ -53,3 +53,10 @@ test('Today cockpit exposes recent movement without inventing motion', async () 
   assert.match(source, /DONE\.has\(statusOf\(row\)\)/);
   assert.match(source, /deploymentRows\(rows\)/);
 });
+
+test('an absent health score is displayed as unavailable rather than coerced to zero', async () => {
+  const source = await readFile(new URL('../workspace/today.mjs', import.meta.url), 'utf8');
+  assert.match(source, /function hasHealthScore/);
+  assert.match(source, /score !== null/);
+  assert.match(source, /Health assessment unavailable/);
+});
