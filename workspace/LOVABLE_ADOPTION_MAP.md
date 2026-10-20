@@ -24,7 +24,14 @@ The six main sections are already in place from ashwood-info #280 (`workspace/vi
 | **Studio** (nested under Work): music creative and review modes, performance archive | A Work tool, not a main nav item | Existing music pages | Review mode's 4-dimension readiness (≥80%) is a candidate. Creative mode stays non-judgmental. |
 | **Network**: directory, relationship context | `#network` | **ALVIRA Context** (via the Bridge), not a new contact store | Relationship context is read from ALVIRA. ASHWOOD does not keep a second copy of people data (Brain handoff rule). Search and filter are client-side. |
 | **Evidence**: effort vs progress, goal → bet → work → evidence → learning, Build Journal workflow | `#evidence`, Sources, Build logs | Sources registry, build logs, goals | New: the **goal-to-evidence trail**, and the Journal workflow staging to a **private** draft. Publishing stays with the Marlo routine's approval path. |
-| **Self**: Second Brain, Rhythm | `#self` | Brain API (ashwood-info #273, under review) | Notes drafted by ALVIRA show **"Pending owner verification"** until approved (#277 contract). Untracked rhythm metrics show "—". |
+| **Self**: Second Brain, Rhythm | `#self` | Brain API (ashwood-info #273 + #287) | Untracked rhythm metrics show "—". **Prerequisite before the Self slice:** the Brain API stores only title, body, source URL and source key/fingerprint. It has no approval, epistemic-status or provenance fields, so it cannot show "Pending owner verification" yet. That state needs a reviewed data contract first (see below). |
+
+## Prerequisite: Brain review-state contract (before the Self slice)
+
+The prototype shows ALVIRA-drafted notes as "Pending owner verification". The current Brain API (#273 + #287) cannot support that, and the Self slice must not imply it does. Before building it, add and review:
+- **Fields:** a per-note `review_state` (`pending` / `approved` / `rejected`), `epistemic_status` (`KNOWN` / `INFERRED` / `UNKNOWN`), and provenance (source system, actor, delegated or not, source fingerprint), as required by the #277 directive.
+- **Migration:** additive and `IF NOT EXISTS`, like #287. Existing notes default to owner-created and approved.
+- **Owner review model:** only the owner session changes `review_state`. Imports always land as `pending` unless the owner already approved them in the staging review. The API returns these fields so the UI can render them honestly.
 
 ## Components to port as small vanilla modules
 
