@@ -36,4 +36,5 @@ test('the public sandbox has a source-controlled DEMO fixture layer before its A
   assert.match(fixtures, /DEMO fixture/);
   assert.match(bootstrap, /DEMO sandbox is read-only/);
   assert.match(bootstrap, /External data is unavailable/);
+  assert.match(bootstrap, /api\.github\.com/);
 });
