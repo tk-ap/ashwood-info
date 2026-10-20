@@ -10,11 +10,16 @@ const chromeBinary = ['google-chrome','chromium','chromium-browser'].find(x => s
 
 const html = [
  '<!doctype html><html lang="en"><body>',
- '<section id="ashwood-drop"><div class="ashwood-drop__grid"></div>',
- '<form id="ashwood-drop-form"><input name="title"><input name="sourceUrl">',
- '<input name="publishToMusic" type="checkbox"></form></section>',
+ '<section id="ashwood-drop"><div class="ashwood-drop__grid">',
+ '<form id="ashwood-drop-form"><input id="ashwood-drop-files" type="file">',
+ '<div class="ashwood-drop-zone"></div><ul id="ashwood-drop-queue"></ul>',
+ '<input name="title"><input name="artist"><input name="producerCredit"><textarea name="rightsNote"></textarea>',
+ '<input name="sourceUrl"><input name="publishToMusic" type="checkbox">',
+ '<button type="submit">Upload</button><p id="ashwood-drop-status"></p></form>',
+ '<div id="ashwood-drop-library"></div></div></section>',
  '<script>window.__staged=[]; document.querySelector("#ashwood-drop").addEventListener("ashwood:prepared-audio",',
  'e=>window.__staged.push({name:e.detail.file.name,type:e.detail.file.type}));</script>',
+ '<script defer src="/workspace/drop.js"></script>',
  '<script defer src="/workspace/audio-import-studio.js"></script></body></html>'
 ].join('');
 
@@ -36,7 +41,7 @@ test('Chromium converts WAV to MP3, rejects disallowed pages and stages without 
   const root = new URL('../',import.meta.url);
   const server=createServer((req,res)=>{
     if(req.url==='/') {res.setHeader('content-type','text/html');res.end(html);return;}
-    const paths={'/workspace/audio-import-studio.js':'workspace/audio-import-studio.js','/workspace/vendor/lame.min.js':'workspace/vendor/lame.min.js'};
+    const paths={'/workspace/drop.js':'workspace/drop.js','/workspace/audio-import-studio.js':'workspace/audio-import-studio.js','/workspace/vendor/lame.min.js':'workspace/vendor/lame.min.js'};
     if(!paths[req.url]) {res.statusCode=404;res.end('Not found');return;}
     res.setHeader('content-type','application/javascript');res.end(readFileSync(new URL(paths[req.url],root)));
   });
@@ -91,12 +96,20 @@ test('Chromium converts WAV to MP3, rejects disallowed pages and stages without 
       'const data=new Uint8Array(await (await fetch(src)).arrayBuffer());',
       'const mp3=(data[0]===73&&data[1]===68&&data[2]===51)||(data[0]===255&&(data[1]&224)===224);',
       'document.querySelector("#audio-import-stage").click();',
-      'return {ready,msg,size:data.length,mp3,staged:window.__staged};',
+      'const form=document.querySelector("#ashwood-drop-form");',
+      'return {ready,msg,size:data.length,mp3,staged:window.__staged,',
+      'title:form.elements.title.value,publishing:form.elements.publishToMusic.checked,',
+      'queued:document.querySelector("#ashwood-drop-queue").textContent,',
+      'uploadStatus:document.querySelector("#ashwood-drop-status").textContent};',
       '})()'
     ].join('\n'));
     assert.equal(result.ready,true,JSON.stringify(result));
     assert.ok(result.size>100,JSON.stringify(result));assert.equal(result.mp3,true);
     assert.deepEqual(result.staged,[{name:'demo.mp3',type:'audio/mpeg'}]);
+    assert.equal(result.title,'demo');
+    assert.equal(result.publishing,false);
+    assert.match(result.queued,/demo\.mp3/);
+    assert.match(result.uploadStatus,/staged locally/);
     const reject=await evalJs([
       '(async()=>{',
       'document.querySelector("#audio-import-file").value="";',
