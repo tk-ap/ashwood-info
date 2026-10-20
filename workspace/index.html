@@ -8,17 +8,17 @@
   <title>Workspace — ASHWOOD</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
-  <link rel="stylesheet" href="/workspace/workspace.css?v=20260922-design153" />
+  <link rel="stylesheet" href="/workspace/workspace.css?v=20261020-shell-v6" />
   <link rel="stylesheet" href="/workspace/intelligence-hero.css?v=20260922-ownersignal1" />
   <link rel="stylesheet" href="/workspace/workstreams.css?v=20260908-workstreams2" />
   <link rel="stylesheet" href="/workspace/drop.css?v=20260909-delete1" />
   <link rel="stylesheet" href="/workspace/feed.css?v=20260922-activity1" />
-  <link rel="stylesheet" href="/workspace/today.css?v=20261006-cockpit1" />
+  <link rel="stylesheet" href="/workspace/today.css?v=20261020-editorial-v6" />
   <link rel="stylesheet" href="/workspace/ops-pulse.css?v=20260924-forward1" />
   <link rel="stylesheet" href="/workspace/operator-actions.css?v=20260921-operator1" />
   <link rel="stylesheet" href="/workspace/agentos-board.css?v=20260922-fitboard1" />
   <link rel="stylesheet" href="/workspace/sprint.css?v=20260921-sprint1" />
-  <link rel="stylesheet" href="/workspace/cohesion.css?v=20260921-deploytracker1" />
+  <link rel="stylesheet" href="/workspace/cohesion.css?v=20261020-six-view1" />
   <link rel="stylesheet" href="/workspace/sandbox-environments.css?v=20260922-env1" />
   <link rel="stylesheet" href="/workspace/operator-console.css?v=20260922-operator1" />
   <link rel="stylesheet" href="/workspace/career-ops/career-ops.css?v=20261001-triage1" />
@@ -32,15 +32,15 @@
   <link rel="stylesheet" href="/workspace/youtube-analyses.css?v=20261012-analyses1" />
   <script>try{if(!localStorage.getItem("ashwood.theme"))localStorage.setItem("ashwood.theme","warm-dark")}catch(_){}</script>
   <script src="/theme.js?v=20260909-cache1" defer></script>
-  <script type="module" src="/workspace/app.js?v=20261001-content-intelligence1"></script>
+  <script type="module" src="/workspace/app.js?v=20261020-demo-state1"></script>
   <script type="module" src="/workspace/feed.mjs?v=20260922-activity1"></script>
-  <script type="module" src="/workspace/today.mjs?v=20261006-cockpit1"></script>
+  <script type="module" src="/workspace/today.mjs?v=20261020-editorial-v6"></script>
   <script type="module" src="/workspace/ops-pulse.mjs?v=20260924-forward1"></script>
   <script type="module" src="/workspace/operator-actions.mjs?v=20260921-operator1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/operator-console.mjs?v=20260922-operator1"></script>
   <script type="module" src="/workspace/build-command-center.mjs?v=20260923-command-center1"></script>
-  <script type="module" src="/workspace/views.mjs?v=20260926-careerhealth1"></script>
+  <script type="module" src="/workspace/views.mjs?v=20261020-six-view1"></script>
   <script type="module" src="/workspace/sources.mjs?v=20260925-sources1"></script>
   <script type="module" src="/workspace/context.mjs?v=20261017-context1"></script>
   <script type="module" src="/workspace/youtube-analyses.mjs?v=20261012-analyses1"></script>
@@ -61,7 +61,7 @@
     <header class="workspace-masthead">
       <div>
         <a class="wordmark" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
-        <span class="workspace-label">Workspace</span>
+        <span class="workspace-label">WORKSPACE · PRIVATE</span>
       </div>
       <div class="workspace-actions">
         <button class="text-button workspace-global-add" id="workspace-global-add" type="button">Add</button>
@@ -81,14 +81,13 @@
       </div>
     </header>
 
-    <nav class="workspace-section-nav" aria-label="Workspace views">
-      <a href="#operator" data-workspace-nav="operator">Operator</a>
-      <a href="#today" data-workspace-nav="today">Today</a>
-      <a href="#build" data-workspace-nav="build">Build</a>
-      <a href="#career" data-workspace-nav="career">Career</a>
-      <a href="#content" data-workspace-nav="content">Content</a>
-      <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
-      <a href="#self" data-workspace-nav="self">Self</a>
+    <nav class="workspace-section-nav" aria-label="Workspace sections">
+      <a href="#today" data-workspace-nav="today"><span>01</span> Today</a>
+      <a href="#build" data-workspace-nav="build"><span>02</span> Build</a>
+      <a href="#work" data-workspace-nav="work"><span>03</span> Work</a>
+      <a href="#network" data-workspace-nav="network"><span>04</span> Network</a>
+      <a href="#evidence" data-workspace-nav="evidence"><span>05</span> Evidence</a>
+      <a href="#self" data-workspace-nav="self"><span>06</span> Self</a>
     </nav>
 
     
@@ -180,7 +179,66 @@
       </div>
     </section>
 
-    <section class="today-command-center" id="today" aria-labelledby="today-title">
+    <section class="today-command-center" id="today" aria-labelledby="today-editorial-title">
+      <div class="today-editorial">
+        <header class="today-brief">
+          <div>
+            <p class="section-kicker" id="today-date-line">Today · loading local date</p>
+            <p class="today-last-visit" id="today-last-visit">Last visit not recorded on this browser.</p>
+            <h2 id="today-editorial-title">What matters now.</h2>
+            <p class="today-brief__headline" id="today-editorial-headline">Grounding the most important next step…</p>
+            <p class="today-brief__reason" id="today-editorial-reason">Today only makes a recommendation from confirmed sources and stated priorities.</p>
+            <div class="today-brief__evidence" id="today-headline-evidence" aria-live="polite"></div>
+            <a class="today-session__source" id="today-editorial-link" hidden target="_blank" rel="noopener"></a>
+          </div>
+          <div class="today-brief__status">
+            <p id="today-editorial-status" aria-live="polite">Reading canonical workstreams…</p>
+            <button type="button" id="today-editorial-refresh">Refresh Today</button>
+          </div>
+        </header>
+
+        <section class="today-signal-bar" aria-label="Current source signals">
+          <article><small>Needs you</small><strong id="today-editorial-owner-count">…</strong><span id="today-editorial-owner-note">Checking owner gates</span></article>
+          <article><small>Working now</small><strong id="today-editorial-active-count">…</strong><span id="today-editorial-active-note">Checking AgentOS</span></article>
+          <article><small>AgentOS health</small><strong id="today-editorial-health">…</strong><span id="today-editorial-health-note">Loading evidence-weighted score</span></article>
+          <article><small>Deploys · 24h</small><strong id="today-editorial-deploys">…</strong><span id="today-editorial-deploys-note">Reading deployment ledger</span></article>
+        </section>
+
+        <section class="today-matters" aria-labelledby="today-matters-title">
+          <div class="today-section-head"><div><p class="section-kicker">Priorities</p><h3 id="today-matters-title">What matters.</h3></div><p>Three grounded cards, not a flat task list.</p></div>
+          <div class="today-matters__list" id="today-matters-list" aria-live="polite"><p class="today-empty">Reading ranked priorities…</p></div>
+        </section>
+
+        <div class="today-columns">
+          <section class="today-panel today-panel--owner" aria-labelledby="today-editorial-owner-title">
+            <div class="today-panel__topline"><div><p class="section-kicker">Owner attention</p><h3 id="today-editorial-owner-title">Needs you.</h3></div><span class="today-count" id="today-editorial-owner-total">0</span></div>
+            <div class="today-list" id="today-editorial-owner-list" aria-live="polite"><p class="today-empty">Reading owner actions…</p></div>
+          </section>
+          <section class="today-panel today-panel--agent" aria-labelledby="today-editorial-agent-title">
+            <div class="today-panel__topline"><div><p class="section-kicker">Current work</p><h3 id="today-editorial-agent-title">What agents are doing.</h3></div><span class="today-count" id="today-editorial-agent-total">0</span></div>
+            <div class="today-list" id="today-editorial-agent-list" aria-live="polite"><p class="today-empty">Checking autonomous work…</p></div>
+          </section>
+        </div>
+
+        <section class="today-decision-card" aria-labelledby="today-decision-title">
+          <div class="today-section-head"><div><p class="section-kicker">LEDGATo · read-only</p><h3 id="today-decision-title">Pending decisions.</h3></div><p>Approval and denial remain in their governed channels.</p></div>
+          <div id="today-decision-list" aria-live="polite"><p class="today-empty">No pending LEDGATo decision is visible from the current projection.</p></div>
+        </section>
+
+        <section class="today-movement" aria-labelledby="today-editorial-movement-title">
+          <div class="today-movement__head"><div><p class="section-kicker">Since your last visit</p><h3 id="today-editorial-movement-title">What changed.</h3></div><span id="today-editorial-movement-state">Restoring evidence…</span></div>
+          <div id="today-editorial-movement-list" class="today-movement__list" aria-live="polite"></div>
+        </section>
+
+        <section class="today-attention-budget" aria-labelledby="today-attention-title">
+          <p class="section-kicker">Attention budget</p><h3 id="today-attention-title">—</h3><p>Not tracked by any connected source yet, so it is not shown.</p>
+        </section>
+
+        <details class="today-session-detail" aria-labelledby="today-editorial-sessions-title">
+          <summary><span><small>AgentOS · observable execution</small><strong id="today-editorial-sessions-title">Current autonomous session detail</strong></span><span>Show detail</span></summary>
+          <div id="today-editorial-sessions" aria-live="polite"><p class="today-empty">Loading AgentOS execution…</p></div>
+        </details>
+      </div>
       <section class="today-cockpit" aria-label="Today cockpit">
         <div class="today-cockpit__intro">
           <div>
@@ -198,7 +256,7 @@
         <div class="today-cockpit__actions" aria-label="Quick actions">
           <a href="#operator">Command AgentOS</a>
           <a href="/workspace/agentos/">AgentOS health</a>
-          <a href="#career">Career</a>
+          <a href="#work">Work</a>
           <a href="/workspace/build/deployments/">Deployments</a>
         </div>
       </section>
@@ -886,13 +944,11 @@
     </footer>
   </main>
 
-  <nav class="workspace-mobile-nav" aria-label="Workspace views">
-    <a href="#operator" data-workspace-nav="operator">Operator</a>
+  <nav class="workspace-mobile-nav" aria-label="Workspace sections">
     <a href="#today" data-workspace-nav="today">Today</a>
     <a href="#build" data-workspace-nav="build">Build</a>
-    <a href="#career" data-workspace-nav="career">Career</a>
-    <a href="#funding" data-workspace-nav="funding">Funding</a>
-    <a href="#content" data-workspace-nav="content">Content</a>
+    <a href="#work" data-workspace-nav="work">Work</a>
+    <a href="#network" data-workspace-nav="network">Network</a>
     <a href="#evidence" data-workspace-nav="evidence">Evidence</a>
     <a href="#self" data-workspace-nav="self">Self</a>
     <button type="button" id="mobile-add-evidence" aria-label="Add evidence">Add</button>

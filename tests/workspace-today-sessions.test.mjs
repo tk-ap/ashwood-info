@@ -27,8 +27,8 @@ test('private AgentOS views reload immediately after Workspace unlock', async ()
 
 test('Workspace cache-busts the current autonomous-session and Build scripts', async () => {
   const html = await readFile(new URL('../workspace/index.html', import.meta.url), 'utf8');
-  assert.match(html, /today\.mjs\?v=20261006-cockpit1/);
-  assert.match(html, /app\.js\?v=20261001-content-intelligence1/);
+  assert.match(html, /today\.mjs\?v=20261020-editorial-v6/);
+  assert.match(html, /app\.js\?v=20261020-demo-state1/);
   assert.match(html, /build-command-center\.mjs\?v=20260923-command-center1/);
   assert.match(html, /agentos-board\.css\?v=20260922-fitboard1/);
   assert.doesNotMatch(html, /agentos-board\.mjs\?v=/, 'the legacy inline AgentOS board runtime moved to Build detail pages');
@@ -52,4 +52,11 @@ test('Today cockpit exposes recent movement without inventing motion', async () 
   assert.match(source, /No recent movement is confirmed by the current canonical projection/);
   assert.match(source, /DONE\.has\(statusOf\(row\)\)/);
   assert.match(source, /deploymentRows\(rows\)/);
+});
+
+test('an absent health score is displayed as unavailable rather than coerced to zero', async () => {
+  const source = await readFile(new URL('../workspace/today.mjs', import.meta.url), 'utf8');
+  assert.match(source, /function hasHealthScore/);
+  assert.match(source, /score !== null/);
+  assert.match(source, /Health assessment unavailable/);
 });
