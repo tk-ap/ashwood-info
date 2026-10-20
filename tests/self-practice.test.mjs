@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { DAILY_PRACTICES, dailyPracticeFor, natalReferenceFor } from '../workspace/self-practice.mjs';
 
 test('one local date has stable daily practice', () => {
@@ -21,4 +22,24 @@ test('natal lens requires matching preexisting chart source, never invents it', 
   assert.match(natalReferenceFor(chart, 'cancer').title, /Cancer Rising/);
   assert.equal(natalReferenceFor('', 'libra'), null);
   assert.equal(natalReferenceFor(chart, 'capricorn'), null);
+});
+
+test('Self daily practice is reachable through the fail-closed six-view Workspace shell', async () => {
+  const [html, views] = await Promise.all([
+    readFile(new URL('../workspace/index.html', import.meta.url), 'utf8'),
+    readFile(new URL('../workspace/views.mjs', import.meta.url), 'utf8')
+  ]);
+  assert.match(views, /self:\s*\[[\s\S]*?"#self-practice"/);
+  assert.match(html, /id="self-practice"/);
+  assert.match(html, /src="\/workspace\/self-practice\.mjs/);
+  assert.match(html, /href="\/workspace\/self-practice\.css/);
+  assert.match(html, /data-workspace-nav="self"/);
+});
+
+test('complete-site here.now demo artifact requires Self JS and CSS', async () => {
+  const builder = await readFile(new URL('../scripts/build-here-now-staging.mjs', import.meta.url), 'utf8');
+  assert.match(builder, /'workspace\/self-practice\.mjs'/);
+  assert.match(builder, /'workspace\/self-practice\.css'/);
+  assert.match(builder, /Incomplete Self staging integration/);
+  assert.match(builder, /DEMO_ONLY_NO_PRIVATE_API_OR_RECORDS/);
 });
