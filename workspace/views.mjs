@@ -1,4 +1,13 @@
 const VIEW_META = {
+  operator: {
+    title: "Operator.",
+    deck: "Direct the ecosystem, follow the work, and stay inside one human-facing control surface.",
+    eyebrow: "ASHWOOD operating layer",
+    tools: [
+      {label:"AgentOS Health", href:"/workspace/agentos/"},
+      {label:"Sandbox Studio direction", href:"https://github.com/tk-ap/ashwood-info/issues/159", external:true}
+    ]
+  },
   today: {
     title: "Today.",
     deck: "What matters. What is moving. What needs you.",
@@ -20,19 +29,13 @@ const VIEW_META = {
       {label:"Review checklist", href:"/workspace/v3-playtest/"}
     ]
   },
-  work: {
-    title: "Work.",
-    deck: "Career operations, opportunities, funding, and the work of creating runway.",
-    eyebrow: "Professional operating layer",
+  career: {
+    title: "Career.",
+    deck: "Applications, opportunities, professional relationships, and the work of creating runway.",
+    eyebrow: "Career operations",
     tools: [
       {label:"Funding", href:"#funding"}
     ]
-  },
-  network: {
-    title: "Network.",
-    deck: "Relationships, introductions, sponsors, collaborators, and the next useful follow-through.",
-    eyebrow: "Relationship operating layer",
-    tools: []
   },
   funding: {
     title: "Funding.",
@@ -40,7 +43,8 @@ const VIEW_META = {
     eyebrow: "Funding intelligence",
     tools: []
   },
-  runway: { title:"Income.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#work"},{label:"Funding",href:"#funding"}] },
+  runway: { title:"Income.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#career"},{label:"Funding",href:"#funding"}] },
+  content: { title:"Content.", deck:"Capture what is happening, develop what matters, and publish only when it serves you.", eyebrow:"Private content operating system", tools:[] },
   evidence: {
     title: "Evidence.",
     deck: "Signals, proof, decisions, contradictions, and the record behind what the system believes.",
@@ -60,24 +64,31 @@ const VIEW_META = {
 };
 
 const GROUPS = {
+  operator: [
+    "#operator"
+  ],
   today: [
     "#today",
     "#operator-actions-section",
     ".actual-priorities"
   ],
   build: [
-    "#operator",
     "#sprint-directive",
     "#build",
     "#ashwood-drop",
     "details.ecosystem",
     ".ecosystem-feed"
   ],
-  work: ["#work", "#funding", "#runway"],
-  network: ["#network"],
+  career: [
+    "#work",
+    "#network"
+  ],
+  funding: [
+    "#funding"
+  ],
+  runway: ["#runway"],
   content: ["#content"],
   evidence: [
-    "#content",
     "#owner-intelligence",
     "details.pulse",
     "details.workspace-connections",
@@ -99,17 +110,17 @@ const GROUPS = {
 };
 
 const VIEW_FOR_HASH = {
-  operator:"build",
+  operator:"operator",
   today:"today",
   build:"build",
   "ashwood-drop":"build",
-  career:"work",
-  work:"work",
-  network:"network",
+  career:"career",
+  work:"career",
+  network:"career",
   activity:"build",
-  funding:"work",
-  runway:"work",
-  content:"evidence",
+  funding:"funding",
+  runway:"runway",
+  content:"content",
   evidence:"evidence",
   sources:"evidence",
   "evidence-panel":"evidence",
@@ -189,7 +200,7 @@ function renderTools(view){
 function syncDataHero(view){
   const hero = q("#workspace-view-data-hero");
   if (!hero) return;
-  hero.hidden = view !== "work";
+  hero.hidden = view !== "career";
   hero.dataset.heroView = view;
 }
 
@@ -208,13 +219,12 @@ function renderIntro(view){
 function renderUtility(view){
   document.querySelectorAll(".workspace-view-utility").forEach(node => node.remove());
   const first = document.querySelector('[data-workspace-view="' + view + '"][data-workspace-active="true"]');
-  if (!first || view === "today" || view === "operator" || view === "work" || view === "network") return;
+  if (!first || view === "today" || view === "operator" || view === "career") return;
   const utility = document.createElement("div");
   utility.className = "workspace-view-utility";
   const copy = {
     build:"<strong>Build is the execution view.</strong> AgentOS state is mirrored here; authority remains in AgentOS and ledgato.",
-    work:"<strong>Work is the professional view.</strong> Applications, opportunities and funding stay together without mixing them into product execution.",
-    network:"<strong>Network is the relationship view.</strong> Follow-through stays visible without turning people into pipeline metrics.",
+    career:"<strong>Career is the professional view.</strong> Applications, opportunities and relationships stay together without mixing them into product execution.",
     funding:"<strong>Funding is the runway view.</strong> Browse verified assistance, grants, credits, and leverage without leaving the Workspace shell.",
     runway:"<strong>Income is the opportunity view.</strong> Keep immediate cash experiments visible beside jobs, funding, creative work and longer-term product revenue.",
     content:"<strong>Content is the capture loop.</strong> Keep moments private first, then develop, draft, publish, or archive deliberately.",
@@ -229,9 +239,9 @@ function renderUtility(view){
 }
 
 function enforceViewOwnership(view){
-  [["#work", "work"], ["#network", "network"]].forEach(([selector, owner]) => {
+  ["#work", "#network"].forEach(selector => {
     document.querySelectorAll(selector).forEach(node => {
-      const active = view === owner;
+      const active = view === "career";
       node.hidden = !active;
       node.setAttribute("aria-hidden", String(!active));
       if ("inert" in node) node.inert = !active;
@@ -278,7 +288,7 @@ function initialView(){
 }
 
 function openGlobalAdd(){
-  setView("build", {anchor:"operator"});
+  setView("operator");
   requestAnimationFrame(() => {
     const input = q("#today-command-input");
     input?.scrollIntoView({behavior:"smooth", block:"center"});

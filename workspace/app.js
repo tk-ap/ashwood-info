@@ -5,7 +5,6 @@ import { buildContentRecommendation } from './content-intelligence.mjs';
   'use strict';
 
   const USER = 'tk-ap';
-  const isDemoSandbox = () => Boolean(window.__ASHWOOD_DEMO_SANDBOX__);
   const DAY = 86400000;
   const PRODUCT_ROLES = {
     ALVIRA: { label: 'ALVIRA', type: 'Context Intelligence', goal: 'ownership' },
@@ -380,7 +379,7 @@ import { buildContentRecommendation } from './content-intelligence.mjs';
     $('#ecosystem-list').innerHTML=products.map(p=>`<article class="ecosystem-row"><div><a class="ecosystem-name" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.name)} ↗</a><div class="ecosystem-commit">${escapeHtml(p.description)}</div></div><div class="ecosystem-type">${escapeHtml(p.type)}</div><div><span class="status-pill">${escapeHtml(p.state)}</span><div class="ecosystem-age">${p.pushedAt?relativeDate(p.pushedAt):'source timestamp unavailable'}</div></div></article>`).join('')||'<p class="empty-state">No project details available from the current sources.</p>';
     renderEvidence(); renderAttention(); renderNext(); renderFromWork(); renderRealityCheck(evidence);
     $('#as-of').textContent=`Refreshed ${new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`;
-    $('#live-state').textContent=state.error?state.error:isDemoSandbox()?'DEMO only · no private or external services':`Private state + GitHub + ${state.ailhat?.ok?'ailhat':'ailhat unavailable'} · ${state.board.length} governed tasks`;
+    $('#live-state').textContent=state.error?state.error:`Private state + GitHub + ${state.ailhat?.ok?'ailhat':'ailhat unavailable'} · ${state.board.length} governed tasks`;
   }
 
   function renderEvidence(){const items=allEvidence().filter(x=>(state.filter==='all'||x.source===state.filter)&&(!state.selectedGoal||x.goal===state.selectedGoal||x.secondaryGoals?.includes(state.selectedGoal))).slice(0,60);$('#evidence-list').innerHTML=items.map(x=>`<article class="evidence-row"><div class="evidence-source">${escapeHtml(x.sourceLabel||x.source)}</div><div>${x.url?`<a class="evidence-title" href="${escapeHtml(x.url)}" target="_blank" rel="noopener">${escapeHtml(x.title)}</a>`:`<span class="evidence-title">${escapeHtml(x.title)}</span>`}<div class="evidence-meta">${escapeHtml(x.status)} · ${relativeDate(x.date)} · confidence ${Math.round((x.confidence||1)*100)}%</div></div><label class="evidence-goal">Goal<select data-override-id="${escapeHtml(x.id)}">${GOALS.map(g=>`<option value="${g.id}" ${g.id===x.goal?'selected':''}>${escapeHtml(g.name)}</option>`).join('')}</select></label></article>`).join('')||'<p class="section-note">No evidence in this filter.</p>'; $$('[data-override-id]').forEach(sel=>sel.addEventListener('change',()=>saveOverride(sel.dataset.overrideId,sel.value)));}

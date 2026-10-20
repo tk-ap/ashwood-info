@@ -1,11 +1,8 @@
 
-import { provenanceChip } from "./provenance-chip.mjs";
-
 const ACTIVE = new Set(["active","in_progress","running","executing","started","working"]);
 const NEEDS_OWNER = new Set(["waiting_approval","decision_required","review","needs_attention"]);
 const BLOCKED = new Set(["blocked","failed","error"]);
 const DONE = new Set(["completed","done","shipped"]);
-const HANDLED_STORAGE_KEY = "ashwood.workspace.today-handled.v1";
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, char => ({
   "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
@@ -55,37 +52,6 @@ function relative(value) {
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return hours + "h ago";
   return Math.floor(hours / 24) + "d ago";
-}
-
-function provenanceFor(row, state = "KNOWN") {
-  return provenanceChip({
-    source: row?.source_system || row?.product || "AgentOS",
-    state,
-    age: relative(row?.updated_at || row?.observed_at || row?.created_at) || "age unavailable"
-  });
-}
-
-function handledItems() {
-  try { return new Set(JSON.parse(localStorage.getItem(HANDLED_STORAGE_KEY) || "[]")); }
-  catch { return new Set(); }
-}
-
-function writeHandledItems(items) {
-  try { localStorage.setItem(HANDLED_STORAGE_KEY, JSON.stringify([...items].slice(-80))); }
-  catch { /* A private browser may reject local-only UI state. */ }
-}
-
-function ownerItemKey(row, index) {
-  return String(row?.id || row?.canonical_url || row?.title || `owner-item-${index}`);
-}
-
-function editorialState(row) {
-  const status = statusOf(row);
-  if (ACTIVE.has(status)) return "UNDERWAY · LEAVE ALONE";
-  if (NEEDS_OWNER.has(status)) return "NEEDS OWNER";
-  if (BLOCKED.has(status)) return "POTENTIALLY STALLED";
-  if (DONE.has(status)) return "COMPLETE";
-  return "WAITING";
 }
 
 function renderOwnerList(rows, priorities) {
@@ -248,170 +214,6 @@ function renderSummary(rows) {
 
 let snapshot = { rows:[], priorities:[], commands:[], health:null };
 
-function hasHealthScore(health) {
-  const score = health?.overall_score;
-  return score !== null && score !== undefined && String(score).trim() !== "" && Number.isFinite(Number(score));
-}
-
-function editorialNode(selector) {
-  return document.querySelector(selector);
-}
-
-function setEditorialText(selector, value) {
-  const node = editorialNode(selector);
-  if (node) node.textContent = value;
-}
-
-function renderEditorialDateLine() {
-  const today = new Intl.DateTimeFormat(undefined, { weekday:"long", month:"long", day:"numeric", year:"numeric" }).format(new Date());
-  let visitedAt = 0;
-  try { visitedAt = Number(localStorage.getItem("ashwood.workspace.today-last-visit") || 0); } catch { /* no browser storage */ }
-  const age = visitedAt ? relative(new Date(visitedAt).toISOString()) : "not recorded on this browser";
-  setEditorialText("#today-date-line", today);
-  setEditorialText("#today-last-visit", "Last visit " + age + ".");
-  try { localStorage.setItem("ashwood.workspace.today-last-visit", String(Date.now())); } catch { /* display-only local preference */ }
-}
-
-function renderEditorialHeadline(rows, priorities) {
-  const next = chooseNext(rows, priorities);
-  setEditorialText("#today-editorial-headline", next.title);
-  setEditorialText("#today-editorial-reason", next.reason);
-  const evidence = editorialNode("#today-headline-evidence");
-  if (evidence) evidence.innerHTML = provenanceFor(next.row || { source_system:"Priority model" }, next.row ? "KNOWN" : "INFERRED");
-  const link = editorialNode("#today-editorial-link");
-  if (!link) return;
-  if (next.row?.canonical_url) {
-    link.hidden = false;
-    link.href = next.row.canonical_url;
-    link.textContent = "Open source ↗";
-  } else {
-    link.hidden = true;
-    link.removeAttribute("href");
-  }
-}
-
-function renderEditorialSignals(rows, health) {
-  const agentRows = rows.filter(isAgent);
-  const active = agentRows.filter(row => ACTIVE.has(statusOf(row))).length;
-  const needs = agentRows.filter(row => NEEDS_OWNER.has(statusOf(row)) || BLOCKED.has(statusOf(row))).length;
-  const deployments = recentDeployments(rows, 24);
-  const observed = rows.map(row => Date.parse(row?.updated_at || row?.observed_at || "")).filter(Number.isFinite).sort((a,b) => b - a)[0];
-
-  setEditorialText("#today-editorial-owner-count", String(needs));
-  setEditorialText("#today-editorial-owner-note", needs ? "Decision, approval, or unblock" : "No confirmed owner gate");
-  setEditorialText("#today-editorial-active-count", String(active));
-  setEditorialText("#today-editorial-active-note", active ? "Confirmed autonomous work" : "No active AgentOS work confirmed");
-  setEditorialText("#today-editorial-deploys", String(deployments.length));
-  setEditorialText("#today-editorial-deploys-note", deployments.length ? "Provider-observed in the last 24h" : "No provider-observed deploys in the last 24h");
-  if (hasHealthScore(health)) {
-    setEditorialText("#today-editorial-health", String(health.overall_score));
-    setEditorialText("#today-editorial-health-note", "Evidence-weighted · " + (relative(health.assessed_at) || "age unavailable"));
-  } else {
-    setEditorialText("#today-editorial-health", "—");
-    setEditorialText("#today-editorial-health-note", "Health assessment unavailable");
-  }
-  setEditorialText("#today-editorial-status", observed ? "Canonical state updated " + relative(new Date(observed).toISOString()) + "." : "Canonical state freshness unavailable.");
-}
-
-function renderEditorialMatters(rows, priorities) {
-  const host = editorialNode("#today-matters-list");
-  if (!host) return;
-  const ranked = priorities.slice().sort((a,b) => Number(a.rank || 99) - Number(b.rank || 99)).slice(0, 3);
-  host.innerHTML = ranked.map(priority => {
-    const related = rows.filter(row => isAgent(row) && matchesPriority(row, priority));
-    const row = related.find(row => NEEDS_OWNER.has(statusOf(row)) || BLOCKED.has(statusOf(row))) || related.find(row => ACTIVE.has(statusOf(row))) || related[0];
-    const status = row && BLOCKED.has(statusOf(row)) ? "AT RISK" : row && ACTIVE.has(statusOf(row)) ? "PROGRESSING" : "WAITING";
-    const phase = row?.stage || row?.status || "No confirmed phase";
-    const next = row?.next_gate || priority.owner_next || priority.outcome || "No next action is published.";
-    const blocker = row && BLOCKED.has(statusOf(row)) ? (row.next_gate || row.summary || "The source reports a block but no detail.") : "No confirmed blocker.";
-    return '<article class="today-matter" data-matter-status="' + escapeHtml(status) + '">' +
-      '<div><p class="today-item__eyebrow"><b>' + escapeHtml(status) + '</b>' + provenanceFor(row || { source_system:"Priority model" }, row ? "KNOWN" : "INFERRED") + '</p>' +
-      '<h4>' + escapeHtml(priority.product || priority.title || "Priority") + '</h4></div>' +
-      '<dl><div><dt>Phase</dt><dd>' + escapeHtml(phase) + '</dd></div><div><dt>Next</dt><dd>' + escapeHtml(next) + '</dd></div><div><dt>Blocker</dt><dd>' + escapeHtml(blocker) + '</dd></div></dl></article>';
-  }).join("") || '<p class="today-empty">No ranked priority is available from the current source.</p>';
-}
-
-function renderEditorialOwner(rows, priorities) {
-  const host = editorialNode("#today-editorial-owner-list");
-  if (!host) return;
-  const decisions = rows.filter(row => isAgent(row) && (NEEDS_OWNER.has(statusOf(row)) || BLOCKED.has(statusOf(row))));
-  const suggested = priorities
-    .filter(priority => ["NOW", "SUPPORT"].includes(String(priority.tier || "").toUpperCase()))
-    .filter(priority => !rows.some(row => matchesPriority(row, priority) && ACTIVE.has(statusOf(row))))
-    .map(priority => ({priority}));
-  const commands = (snapshot.commands || []).filter(command => !["completed", "cancelled"].includes(normalize(command.status))).map(command => ({command}));
-  const items = [...decisions.map(row => ({row})), ...suggested, ...commands].slice(0, 4);
-  const handled = handledItems();
-  host.innerHTML = items.map((item, index) => {
-    const row = item.row;
-    const priority = item.priority || (row && priorityForRow(row, priorities));
-    const command = item.command;
-    const key = ownerItemKey(row || command || priority, index);
-    const title = row?.title || command?.command_text || priority?.product || "Owner attention";
-    const detail = row?.next_gate || row?.summary || command?.error || priority?.owner_next || priority?.outcome || "Review the source before acting.";
-    const source = row || { source_system: command ? "AgentOS command" : "Priority model", created_at: command?.created_at };
-    return '<article class="today-item today-owner-item" data-handled="' + String(handled.has(key)) + '">' +
-      '<p class="today-item__eyebrow"><b>Needs you</b>' + provenanceFor(source, row || command ? "KNOWN" : "INFERRED") + '</p>' +
-      '<h4>' + escapeHtml(title) + '</h4><p class="today-owner-item__due">Due · ' + escapeHtml(relative(row?.due_at || row?.expires_at || command?.created_at) || "not specified") + '</p>' +
-      '<details><summary>Explain</summary><p>' + escapeHtml(detail) + '</p></details>' +
-      '<label class="today-handled"><input type="checkbox" data-today-handled="' + escapeHtml(key) + '"' + (handled.has(key) ? " checked" : "") + '> <span>Note as handled</span></label>' +
-      (row?.canonical_url ? '<a href="' + escapeHtml(row.canonical_url) + '" target="_blank" rel="noopener">Open source ↗</a>' : "") +
-      '</article>';
-  }).join("") || '<p class="today-empty">Nothing currently requires you. That is a real state, not an empty dashboard.</p>';
-  host.querySelectorAll("[data-today-handled]").forEach(input => input.addEventListener("change", () => {
-    const next = handledItems();
-    if (input.checked) next.add(input.dataset.todayHandled); else next.delete(input.dataset.todayHandled);
-    writeHandledItems(next);
-    input.closest(".today-owner-item")?.setAttribute("data-handled", String(input.checked));
-  }));
-  setEditorialText("#today-editorial-owner-total", String(items.length));
-}
-
-function renderEditorialAgents(rows, priorities) {
-  const host = editorialNode("#today-editorial-agent-list");
-  if (!host) return;
-  const ordered = rows.filter(isAgent)
-    .filter(row => ACTIVE.has(statusOf(row)) || NEEDS_OWNER.has(statusOf(row)) || BLOCKED.has(statusOf(row)) || DONE.has(statusOf(row)))
-    .slice(0, 5);
-  host.innerHTML = ordered.map(row => {
-    const priority = priorityForRow(row, priorities);
-    return '<article class="today-item today-agent-item"><p class="today-item__eyebrow"><b>' + escapeHtml(editorialState(row)) + '</b>' + provenanceFor(row) + '</p>' +
-      '<h4>' + escapeHtml(row.title || "AgentOS workstream") + '</h4><p>' + escapeHtml(row.next_gate || row.summary || priority?.outcome || "Canonical workstream is synced.") + '</p></article>';
-  }).join("") || '<p class="today-empty">No autonomous work is confirmed by the synced workstream projection.</p>';
-  setEditorialText("#today-editorial-agent-total", String(ordered.filter(row => ACTIVE.has(statusOf(row))).length));
-}
-
-function renderEditorialDecisions(rows) {
-  const host = editorialNode("#today-decision-list");
-  if (!host) return;
-  const decisions = rows.filter(row => isAgent(row) && NEEDS_OWNER.has(statusOf(row))).slice(0, 2);
-  host.innerHTML = decisions.map(row => {
-    const governance = row.governance || {};
-    const willDo = row.next_gate || row.summary || "The canonical decision record did not publish an action summary.";
-    const willNot = governance.will_not_do || governance.denial_effect || "No exclusion was published with this projection.";
-    const scope = governance.scope || row.product || row.source_system || "Scope unavailable";
-    const expiry = governance.expires_at || row.expires_at || "No expiry published";
-    return '<article class="today-decision"><div><p class="today-item__eyebrow">' + provenanceFor({...row, source_system:"LEDGATo"}) + '</p><h4>' + escapeHtml(row.title || "Governed decision") + '</h4></div>' +
-      '<dl><div><dt>Will do</dt><dd>' + escapeHtml(willDo) + '</dd></div><div><dt>Will not do</dt><dd>' + escapeHtml(willNot) + '</dd></div><div><dt>Scope</dt><dd>' + escapeHtml(scope) + '</dd></div><div><dt>Expiry</dt><dd>' + escapeHtml(expiry) + '</dd></div></dl>' +
-      (row.canonical_url ? '<a href="' + escapeHtml(row.canonical_url) + '" target="_blank" rel="noopener">Explain in LEDGATo / Telegram card ↗</a>' : '<p class="today-decision__unavailable">The record link is unavailable in this projection.</p>') + '</article>';
-  }).join("") || '<p class="today-empty">No pending LEDGATo decision is visible from the current projection.</p>';
-}
-
-function renderEditorialMovement(rows) {
-  const host = editorialNode("#today-editorial-movement-list");
-  if (!host) return;
-  const items = movementRows(rows);
-  host.innerHTML = items.length ? items.map(item => '<article class="today-movement__item"><time>' + escapeHtml(relative(item.at)) + '</time><div><strong>' + escapeHtml(item.title) + '</strong><p>' + escapeHtml(item.detail) + '</p>' + provenanceChip({source:item.kind, state:"KNOWN", age:relative(item.at) || "age unavailable"}) + '</div></article>').join("") : '<p class="today-empty">No recent movement is confirmed by the current canonical projection.</p>';
-  setEditorialText("#today-editorial-movement-state", items.length ? items.length + " latest confirmed events" : "No confirmed movement");
-}
-
-function renderEditorialSessions(rows, priorities) {
-  const host = editorialNode("#today-editorial-sessions");
-  if (!host) return;
-  const sessions = rows.filter(row => isAgent(row) && (ACTIVE.has(statusOf(row)) || NEEDS_OWNER.has(statusOf(row)) || BLOCKED.has(statusOf(row)))).slice(0, 6);
-  host.innerHTML = sessions.map(row => '<article class="today-session"><div class="today-session__title"><span class="today-session__status">' + escapeHtml(editorialState(row)) + '</span><h4>' + escapeHtml(row.title || "AgentOS workstream") + '</h4></div><div><dl><div><dt>Why now</dt><dd>' + escapeHtml(priorityForRow(row, priorities)?.outcome || row.summary || "Synced canonical work.") + '</dd></div><div><dt>Next / blocker</dt><dd>' + escapeHtml(row.next_gate || "No explicit gate published.") + '</dd></div></dl>' + provenanceFor(row) + '</div></article>').join("") || '<p class="today-empty">No active AgentOS session is currently confirmed.</p>';
-}
-
 function setText(selector, value) {
   const node = document.querySelector(selector);
   if (node) node.textContent = value;
@@ -444,7 +246,7 @@ function renderCockpit(rows, health) {
   setText("#today-cockpit-deploys", String(deployments.length));
   setText("#today-cockpit-deploys-note", deployments.length ? "Provider-observed events in the last 24h" : "No provider-observed deployments in the last 24h");
 
-  if (hasHealthScore(health)) {
+  if (health && Number.isFinite(Number(health.overall_score))) {
     const age = relative(health.assessed_at);
     setText("#today-cockpit-health", String(health.overall_score));
     setText("#today-cockpit-health-note", "Theranos / evidence-weighted · " + (age || "assessment age unavailable"));
@@ -513,16 +315,6 @@ async function loadToday() {
     health: healthResult.status === "fulfilled" ? healthResult.value : null
   };
 
-  renderEditorialDateLine();
-  renderEditorialHeadline(snapshot.rows, snapshot.priorities);
-  renderEditorialSignals(snapshot.rows, snapshot.health);
-  renderEditorialMatters(snapshot.rows, snapshot.priorities);
-  renderEditorialOwner(snapshot.rows, snapshot.priorities);
-  renderEditorialAgents(snapshot.rows, snapshot.priorities);
-  renderEditorialDecisions(snapshot.rows);
-  renderEditorialMovement(snapshot.rows);
-  renderEditorialSessions(snapshot.rows, snapshot.priorities);
-
   renderCockpit(snapshot.rows, snapshot.health);
   renderMovement(snapshot.rows);
 
@@ -551,11 +343,6 @@ async function loadToday() {
 
     const count = document.querySelector("#today-agent-count");
     if (count) count.textContent = "0";
-    setEditorialText("#today-editorial-status", message);
-    const editorialAgent = editorialNode("#today-editorial-agent-list");
-    if (editorialAgent) editorialAgent.innerHTML = '<p class="today-empty">' + escapeHtml(message) + '</p>';
-    const editorialSessions = editorialNode("#today-editorial-sessions");
-    if (editorialSessions) editorialSessions.innerHTML = '<p class="today-empty">' + escapeHtml(message) + '</p>';
   }
 
   if (commandsResult.status === "rejected" && commandsResult.reason?.status !== 401) {
@@ -569,8 +356,6 @@ async function loadToday() {
     refresh.disabled = false;
     refresh.textContent = "Refresh next objective";
   }
-  const editorialRefresh = editorialNode("#today-editorial-refresh");
-  if (editorialRefresh) editorialRefresh.disabled = false;
 
   return boardResult.status === "fulfilled";
 }
@@ -612,8 +397,6 @@ function start() {
   mountCommand();
   const refresh = document.querySelector("#today-refresh");
   if (refresh) refresh.addEventListener("click", loadToday);
-  const editorialRefresh = document.querySelector("#today-editorial-refresh");
-  if (editorialRefresh) editorialRefresh.addEventListener("click", loadToday);
   loadToday().then(ok => {
     if (ok) return;
     let attempts = 0;
