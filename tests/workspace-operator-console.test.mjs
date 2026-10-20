@@ -9,11 +9,12 @@ const today = await readFile(new URL("../workspace/today.mjs", import.meta.url),
 const operatorCss = await readFile(new URL("../workspace/operator-console.css", import.meta.url), "utf8");
 
 test("Operator is a first-class Workspace view and primary command surface", () => {
-  assert.match(html, /data-workspace-nav="build"/);
+  assert.match(html, /data-workspace-nav="operator"/);
   assert.match(html, /id="operator"/);
   assert.match(html, /id="today-command-form"/);
   assert.match(html, /id="operator-thread"/);
-  assert.match(views, /build:\s*\[[\s\S]*"#operator"/);
+  assert.match(views, /operator:\s*\{/);
+  assert.match(views, /"#operator"/);
 });
 
 test("Operator thread uses canonical Workspace command and AgentOS board projections", () => {

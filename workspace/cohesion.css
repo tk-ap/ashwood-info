@@ -156,11 +156,6 @@
 .workspace-page[data-workspace-current-view="self"] #self-operating-model,
 .workspace-page[data-workspace-current-view="build"] #agentos-board-section,
 .workspace-page[data-workspace-current-view="evidence"] #owner-intelligence{margin-top:24px!important}
-/* Six sections are the navigation ceiling. Content is evidence work and the
-   operator console is build work; neither disappears just because it does
-   not get a seventh or eighth rail item. */
-.workspace-page[data-workspace-current-view="build"] #operator,
-.workspace-page[data-workspace-current-view="evidence"] #content{margin-top:24px!important}
 .workspace-page[data-workspace-current-view="work"] .workspace-view-utility,
 .workspace-page[data-workspace-current-view="network"] .workspace-view-utility,
 .workspace-page[data-workspace-current-view="self"] .workspace-view-utility{margin-top:16px}

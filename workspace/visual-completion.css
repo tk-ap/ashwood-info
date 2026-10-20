@@ -21,7 +21,7 @@
 .workspace-page[data-workspace-current-view="operator"]{--vc-accent:var(--vc-violet)}
 .workspace-page[data-workspace-current-view="today"]{--vc-accent:var(--vc-mint)}
 .workspace-page[data-workspace-current-view="build"]{--vc-accent:var(--vc-blue)}
-.workspace-page[data-workspace-current-view="work"]{--vc-accent:var(--vc-coral)}
+.workspace-page[data-workspace-current-view="career"]{--vc-accent:var(--vc-coral)}
 .workspace-page[data-workspace-current-view="evidence"]{--vc-accent:var(--vc-violet)}
 .workspace-page[data-workspace-current-view="self"]{--vc-accent:#8ed6ff}
 
@@ -198,13 +198,13 @@ html[data-ashwood-theme="paper-light"] .workspace-page{
 .workspace-page .build-command-links a:hover{background:var(--vc-accent-soft);color:var(--vc-accent)}
 
 /* Career */
-.workspace-page[data-workspace-current-view="work"] .career-workspace-head{
+.workspace-page[data-workspace-current-view="career"] .career-workspace-head{
   border-color:var(--vc-line);padding-top:0;
 }
-.workspace-page[data-workspace-current-view="work"] .career-summary article{
+.workspace-page[data-workspace-current-view="career"] .career-summary article{
   position:relative;overflow:hidden;background:var(--vc-panel);
 }
-.workspace-page[data-workspace-current-view="work"] .career-summary article::after{
+.workspace-page[data-workspace-current-view="career"] .career-summary article::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--vc-coral);opacity:.7;
 }
 .workspace-page .career-status.interview,.workspace-page .career-status.offer,.workspace-page .career-status.recruiter{
