@@ -70,17 +70,17 @@ export const DAILY_PRACTICES = Object.freeze([
 // Sign-agnostic interpretive prompts. Placements come only from existing authorized profile text.
 export const NATAL_LENSES = Object.freeze({
   sun: {
-    pattern: /\\b([A-Za-z]+)\\s+Sun\\b/i,
+    pattern: /\b([A-Za-z]+)\s+Sun\b/i,
     suffix: 'Sun · identity and values',
     question: 'Where does your sense of identity support an intentional choice today?'
   },
   moon: {
-    pattern: /\\b([A-Za-z]+)\\s+Moon\\b/i,
+    pattern: /\b([A-Za-z]+)\s+Moon\b/i,
     suffix: 'Moon · emotional needs',
     question: 'Which feeling needs to be heard, and what observable facts can inform the decision?'
   },
   rising: {
-    pattern: /\\b([A-Za-z]+)\\s+Rising\\b/i,
+    pattern: /\b([A-Za-z]+)\s+Rising\b/i,
     suffix: 'Rising · environment and approach',
     question: 'What surroundings help you choose sustainably rather than react to pressure?'
   }
