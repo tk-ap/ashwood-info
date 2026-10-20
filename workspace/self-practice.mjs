@@ -9,7 +9,7 @@ export const DAILY_PRACTICES = Object.freeze([
     reflection: 'Where am I asking an outcome to establish my worth?',
     action: 'Name one concrete, dignified move toward income or stability.',
     evening: 'What did I do today that reflected self-respect, regardless of its result?',
-    natal: 'libra'
+    natal: 'sun'
   },
   {
     theme: 'Expectation with preparation',
@@ -18,7 +18,7 @@ export const DAILY_PRACTICES = Object.freeze([
     reflection: 'Which possibility deserves practical preparation rather than anxious rehearsal?',
     action: 'Take the smallest step that makes that possibility more attainable.',
     evening: 'What did reality confirm, challenge, or leave unanswered?',
-    natal: 'cancer'
+    natal: 'rising'
   },
   {
     theme: 'Language as direction',
@@ -27,7 +27,7 @@ export const DAILY_PRACTICES = Object.freeze([
     reflection: 'Which repeated story narrows my choices?',
     action: 'Rewrite that story as a possibility plus a next action.',
     evening: 'Did the new language lead to a different choice?',
-    natal: 'scorpio'
+    natal: 'moon'
   },
   {
     theme: 'Receiving and reciprocity',
@@ -36,7 +36,7 @@ export const DAILY_PRACTICES = Object.freeze([
     reflection: 'Where am I confusing independence with carrying everything alone?',
     action: 'Make one clear request or clarify one boundary.',
     evening: 'Where did mutual effort become visible?',
-    natal: 'libra'
+    natal: 'sun'
   },
   {
     theme: 'Gratitude without denial',
@@ -45,7 +45,7 @@ export const DAILY_PRACTICES = Object.freeze([
     reflection: 'What is genuinely sustaining me, and what still needs to change?',
     action: 'Acknowledge one real resource and address one real unmet need.',
     evening: 'What support, progress, or evidence was real today?',
-    natal: 'cancer'
+    natal: 'rising'
   },
   {
     theme: 'Trust through evidence',
@@ -54,7 +54,7 @@ export const DAILY_PRACTICES = Object.freeze([
     reflection: 'What can I test instead of trying to predict?',
     action: 'Run one bounded experiment with an observable success signal.',
     evening: 'What did I learn that changes my next move?',
-    natal: 'scorpio'
+    natal: 'moon'
   },
   {
     theme: 'Sustainable abundance',
@@ -63,25 +63,26 @@ export const DAILY_PRACTICES = Object.freeze([
     reflection: 'Would the outcome I am pursuing actually support the life I want?',
     action: 'Protect one essential need while making one durable commitment.',
     evening: 'Did today honor both progress and capacity?',
-    natal: 'libra'
+    natal: 'sun'
   }
 ]);
 
+// Sign-agnostic interpretive prompts. Placements come only from existing authorized profile text.
 export const NATAL_LENSES = Object.freeze({
-  libra: {
-    pattern: /Libra\s+Sun/i,
-    title: 'Libra Sun · fairness and recognition',
-    question: 'Where does harmony help, and where is a clean boundary more honest?'
+  sun: {
+    pattern: /\\b([A-Za-z]+)\\s+Sun\\b/i,
+    suffix: 'Sun · identity and values',
+    question: 'Where does your sense of identity support an intentional choice today?'
   },
-  scorpio: {
-    pattern: /Scorpio\s+Moon/i,
-    title: 'Scorpio Moon · depth and discernment',
-    question: 'What feels significant, and what evidence would help me understand it?'
+  moon: {
+    pattern: /\\b([A-Za-z]+)\\s+Moon\\b/i,
+    suffix: 'Moon · emotional needs',
+    question: 'Which feeling needs to be heard, and what observable facts can inform the decision?'
   },
-  cancer: {
-    pattern: /Cancer\s+Rising/i,
-    title: 'Cancer Rising · safety and sustainable belonging',
-    question: 'What conditions help me feel secure enough to act with clarity?'
+  rising: {
+    pattern: /\\b([A-Za-z]+)\\s+Rising\\b/i,
+    suffix: 'Rising · environment and approach',
+    question: 'What surroundings help you choose sustainably rather than react to pressure?'
   }
 });
 
@@ -92,8 +93,10 @@ export function dailyPracticeFor(date = new Date()) {
 
 export function natalReferenceFor(profileText, key) {
   const lens = NATAL_LENSES[key];
-  if (!lens || !lens.pattern.test(String(profileText || ''))) return null;
-  return { title: lens.title, question: lens.question };
+  if (!lens) return null;
+  const match = String(profileText || '').match(lens.pattern);
+  if (!match) return null;
+  return { title: `${match[1]} ${lens.suffix}`, question: lens.question };
 }
 
 export function mountSelfDailyPractice(root = document) {
