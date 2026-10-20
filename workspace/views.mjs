@@ -26,8 +26,7 @@ const VIEW_META = {
       {label:"Design", href:"/workspace/build/design/"},
       {label:"History", href:"/workspace/build/history/"},
       {label:"Build logs", href:"/workspace/build-logs/"},
-      {label:"Review checklist", href:"/workspace/v3-playtest/"},
-      {label:"Music import studio", href:"#audio-import-studio"}
+      {label:"Review checklist", href:"/workspace/v3-playtest/"}
     ]
   },
   career: {
@@ -45,6 +44,15 @@ const VIEW_META = {
     tools: []
   },
   runway: { title:"Income.", deck:"Every credible path from what you already have to cash, ranked by speed, cost, and effort.", eyebrow:"Income intelligence", tools:[{label:"Career",href:"#career"},{label:"Funding",href:"#funding"}] },
+  music: {
+    title:"Music.",
+    deck:"Import recordings, manage your private catalog records, preserve credits, and choose what moves toward release.",
+    eyebrow:"Recording practice",
+    tools: [
+      {label:"Audio import studio", href:"#audio-import-studio"},
+      {label:"Music library", href:"#ashwood-drop"}
+    ]
+  },
   content: { title:"Content.", deck:"Capture what is happening, develop what matters, and publish only when it serves you.", eyebrow:"Private content operating system", tools:[] },
   evidence: {
     title: "Evidence.",
@@ -76,7 +84,6 @@ const GROUPS = {
   build: [
     "#sprint-directive",
     "#build",
-    "#ashwood-drop",
     "details.ecosystem",
     ".ecosystem-feed"
   ],
@@ -88,6 +95,7 @@ const GROUPS = {
     "#funding"
   ],
   runway: ["#runway"],
+  music: ["#ashwood-drop"],
   content: ["#content"],
   evidence: [
     "#owner-intelligence",
@@ -114,8 +122,8 @@ const VIEW_FOR_HASH = {
   operator:"operator",
   today:"today",
   build:"build",
-  "ashwood-drop":"build",
-  "audio-import-studio":"build",
+  "ashwood-drop":"music",
+  "audio-import-studio":"music",
   career:"career",
   work:"career",
   network:"career",
