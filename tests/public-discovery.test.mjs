@@ -4,16 +4,17 @@ import { readFile } from 'node:fs/promises';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('the public ASHWOOD menu indexes every public landing page and provides a visit guide', async () => {
-  const [nav, guide, theme] = await Promise.all([
+test('the public ASHWOOD menu indexes every public landing page and provides visitor orientation', async () => {
+  const [nav, guide, work, theme] = await Promise.all([
     read('v3-nav.js'),
     read('guide/index.html'),
+    read('work/index.html'),
     read('theme.js')
   ]);
-  for (const href of ['/', '/guide/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/about/', '/connect/', '/sponsor/']) {
+  for (const href of ['/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/about/', '/connect/', '/sponsor/']) {
     assert.match(nav, new RegExp('href="' + href.replaceAll('/', '\\/') + '"'));
   }
-  assert.match(nav, /VISIT GUIDE/);
+  assert.match(nav, /FIND YOUR WAY IN/);
   assert.match(nav, /Explore pages/);
   assert.match(nav, /mouseenter/);
   assert.match(nav, /type="search"/);
@@ -21,14 +22,19 @@ test('the public ASHWOOD menu indexes every public landing page and provides a v
   assert.match(nav, /background:var\(--ashwood-paper\)/);
   assert.match(nav, /Creative practice/);
   assert.match(nav, /Professional evidence/);
+  assert.doesNotMatch(nav, /href="\/guide\//);
   assert.doesNotMatch(nav, /Journal lab/);
   assert.doesNotMatch(nav, /href="\/workspace\//);
   assert.match(theme, /installPublicNavigation/);
   assert.match(theme, /id: "tokyo-night"/);
   assert.match(theme, /--ashwood-paper:#1a1b26/);
   assert.match(theme, /--ashwood-accent-2:#7aa2f7/);
-  assert.match(theme, /v3-nav\.js\?v=20261021-ia2/);
-  assert.match(guide, /Private owner tools are intentionally not listed/);
+  assert.match(theme, /v3-nav\.js\?v=20261021-guidework1/);
+  assert.match(guide, /canonical" href="https:\/\/ashwood-info\.vercel\.app\/work\//);
+  assert.match(guide, /location\.replace\('\/work\/' \+ location\.search \+ location\.hash\)/);
+  assert.match(work, /id="choose"/);
+  assert.match(work, /Private owner tools are intentionally not listed/);
+  assert.match(work, /Professional evidence/);
 });
 
 test('Career receives the staged operating-thesis hero and its interactive modes', async () => {
@@ -51,8 +57,8 @@ test('Career receives the staged operating-thesis hero and its interactive modes
 });
 
 test('standalone public landing pages load the shared discovery navigation', async () => {
-  for (const page of ['guide/index.html', 'sponsor/index.html']) {
-    assert.match(await read(page), /\/theme\.js\?v=20261021-tokyo1/);
+  for (const page of ['sponsor/index.html', 'work/index.html']) {
+    assert.match(await read(page), /\/theme\.js\?v=20261021-guidework1/);
   }
 });
 

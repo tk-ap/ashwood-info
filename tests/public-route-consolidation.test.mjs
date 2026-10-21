@@ -8,7 +8,8 @@ test('legacy public routes preserve a visitor’s query and hash while redirecti
   const routes = [
     ['portfolio/index.html', 'modeling'],
     ['dive-deeper/index.html', 'guide'],
-    ['partners/index.html', 'sponsor']
+    ['partners/index.html', 'sponsor'],
+    ['guide/index.html', 'work']
   ];
 
   for (const [file, destination] of routes) {
@@ -38,13 +39,13 @@ test('public navigation and guides point at canonical pages, not duplicate landi
     assert.doesNotMatch(text, /href="\/(?:portfolio|dive-deeper|partners|journal-lab)\/?(?:["#?])/);
   }
 
-  for (const href of ['/', '/guide/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/about/', '/connect/', '/sponsor/']) {
+  for (const href of ['/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/about/', '/connect/', '/sponsor/']) {
     assert.match(nav, new RegExp(`href="${href.replaceAll('/', '\\/')}"`));
   }
   assert.doesNotMatch(nav, /href="\/(?:portfolio|dive-deeper|partners|journal-lab)\//);
-  assert.match(sitemap, /https:\/\/ashwood-info\.vercel\.app\/guide\//);
-  assert.doesNotMatch(sitemap, /https:\/\/ashwood-info\.vercel\.app\/(?:dive-deeper|journal-lab)/);
+  assert.doesNotMatch(sitemap, /https:\/\/ashwood-info\.vercel\.app\/(?:guide|dive-deeper|journal-lab)/);
   assert.match(journalLab, /location\.replace\('\/journal\/' \+ location\.search \+ location\.hash\)/);
-  assert.match(nav, /Full visitor guide/);
-  assert.doesNotMatch(nav.match(/<summary>Start here<\/summary>[\s\S]*?<\/details>/)?.[0] ?? '', /Visit guide/);
+  assert.match(nav, /See the full orientation/);
+  assert.doesNotMatch(nav, /href="\/guide\//);
+  assert.doesNotMatch(nav.match(/<summary>Start here<\/summary>[\s\S]*?<\/details>/)?.[0] ?? '', /Guide/);
 });
