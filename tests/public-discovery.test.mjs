@@ -62,6 +62,7 @@ test('Career receives the staged operating-thesis hero and its interactive modes
     read('career/career.js')
   ]);
   assert.match(html, /Interactive résumé \/ operating thesis/);
+  assert.match(html, /career\.css\?v=20261021-compact-career1/);
   assert.match(html, /I turn messy operating problems into systems people/);
   assert.match(html, /data-ir-key="throughput"/);
   assert.match(html, /data-ir-key="product"/);
@@ -72,6 +73,11 @@ test('Career receives the staged operating-thesis hero and its interactive modes
   assert.match(css, /prefers-reduced-motion/);
   assert.match(runtime, /modeContent/);
   assert.match(runtime, /aria-pressed/);
+  assert.doesNotMatch(html, /career-proof-strip/);
+  assert.match(html, /<details class="ir-flow">/);
+  assert.ok(html.indexOf('</details>') < html.indexOf('id="ir-pitch-title"'));
+  assert.match(css, /min-height:clamp\(560px,74svh,760px\)/);
+  assert.match(css, /border-radius:999px/);
 });
 
 test('standalone public landing pages load the shared discovery navigation', async () => {
