@@ -50,4 +50,38 @@
       return outcome;
     }));
   }));
+
+  const steps = [...document.querySelectorAll('[data-ir-step]')];
+  const stepLabel = document.getElementById('ir-step-label');
+  const stepDetail = document.getElementById('ir-step-detail');
+  const stepContent = {
+    context: {
+      label: 'Capture context',
+      detail: 'Establish what is known, missing, constrained, and already decided before anyone acts on an assumption.'
+    },
+    requirements: {
+      label: 'Define requirements',
+      detail: 'Make inputs, outputs, owners, success conditions, edge cases, and approval points explicit before the work is treated as ready.'
+    },
+    workflow: {
+      label: 'Build workflow',
+      detail: 'Turn the work into practical handoffs, checklists, and repeatable execution instead of leaving it dependent on memory or heroic coordination.'
+    },
+    controls: {
+      label: 'Add controls',
+      detail: 'Put consequential decisions, exceptions, escalation paths, and authority boundaries where they can be reviewed rather than silently assumed.'
+    },
+    evidence: {
+      label: 'Track evidence',
+      detail: 'Keep decisions, outputs, ownership, and next actions visible enough to improve the system from what actually happened.'
+    }
+  };
+
+  steps.forEach((step) => step.addEventListener('click', () => {
+    const next = stepContent[step.dataset.irStep];
+    if (!next || !stepLabel || !stepDetail) return;
+    steps.forEach((button) => button.setAttribute('aria-pressed', String(button === step)));
+    stepLabel.textContent = next.label;
+    stepDetail.textContent = next.detail;
+  }));
 })();

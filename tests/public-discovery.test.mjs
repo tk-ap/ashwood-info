@@ -63,6 +63,7 @@ test('Career receives the staged operating-thesis hero and its interactive modes
   ]);
   assert.match(html, /Interactive résumé \/ operating thesis/);
   assert.match(html, /career\.css\?v=20261021-compact-career1/);
+  assert.match(html, /career\.js\?v=20261021-live-layer1/);
   assert.match(html, /I turn messy operating problems into systems people/);
   assert.match(html, /data-ir-key="throughput"/);
   assert.match(html, /data-ir-key="product"/);
@@ -74,8 +75,10 @@ test('Career receives the staged operating-thesis hero and its interactive modes
   assert.match(runtime, /modeContent/);
   assert.match(runtime, /aria-pressed/);
   assert.doesNotMatch(html, /career-proof-strip/);
-  assert.match(html, /<details class="ir-flow">/);
-  assert.ok(html.indexOf('</details>') < html.indexOf('id="ir-pitch-title"'));
+  assert.match(html, /<section class="ir-flow" aria-label="TK operating layer">/);
+  assert.match(html, /data-ir-step="context"/);
+  assert.match(runtime, /stepContent/);
+  assert.match(runtime, /data-ir-step/);
   assert.match(css, /min-height:clamp\(560px,74svh,760px\)/);
   assert.match(css, /border-radius:999px/);
 });

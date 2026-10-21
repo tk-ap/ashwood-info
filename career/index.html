@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
   <link rel="stylesheet" href="/career/career.css?v=20261021-compact-career1" />
   <script src="/theme.js?v=20261021-globaltype1" defer></script>
-  <script src="/career/career.js?v=20261019-interactive-resume1" defer></script>
+  <script src="/career/career.js?v=20261021-live-layer1" defer></script>
 </head>
 <body class="career-page">
   <header class="career-mast" aria-label="ASHWOOD career navigation">
@@ -52,16 +52,17 @@
           <button class="ir-mode" type="button" data-ir-key="signal" aria-pressed="false"><small>03 / Decision</small><strong>Information → decision</strong></button>
         </div>
 
-        <details class="ir-flow">
-          <summary><span>The operating layer</span><b>See how I work</b></summary>
-          <div class="ir-steps">
-            <div class="ir-step"><b>Capture context</b>Known, missing, constrained, decided.</div>
-            <div class="ir-step"><b>Define requirements</b>Inputs, outputs, owners, success conditions.</div>
-            <div class="ir-step"><b>Build workflow</b>SOPs, handoffs, repeatable execution.</div>
-            <div class="ir-step"><b>Add controls</b>Approvals, exceptions, authority boundaries.</div>
-            <div class="ir-step"><b>Track evidence</b>Decisions, outputs, ownership, next actions.</div>
+        <section class="ir-flow" aria-label="TK operating layer">
+          <div class="ir-flow__head"><span>The operating layer</span><b id="ir-step-label">Capture context</b></div>
+          <div class="ir-steps" role="group" aria-label="Explore the operating layer">
+            <button class="ir-step" type="button" data-ir-step="context" aria-pressed="true"><small>01</small><b>Capture context</b></button>
+            <button class="ir-step" type="button" data-ir-step="requirements" aria-pressed="false"><small>02</small><b>Define requirements</b></button>
+            <button class="ir-step" type="button" data-ir-step="workflow" aria-pressed="false"><small>03</small><b>Build workflow</b></button>
+            <button class="ir-step" type="button" data-ir-step="controls" aria-pressed="false"><small>04</small><b>Add controls</b></button>
+            <button class="ir-step" type="button" data-ir-step="evidence" aria-pressed="false"><small>05</small><b>Track evidence</b></button>
           </div>
-        </details>
+          <p class="ir-step-detail" id="ir-step-detail">Establish what is known, missing, constrained, and already decided before anyone acts on an assumption.</p>
+        </section>
         <div class="ir-detail">
           <article class="ir-card"><small>How I would help</small><h2 id="ir-pitch-title">Make high-value judgment scalable without turning it into bureaucracy.</h2><p id="ir-pitch">I map work that currently depends on memory, email, chat, or one person’s head; identify what information must be captured; define decision and handoff points; then build a lightweight operating workflow around it. AI can absorb research, preparation, routing, and follow-up where appropriate, while consequential decisions stay behind clear human authority.</p></article>
           <article class="ir-card"><small>Paid pilot</small><p id="ir-pilot">Give me one live workflow that feels harder to manage than it should. I map the current state, identify failure points, build the operating artifact or lightweight automation, and test whether it reduces context loss, manual coordination, or missed handoffs.</p><div class="ir-outcomes" id="ir-outcomes"><span>Less context loss</span><span>Clearer handoffs</span><span>Less manual chasing</span><span>More operating capacity</span></div></article>
