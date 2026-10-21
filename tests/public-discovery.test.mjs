@@ -26,6 +26,7 @@ test('the public ASHWOOD menu indexes every public landing page and provides a v
   assert.match(theme, /id: "tokyo-night"/);
   assert.match(theme, /--ashwood-paper:#1a1b26/);
   assert.match(theme, /--ashwood-accent-2:#7aa2f7/);
+  assert.match(theme, /v3-nav\.js\?v=20261021-ia1/);
   assert.match(guide, /Private owner tools are intentionally not listed/);
 });
 
