@@ -35,7 +35,7 @@ test('the public ASHWOOD menu indexes every public landing page and provides vis
   assert.match(theme, /id: "tokyo-night"/);
   assert.match(theme, /--ashwood-paper:#1a1b26/);
   assert.match(theme, /--ashwood-accent-2:#7aa2f7/);
-  assert.match(theme, /v3-nav\.js\?v=20261021-workmotion1/);
+  assert.match(theme, /v3-nav\.js\?v=20261021-globaltype1/);
   assert.match(theme, /--ashwood-font-system:"Geist"/);
   assert.match(theme, /font-family:var\(--ashwood-font-system\)!important/);
   assert.match(guide, /canonical" href="https:\/\/ashwood-info\.vercel\.app\/work\//);
@@ -76,7 +76,7 @@ test('Career receives the staged operating-thesis hero and its interactive modes
 
 test('standalone public landing pages load the shared discovery navigation', async () => {
   for (const page of ['sponsor/index.html', 'work/index.html']) {
-    assert.match(await read(page), /\/theme\.js\?v=20261021-workmotion1/);
+    assert.match(await read(page), /\/theme\.js\?v=20261021-globaltype1/);
   }
 });
 
