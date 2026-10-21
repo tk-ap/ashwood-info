@@ -59,7 +59,7 @@ export function createBrainHandler({ authenticate = requireSession, sqlFactory =
         return json(res, 200, { ok: true, notes: rows });
       }
       if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method not allowed' });
-      if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
+      // Browser writes must carry a matching Origin. An absent Origin is not proof of same-origin.\n      if (!req.headers?.origin || !sameOrigin(req)) return json(res, 403, { ok: false, error: 'Origin not allowed' });
       const body = parseBody(req);
       const title = cleanText(body.title, 240);
       const content = String(body.body_markdown ?? '');
