@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#0d0e0b" />
+  <title>Work Register — ASHWOOD Workspace</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/ashwood-core.css" />
+  <link rel="stylesheet" href="/workspace/workspace.css" />
+  <link rel="stylesheet" href="/workspace/build-detail.css" />
+  <link rel="stylesheet" href="/workspace/work-register.css" />
+  <script type="module" src="/workspace/work-register.mjs"></script>
+</head>
+<body class="workspace-page work-register-page">
+  <main class="build-detail-shell work-register-shell">
+    <header class="build-detail-head">
+      <div>
+        <p class="section-kicker">Workspace / Build / Canonical projection</p>
+        <h1>Work Register</h1>
+        <p class="work-register-intro">One place to inspect the work. GitHub owns issues, PRs and their checklists; Agent OS owns execution. This view never grants authority or changes either source.</p>
+      </div>
+      <a class="build-detail-back" href="/workspace/#build">Back to Build</a>
+    </header>
+    <nav class="build-detail-nav" aria-label="Build detail">
+      <a href="/workspace/build/agentos/">AgentOS</a>
+      <a href="/workspace/build/queue/">Queue</a>
+      <a href="/workspace/build/environments/">Environments</a>
+      <a href="/workspace/build/deployments/">Deployments</a>
+      <a aria-current="page" href="/workspace/build/register/">Work Register</a>
+      <a href="/workspace/build/history/">History</a>
+    </nav>
+    <div class="work-register-topline">
+      <div id="register-freshness" role="status" aria-live="polite">Reading authenticated sources…</div>
+      <button type="button" id="register-refresh">Reload sources</button>
+    </div>
+    <div class="work-register-metrics" id="register-metrics" aria-label="Work inventory metrics"></div>
+    <section class="work-register-coverage" id="register-coverage" aria-label="Source coverage"></section>
+    <section class="work-register-results" aria-labelledby="register-results-title">
+      <div class="work-register-results-head">
+        <div>
+          <p class="section-kicker">Reconciled readout</p>
+          <h2 id="register-results-title">Source-backed work</h2>
+          <p id="register-summary">Awaiting data…</p>
+        </div>
+      </div>
+      <div class="work-register-controls" aria-label="Work Register filters">
+        <div class="work-register-tabs" id="register-tabs" role="group" aria-label="View"></div>
+        <div class="work-register-selectors">
+          <label>Repository
+            <select id="register-repo">
+              <option value="all">All repositories</option>
+              <option value="agent-os">Agent OS</option>
+              <option value="ledgato">LEDGATo</option>
+              <option value="ALVIRA">ALVIRA</option>
+              <option value="ailhat">ailhat</option>
+              <option value="ashwood-info">ASHWOOD</option>
+            </select>
+          </label>
+          <label>Execution lane
+            <select id="register-lane">
+              <option value="all">Any state</option>
+              <option value="in_progress">In progress</option>
+              <option value="stuck">Blocked</option>
+              <option value="review">Review</option>
+              <option value="backlog">Backlog</option>
+            </select>
+          </label>
+          <label class="work-register-search">Search
+            <input id="register-search" type="search" autocomplete="off" placeholder="Title, issue number, owner, product…" />
+          </label>
+        </div>
+      </div>
+      <div id="register-records" class="work-register-records" aria-live="polite"></div>
+      <div class="work-register-more-wrap"><button type="button" id="register-more" hidden>Show more</button></div>
+    </section>
+    <footer class="work-register-footnote">
+      <p>GitHub and Agent OS remain authoritative. Checkboxes are read-only copies of explicit Markdown task-list items; they do not establish passing CI, completed review, independent verification, or authorization.</p>
+    </footer>
+  </main>
+</body>
+</html>

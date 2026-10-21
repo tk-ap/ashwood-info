@@ -27,6 +27,7 @@
     { "source": "/api/workspace-review-visit", "destination": "/api/workspace-review?view=visit" },
     { "source": "/api/workspace-design", "destination": "/api/workspace-review?view=design" },
     { "source": "/api/workspace-upload", "destination": "/api/workspace-media" },
-    { "source": "/api/workspace-upload-direct", "destination": "/api/workspace-media?mode=direct" }
+    { "source": "/api/workspace-upload-direct", "destination": "/api/workspace-media?mode=direct" },
+    { "source": "/api/workspace-work-register", "destination": "/api/workspace-agentos?view=register" }
   ]
 }
