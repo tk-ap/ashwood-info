@@ -62,12 +62,11 @@ The Workspace already loads the shared `/theme.js`, which stores the choice in `
 | Warm dark (default) | `warm-dark` | Public + Workspace |
 | Paper light | `paper-light` | Public + Workspace |
 | Phosphor cyber | `phosphor-cyber` | Public + Workspace |
-| **Tokyo Night** | `tokyo-night` | **Workspace only** |
+| **Tokyo Night** | `tokyo-night` | Public + Workspace |
 
 Work needed:
 1. **Coverage.** The Workspace CSS has `paper-light` overrides only in a few files and none for `phosphor-cyber`. Map the Workspace's own variables (`--paper`, `--ink`, `--muted`, `--rule`, `--panel`, `--workspace-accent`, …) from the shared `--ashwood-*` tokens per theme, in one new `workspace/themes.css`, so every theme covers every Workspace page. `career-ops/index.html` does not load `theme.js` yet; add it.
-2. **Tokyo Night without breaking the public site.** `theme.js` accepts an opt-in extra-theme list from the page (for example `<html data-ashwood-extra-themes="tokyo-night">` on Workspace pages only), and shows Tokyo Night in the switcher only there.
-   - A public page that finds `tokyo-night` saved must **display warm dark without overwriting the saved choice**. Today `migrateTheme` falls back to warm dark for unknown values; that fallback must stop being written back to storage.
+2. **Tokyo Night across ASHWOOD.** `theme.js` presents it as the fourth shared theme, using the same saved choice and token palette as Workspace.
    - Palette (the standard Tokyo Night colours), mapped to the shared tokens:
 
      | Token | Value | Tokyo Night role |

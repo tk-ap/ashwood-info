@@ -10,7 +10,7 @@ test('the public ASHWOOD menu indexes every public landing page and provides a v
     read('guide/index.html'),
     read('theme.js')
   ]);
-  for (const href of ['/', '/guide/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/journal-lab/', '/about/', '/connect/', '/sponsor/']) {
+  for (const href of ['/', '/guide/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/about/', '/connect/', '/sponsor/']) {
     assert.match(nav, new RegExp('href="' + href.replaceAll('/', '\\/') + '"'));
   }
   assert.match(nav, /VISIT GUIDE/);
@@ -18,8 +18,14 @@ test('the public ASHWOOD menu indexes every public landing page and provides a v
   assert.match(nav, /mouseenter/);
   assert.match(nav, /type="search"/);
   assert.match(nav, /No public page matches that search/);
+  assert.match(nav, /Creative practice/);
+  assert.match(nav, /Professional evidence/);
+  assert.doesNotMatch(nav, /Journal lab/);
   assert.doesNotMatch(nav, /href="\/workspace\//);
   assert.match(theme, /installPublicNavigation/);
+  assert.match(theme, /id: "tokyo-night"/);
+  assert.match(theme, /--ashwood-paper:#1a1b26/);
+  assert.match(theme, /--ashwood-accent-2:#7aa2f7/);
   assert.match(guide, /Private owner tools are intentionally not listed/);
 });
 
@@ -43,7 +49,14 @@ test('Career receives the staged operating-thesis hero and its interactive modes
 });
 
 test('standalone public landing pages load the shared discovery navigation', async () => {
-  for (const page of ['guide/index.html', 'journal-lab/index.html', 'sponsor/index.html']) {
-    assert.match(await read(page), /\/theme\.js\?v=20261019-navigation1/);
+  for (const page of ['guide/index.html', 'sponsor/index.html']) {
+    assert.match(await read(page), /\/theme\.js\?v=20261021-tokyo1/);
   }
+});
+
+test('Journal Lab preserves legacy links but redirects visitors into the single Build Journal', async () => {
+  const page = await read('journal-lab/index.html');
+  assert.match(page, /canonical" href="https:\/\/ashwood-info\.vercel\.app\/journal\//);
+  assert.match(page, /location\.replace\('\/journal\/' \+ location\.search \+ location\.hash\)/);
+  assert.match(page, /The Journal Lab is now part of the/);
 });
