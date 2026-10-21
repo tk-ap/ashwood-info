@@ -32,17 +32,17 @@ sandboxes:
     static_primary: true
     slug: mighty-yoga-pgph
     url: https://mighty-yoga-pgph.here.now/
-    current_version_id: 01M5FQD5C1YJKHCCHHSRAJ01MR
+    current_version_id: 01M5FRS0F8334AQ74FSQYND3XK
     # The public source and the separately built, DEMO-only Workspace are
     # recorded independently so this static artifact can be reconstructed.
-    source_ref: f997ad7aa0febf8c49c5e1449bc99279cfa838ad
+    source_ref: 4c45042228c802e82e688099ac86ee4f000d1727
     workspace_source:
       repository: tk-ap/ashwood-command-center
       source_ref: 628523c641f2862c7c634f0a3ac8447b78c69a26
       mode: demo-only-no-private-api-or-records
     verification:
       state: passed
-      evidence_ref: manual-browser:2026-10-21-public-navigation-type-and-route-visuals-desktop-and-390px
+      evidence_ref: manual-browser:2026-10-21-public-navigation-type-route-visuals-and-compact-career-desktop-and-390px
 
 release_rules:
   - treat-this-file-as-the-canonical-deployment-topology
