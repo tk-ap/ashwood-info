@@ -67,12 +67,6 @@
     }
     @media(prefers-reduced-motion:reduce){.v3-global-nav{transition:none!important}}
 
-    .v3-global-nav__hint{border:0;border-bottom:1px solid var(--ashwood-rule);background:transparent;color:var(--ashwood-ink);padding:3px 0 4px;font:600 8px/1 var(--v3-mono);letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
-    .v3-global-nav__hint::after{content:" ↘";font-size:11px;letter-spacing:0}
-    .v3-global-nav__hint:hover,.v3-global-nav__hint:focus-visible{border-bottom-color:currentColor}
-    .v3-global-nav__hint:focus-visible{outline:1px solid currentColor;outline-offset:4px}
-    @media(max-width:620px){.v3-global-nav__hint{font-size:7px}.v3-mast__meta{display:none}}
-
     /* Full public index: every public landing page stays discoverable without
        turning the first column into an unscannable single list. */
     .v3-global-nav__links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:0 34px}
@@ -110,20 +104,20 @@
         <details class="v3-global-nav__group" open>
           <summary>Start here</summary>
           <a href="/"><small>01</small><span>Home</span><b>↗</b></a>
-          <a href="/work/"><small>02</small><span>Creative practice</span><b>↗</b></a>
-          <a href="/career/"><small>03</small><span>Professional evidence</span><b>↗</b></a>
+          <a href="/work/"><small>02</small><span>Creative Practice</span><b>↗</b></a>
+          <a href="/career/"><small>03</small><span>Professional Evidence</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
-          <summary>Creative practice</summary>
+          <summary>Creative Practice</summary>
           <a href="/modeling/"><small>04</small><span>Modeling</span><b>↗</b></a>
           <a href="/music/"><small>05</small><span>Music</span><b>↗</b></a>
           <a href="/performance/"><small>06</small><span>Performance</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>Ideas and builds</summary>
-          <a href="/journal/"><small>07</small><span>Build journal</span><b>↗</b></a>
+          <a href="/journal/"><small>07</small><span>Build Journal</span><b>↗</b></a>
           <a href="/dispatch/"><small>08</small><span>Dispatch</span><b>↗</b></a>
-          <a href="/ai-from-zero/"><small>09</small><span>AI from Zero</span><b>↗</b></a>
+          <a href="/ai-from-zero/"><small>09</small><span>AI From Zero</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>About and connect</summary>
@@ -157,26 +151,16 @@
   mastBrand.setAttribute('aria-expanded','false');
   mastBrand.setAttribute('aria-controls','v3-global-nav');
   mastBrand.setAttribute('aria-label','Open ASHWOOD navigation');
-  const navHint = document.createElement('button');
-  navHint.className = 'v3-global-nav__hint';
-  navHint.type = 'button';
-  navHint.textContent = 'Explore pages';
-  navHint.setAttribute('aria-controls','v3-global-nav');
-  navHint.setAttribute('aria-expanded','false');
-  mastBrand.insertAdjacentElement('afterend', navHint);
-
   const close = () => {
     nav.classList.remove('is-open');
     nav.setAttribute('aria-hidden','true');
     mastBrand.setAttribute('aria-expanded','false');
-    navHint.setAttribute('aria-expanded','false');
     document.body.classList.remove('v3-global-nav-open');
   };
   const open = ({ focusClose = false } = {}) => {
     nav.classList.add('is-open');
     nav.setAttribute('aria-hidden','false');
     mastBrand.setAttribute('aria-expanded','true');
-    navHint.setAttribute('aria-expanded','true');
     document.body.classList.add('v3-global-nav-open');
     if (focusClose) nav.querySelector('.v3-global-nav__close')?.focus();
   };
@@ -192,7 +176,6 @@
       toggleNav();
     }
   });
-  navHint.addEventListener('click', toggleNav);
   const canHover = matchMedia('(hover: hover) and (pointer: fine)');
   mastBrand.addEventListener('mouseenter', () => { if (canHover.matches) open(); });
 

@@ -16,8 +16,9 @@
   <title>Creative Practice — ASHWOOD</title>
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
   <link rel="stylesheet" href="/creative-shell.css?v=20260829-mobile-tap" />
-  <link rel="stylesheet" href="/work/work.css?v=20261021-workroute1" />
-  <script src="/theme.js?v=20261021-guidework1" defer></script>
+  <link rel="stylesheet" href="/work/work.css?v=20261021-workroute2" />
+  <script src="/theme.js?v=20261021-workmotion1" defer></script>
+  <script src="/work/work-route-visuals.js?v=20261021-routevisuals1" defer></script>
 </head>
 <body class="work-page">
   <header class="ashwood-site-header" aria-label="ASHWOOD navigation">
@@ -26,9 +27,9 @@
       <span class="ashwood-site-header__section">/ CREATIVE PRACTICE</span>
     </div>
     <nav class="ashwood-site-header__nav" aria-label="Primary">
-      <a aria-current="page" href="/work">Creative practice</a>
+      <a aria-current="page" href="/work">Creative Practice</a>
       <a href="/journal">Builds</a>
-      <a href="/career">Professional evidence</a>
+      <a href="/career">Professional Evidence</a>
       <a href="/about">About</a>
       <a href="/connect">Connect</a>
     </nav>
@@ -36,12 +37,12 @@
 
   <main>
     <section class="work-hero" aria-labelledby="work-title">
-      <p class="work-kicker">TK Ashwood / Creative practice</p>
+      <p class="work-kicker">TK Ashwood / Creative Practice</p>
       <h1 id="work-title">One point of view.<br /><span>Many forms.</span></h1>
       <p class="work-deck">For casting or creative collaboration, start with the practice. For a role, operating partnership, or systems work, begin with professional evidence. The forms do not need to collapse into one thing to belong to the same person.</p>
       <div class="work-hero-actions">
         <a class="work-scroll" href="#choose">Find your route ↓</a>
-        <a class="work-professional-link" href="/career/">Professional evidence ↗</a>
+        <a class="work-professional-link" href="/career/">Professional Evidence ↗</a>
       </div>
     </section>
 
@@ -52,25 +53,29 @@
         <p>This is the public ASHWOOD map. Private owner tools are intentionally not listed.</p>
       </header>
       <div class="work-routes__grid">
-        <a class="work-route-card" href="/career/">
+        <a class="work-route-card" href="/career/" data-route-visual="career">
+          <span class="work-route-card__visual" aria-hidden="true"><img alt="" decoding="async" /></span>
           <span class="work-route-card__meta">01 / PROFESSIONAL EVIDENCE</span>
           <strong>Hiring or operating together.</strong>
           <span>Experience, systems thinking, and the operating work behind the résumé—separate from the creative practice.</span>
           <em>View professional evidence ↗</em>
         </a>
-        <a class="work-route-card" href="#practices">
+        <a class="work-route-card" href="#practices" data-route-visual="creative">
+          <span class="work-route-card__visual" aria-hidden="true"><img alt="" decoding="async" /></span>
           <span class="work-route-card__meta">02 / CREATIVE PRACTICE</span>
           <strong>Casting or creative collaboration.</strong>
           <span>Modeling, music, performance, words, and physical work: distinct forms held by one point of view.</span>
           <em>Enter creative practice ↓</em>
         </a>
-        <a class="work-route-card" href="/journal/">
+        <a class="work-route-card" href="/journal/" data-route-visual="builds">
+          <span class="work-route-card__visual" aria-hidden="true"><img alt="" decoding="async" /></span>
           <span class="work-route-card__meta">03 / BUILDS AND IDEAS</span>
           <strong>Following the record.</strong>
           <span>Read what changed and why without treating unfinished work as a completed claim.</span>
           <em>Read the build journal ↗</em>
         </a>
-        <a class="work-route-card" href="/connect/">
+        <a class="work-route-card" href="/connect/" data-route-visual="connect">
+          <span class="work-route-card__visual" aria-hidden="true"><img alt="" decoding="async" /></span>
           <span class="work-route-card__meta">04 / ABOUT OR CONTACT</span>
           <strong>Finding the person or the right route.</strong>
           <span>Learn the through-line, then use the public contact or support route that fits your reason for reaching out.</span>
