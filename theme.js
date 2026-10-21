@@ -278,7 +278,7 @@
     if (normalizedPath.startsWith('/workspace')) return;
     if (document.querySelector('script[data-ashwood-public-navigation],script[src^="/v3-nav.js"]')) return;
     const script = document.createElement('script');
-    script.src = '/v3-nav.js?v=20261019-public-global1';
+    script.src = '/v3-nav.js?v=20261021-ia1';
     script.defer = true;
     script.dataset.ashwoodPublicNavigation = '1';
     document.head.appendChild(script);
