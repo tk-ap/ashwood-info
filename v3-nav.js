@@ -108,28 +108,26 @@
         <details class="v3-global-nav__group" open>
           <summary>Start here</summary>
           <a href="/"><small>01</small><span>Home</span><b>↗</b></a>
-          <a href="/guide/"><small>02</small><span>Visit guide</span><b>↗</b></a>
-          <a href="/work/"><small>03</small><span>Work</span><b>↗</b></a>
-          <a href="/career/"><small>04</small><span>Career evidence</span><b>↗</b></a>
+          <a href="/work/"><small>02</small><span>Creative practice</span><b>↗</b></a>
+          <a href="/career/"><small>03</small><span>Professional evidence</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>Creative practice</summary>
-          <a href="/modeling/"><small>05</small><span>Modeling</span><b>↗</b></a>
-          <a href="/music/"><small>06</small><span>Music</span><b>↗</b></a>
-          <a href="/performance/"><small>07</small><span>Performance</span><b>↗</b></a>
+          <a href="/modeling/"><small>04</small><span>Modeling</span><b>↗</b></a>
+          <a href="/music/"><small>05</small><span>Music</span><b>↗</b></a>
+          <a href="/performance/"><small>06</small><span>Performance</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>Ideas and builds</summary>
-          <a href="/journal/"><small>08</small><span>Build journal</span><b>↗</b></a>
-          <a href="/dispatch/"><small>09</small><span>Dispatch</span><b>↗</b></a>
-          <a href="/ai-from-zero/"><small>10</small><span>AI from Zero</span><b>↗</b></a>
-          <a href="/journal-lab/"><small>11</small><span>Journal lab</span><b>↗</b></a>
+          <a href="/journal/"><small>07</small><span>Build journal</span><b>↗</b></a>
+          <a href="/dispatch/"><small>08</small><span>Dispatch</span><b>↗</b></a>
+          <a href="/ai-from-zero/"><small>09</small><span>AI from Zero</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>About and connect</summary>
-          <a href="/about/"><small>12</small><span>About</span><b>↗</b></a>
-          <a href="/connect/"><small>13</small><span>Connect</span><b>↗</b></a>
-          <a href="/sponsor/"><small>14</small><span>Support</span><b>↗</b></a>
+          <a href="/about/"><small>10</small><span>About</span><b>↗</b></a>
+          <a href="/connect/"><small>11</small><span>Connect</span><b>↗</b></a>
+          <a href="/sponsor/"><small>12</small><span>Support</span><b>↗</b></a>
         </details>
         <p class="v3-global-nav__no-results" hidden>No public page matches that search. Try “work,” “career,” “journal,” or “contact.”</p>
       </nav>
@@ -138,8 +136,8 @@
           <small>VISIT GUIDE</small>
           <h2 id="v3-visit-guide-title">Start where your reason for visiting is clearest.</h2>
           <ul>
-            <li><a href="/career/">Hiring or collaborating<span>Start with professional evidence.</span></a></li>
-            <li><a href="/work/">Exploring the practice<span>See the work across forms.</span></a></li>
+            <li><a href="/career/">Hiring or operating together<span>Experience, systems, and professional evidence.</span></a></li>
+            <li><a href="/work/">Casting or creative collaboration<span>Modeling, performance, music, words, and objects.</span></a></li>
             <li><a href="/journal/">Following the builds<span>Read what changed and why.</span></a></li>
             <li><a href="/connect/">Getting in touch<span>Find the appropriate public route.</span></a></li>
           </ul>
