@@ -23,7 +23,7 @@
     .v3-mast [data-wordmark]:focus-visible,.v3-mast .v3-wordmark:focus-visible{outline:1px solid currentColor;outline-offset:6px}
     .v3-global-nav{
       --v3-pad:clamp(20px,3vw,48px);
-      position:fixed;inset:0;z-index:950;background:color-mix(in srgb,var(--ashwood-paper) 96%,transparent);
+      position:fixed;inset:0;z-index:950;background:var(--ashwood-paper);
       color:var(--ashwood-ink);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
       opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);
       transition:opacity .22s ease,transform .24s ease,visibility 0s linear .24s;

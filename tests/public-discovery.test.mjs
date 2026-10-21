@@ -18,6 +18,7 @@ test('the public ASHWOOD menu indexes every public landing page and provides a v
   assert.match(nav, /mouseenter/);
   assert.match(nav, /type="search"/);
   assert.match(nav, /No public page matches that search/);
+  assert.match(nav, /background:var\(--ashwood-paper\)/);
   assert.match(nav, /Creative practice/);
   assert.match(nav, /Professional evidence/);
   assert.doesNotMatch(nav, /Journal lab/);
