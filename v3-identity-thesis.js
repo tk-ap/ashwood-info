@@ -5,13 +5,13 @@
   if (!identity) return;
 
   const manifestationsList = [
-    { label:'MODELING', href:'/portfolio/' },
+    { label:'MODELING', href:'/modeling/' },
     { label:'MUSIC', href:'/music/' },
     { label:'BUILD JOURNAL', href:'/journal/' },
     { label:'DISPATCH', href:'/dispatch/' },
     { label:'AI FROM ZERO', href:'/ai-from-zero/' },
     { label:'ABOUT', href:'/about/' },
-    { label:'THE INSTINCT', href:'/dive-deeper/' }
+    { label:'VISIT GUIDE', href:'/guide/' }
   ];
 
   const IDLE_MANIFESTATION = '∞ manifestations';
@@ -61,7 +61,7 @@
   identity.innerHTML = `
     <span class="v3-identity-statement">
       <span aria-hidden="true">1 </span><button class="v3-identity-origin" type="button" aria-expanded="false">identity</button><span aria-hidden="true">;</span>
-      <a class="v3-manifestations" href="/portfolio/" aria-label="Explore an ASHWOOD manifestation">
+      <a class="v3-manifestations" href="/modeling/" aria-label="Explore an ASHWOOD manifestation">
         <span class="v3-manifestations__label">${IDLE_MANIFESTATION}</span>
       </a><span aria-hidden="true">.</span>
     </span>
