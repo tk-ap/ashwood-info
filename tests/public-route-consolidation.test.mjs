@@ -7,7 +7,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 test('legacy public routes preserve a visitor’s query and hash while redirecting to canonical pages', async () => {
   const routes = [
     ['portfolio/index.html', 'modeling'],
-    ['dive-deeper/index.html', 'guide'],
+    ['dive-deeper/index.html', 'work'],
     ['partners/index.html', 'sponsor'],
     ['guide/index.html', 'work']
   ];
@@ -15,8 +15,9 @@ test('legacy public routes preserve a visitor’s query and hash while redirecti
   for (const [file, destination] of routes) {
     const page = await read(file);
     assert.match(page, new RegExp(`canonical" href="https://ashwood-info\\.vercel\\.app/${destination}/"`));
-    assert.ok(page.includes(`location.replace('/${destination}/' + location.search + location.hash);`));
-    assert.match(page, new RegExp(`href="/${destination}/"`));
+    const target = file === 'dive-deeper/index.html' ? `/${destination}/#choose` : `/${destination}/`;
+    assert.ok(page.includes(`location.replace('${target}' + location.search + location.hash);`));
+    assert.match(page, new RegExp(`href="${target}"`));
   }
 });
 
