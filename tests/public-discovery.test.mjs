@@ -62,7 +62,7 @@ test('Career receives the staged operating-thesis hero and its interactive modes
     read('career/career.js')
   ]);
   assert.match(html, /Interactive résumé \/ operating thesis/);
-  assert.match(html, /career\.css\?v=20261021-compact-career1/);
+  assert.match(html, /career\.css\?v=20261021-live-layer1/);
   assert.match(html, /career\.js\?v=20261021-live-layer1/);
   assert.match(html, /I turn messy operating problems into systems people/);
   assert.match(html, /data-ir-key="throughput"/);
