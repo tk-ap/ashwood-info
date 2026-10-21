@@ -37,3 +37,11 @@ test('unconfigured brain database fails closed',async()=>{
   const res=response();await h(request(),res);
   assert.equal(res.statusCode,503);
 });
+
+test('POST without Origin is denied before querying Brain database',async()=>{
+  let calls=0;
+  const h=createBrainHandler({authenticate:async()=>({token:'test'}),sqlFactory:()=>async()=>{calls++;return [];}});
+  const req=request('POST');delete req.headers.origin;req.body={title:'No Origin',body_markdown:'not approved'};
+  const res=response();await h(req,res);
+  assert.equal(res.statusCode,403);assert.equal(calls,0);
+});
