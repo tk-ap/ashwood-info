@@ -13,9 +13,13 @@ test('the public ASHWOOD menu indexes every public landing page and provides vis
     read('work/work-route-visuals.js'),
     read('theme.js')
   ]);
-  for (const href of ['/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/about/', '/connect/', '/sponsor/']) {
+  // Portfolio and Partners remain legacy redirects to Modeling and Support;
+  // every canonical public landing page is discoverable here.
+  const publicLandingPages = ['/', '/work/', '/career/', '/modeling/', '/music/', '/performance/', '/journal/', '/dispatch/', '/ai-from-zero/', '/ai-from-zero/build-gate/', '/ai-from-zero/continuity/', '/ai-from-zero/reference/', '/about/', '/connect/', '/sponsor/'];
+  for (const href of publicLandingPages) {
     assert.match(nav, new RegExp('href="' + href.replaceAll('/', '\\/') + '"'));
   }
+  assert.equal((nav.match(/<a href="\//g) || []).filter(link => link).length >= publicLandingPages.length, true);
   assert.match(nav, /FIND YOUR WAY IN/);
   assert.doesNotMatch(nav, /Explore pages/);
   assert.match(nav, /mouseenter/);
@@ -32,6 +36,8 @@ test('the public ASHWOOD menu indexes every public landing page and provides vis
   assert.match(theme, /--ashwood-paper:#1a1b26/);
   assert.match(theme, /--ashwood-accent-2:#7aa2f7/);
   assert.match(theme, /v3-nav\.js\?v=20261021-workmotion1/);
+  assert.match(theme, /--ashwood-font-system:"Geist"/);
+  assert.match(theme, /font-family:var\(--ashwood-font-system\)!important/);
   assert.match(guide, /canonical" href="https:\/\/ashwood-info\.vercel\.app\/work\//);
   assert.match(guide, /location\.replace\('\/work\/' \+ location\.search \+ location\.hash\)/);
   assert.match(work, /id="choose"/);

@@ -23,8 +23,8 @@
     .v3-mast [data-wordmark]:focus-visible,.v3-mast .v3-wordmark:focus-visible{outline:1px solid currentColor;outline-offset:6px}
     .v3-global-nav{
       --v3-pad:clamp(20px,3vw,48px);
-      --v3-sans:"Geist","Helvetica Neue",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      --v3-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+      --v3-sans:var(--ashwood-font-system,"Geist","Helvetica Neue",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif);
+      --v3-mono:var(--ashwood-font-mono,"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace);
       position:fixed;inset:0;z-index:950;background:var(--ashwood-paper);
       color:var(--ashwood-ink);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
       opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);
@@ -118,12 +118,15 @@
           <a href="/journal/"><small>07</small><span>Build Journal</span><b>↗</b></a>
           <a href="/dispatch/"><small>08</small><span>Dispatch</span><b>↗</b></a>
           <a href="/ai-from-zero/"><small>09</small><span>AI From Zero</span><b>↗</b></a>
+          <a href="/ai-from-zero/build-gate/"><small>10</small><span>Build Gate</span><b>↗</b></a>
+          <a href="/ai-from-zero/continuity/"><small>11</small><span>Continuity</span><b>↗</b></a>
+          <a href="/ai-from-zero/reference/"><small>12</small><span>Reference</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>About and connect</summary>
-          <a href="/about/"><small>10</small><span>About</span><b>↗</b></a>
-          <a href="/connect/"><small>11</small><span>Connect</span><b>↗</b></a>
-          <a href="/sponsor/"><small>12</small><span>Support</span><b>↗</b></a>
+          <a href="/about/"><small>13</small><span>About</span><b>↗</b></a>
+          <a href="/connect/"><small>14</small><span>Connect</span><b>↗</b></a>
+          <a href="/sponsor/"><small>15</small><span>Support</span><b>↗</b></a>
         </details>
         <p class="v3-global-nav__no-results" hidden>No public page matches that search. Try “work,” “career,” “journal,” or “contact.”</p>
       </nav>
@@ -151,6 +154,7 @@
   mastBrand.setAttribute('aria-expanded','false');
   mastBrand.setAttribute('aria-controls','v3-global-nav');
   mastBrand.setAttribute('aria-label','Open ASHWOOD navigation');
+  mastBrand.title = 'Open ASHWOOD navigation';
   const close = () => {
     nav.classList.remove('is-open');
     nav.setAttribute('aria-hidden','true');

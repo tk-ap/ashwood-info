@@ -26,6 +26,8 @@
     style.id = "ashwood-three-theme-system";
     style.textContent = `
       :root{
+        --ashwood-font-system:"Geist","Helvetica Neue",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        --ashwood-font-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
         --ashwood-field-green:#009b3a;
         --ashwood-field-green-rgb:0,155,58;
         --ashwood-accent-2:#3f7f84;
@@ -89,6 +91,11 @@
         --ashwood-glow:rgba(122,162,247,.16);
       }
 
+      /* The public site shares the navigation's restrained sans as its baseline.
+         Code and machine-readable evidence keep a distinct mono face. */
+      html,body,button,input,textarea,select{font-family:var(--ashwood-font-system)!important}
+      body :where(h1,h2,h3,h4,h5,h6,p,li,a,button,label,input,textarea,select,summary,figcaption,blockquote,dt,dd,th,td,small,span){font-family:var(--ashwood-font-system)!important}
+      body :where(pre,code,kbd,samp){font-family:var(--ashwood-font-mono)!important}
       html,body{background:var(--ashwood-paper);color:var(--ashwood-ink)}
       html.ashwood-light{--ashwood-paper:#f5f3ef;--ashwood-ink:#171717;--ashwood-muted:rgba(23,23,23,.58);--ashwood-rule:rgba(23,23,23,.22)}
       html[data-ashwood-theme="warm-dark"],html[data-ashwood-theme="phosphor-cyber"],html[data-ashwood-theme="tokyo-night"]{background:var(--ashwood-paper)}
