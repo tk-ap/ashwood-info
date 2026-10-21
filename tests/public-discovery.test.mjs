@@ -62,7 +62,7 @@ test('Career receives the staged operating-thesis hero and its interactive modes
     read('career/career.js')
   ]);
   assert.match(html, /Interactive résumé \/ operating thesis/);
-  assert.match(html, /career\.css\?v=20261021-live-layer1/);
+  assert.match(html, /career\.css\?v=20261021-live-layer2/);
   assert.match(html, /career\.js\?v=20261021-live-layer1/);
   assert.match(html, /I turn messy operating problems into systems people/);
   assert.match(html, /data-ir-key="throughput"/);
@@ -81,6 +81,7 @@ test('Career receives the staged operating-thesis hero and its interactive modes
   assert.match(runtime, /data-ir-step/);
   assert.match(css, /min-height:clamp\(560px,74svh,760px\)/);
   assert.match(css, /border-radius:999px/);
+  assert.match(css, /\.ir-steps\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
 });
 
 test('standalone public landing pages load the shared discovery navigation', async () => {
