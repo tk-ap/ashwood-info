@@ -108,7 +108,7 @@ test('Brain import is idempotent by source key and never overwrites owner edits 
   const handler=createBrainHandler({authenticate:async r=>r.headers['x-test-auth']==='owner'?{token:'fixture'}:null,sqlFactory:()=>sql});
   async function call(request){const res=response();await handler(request,res);return {...res,json:()=>JSON.parse(res.body)};}
   const fp='a'.repeat(64);
-  const note={title:'Goals — ALVIRA interview, 2026-10-15',body_markdown:'Approved note text.',source_key:'alvira:378d3e82:goals:0',source_fingerprint:fp};
+  const note={title:'Goals — ALVIRA interview, 2026-10-15',body_markdown:'Approved note text.',source_key:'alvira:fixture-profile:goals:0',source_fingerprint:fp};
   const first=await call(req('POST','/api/workspace-brain',note));
   assert.equal(first.code,201,first.body);
   assert.equal(first.json().imported,true);
@@ -124,7 +124,7 @@ test('Brain import is idempotent by source key and never overwrites owner edits 
   const kept=await sql`SELECT body_markdown FROM brain.notes WHERE id=${id}::uuid`;
   assert.equal(kept[0].body_markdown,'Owner edited this.');
   // Another owner using the same source key is a different note (owner-scoped uniqueness).
-  await sql`INSERT INTO brain.notes(owner_key,title,source_key) VALUES ('other-owner','x','alvira:378d3e82:goals:0')`;
+  await sql`INSERT INTO brain.notes(owner_key,title,source_key) VALUES ('other-owner','x','alvira:fixture-profile:goals:0')`;
   const count=await sql`SELECT count(*)::int AS n FROM brain.notes WHERE owner_key='owner'`;
   assert.equal(count[0].n,1,'a repeated import added no row');
   // Bad keys are refused; manual notes without a source key still work.
