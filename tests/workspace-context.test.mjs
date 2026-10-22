@@ -6,7 +6,7 @@ import { profileFrom, snapshotBody } from '../scripts/sync-alvira-context.mjs';
 
 const body = {
   source: 'alvira',
-  context_id: 'alvira:378d3e82',
+  context_id: 'alvira:fixture-profile',
   topic: 'TK — Ashwood second brain',
   domains: [
     { id: 'goals', label: 'Goals', answers: ['One central Context record.', '[SENSITIVE — money] Savings run out in March.'] },
@@ -25,7 +25,7 @@ const body = {
 test('a released snapshot keeps owner-released content and drops sensitive items and credentials', () => {
   const snap = cleanContextSnapshot(body);
   const text = JSON.stringify(snap);
-  assert.equal(snap.context_id, 'alvira:378d3e82');
+  assert.equal(snap.context_id, 'alvira:fixture-profile');
   assert.deepEqual(snap.domains.map(d => [d.id, d.answers.length]), [['goals', 1], ['constraints', 1]]);
   assert.ok(!text.includes('Savings'));
   assert.ok(!text.includes('SECRET9'));
@@ -51,7 +51,7 @@ test('a sensitive topic is replaced', () => {
 
 test('the sync script leaves out raw Links & sources answers and unconfirmed links', () => {
   const profile = profileFrom({ result: { structuredContent: { profile: {
-    id: '378d3e82', topic: 'T', updated_at: '2026-10-15T23:35:55Z',
+    id: 'fixture-profile', topic: 'T', updated_at: '2026-10-15T23:35:55Z',
     state: {
       domains: { goals: { answers: ['G'] }, sources: { answers: ['Provided: [link held for owner review]'] } },
       contextSources: [
@@ -63,7 +63,7 @@ test('the sync script leaves out raw Links & sources answers and unconfirmed lin
   const out = snapshotBody(profile);
   assert.deepEqual(out.domains.map(d => d.id), ['goals']);
   assert.deepEqual(out.sources.map(s => s.label), ['A']);
-  assert.equal(out.context_id, 'alvira:378d3e82');
+  assert.equal(out.context_id, 'alvira:fixture-profile');
   assert.ok(!JSON.stringify(cleanContextSnapshot(out)).includes('PRIV1'));
 });
 
