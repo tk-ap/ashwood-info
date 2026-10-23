@@ -87,6 +87,7 @@ const GROUPS = {
     "details.attention"
   ],
   self: [
+    "#self-alignment-mirror",
     "#self-practice",
     "#self-daily-wisdom",
     "#meos-profile",
