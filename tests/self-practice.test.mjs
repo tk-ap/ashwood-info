@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { DAILY_PRACTICES, dailyPracticeFor, natalReferenceFor } from '../workspace/self-practice.mjs';
+import { DAILY_PRACTICES, dailyPracticeFor, natalReferenceFor, ALIGNMENT_LENSES, alignmentLensFor } from '../workspace/self-practice.mjs';
 
 test('one local date has stable daily practice', () => {
   const morning = dailyPracticeFor(new Date(2026, 9, 20, 8, 5));
@@ -83,4 +83,21 @@ test('complete public here.now artifact has no original Self chart disclosure an
   } finally {
     await rm(temp, {recursive:true, force:true});
   }
+});
+
+test('alignment mirror states are explicit, interpreted and grounded', async () => {
+  assert.equal(ALIGNMENT_LENSES.length, 6);
+  for (const lens of ALIGNMENT_LENSES) {
+    assert.ok(lens.id && lens.thinker && lens.work && lens.idea && lens.affirmation && lens.question && lens.action);
+  }
+  assert.equal(alignmentLensFor('wealth').thinker, 'Erich Fromm');
+  assert.equal(alignmentLensFor('not-a-state').id, 'overwhelmed');
+  const [html,views] = await Promise.all([
+    readFile(new URL('../workspace/index.html',import.meta.url),'utf8'),
+    readFile(new URL('../workspace/views.mjs',import.meta.url),'utf8')
+  ]);
+  assert.match(html,/id="self-alignment-mirror"/);
+  assert.match(html,/data-self-reset="wealth"/);
+  assert.match(views,/"#self-alignment-mirror"/);
+  assert.doesNotMatch(html,/25,000,000|October 14, 2046/);
 });
