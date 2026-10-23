@@ -11,6 +11,48 @@ export const ALIGNMENT_LENSES = Object.freeze([
 export function alignmentLensFor(id) {
  return ALIGNMENT_LENSES.find(item => item.id === id) || ALIGNMENT_LENSES[0];
 }
+// The existing Workspace Context API is session-gated and stores only released ALVIRA snapshots.
+// Never infer the Chief Aim from unrelated goals or unapproved interview text.
+export function approvedChiefAimFromContexts(contexts) {
+ if (!Array.isArray(contexts)) return null;
+ for (const context of contexts) {
+   if (context?.source !== 'alvira' || context.environment !== 'production') continue;
+   if (String(context.topic || '').trim().toLowerCase() !== 'my definite chief aim') continue;
+   const field=context.goal_spec?.fields?.goal;
+   if (field?.basis !== 'owner' || typeof field.value !== 'string' || !field.value.trim()) continue;
+   return {text:field.value.trim(),updatedAt:context.observed_at || context.context_updated_at || null};
+ }
+ return null;
+}
+
+export async function loadApprovedChiefAim(root = document, request = fetch) {
+ const section=root.getElementById('self-alignment-mirror');
+ if (!section || typeof window === 'undefined' || window.__ASHWOOD_DEMO_SANDBOX__ === true) return;
+ if (root.body?.dataset?.workspaceAuth !== 'authenticated') return;
+ const status=section.querySelector('[data-chief-aim-status]');
+ const content=section.querySelector('[data-chief-aim-text]');
+ const provenance=section.querySelector('[data-chief-aim-source]');
+ if (!status || !content || !provenance) return;
+ try {
+   const response=await request('/api/workspace-context',{credentials:'same-origin',cache:'no-store'});
+   if (!response.ok) throw new Error('Context unavailable');
+   const data=await response.json();
+   const aim=approvedChiefAimFromContexts(data.contexts);
+   if (!aim) {
+     status.textContent='No owner-approved Chief Aim is available in ALVIRA Context yet.';
+     content.hidden=true; provenance.hidden=true; return;
+   }
+   content.textContent=aim.text;
+   content.hidden=false;
+   status.textContent='Owner-approved Chief Aim';
+   provenance.textContent='Source: ALVIRA Context · private production record'+(aim.updatedAt?' · reviewed snapshot '+new Date(aim.updatedAt).toLocaleDateString():'');
+   provenance.hidden=false;
+ } catch {
+   status.textContent='Private Chief Aim unavailable. No alternate source is used.';
+   content.hidden=true; provenance.hidden=true;
+ }
+}
+
 export function mountSelfAlignmentMirror(root = document) {
  const host = root.getElementById('self-alignment-mirror');
  if (!host) return;
@@ -24,6 +66,11 @@ export function mountSelfAlignmentMirror(root = document) {
  }
  buttons.forEach(button => button.addEventListener('click',()=>select(button.dataset.selfReset)));
  select('overwhelmed');
+ // Called only after the Workspace app confirms the session on this browser.
+ if (typeof window !== 'undefined' && window.__ASHWOOD_DEMO_SANDBOX__ !== true) {
+   window.addEventListener('ashwood:workspace-authenticated', () => { void loadApprovedChiefAim(root); }, {once:true});
+   if (root.body?.dataset?.workspaceAuth === 'authenticated') void loadApprovedChiefAim(root);
+ }
 }
 
 
