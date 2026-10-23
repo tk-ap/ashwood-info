@@ -61,7 +61,13 @@
         .forEach(function (row) {
           if (row) spec.appendChild(row);
         });
-      story.textContent = piece.story || "";
+      story.innerHTML = "";
+      (piece.story || "").split(/\n\n+/).forEach(function (para) {
+        if (!para) return;
+        var p = document.createElement("p");
+        p.textContent = para;
+        story.appendChild(p);
+      });
       sheet.showModal();
     });
   });
