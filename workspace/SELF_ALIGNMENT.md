@@ -17,7 +17,7 @@ Self is the private inner compass, not a productivity scorecard or an extra app.
 - Zero external API requests, telemetry, mood tracking, saved reflections, new database, automation, payment, or background jobs.
 
 ## Deliberately NOT implemented
-- The owner's **full Chief Aim** is sensitive private authored context. The static view has an explicit unavailable state until the existing authorized ALVIRA Context / Brain contract can deliver a reviewed version over a genuinely authenticated private read. Do not embed it in a public GitHub branch, public JS bundle, or synthetic here.now demo. The owner can review and edit it only in a trusted private source with revision and provenance.
+- The owner's **full Chief Aim** is sensitive private authored context. The static view contains no hardcoded statement. The current read implementation listens for confirmed Workspace sign-in, then requests the existing session-protected `/api/workspace-context` endpoint and projects only a record with `source=alvira`, `environment=production`, exact `topic=My Definite Chief Aim`, and `goal_spec.fields.goal.basis=owner`. Missing or unauthorized data remain explicitly unavailable. The only supported edit path is the existing owner-reviewed ALVIRA Context/Brain release; there is no independent editor or datastore in Self. Public here.now DEMO mode must not perform this read.
 - The private Saturn Return Companion is access-gated. Existing SATURN_SOURCE_NOTES.md are owner-supplied *secondary* source notes, not proof of inspecting its current private routes, readings, or designs. Do not invent additional natal placements, numerological cycles, or transits.
 - Direct quotations, new aligned-thinker recommendations, and alignment scoring need source verification and owner review before surfacing as authored quotes or conclusions.
 - No claim that affirmations or astrology can guarantee income, predict events, or treat depression.
@@ -29,7 +29,7 @@ Self is the private inner compass, not a productivity scorecard or an extra app.
 - Follow normal independent review and owner-controlled merge/publish gates.
 
 ## Private source integration acceptance contract (later phase)
-1. Review/correct Chief Aim in the existing private ALVIRA Context or Brain system of record; allow versioned read-only projection in Self.
+1. Review/correct the full Chief Aim in the existing private ALVIRA Context or Brain system of record and release it as the exact owner-approved `My Definite Chief Aim` production goal-spec record. The read-only projection code is implemented, but no qualifying owner record has been verified as available.
 2. Verify signed-in owner authorization server side; forbid public sandbox, unauthenticated static exposure, and debug leakage. Avoid alternate Neon instances or duplicate context stores.
 3. Display both the canonical statement and declared provenance, with a private owner-edit workflow, not a GitHub-edited hardcoded string.
 4. Read Saturn Return / astrology / numerology from approved private context with source metadata, and separate interpretive reading from evidence or predictions.
