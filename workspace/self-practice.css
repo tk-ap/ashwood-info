@@ -16,3 +16,23 @@
 .self-practice__source{margin-top:20px;font-size:12px;line-height:1.5;opacity:.65}
 .self-practice__source a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:750px){.self-practice__grid{grid-template-columns:1fr}.self-practice__panel{padding:16px}}
+
+/* Private-first alignment mirror; intentionally no animation or network-dependent state. */
+.self-alignment-mirror{margin:0 0 24px;padding:clamp(20px,4.5vw,42px);border:1px solid rgba(255,255,255,.16);border-radius:20px;background:rgba(255,255,255,.025)}
+.self-alignment-mirror__intro{max-width:780px}
+.self-alignment-mirror__intro h2{font-size:clamp(29px,4.6vw,52px);line-height:1.13;letter-spacing:-.035em;margin:8px 0 14px}
+.self-alignment-mirror__intro p{line-height:1.6}
+.self-alignment-mirror__choices{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}
+.self-alignment-mirror__choices button{color:inherit;background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:9px 14px;font:inherit;cursor:pointer}
+.self-alignment-mirror__choices button[aria-pressed="true"]{background:rgba(185,210,167,.18);border-color:rgba(185,210,167,.7)}
+.self-alignment-mirror__choices button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.self-alignment-mirror__reading{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:26px}
+.self-alignment-mirror__reading>div{border-top:1px solid rgba(255,255,255,.16);padding-top:20px}
+.self-alignment-mirror__reading small{display:block;opacity:.68;text-transform:uppercase;letter-spacing:.11em;font-size:11px}
+.self-alignment-mirror__reading p{line-height:1.65;margin:8px 0 22px}
+.self-alignment-mirror__idea{font-size:clamp(19px,2.6vw,29px);line-height:1.3!important}
+.self-alignment-mirror__citation{font-size:13px;opacity:.8}
+.self-alignment-mirror__note,.self-alignment-mirror__foot{font-size:12px;opacity:.7;line-height:1.6}
+.self-alignment-mirror__private-aim{margin-top:18px;border-top:1px solid rgba(255,255,255,.15);padding-top:14px}
+.self-alignment-mirror__private-aim summary{cursor:pointer;font-weight:600}
+@media(max-width:750px){.self-alignment-mirror__reading{grid-template-columns:1fr;gap:4px}}
