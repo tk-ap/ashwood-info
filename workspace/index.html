@@ -55,6 +55,8 @@
   <link rel="stylesheet" href="/workspace/runway.css?v=20260925-runway1" />
   <link rel="stylesheet" href="/workspace/meos-self.css?v=20260925-meos2" />
   <link rel="stylesheet" href="/workspace/self-daily-wisdom.css?v=20260925-1" />
+  <link rel="stylesheet" href="/workspace/brain-explorer.css?v=20261023-brain1" />
+  <script type="module" src="/workspace/brain-explorer.mjs?v=20261023-brain1"></script>
 </head>
 <body class="workspace-page">
   <main class="workspace-shell">
@@ -610,6 +612,50 @@
     </section>
 
     <span id="self" class="workspace-anchor" aria-hidden="true"></span>
+
+    <section class="brain-explorer" id="brain-explorer" aria-labelledby="brain-explorer-title" data-workspace-active="false">
+      <div class="brain-explorer__head">
+        <div><p class="section-kicker">Self · connected reading</p><h2 id="brain-explorer-title">Ideas in relation.</h2></div>
+        <span class="brain-explorer__demo">Sample concepts · no private notes</span>
+      </div>
+      <p class="brain-explorer__availability" role="status">Unlock Workspace to explore the Brain.</p>
+      <div class="brain-explorer__scope" hidden>
+        <div class="brain-explorer__stage">
+          <div class="brain-explorer__stage-top" aria-hidden="true"><span>Selected ideas and their connections</span><span>Perspective model</span></div>
+          <canvas class="brain-explorer__canvas" tabindex="0" aria-label="Brain model; drag or use arrow keys to rotate" role="img"></canvas>
+          <div class="brain-explorer__stage-controls">
+            <p>Drag to explore · Select a point</p>
+            <div class="brain-explorer__buttons">
+              <button class="brain-explorer__rotate" type="button" aria-pressed="false">Rotate</button>
+              <button class="brain-explorer__reset" type="button">Reset view</button>
+            </div>
+          </div>
+        </div>
+        <div class="brain-explorer__reading" aria-live="polite">
+          <div class="brain-explorer__reading-main">
+            <p class="brain-explorer__reading-heading">In focus</p>
+            <h3 class="brain-explorer__reading-title"></h3>
+            <p class="brain-explorer__author"></p>
+            <blockquote class="brain-explorer__quote" hidden></blockquote>
+            <p class="brain-explorer__meaning"></p>
+            <a class="brain-explorer__source" href="#" target="_blank" rel="noopener noreferrer"></a>
+          </div>
+          <div class="brain-explorer__reading-side">
+            <p class="brain-explorer__side-label">A question to carry</p>
+            <p class="brain-explorer__question"></p>
+            <p class="brain-explorer__side-label">Connected ideas</p>
+            <div class="brain-explorer__connections" aria-label="Explore connected ideas"></div>
+          </div>
+        </div>
+        <div class="brain-explorer__index">
+          <label>Find an idea<input class="brain-explorer__search" type="search" autocomplete="off" placeholder="Concept, thinker, work…" /></label>
+          <label>Or choose from the index<select class="brain-explorer__select" aria-label="Choose a connected idea"></select></label>
+        </div>
+        <p class="brain-explorer__note">This is a navigable conceptual model, not a scientific map of where ideas live in the brain. This public-sandbox example is synthetic and read-only; canonical ALVIRA Context and private ASHWOOD Brain records are not copied into the bundle.</p>
+      </div>
+    </section>
+
+
 
     <section class="self-daily-wisdom" id="self-daily-wisdom" aria-labelledby="self-season-title">
       <p class="section-kicker">Self · current season</p>
