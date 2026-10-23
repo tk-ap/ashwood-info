@@ -14,13 +14,13 @@ content. It writes a non-secret `staging-manifest.json` describing both source
 commits.
 
 The current Workspace source is the demo-only draft at
-`tk-ap/ashwood-command-center` commit `135a33c9d2cb7b190a1b80ac36db4399ec74e5c2`.
+`tk-ap/ashwood-command-center` commit `1977ef16ef32202bc28a43d8a65bc4ba85465c44`.
 Build it first with `WORKSPACE_STATIC=1 bun run build`, then create a new artifact:
 
 ```sh
 node scripts/build-here-now-staging.mjs /tmp/ashwood-here-now-stage \
   --workspace-static /absolute/path/to/.output/public \
-  --workspace-source-ref 135a33c9d2cb7b190a1b80ac36db4399ec74e5c2
+  --workspace-source-ref 1977ef16ef32202bc28a43d8a65bc4ba85465c44
 ```
 
 Publishing remains an explicit separate step. Reconcile the provider version
@@ -35,3 +35,9 @@ The existing Workspace V2 source PR (tk-ap/ashwood-command-center#1) now embeds 
 The staging builder remains attached to this same here.now PR (#295) and stable slug; it must receive the **exact pinned source SHA above** from a successful WORKSPACE_STATIC=1 build. Do not substitute an old workspace build, or update the live provider until all source and privacy checks pass. OmniChat remains a separate stacked draft PR in the command-center repository and is not implicitly included by this pin.
 
 The new assembly check requires the Brain section and its disconnected/demo status on /workspace/self/. CI test success and an authorized version-aware here.now publish/readback are separate.
+
+## 2026-10-23 — second design reference evaluation
+
+Reviewed the external public Command Center snapshot at https://queued-bridge-fxm7.here.now/ for interaction/product patterns only. **Do not republish, clone or ingest its personal statements or internal operating data.** Useful patterns now adapted in existing Workspace V2 Self Brain are: separate demo note links from editorial reading associations, draw them differently, show concise per-connection provenance, include counterpoints instead of uncritical agreement, and reserve promotion of personal principles to the owner. The snapshot is not a canonical or authenticated ALVIRA source.
+
+All changes remain on the existing Workspace source PR #1 and this existing staging PR #295. The pinned SHA must be built and tested before an authorized here.now in-place update; there is no implied live publish.
