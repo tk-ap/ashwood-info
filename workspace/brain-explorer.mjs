@@ -146,7 +146,7 @@ if (root) {
   }
   function tick(){
     frame=0;
-    if(!shown||!moving||reduced.matches||document.hidden)return;
+    if(!shown||!moving||reduced.matches||document.hidden||root.dataset.workspaceActive!=="true")return;
     yaw+=.002;
     draw();
     frame=requestAnimationFrame(tick);
@@ -156,7 +156,7 @@ if (root) {
     moving=moving&&!reduced.matches;
     rotate.setAttribute("aria-pressed",String(moving));
     rotate.textContent=moving?"Pause rotation":"Rotate";
-    stop();if(moving&&shown)frame=requestAnimationFrame(tick);
+    stop();if(moving&&shown&&root.dataset.workspaceActive==="true")frame=requestAnimationFrame(tick);
   }
   function authReady(){
     return document.body.dataset.workspaceAuth==="authenticated";
