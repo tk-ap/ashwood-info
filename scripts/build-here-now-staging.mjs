@@ -155,6 +155,13 @@ if (!workspaceIndex.includes("Demo data") || !workspaceIndex.includes("demo sand
   throw new Error("Workspace output is not visibly labelled as the demo sandbox.");
 }
 
+const brainSelfHtml = await readFile(resolve(destination, "workspace/self/index.html"), "utf8");
+if (!brainSelfHtml.includes("A connected reading.") ||
+    !brainSelfHtml.includes("PRIVATE BRAIN DISCONNECTED") ||
+    !brainSelfHtml.includes("Stillness reads as confidence")) {
+  throw new Error("Workspace V2 Self route is missing the contextual Brain atlas or its demo safety disclosure.");
+}
+
 const manifest = {
   format: "ashwood-here-now-staging-v2",
   public_source_commit: sourceCommit,
