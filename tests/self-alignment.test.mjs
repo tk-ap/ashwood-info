@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {ALIGNMENT_LENSES, alignmentLensFor, mountSelfAlignmentMirror} from '../workspace/self-alignment.mjs';
+import {ALIGNMENT_LENSES, alignmentLensFor, mountSelfAlignmentMirror, approvedChiefAimFromContexts} from '../workspace/self-alignment.mjs';
 
 test('mirror provides six grounded, distinct philosophical prompts', () => {
   assert.equal(ALIGNMENT_LENSES.length, 6);
@@ -58,5 +58,21 @@ test('Self mirror is mounted to current main shell and remains in Self view', as
  assert.ok(inserted);
  // No private owner aim, birth data or owner-authored confidential diary in static mirror.
  assert.doesNotMatch(inserted,/25,000,000|2046|birth time|birth place|Life Path 4|Scorpio Moon|Cancer Rising/);
- assert.match(inserted,/Awaiting owner-approved ALVIRA Context readback/);
+ assert.match(inserted,/data-chief-aim-status/);
+});
+
+test('Chief Aim selector refuses unsourced, unapproved and test records', () => {
+  const sample = (basis,environment='production',topic='My Definite Chief Aim') => ({
+    source:'alvira', environment, topic,
+    observed_at:'2026-10-23T15:00:00.000Z',
+    goal_spec:{fields:{goal:{value:'An owner-approved private goal',basis}}}
+  });
+  assert.equal(approvedChiefAimFromContexts(null),null);
+  assert.equal(approvedChiefAimFromContexts([sample('interview')]),null);
+  assert.equal(approvedChiefAimFromContexts([sample('owner','test')]),null);
+  assert.equal(approvedChiefAimFromContexts([sample('owner','production','Other goal')]),null);
+  assert.equal(approvedChiefAimFromContexts([{...sample('owner'),source:'unknown'}]),null);
+  const selected=approvedChiefAimFromContexts([sample('interview'),sample('owner')]);
+  assert.equal(selected.text,'An owner-approved private goal');
+  assert.equal(selected.updatedAt,'2026-10-23T15:00:00.000Z');
 });
