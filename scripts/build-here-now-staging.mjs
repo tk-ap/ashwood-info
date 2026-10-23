@@ -155,6 +155,13 @@ if (!workspaceIndex.includes("Demo data") || !workspaceIndex.includes("demo sand
   throw new Error("Workspace output is not visibly labelled as the demo sandbox.");
 }
 
+// Guard the owner-visible Today follow-through review on the combined public-site sandbox.
+// This must remain fictional until a real authenticated and authorized adapter is verified.
+if (!workspaceIndex.includes("What may be slipping") ||
+    !workspaceIndex.includes("Fictional demo records")) {
+  throw new Error("Workspace V2 Today route is missing its evidence-aware follow-through review or demo disclosure.");
+}
+
 const brainSelfHtml = await readFile(resolve(destination, "workspace/self/index.html"), "utf8");
 if (!brainSelfHtml.includes("A connected reading.") ||
     !brainSelfHtml.includes("PRIVATE BRAIN DISCONNECTED") ||
