@@ -72,3 +72,7 @@ body.pw-page{margin:0;background:var(--pw-bg);color:var(--pw-ink);font-family:va
   .pw-open img{transition:none}
   html{scroll-behavior:auto}
 }
+
+/* Artwork-led print studies retain the full source composition on every screen. */
+.pw-piece.pw-piece--print .pw-open img{aspect-ratio:auto;height:auto;object-fit:contain}
+.pw-piece--print .pw-open:hover img,.pw-piece--print .pw-open:focus-visible img{transform:none;filter:none}

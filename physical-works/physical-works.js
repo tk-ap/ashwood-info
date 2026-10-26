@@ -57,7 +57,7 @@
       status.textContent = piece.status || "";
       title.textContent = piece.title || "";
       spec.innerHTML = "";
-      [specRow("Medium", piece.medium), specRow("Size", piece.size), specRow("State", piece.state)]
+      [specRow("Medium", piece.medium), specRow("Original size", piece.size), specRow("Print study", piece.printSize), specRow("Print status", piece.printState), specRow("State", piece.state)]
         .forEach(function (row) {
           if (row) spec.appendChild(row);
         });
