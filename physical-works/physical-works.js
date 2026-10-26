@@ -34,6 +34,7 @@
   var story = document.getElementById("pwSheetStory");
   var closeBtn = document.getElementById("pwSheetClose");
   var lastFocus = null;
+  var sides = document.getElementById("pwSheetSides");
 
   function specRow(term, value) {
     if (!value) return "";
@@ -52,22 +53,35 @@
       var piece = data[button.getAttribute("data-piece")];
       if (!piece || typeof sheet.showModal !== "function") return;
       lastFocus = button;
-      img.src = piece.img;
-      img.alt = piece.alt || "";
-      status.textContent = piece.status || "";
-      title.textContent = piece.title || "";
-      spec.innerHTML = "";
-      [specRow("Medium", piece.medium), specRow("Original size", piece.size), specRow("Print study", piece.printSize), specRow("Print status", piece.printState), specRow("State", piece.state)]
-        .forEach(function (row) {
-          if (row) spec.appendChild(row);
+      var surfaces = Array.isArray(piece.surfaces) && piece.surfaces.length ? piece.surfaces : [piece];
+      sides.innerHTML = "";
+      sides.hidden = surfaces.length < 2;
+      function showSurface(index) {
+        var surface = surfaces[index];
+        img.src = surface.img || piece.img;
+        img.alt = surface.alt || piece.alt || "";
+        status.textContent = piece.status || "";
+        title.textContent = piece.title || "";
+        spec.innerHTML = "";
+        [specRow("Surface", surface.label), specRow("Medium", piece.medium), specRow("Original size", piece.size), specRow("Print study", surface.printSize || piece.printSize), specRow("Print status", piece.printState), specRow("State", piece.state)]
+          .forEach(function (row) { if (row) spec.appendChild(row); });
+        story.innerHTML = "";
+        var copy = piece.story || "";
+        if (surface !== piece && surface.story) copy += "\n\n" + surface.story;
+        copy.split(/\n\n+/).forEach(function (para) {
+          if (!para) return;
+          var p = document.createElement("p"); p.textContent = para; story.appendChild(p);
         });
-      story.innerHTML = "";
-      (piece.story || "").split(/\n\n+/).forEach(function (para) {
-        if (!para) return;
-        var p = document.createElement("p");
-        p.textContent = para;
-        story.appendChild(p);
+        sides.querySelectorAll("button").forEach(function (b, i) { b.setAttribute("aria-pressed", i === index ? "true" : "false"); });
+      }
+      if (surfaces.length > 1) surfaces.forEach(function (surface, index) {
+        var side = document.createElement("button");
+        side.type = "button"; side.textContent = surface.label || ("Side " + (index + 1));
+        side.setAttribute("aria-pressed", "false");
+        side.addEventListener("click", function () { showSurface(index); });
+        sides.appendChild(side);
       });
+      showSurface(0);
       sheet.showModal();
     });
   });

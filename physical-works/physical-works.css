@@ -76,3 +76,9 @@ body.pw-page{margin:0;background:var(--pw-bg);color:var(--pw-ink);font-family:va
 /* Artwork-led print studies retain the full source composition on every screen. */
 .pw-piece.pw-piece--print .pw-open img{aspect-ratio:auto;height:auto;object-fit:contain}
 .pw-piece--print .pw-open:hover img,.pw-piece--print .pw-open:focus-visible img{transform:none;filter:none}
+
+.pw-sides{display:flex;flex-wrap:wrap;gap:8px;padding:20px 26px 8px}
+.pw-sides[hidden]{display:none}
+.pw-sides button{border:1px solid var(--pw-rule);background:transparent;color:var(--pw-ink);padding:12px 14px;min-height:44px;font:600 11px/1.4 var(--pw-mono);cursor:pointer}
+.pw-sides button[aria-pressed="true"]{background:var(--pw-gold);color:#111}
+.pw-sides button:focus-visible{outline:2px solid var(--pw-gold);outline-offset:3px}
