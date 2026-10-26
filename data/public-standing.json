@@ -1,49 +1,58 @@
 {
-  "generated_at": "2026-10-19T16:17:51.516Z",
+  "generated_at": "2026-10-26T15:56:55.073Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
-    "total_posts": 85,
-    "latest_post_at": "2026-09-08T18:25:02.000Z",
-    "posts_30d": 0,
-    "avg_likes": 167,
+    "total_posts": 86,
+    "latest_post_at": "2026-10-26T12:55:02.000Z",
+    "posts_30d": 1,
+    "avg_likes": 161,
     "avg_comments": 7,
-    "recent_posts": []
+    "recent_posts": [
+      {
+        "at": "2026-10-26T12:55:02.000Z",
+        "caption": "30 or whatever.",
+        "likes": 18,
+        "comments": 1,
+        "type": "Sidecar",
+        "url": "https://www.instagram.com/p/De9VLupmxb2/"
+      }
+    ]
   },
   "tiktok": {
     "account": "tiktokoftk",
     "followers": 71,
     "following": 58,
     "verified": false,
-    "total_videos": 33,
-    "latest_video_at": "2026-10-08T01:58:05.000Z",
-    "videos_30d": 11,
-    "avg_plays": 261,
-    "avg_likes": 20,
+    "total_videos": 37,
+    "latest_video_at": "2026-10-26T05:41:19.000Z",
+    "videos_30d": 12,
+    "avg_plays": 265,
+    "avg_likes": 19,
     "avg_comments": 2,
     "recent_videos": [
       {
+        "at": "2026-10-26T05:41:19.000Z",
+        "caption": "#draftdump #artistsoftiktok #dtla #barelysain #youmatter ",
+        "plays": 86,
+        "likes": 6,
+        "comments": 0,
+        "shares": 0
+      },
+      {
+        "at": "2026-10-26T05:31:36.000Z",
+        "caption": "grateful #peaceful #moonlight ",
+        "plays": 296,
+        "likes": 7,
+        "comments": 0,
+        "shares": 0
+      },
+      {
         "at": "2026-10-08T01:58:05.000Z",
         "caption": "so maybe I need to make use of this fabric , but more importantly, I ran out of black pastel 😭💀 so who know how to sew? Lmao I’m trynna se",
-        "plays": 111,
+        "plays": 112,
         "likes": 2,
         "comments": 0,
-        "shares": 0
-      },
-      {
-        "at": "2026-10-07T22:22:55.000Z",
-        "caption": "Keep forgetting to include TikTok in this lil song series 😭😂 anyway yall few or naaaaa ? #soundcloudera #wlwtiktok #fypシ゚viral ",
-        "plays": 346,
-        "likes": 21,
-        "comments": 0,
-        "shares": 0
-      },
-      {
-        "at": "2026-10-04T06:47:30.000Z",
-        "caption": "day treeeee #soundcloudera #musictok #wlw #fypシ゚viral #exp ",
-        "plays": 127,
-        "likes": 3,
-        "comments": 2,
         "shares": 0
       }
     ]
