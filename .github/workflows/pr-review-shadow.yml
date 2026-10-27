@@ -1,0 +1,86 @@
+name: PR Review (shadow)
+
+# AgentOS PR reviewer, shadow phase (owner-approved 2026-10-21).
+# Source: tk-ap/agent-os skills/owned/pr-review; vendored copy in .github/pr-review/.
+#
+# Shadow means: findings go to this run's job summary only. Nothing is posted
+# to the PR, the job never blocks a merge, and the Codex READ-ONLY PASS stays
+# the merge gate.
+#
+# Cost cap: $0. Inference runs on the owner's Claude subscription through
+# CLAUDE_CODE_OAUTH_TOKEN (create it with `claude setup-token`). The job
+# refuses to run if a paid ANTHROPIC_API_KEY secret exists, and skips when the
+# OAuth token is missing. Per-pass --budget is a runaway guard only.
+#
+# This repository is public: job summaries are visible to anyone, and
+# review.py refuses to write output that matches a credential pattern.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Same-repo PRs only; fork PRs get no secrets anyway.
+    if: github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - name: Enforce the $0 cap
+        id: auth
+        env:
+          HAS_API_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+          HAS_OAUTH: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+        run: |
+          if [ "$HAS_API_KEY" = "true" ]; then
+            echo "::error::ANTHROPIC_API_KEY is set; this reviewer is subscription-only (\$0 cap). Remove the secret."
+            exit 1
+          fi
+          if [ "$HAS_OAUTH" != "true" ]; then
+            echo "::notice::CLAUDE_CODE_OAUTH_TOKEN is not set; skipping the shadow review."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.auth.outputs.run == 'true'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install Claude Code
+        if: steps.auth.outputs.run == 'true'
+        run: npm install -g @anthropic-ai/claude-code@2.1.296
+
+      - name: Review
+        if: steps.auth.outputs.run == 'true'
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          python3 .github/pr-review/review.py --repo . --base "$BASE" --head "$HEAD" \
+            --rules .github/pr-review/rules/ashwood-info.md --pr "$PR" --gh-repo "$GITHUB_REPOSITORY" \
+            --out "$RUNNER_TEMP/pr-review" --budget 1.5
+          cat "$RUNNER_TEMP/pr-review/report.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.auth.outputs.run == 'true' && always()
+        with:
+          name: pr-review-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/pr-review/
+          retention-days: 30
+          if-no-files-found: ignore
