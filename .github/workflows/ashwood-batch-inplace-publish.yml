@@ -1,0 +1,163 @@
+name: ASHWOOD one-batch here.now in-place release
+# One-time release attempt for the validated complete public+private Workspace assembly.
+# Triggers only when this workflow file is added/changed; future use is manual.
+on:
+  push:
+    branches:
+      - codex/here-now-current-staging
+    paths:
+      - .github/workflows/ashwood-batch-inplace-publish.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ashwood-mighty-yoga-pgph-version-aware-release
+  cancel-in-progress: false
+
+jobs:
+  full-assembly-and-guarded-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      WORKSPACE_STATIC: "1"
+      PUBLIC_REF: codex/here-now-current-staging
+      WORKSPACE_REF: e883e510eb625ea30e5ed089dd517671867e2e75
+      STABLE_SLUG: mighty-yoga-pgph
+      # Fresh owner-authenticated read-only diagnostic 2026-10-27 23:56 UTC.
+      # Must equal provider actual version immediately before mutation.
+      EXPECTED_VERSION: 01M5ZS03Y4DMAWVPKN8ZW009PS
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+      WORKSPACE_READ_TOKEN: ${{ secrets.ASHWOOD_WORKSPACE_READ_TOKEN }}
+    steps:
+      - name: Verify both bounded credentials exist
+        id: access
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${HERENOW_API_KEY:-}" ]]; then
+            echo "PUBLISH_NOT_ATTEMPTED: owner here.now connection missing"
+            echo "- Release blocked: here.now owner credential unavailable." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if [[ -z "${WORKSPACE_READ_TOKEN:-}" ]]; then
+            echo "PUBLISH_NOT_ATTEMPTED: read-only access to private Workspace repo missing"
+            echo "- Release blocked: a fine-grained read-only Workspace token is not configured in this public repo." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+      - name: Checkout exact public ASHWOOD staging branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUBLIC_REF }}
+          path: ashwood-public
+      - name: Checkout pinned private Workspace source
+        uses: actions/checkout@v4
+        with:
+          repository: tk-ap/ashwood-command-center
+          ref: ${{ env.WORKSPACE_REF }}
+          token: ${{ secrets.ASHWOOD_WORKSPACE_READ_TOKEN }}
+          persist-credentials: false
+          path: ashwood-workspace
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Verify Workspace source and build eight routes
+        working-directory: ashwood-workspace
+        run: |
+          set -euo pipefail
+          bun install --frozen-lockfile
+          bun test
+          bun x tsc --noEmit
+          WORKSPACE_STATIC=1 bun run build
+          test -f .output/public/operator/index.html
+          grep -Fq "Who is building what?" .output/public/operator/index.html
+          grep -Fq "Runtime swim lanes" .output/public/operator/index.html
+          test -f .output/public/self/index.html
+          test -f .output/public/work/studio/index.html
+      - name: Assemble one full public ASHWOOD + Workspace artifact
+        id: assemble
+        env:
+          PUBLIC_DIR: ${{ github.workspace }}/ashwood-public
+          PRIVATE_DIR: ${{ github.workspace }}/ashwood-workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          combined="/tmp/ashwood-release-${GITHUB_RUN_ID}"
+          node "$PUBLIC_DIR/scripts/build-here-now-staging.mjs" "$combined" \
+            --workspace-static "$PRIVATE_DIR/.output/public" \
+            --workspace-source-ref "$WORKSPACE_REF"
+          for route in index.html physical-works/index.html workspace/index.html workspace/operator/index.html workspace/self/index.html workspace/work/studio/index.html; do
+            test -s "$combined/$route"
+          done
+          grep -Fq "Who is building what?" "$combined/workspace/operator/index.html"
+          grep -Fq "Identity contributions" "$combined/workspace/operator/index.html" || true
+          # Hard release boundary: no known credential-formatted tokens or private keys.
+          if grep -R -E 'hnk_[a-zA-Z0-9]+|postgres(ql)?://|BEGIN OPENSSH PRIVATE KEY' "$combined"; then
+            echo "Private credential-like content detected: refusing release" >&2
+            exit 1
+          fi
+          echo "path=$combined" >> "$GITHUB_OUTPUT"
+          echo "- Complete assembled public+Workspace artifact validated." >> "$GITHUB_STEP_SUMMARY"
+          echo "- Workspace source: $WORKSPACE_REF" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Public source SHA: $(git -C "$PUBLIC_DIR" rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Public Operator displays fictional sample data, not live model sessions." >> "$GITHUB_STEP_SUMMARY"
+      - name: Save frozen full release artifact for audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: ashwood-single-release-${{ github.sha }}
+          path: ${{ steps.assemble.outputs.path }}/
+          retention-days: 5
+      - name: Fetch owner currentVersionId and reject drift
+        id: provider
+        shell: bash
+        run: |
+          set -euo pipefail
+          meta=$(curl -fsS --retry 2 --max-time 30 \
+            -H "Authorization: Bearer ${HERENOW_API_KEY}" \
+            -H "X-HereNow-Client: github-actions/ashwood-version-aware" \
+            "https://here.now/api/v1/publish/${STABLE_SLUG}")
+          actual=$(printf '%s' "$meta" | jq -r '.currentVersionId // empty')
+          test -n "$actual"
+          if [[ "$actual" != "$EXPECTED_VERSION" ]]; then
+            echo "Refusing stale base; expected version differs from owner provider. No publish." >&2
+            echo "- Publish BLOCKED: provider changed since preflight." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "base=$actual" >> "$GITHUB_OUTPUT"
+      - name: Install pinned here.now publisher
+        run: |
+          set -euo pipefail
+          git clone --no-checkout https://github.com/heredotnow/skill.git "$RUNNER_TEMP/here-now-skill"
+          git -C "$RUNNER_TEMP/here-now-skill" checkout --detach a85fa61f8738e623a972e0fc731c3b6e9e7d7229
+      - name: Publish exactly one version-aware update to canonical slug
+        id: publish
+        env:
+          COMBINED: ${{ steps.assemble.outputs.path }}
+          BASE_VERSION: ${{ steps.provider.outputs.base }}
+        working-directory: ashwood-public
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .herenow
+          jq -n --arg slug "$STABLE_SLUG" --arg version "$BASE_VERSION" --arg path "$COMBINED" \
+            '{publishes:{($slug):{versionId:$version,path:$path}}}' > .herenow/state.json
+          if ! bash "$RUNNER_TEMP/here-now-skill/here-now/scripts/publish.sh" \
+            "$COMBINED" --slug "$STABLE_SLUG" --client github-actions/ashwood-single-batch \
+            > "$RUNNER_TEMP/ashwood-here-now-publish.log" 2>&1; then
+            echo "Protected publish failed. No fallback, force-overwrite or second slug attempted." >&2
+            exit 1
+          fi
+          echo "site=https://${STABLE_SLUG}.here.now/" >> "$GITHUB_OUTPUT"
+      - name: Verify every essential existing live route after publish
+        env:
+          SITE: ${{ steps.publish.outputs.site }}
+        run: |
+          set -euo pipefail
+          for route in '/' '/physical-works/' '/workspace/' '/workspace/operator/' '/workspace/self/' '/workspace/work/studio/'; do
+            curl --fail --silent --show-error --retry 3 --max-time 30 "${SITE%/}$route" -o "$RUNNER_TEMP/ashwood-route.html"
+            test -s "$RUNNER_TEMP/ashwood-route.html"
+            if [[ "$route" == "/workspace/operator/" ]]; then
+              grep -Fq "Who is building what?" "$RUNNER_TEMP/ashwood-route.html"
+            fi
+          done
+          echo "VERIFIED_IN_PLACE=https://${STABLE_SLUG}.here.now/" >> "$GITHUB_STEP_SUMMARY"
