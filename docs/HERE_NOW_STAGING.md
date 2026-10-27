@@ -14,13 +14,13 @@ content. It writes a non-secret `staging-manifest.json` describing both source
 commits.
 
 The current Workspace source for the next static build is the validated, demo-only OmniChat integration at
-`tk-ap/ashwood-command-center` commit `0d5a67d47d2533d797388f9976675b67d449a6ba` (existing draft PR #2, reconciled with latest Workspace V2 PR #1).
+`tk-ap/ashwood-command-center` commit `72d11758e76ca56abbc8e681fdd74039d0e4ac80` (existing draft PR #2, reconciled with latest Workspace V2 PR #1).
 Build it first with `WORKSPACE_STATIC=1 bun run build`, then create a new artifact:
 
 ```sh
 node scripts/build-here-now-staging.mjs /tmp/ashwood-here-now-stage \
   --workspace-static /absolute/path/to/.output/public \
-  --workspace-source-ref 0d5a67d47d2533d797388f9976675b67d449a6ba
+  --workspace-source-ref 72d11758e76ca56abbc8e681fdd74039d0e4ac80
 ```
 
 Publishing remains an explicit separate step. Reconcile the provider version
@@ -54,4 +54,4 @@ Local browser review: desktop 1363px and 390px iframe (375px client area), zero 
 
 The existing Workspace V2 /operator route now houses the unified OmniChat composer, sample sessions, responsive runtime swim lanes, event timeline, capacity/exhaustion markers, per-agent receipts, and an explicit unavailable live-mode state. The UI inherits ASHWOOD theme tokens (warm-dark, paper-light, Tokyo Night, phosphor) and existing navigation; no second app or tab. The original Operator controls stay available in a disclosure. **All displayed agent activity is fictional demo data; the static here.now sandbox has no authenticated AgentOS/Herdr/LEDGATo connection.**
 
-Workspace source: `0d5a67d47d2533d797388f9976675b67d449a6ba` (tk-ap/ashwood-command-center PR #2). CI [run 40575138845](https://github.com/tk-ap/ashwood-command-center/actions/runs/40575138845) passed 36 tests, TypeScript and `WORKSPACE_STATIC=1 bun run build`. The staging assembler's full-source/privacy checks and the here.now in-place version-aware publish remain separate. No production deploy is authorized.
+Workspace source: `72d11758e76ca56abbc8e681fdd74039d0e4ac80` (tk-ap/ashwood-command-center PR #2). CI [run 40575138845](https://github.com/tk-ap/ashwood-command-center/actions/runs/40575138845) passed 36 tests, TypeScript and `WORKSPACE_STATIC=1 bun run build`. The staging assembler's full-source/privacy checks and the here.now in-place version-aware publish remain separate. No production deploy is authorized.
