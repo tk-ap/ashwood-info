@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#101412">
+  <title>OmniChat — AgentOS prototype</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="OmniChat navigation">
+      <div class="brand"><span class="brand-icon"><span></span><span></span><span></span><span></span></span><div><strong>omnichat</strong><small>ASHWOOD · Operator</small></div></div>
+      <button class="new" type="button" id="new-thread"><span>＋</span> New session <span class="shortcut">N</span></button>
+      <div class="side-heading">YOUR SESSIONS <span>03</span></div>
+      <nav class="sessions" id="sessions">
+        <button class="session active" data-session="build"><span class="session-icon">◇</span><span><strong>AgentOS continuity</strong><small>4 harness lanes · today</small></span></button>
+        <button class="session" data-session="site"><span class="session-icon">□</span><span><strong>ASHWOOD release</strong><small>2 harness lanes · yesterday</small></span></button>
+        <button class="session" data-session="career"><span class="session-icon">⌕</span><span><strong>Career operations</strong><small>1 harness lane · Oct 25</small></span></button>
+      </nav>
+      <div class="side-spacer"></div>
+      <div class="runtime-mini"><div class="tiny-label"><span class="indicator" id="sidebar-indicator"></span><span id="sidebar-mode">SIMULATED RUNTIME</span></div><p>One front door. Your existing agent sessions, governed by AgentOS.</p><span class="mini-divider"></span><span>Dispatch · Jev shadow routing</span><span>Authority · LEDGATo</span></div>
+      <div class="side-bottom"><div class="avatar">TK</div><div><b>Owner workspace</b><small>Prototype · read-only by default</small></div><span>⌄</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="crumb"><span>WORKSPACE</span><span class="crumb-div">/</span><strong>OmniChat</strong><span class="version">V0.1</span></div>
+        <div class="top-actions"><span class="mode-label" id="mode-label">DEMO DATA</span><button id="toggle-mode" class="ghost" type="button">Connect feed</button><button id="view-doc" class="icon-button" type="button" title="About data sources">?</button></div>
+      </header>
+      <div class="workspace-grid">
+        <section class="conversation" aria-label="One chat, multiple governed agents">
+          <div class="conversation-head"><div><div class="eyebrow"><span class="lime-dot"></span> SINGLE SESSION INTERFACE</div><h1 id="thread-title">AgentOS continuity</h1><p id="thread-subtitle">Your intent enters once. Jev proposes the best available session; AgentOS controls execution.</p></div><span class="head-count" id="thread-meta">4 connected lanes</span></div>
+          <div class="messages" id="messages" role="log" aria-live="polite">
+            <div class="message owner"><div class="msg-label"><span class="avatar small">TK</span><b>You</b><time>10:42</time></div><p>Close the gaps in persistent agent check-in, checkout, wake, and automatic handoffs when a harness exhausts its capacity.</p></div>
+            <div class="message system"><div class="msg-label"><span class="a-mark">A</span><b>AgentOS</b><span class="message-chip">ROUTING PREVIEW</span><time>10:42</time></div><p>I would split this into a bounded continuity test: lifecycle reconciliation, harness capacity receipt, Jev-scored handoff, and evidence validation. Protected monitor changes remain approval-gated.</p><div class="decision-note"><span class="mini-branch"></span> Jev suggests <strong>Codex</strong> for implementation; <strong>Claude</strong> for review. This is sample routing data.</div></div>
+            <div class="handoff-rail"><span class="rail-node"></span><span>Jev · candidate selection</span><span class="rail-arrow">→</span><span>Codex · implementation</span><span class="rail-arrow">→</span><span>Claude · review</span></div>
+          </div>
+          <div class="composer-wrap">
+            <form class="composer" id="composer">
+              <label class="sr-only" for="prompt">Message AgentOS</label>
+              <textarea id="prompt" rows="2" placeholder="Message your entire team from one place…"></textarea>
+              <div class="composer-footer"><span class="composer-prefix"><span class="stack-icon">◎</span> AgentOS <span>·</span> Jev auto-route <span>⌄</span></span><span class="composer-controls"><span id="send-hint">Demo: no real dispatch</span><button id="send" type="submit" aria-label="Send message">↑</button></span></div>
+            </form>
+            <p class="under-composer"><span class="protected-dot"></span> Protected actions are approved in LEDGATo. No model or harness can self-grant authority.</p>
+          </div>
+        </section>
+
+        <section class="activity" aria-label="Live harness activity swim lanes">
+          <div class="activity-header"><div><div class="eyebrow">EXECUTION OBSERVABILITY</div><h2>Runtime swim lanes</h2><p>See who is executing, where, and what happens at the next handoff.</p></div><button id="refresh" class="refresh" type="button" aria-label="Refresh activity">↻</button></div>
+          <div class="activity-kpis"><div><small>WORKING</small><strong id="metric-working">2</strong></div><div><small>WAITING</small><strong id="metric-waiting">1</strong></div><div><small>HANDOFFS</small><strong id="metric-handoffs">1</strong></div><div><small>CAPACITY</small><strong id="metric-capacity">1 <em>alert</em></strong></div></div>
+          <div class="lane-controls"><div class="segmented" role="group" aria-label="Activity view"><button data-view="swim" class="selected" type="button">Swim lanes</button><button data-view="events" type="button">Event stream</button></div><div class="timeline-controls"><span id="time-label">Sample sequence</span><span class="live-pulse" id="live-pulse"></span></div></div>
+          <div class="timeline-head"><span>AGENT / HARNESS</span><div class="timeline-ticks"><span>START</span><span>CHECKPOINT</span><span>NOW</span></div></div>
+          <div class="swimlanes" id="swimlanes"></div>
+          <div class="event-stream" id="event-stream" hidden></div>
+          <div class="activity-foot"><span id="freshness">Sample data · not a live telemetry source</span><span>Read-only telemetry</span></div>
+          <div class="trace" id="trace"><div class="trace-title"><div><small>SELECTED EXECUTION</small><h3 id="trace-agent">Codex · implementation</h3></div><span id="trace-state" class="status-pill working">WORKING</span></div><div class="trace-details" id="trace-details"></div><div class="trace-evidence" id="trace-evidence"></div></div>
+          <div class="notice"><span class="notice-star">✳</span><div><b>Continuity over activity theater</b><p>Heartbeat receipts, capacity exhaustion, checkpoint persistence, and Jev handoffs require observed canonical events. Unknown is shown as unknown.</p></div></div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <dialog id="about"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button><h2>How OmniChat connects</h2><p>This is a static design prototype. Sample swim lanes are deliberately marked <strong>Demo data</strong>. Use the Connect feed control only when this route is hosted behind an authenticated AgentOS read-only telemetry bridge.</p><p>The bridge must serve <code>GET /api/omnichat/activity</code> with <code>observed_at</code>, <code>lanes[]</code>, heartbeat timestamps, and durable lifecycle evidence. The write path is separately governed: <code>POST /api/omnichat/command</code> through AgentOS and LEDGATo, never direct harness execution.</p><p>21st.dev references: Agent Elements (chat/tool states) and Agent Activity (collapsible activity timeline). Design recreated for the existing ASHWOOD direction, no third-party runtime scripts.</p><button class="dialog-button" type="submit">Close</button></form></dialog>
+</body>
+</html>
