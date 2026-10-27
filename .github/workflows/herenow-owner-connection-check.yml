@@ -1,0 +1,42 @@
+name: here.now owner connection diagnostic (read only)
+on:
+  push:
+    branches:
+      - codex/here-now-current-staging
+    paths:
+      - .github/workflows/herenow-owner-connection-check.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    env:
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+    steps:
+      - name: Check owner site metadata without changing anything
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${HERENOW_API_KEY:-}" ]]; then
+            echo "OWNER_HERENOW_KEY=NOT_AVAILABLE_IN_ASHWOOD_ACTIONS"
+            echo "Credential unavailable to this GitHub Actions environment; site untouched." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "OWNER_HERENOW_KEY=PRESENT_IN_ASHWOOD_ACTIONS"
+          metadata=$(curl --fail-with-body --silent --show-error --retry 1 --max-time 30 \
+            -H "Authorization: Bearer ${HERENOW_API_KEY}" \
+            -H "X-HereNow-Client: github-actions/ashwood-owner-probe" \
+            "https://here.now/api/v1/publish/mighty-yoga-pgph")
+          version=$(printf '%s' "$metadata" | jq -r '.currentVersionId // empty')
+          slug=$(printf '%s' "$metadata" | jq -r '.slug // empty')
+          source=$(printf '%s' "$metadata" | jq -r '.currentVersionSource // "unknown"')
+          test "$slug" = 'mighty-yoga-pgph'
+          test -n "$version"
+          echo "OWNER_HERENOW_STATUS=AUTHENTICATED_READ_OK"
+          echo "CURRENT_VERSION_ID=$version"
+          echo "CURRENT_VERSION_SOURCE=$source"
+          echo "Verified owned site metadata by read-only API call. Version: `$version`, source: `$source`. No update was attempted." >> "$GITHUB_STEP_SUMMARY"
