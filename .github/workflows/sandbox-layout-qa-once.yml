@@ -1,0 +1,66 @@
+name: One-time ASHWOOD layout and demo behavior QA
+on:
+  push:
+    branches: [codex/here-now-current-staging]
+    paths: [.github/workflows/sandbox-layout-qa-once.yml]
+permissions:
+  contents: read
+jobs:
+  read-only-ui-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Inspect published Operator and wide-layout routes
+        shell: bash
+        run: |
+          mkdir -p screenshots
+          cat > /tmp/check-ashwood-layout.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs/promises';
+          const browser=await chromium.launch({headless:true});
+          const base='https://mighty-yoga-pgph.here.now';
+          const routes=['/workspace/operator/','/workspace/','/workspace/build/','/workspace/work/','/workspace/evidence/','/workspace/self/','/workspace/network/'];
+          const errors=[];
+          for(const [label,width,height] of [['desktop',1680,980],['mobile',390,844]]){
+            const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:1});
+            for(const route of routes){
+              const page=await context.newPage();
+              const response=await page.goto(base+route,{waitUntil:'networkidle',timeout:60000});
+              if(!response?.ok())throw Error('Non-200 '+route+' '+response?.status());
+              await page.waitForTimeout(350);
+              const metrics=await page.evaluate(()=>{
+                const main=document.querySelector('main');
+                const box=main?.getBoundingClientRect();
+                return {scrollWidth:document.documentElement.scrollWidth,innerWidth:innerWidth,mainWidth:box?.width,mainLeft:box?.left,mainRight:box?.right,title:document.title};
+              });
+              const summary=label+' '+route+' '+JSON.stringify(metrics);
+              console.log(summary);
+              if(metrics.scrollWidth>width+3)errors.push('Horizontal overflow: '+summary);
+              if(route==='/workspace/operator/'){
+                await page.getByRole('heading',{name:'Route the work. Inspect the proof.'}).waitFor({timeout:15000});
+                await page.getByRole('button',{name:/Building the build/}).click();
+                await page.getByText('Capacity exhausted → checkpoint → Jev successor').first().waitFor({timeout:15000}).catch(()=>{});
+                await page.screenshot({path:'screenshots/'+label+'-operator.png',fullPage:true});
+              }
+              if(route==='/workspace/')await page.screenshot({path:'screenshots/'+label+'-today.png',fullPage:true});
+              if(route==='/workspace/self/'&&label==='desktop')await page.screenshot({path:'screenshots/desktop-self.png',fullPage:true});
+              await page.close();
+            }
+            await context.close();
+          }
+          await browser.close();
+          if(errors.length)throw Error(errors.join('\n'));
+          JS
+          node /tmp/check-ashwood-layout.mjs
+      - name: Retain layout screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ashwood-sandbox-layout-qa-20261027
+          path: screenshots/
+          retention-days: 2
+          if-no-files-found: warn
