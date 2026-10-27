@@ -1,0 +1,90 @@
+name: One-time validated ASHWOOD stable sandbox update
+on:
+  push:
+    branches: [codex/here-now-current-staging]
+    paths: [.github/workflows/herenow-operator-in-place-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: ashwood-stable-here-now-operator
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+      TARGET: mighty-yoga-pgph
+      EXPECTED_VERSION: 01M5TC4FWHBHRRK8HMKEND93GN
+      ARTIFACT_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-7dfc-81fd-94dd-b01a4a54d00f/raw?se=2026-10-27T22%3A34%3A58Z&sp=r&sv=2026-02-06&sr=b&scid=67d73394-402b-5ba8-8883-1623ac018213&skoid=1a0ef048-201c-43e0-8950-52d58956a71a&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-27T12%3A55%3A08Z&ske=2026-10-28T12%3A55%3A08Z&sks=b&skv=2026-02-06&sig=FEh3TlaML5jaNEXm%2BAwjOwpBevmW8lPAVjBZrydlUBE%3D'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract complete validated 6f1fdd9 ASHWOOD build
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${HERENOW_API_KEY:-}"
+          OUT="$RUNNER_TEMP/ashwood-complete-site"
+          mkdir -p "$OUT"
+          curl -fsSL --retry 3 --max-time 240 "$ARTIFACT_URL" -o "$RUNNER_TEMP/site.zip"
+          python3 - "$RUNNER_TEMP/site.zip" "$OUT" <<'PY'
+          import sys,zipfile,pathlib
+          with zipfile.ZipFile(sys.argv[1]) as z:
+              names=z.namelist()
+              assert len(names)>170, 'Unexpectedly small artifact'
+              assert all(not n.startswith(('.','/')) and '..' not in pathlib.PurePosixPath(n).parts for n in names)
+              assert not any('.env' in n or n.startswith('api/') for n in names)
+              z.extractall(sys.argv[2])
+          PY
+          for route in index.html physical-works/index.html modeling/index.html workspace/index.html workspace/operator/index.html workspace/self/index.html workspace/work/studio/index.html; do test -s "$OUT/$route"; done
+          grep -Fq 'Runtime swim lanes' "$OUT/workspace/operator/index.html"
+          grep -Fq 'One conversation. Real state.' "$OUT/workspace/operator/index.html"
+          grep -Fq 'Routing, approval & handoff receipts' "$OUT/workspace/operator/index.html"
+          echo "dir=$OUT" >> "$GITHUB_OUTPUT"
+          echo "Full static site artifact and 7 routes validated before publishing." >> "$GITHUB_STEP_SUMMARY"
+      - name: Validate live version against owner provider
+        id: lease
+        shell: bash
+        run: |
+          set -euo pipefail
+          meta=$(curl -fsS --retry 2 --max-time 30 -H "Authorization: Bearer $HERENOW_API_KEY" -H "X-HereNow-Client: github-actions/ashwood-operator" "https://here.now/api/v1/publish/$TARGET")
+          actual=$(printf '%s' "$meta" | jq -r '.currentVersionId // empty')
+          test -n "$actual"
+          if [[ "$actual" != "$EXPECTED_VERSION" ]]; then echo "Version changed: $actual != $EXPECTED_VERSION. No publish." >&2; exit 1; fi
+          echo "version=$actual" >> "$GITHUB_OUTPUT"
+          echo "Provider in-place optimistic lock: $actual" >> "$GITHUB_STEP_SUMMARY"
+      - name: Fetch pinned publisher
+        run: |
+          git clone -q --no-checkout https://github.com/heredotnow/skill.git "$RUNNER_TEMP/herenow"
+          git -C "$RUNNER_TEMP/herenow" checkout -q --detach a85fa61f8738e623a972e0fc731c3b6e9e7d7229
+      - name: Publish complete assembled site to the same slug
+        env:
+          OUT: ${{ steps.artifact.outputs.dir }}
+          VERSION: ${{ steps.lease.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .herenow
+          jq -n --arg slug "$TARGET" --arg v "$VERSION" --arg p "$OUT" '{publishes:{($slug):{versionId:$v,path:$p}}}' > .herenow/state.json
+          if ! bash "$RUNNER_TEMP/herenow/here-now/scripts/publish.sh" "$OUT" --slug "$TARGET" --client github-actions/ashwood-operator > "$RUNNER_TEMP/publish.log" 2>&1; then
+            echo "Provider update failed with no fallback." >&2
+            sed -E 's/[a-zA-Z0-9_-]{45,}/[REDACTED]/g' "$RUNNER_TEMP/publish.log" | tail -25 >&2
+            exit 1
+          fi
+          v=$(jq -r --arg slug "$TARGET" '.publishes[$slug].versionId // empty' .herenow/state.json)
+          test -n "$v"
+          echo "Owned stable site version: $VERSION -> $v" >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify live Operator, Self, Studio, home, Physical Works, Modeling
+        shell: bash
+        run: |
+          set -euo pipefail
+          for route in / /physical-works/ /modeling/ /workspace/ /workspace/operator/ /workspace/self/ /workspace/work/studio/; do
+            curl -fsSL --retry 3 --max-time 45 "https://mighty-yoga-pgph.here.now$route" -o "$RUNNER_TEMP/verify.html"
+            test -s "$RUNNER_TEMP/verify.html"
+            if [[ "$route" == "/workspace/operator/" ]]; then
+              grep -Fq 'One conversation. Real state.' "$RUNNER_TEMP/verify.html"
+              grep -Fq 'Runtime swim lanes' "$RUNNER_TEMP/verify.html"
+            fi
+            echo "Verified $route" >> "$GITHUB_STEP_SUMMARY"
+          done
