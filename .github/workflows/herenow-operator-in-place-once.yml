@@ -40,7 +40,7 @@ jobs:
           for route in index.html physical-works/index.html modeling/index.html workspace/index.html workspace/operator/index.html workspace/self/index.html workspace/work/studio/index.html; do test -s "$OUT/$route"; done
           grep -Fq 'Runtime swim lanes' "$OUT/workspace/operator/index.html"
           grep -Fq 'One conversation. Real state.' "$OUT/workspace/operator/index.html"
-          grep -Fq 'Routing, approval & handoff receipts' "$OUT/workspace/operator/index.html"
+          grep -RFlq 'Routing, approval & handoff receipts' "$OUT/workspace/assets"
           echo "dir=$OUT" >> "$GITHUB_OUTPUT"
           echo "Full static site artifact and 7 routes validated before publishing." >> "$GITHUB_STEP_SUMMARY"
       - name: Validate live version against owner provider
