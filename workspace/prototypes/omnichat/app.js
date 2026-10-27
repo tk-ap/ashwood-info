@@ -5,16 +5,16 @@
   const demo = {
     source_system:'demo', observed_at:null,
     lanes:[
-      {id:'codex',agent:'Codex',harness:'codex-cli',status:'working',title:'Durable lifecycle persistence',task_id:'demo-task-014',last_heartbeat_at:null,checkpoint:'state persisted · sample',start:5,width:75,events:[{kind:'check_in',label:'Harness session checked in',time:'10:42'},{kind:'checkpoint',label:'Atomic checkpoint persisted',time:'10:47'},{kind:'heartbeat',label:'Execution heartbeat',time:'10:51'}]},
-      {id:'claude',agent:'Claude',harness:'claude-code',status:'review',title:'Independent protocol review',task_id:'demo-task-015',last_heartbeat_at:null,checkpoint:'review pending · sample',start:36,width:55,events:[{kind:'check_in',label:'Reviewer context hydrated',time:'10:44'},{kind:'review',label:'Cross-harness test matrix',time:'10:49'}]},
-      {id:'hermes',agent:'Hermes',harness:'hermes',status:'waiting',title:'Provider capacity exhausted',task_id:'demo-task-016',last_heartbeat_at:null,checkpoint:'capacity receipt saved · sample',start:15,width:42,capacity:{state:'exhausted',reset_at:'not observed'},events:[{kind:'capacity_exhausted',label:'Capacity receipt recorded',time:'10:46'},{kind:'checkpoint',label:'Task frozen safely for handoff',time:'10:48'}]},
-      {id:'jev',agent:'Jev',harness:'agentos-router',status:'handoff',title:'Evaluate capacity-aware successor',task_id:'demo-task-016',last_heartbeat_at:null,checkpoint:'proposed, not dispatched',start:52,width:42,events:[{kind:'handoff_proposed',label:'Route scored for replacement session',time:'10:48'},{kind:'handoff_pending',label:'Awaiting governed dispatch receipt',time:'10:50'}]}
+      {id:'codex',agent_id:'eugene',agent:'Eugene',harness:'claude-code',attempts:[{harness:'codex-cli',result:'capacity'},{harness:'claude-code',result:'resumed'}],status:'working',title:'Durable lifecycle persistence',task_id:'demo-task-014',last_heartbeat_at:null,checkpoint:'state persisted · sample',start:5,width:75,events:[{kind:'check_in',label:'Harness session checked in',time:'10:42'},{kind:'checkpoint',label:'Atomic checkpoint persisted',time:'10:47'},{kind:'heartbeat',label:'Execution heartbeat',time:'10:51'}]},
+      {id:'claude',agent_id:'w-dog',agent:'W Dog',harness:'claude-code',status:'review',title:'Independent protocol review',task_id:'demo-task-015',last_heartbeat_at:null,checkpoint:'review pending · sample',start:36,width:55,events:[{kind:'check_in',label:'Reviewer context hydrated',time:'10:44'},{kind:'review',label:'Cross-harness test matrix',time:'10:49'}]},
+      {id:'hermes',agent_id:'polly',agent:'Polly',harness:'hermes',status:'waiting',title:'Provider capacity exhausted',task_id:'demo-task-016',last_heartbeat_at:null,checkpoint:'capacity receipt saved · sample',start:15,width:42,capacity:{state:'exhausted',reset_at:'not observed'},events:[{kind:'capacity_exhausted',label:'Capacity receipt recorded',time:'10:46'},{kind:'checkpoint',label:'Task frozen safely for handoff',time:'10:48'}]},
+      {id:'jev',agent_id:'router',agent:'Router',harness:'agentos-router',decision_provider:'jev',status:'handoff',title:'Evaluate capacity-aware successor',task_id:'demo-task-016',last_heartbeat_at:null,checkpoint:'proposed, not dispatched',start:52,width:42,events:[{kind:'handoff_proposed',label:'Route scored for replacement session',time:'10:48'},{kind:'handoff_pending',label:'Awaiting governed dispatch receipt',time:'10:50'}]}
     ]
   };
   // All six lifecycle stages are intentionally demonstrated with fictional receipts.
   // No stage is inferred from a phase/status; only events illuminate cells.
   demo.lanes.unshift({
-    id:'scout-demo',agent:'Scout',harness:'agentos-worker',status:'done',
+    id:'scout-demo',agent_id:'scout',agent:'Scout',harness:'agentos-worker',status:'done',
     title:'Market signal → approved experiment brief',task_id:'demo-task-021',
     checkpoint:'sample strategy artifact, not an actual PR',last_heartbeat_at:null,
     usage:{input_tokens:1340,output_tokens:420,cost_usd:0},
@@ -25,20 +25,34 @@
       {kind:'tool_use',label:'Compared available source evidence',time:'09:07'},
       {kind:'checkpoint',label:'Market brief staged for review',time:'09:13'},
       {kind:'handoff_committed',label:'Independent review assigned to W Dog',time:'09:14'},
-      {kind:'check_out',label:'Scout checked out; artifact awaits review',time:'09:15'}
+      {kind:'check_out',label:'Scout checked out; artifact awaits review',time:'09:15'},{kind:'independently_verified',label:'W Dog independently reviewed the Scout artifact',time:'09:19'}
     ]
   });
+  // Canonical identities are sourced from AgentOS registry/agents.yaml v0.5.0.
+  // A harness name is never promoted into a workforce identity.
+  const identities={
+    'w-dog':{name:'W Dog',role:'Watchdog'},zoie:{name:'Zoie',role:'Chief Dreaming Officer'},
+    bill:{name:'Bill',role:'Chief Logistics Officer'},eugene:{name:'Eugene',role:'Chief Technical Builder'},
+    steward:{name:'Steward',role:'Chief Initiative Officer'},designer:{name:'Designer',role:'Chief Experience Officer'},
+    rook:{name:'Rook',role:'Chief Adversarial Officer'},scout:{name:'Scout',role:'Chief Growth & Intelligence Officer'},
+    ledger:{name:'Ledger',role:'Chief Economics Officer'},router:{name:'Router',role:'Team Coordinator'},
+    milchik:{name:'Milchik',role:'Floor Manager & Human↔Fleet Liaison'},
+    polly:{name:'Polly',role:'Persistence & Release Recovery'}
+  };
+  const identityOf=(lane)=>identities[lane?.agent_id]?lane.agent_id:'unknown';
+  const person=(id)=>identities[id]||{name:'Unattributed',role:'No canonical identity in this observation'};
+  const attemptHistory=(lane)=>Array.isArray(lane.attempts)&&lane.attempts.length?lane.attempts:[{harness:lane.harness||'unobserved',result:'current / unverified'}];
   const views = {
     build:{title:'AgentOS continuity',sub:'Your intent enters once. Jev proposes the best available session; AgentOS controls execution.',lanes:demo.lanes},
     site:{title:'ASHWOOD release',sub:'One owner conversation, multiple controlled release agents.',lanes:[
-      {id:'site-codex',agent:'Codex',harness:'codex-cli',status:'done',title:'Prepare sandbox artifact',task_id:'demo-site-1',checkpoint:'built · sample',start:9,width:54,events:[{kind:'checkpoint',label:'Build complete — example only',time:'11:00'}]},
-      {id:'site-muse',agent:'Muse',harness:'claude-code',status:'review',title:'Visual and privacy review',task_id:'demo-site-2',checkpoint:'human gate',start:49,width:39,events:[{kind:'review',label:'Waiting for visual acceptance — example only',time:'11:07'}]}
+      {id:'site-codex',agent_id:'eugene',agent:'Eugene',harness:'codex-cli',status:'done',title:'Prepare sandbox artifact',task_id:'demo-site-1',checkpoint:'built · sample',start:9,width:54,events:[{kind:'checkpoint',label:'Build complete — example only',time:'11:00'}]},
+      {id:'site-muse',agent_id:'designer',agent:'Designer',harness:'claude-code',status:'review',title:'Visual and privacy review',task_id:'demo-site-2',checkpoint:'human gate',start:49,width:39,events:[{kind:'review',label:'Waiting for visual acceptance — example only',time:'11:07'}]}
     ]},
     career:{title:'Career operations',sub:'One conversation that hands off bounded hiring tasks to available workers.',lanes:[
-      {id:'career-scout',agent:'Scout',harness:'agentos-worker',status:'waiting',title:'Awaiting source verification',task_id:'demo-career-1',checkpoint:'evidence required',start:12,width:62,events:[{kind:'waiting',label:'Salary source evidence pending — example only',time:'09:30'}]}
+      {id:'career-scout',agent_id:'scout',agent:'Scout',harness:'agentos-worker',status:'waiting',title:'Awaiting source verification',task_id:'demo-career-1',checkpoint:'evidence required',start:12,width:62,events:[{kind:'waiting',label:'Salary source evidence pending — example only',time:'09:30'}]}
     ]}
   };
-  let session='build', connected=false, loading=false, selected='scout-demo', activityView='swim', laneFilter='all', lastFeed=null, heartbeatTimer=null;
+  let session='build', connected=false, loading=false, selected='scout-demo', activityView='swim', laneFilter='all', identityFilter='all', lastFeed=null, heartbeatTimer=null;
   const time = (value) => {const n=Date.parse(value||'');return Number.isFinite(n)?new Date(n).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'not observed'};
   const fresh = (date,seconds=90) => {const n=Date.parse(date||'');return Number.isFinite(n)&&Date.now()-n>=0&&Date.now()-n<seconds*1000};
   const clean = (value,max=180) => String(value??'').slice(0,max);
@@ -53,7 +67,9 @@
       const status=laneStatus(v.status);
       const heartbeat=fresh(v.last_heartbeat_at);
       return {
-        id:clean(v.id||v.task_id||('lane-'+i),80),agent:clean(v.agent||'Unknown',80),harness:clean(v.harness||'unobserved',80),
+        id:clean(v.id||v.task_id||('lane-'+i),80),agent_id:identities[String(v.agent_id||v.owning_agent||'').toLowerCase()]?String(v.agent_id||v.owning_agent).toLowerCase():'unknown',agent:clean(v.agent||'Unknown',80),harness:clean(v.harness||'unobserved',80),
+        attempts:Array.isArray(v.attempts)?v.attempts.slice(-6).map(a=>({harness:clean(a.harness||'unobserved',80),result:clean(a.result||'unknown',36)})):null,
+        decision_provider:clean(v.decision_provider||'',40),
         status:status==='working'&&!heartbeat?'unknown':status,title:clean(v.title||'Unlabeled execution',160),
         task_id:clean(v.task_id||'',100),last_heartbeat_at:v.last_heartbeat_at,
         checkpoint:clean(v.checkpoint||'no checkpoint receipt',120),
@@ -102,10 +118,61 @@
     return lifecycleStages.find(stage=>stage.kinds.includes(kind))?.id||null;
   }
   function filteredLanes(lanes) {
-    if(laneFilter==='active')return lanes.filter(l=>l.status==='working'||l.status==='review');
-    if(laneFilter==='waiting')return lanes.filter(l=>l.status==='waiting'||l.status==='blocked'||l.capacity?.state==='exhausted');
-    if(laneFilter==='handoff')return lanes.filter(l=>l.status==='handoff'||l.events?.some(e=>stageFor(e)==='handoff'));
-    return lanes;
+    const scoped=identityFilter==='all'?lanes:lanes.filter(l=>identityOf(l)===identityFilter);
+    if(laneFilter==='active')return scoped.filter(l=>l.status==='working'||l.status==='review');
+    if(laneFilter==='waiting')return scoped.filter(l=>l.status==='waiting'||l.status==='blocked'||l.capacity?.state==='exhausted');
+    if(laneFilter==='handoff')return scoped.filter(l=>l.status==='handoff'||l.events?.some(e=>stageFor(e)==='handoff'));
+    return scoped;
+  }
+  function renderIdentities(lanes) {
+    const root=$('identity-cards'),detail=$('identity-detail');
+    root.replaceChildren();detail.replaceChildren();
+    // Scope cards to observed task identities. The static registry alone does not imply activity.
+    const groups=new Map();
+    for(const lane of lanes){
+      const id=identityOf(lane);
+      if(!groups.has(id))groups.set(id,[]);
+      groups.get(id).push(lane);
+    }
+    const ids=[...groups.keys()].sort((a,b)=>(a==='unknown'?1:b==='unknown'?-1:0)||a.localeCompare(b));
+    $('identity-label').textContent=connected?'CANONICAL ATTRIBUTION · OBSERVED TASKS ONLY':
+      'REGISTERED ROLES · FICTIONAL TASK EXAMPLES · '+Object.keys(identities).length+' TOTAL IDENTITIES';
+    $('identity-all').hidden=identityFilter==='all';
+    if(!ids.length){
+      root.append(elt('p','identity-empty',connected?'No canonical identity/task observations; do not infer agent activity.':'No sample agent activity.'));
+      detail.append(elt('span','', 'No attributable work received.'));
+      return;
+    }
+    for(const id of ids) {
+      const rows=groups.get(id),who=person(id);
+      const verified=rows.filter(l=>l.events?.some(e=>e.kind==='independently_verified')).length;
+      const checkedOut=rows.filter(l=>l.events?.some(e=>['check_out','checkout'].includes(e.kind))).length;
+      const active=rows.filter(l=>l.status==='working'||l.status==='review').length;
+      const card=elt('button','identity-card'+(identityFilter===id?' selected':''));card.type='button';
+      card.dataset.identity=id;card.setAttribute('aria-pressed',String(identityFilter===id));
+      const head=elt('div','identity-card-head');
+      head.append(elt('span','identity-monogram',who.name[0]),elt('span','identity-card-title',who.name),elt('span','identity-task-count',rows.length+' task'+(rows.length===1?'':'s')));
+      const role=elt('div','identity-card-role',who.role);
+      const counters=elt('div','identity-card-metrics');
+      counters.append(elt('span','',active+' in flight'),elt('span','',checkedOut+' checked out'),elt('span','',verified+' verified'));
+      card.append(head,role,counters);
+      card.addEventListener('click',()=>{identityFilter=identityFilter===id?'all':id;selected='';render()});
+      root.append(card);
+    }
+    if(identityFilter==='all'){
+      detail.append(elt('span','', 'Select a persistent identity to inspect its responsibilities and tasks across harnesses. Completed execution and independent verification are separate evidence.'));
+    }else{
+      const who=person(identityFilter),rows=groups.get(identityFilter)||[];
+      detail.append(elt('strong','',who.name+' · '+who.role));
+      detail.append(elt('span','',rows.length+' owned sample/observed task(s); '+rows.reduce((n,l)=>n+attemptHistory(l).length,0)+' recorded or projected harness attempt(s). The identity remains constant as harnesses change.'));
+      const chain=elt('div','identity-harness-list');
+      for(const lane of rows.slice(0,5)){
+        const r=elt('div','identity-harness-row');
+        r.append(elt('b','',lane.title),elt('small','',attemptHistory(lane).map(a=>a.harness+' ['+a.result+']').join(' → ')));
+        chain.append(r);
+      }
+      detail.append(chain);
+    }
   }
   function renderLanes(lanes) {
     const root=$('swimlanes');root.replaceChildren();
@@ -114,15 +181,28 @@
       root.append(elt('p','journey-empty',connected?'No observed sessions match the filter. This does not prove the fleet is idle.':'No sample sessions match the filter.'));
       return;
     }
+    let precedingIdentity=null;
     for(const lane of visible) {
+      const id=identityOf(lane),who=person(id);
+      if(id!==precedingIdentity){
+        const header=elt('div','identity-group');
+        header.append(elt('b','',who.name),elt('span','',who.role),elt('small','',visible.filter(x=>identityOf(x)===id).length+' attributable lane(s)'));
+        root.append(header);precedingIdentity=id;
+      }
       const row=elt('button','journey-row'+(selected===lane.id?' selected':''));row.type='button';
       row.dataset.id=lane.id;
       row.setAttribute('aria-pressed',String(selected===lane.id));
-      row.setAttribute('aria-label',lane.agent+' · '+lane.title+' · '+readable(lane.status)+' · inspect execution');
+      row.setAttribute('aria-label',who.name+' · '+lane.title+' · '+readable(lane.status)+' · inspect owned work and harness attempts');
       const persona=elt('div','journey-persona');
       const identity=elt('div','journey-identity');
-      identity.append(elt('span','journey-avatar',(lane.agent||'?').charAt(0).toUpperCase()),elt('strong','',lane.agent));
-      persona.append(identity,elt('small','journey-harness',lane.harness||'unobserved'),elt('span','journey-task',lane.title));
+      identity.append(elt('span','journey-avatar',who.name.charAt(0).toUpperCase()),elt('strong','',who.name));
+      const hosts=attemptHistory(lane);
+      const hostRail=elt('div','harness-chain');
+      for(const [i,a] of hosts.entries()){
+        if(i)hostRail.append(elt('span','harness-arrow','→'));
+        hostRail.append(elt('span','harness-pill',a.harness));
+      }
+      persona.append(identity,elt('small','journey-role',who.role),hostRail,elt('span','journey-task',lane.title));
       const state=elt('span','journey-state '+laneStatus(lane.status),readable(lane.status));
       persona.append(state);row.append(persona);
       const events=Array.isArray(lane.events)?lane.events:[];
@@ -152,20 +232,23 @@
   }
   function renderEvents(lanes) {
     const root=$('event-stream');root.replaceChildren();
-    const events=lanes.flatMap(l=>(l.events||[]).map(e=>({...e,agent:l.agent,harness:l.harness})));
+    const events=filteredLanes(lanes).flatMap(l=>(l.events||[]).map(e=>({...e,agent:person(identityOf(l)).name,harness:l.harness})));
     if(!events.length){root.append(elt('p','notice','No canonical activity events observed.'));return}
     for(const e of events){const row=elt('div','event-row');row.append(elt('time','',e.time||'—'),elt('b','',e.agent));const detail=elt('div','',e.label||e.kind);detail.append(elt('small','',e.harness+' · '+e.kind));row.append(detail);root.append(row)}
   }
   function renderTrace(lanes){
     const visible=filteredLanes(lanes);
     const l=visible.find(x=>x.id===selected)||visible[0];
-    $('trace-agent').textContent=l?l.agent+' · '+l.harness:'No selected execution';
+    $('trace-agent').textContent=l?person(identityOf(l)).name+' · '+person(identityOf(l)).role:'No selected execution';
     $('trace-state').textContent=l?readable(l.status):'UNKNOWN';
     $('trace-state').className='status-pill '+(l?laneStatus(l.status):'unknown');
     $('trace-details').replaceChildren();$('trace-evidence').replaceChildren();
     if(!l){$('trace-details').append(elt('div','','No state available'));return}
     const fields=[
-      ['CURRENT TASK',l.title],['TASK REFERENCE',l.task_id||'not observed'],
+      ['PERSISTENT IDENTITY',identityOf(l)==='unknown'?'UNKNOWN · unattributed':identityOf(l)],
+      ['EXECUTION CHAIN',attemptHistory(l).map(a=>a.harness+' ('+a.result+')').join(' → ')],
+      ['ADVISORY DECISION PROVIDER',l.decision_provider||'not observed'],
+      ['ACCOUNTABLE TASK',l.title],['TASK REFERENCE',l.task_id||'not observed'],
       ['LAST HEARTBEAT',connected?time(l.last_heartbeat_at):'sample only'],
       ['LAST CHECKPOINT',l.checkpoint||'not observed'],
       ['CAPACITY',l.capacity?.state||'not observed'],['CONTINUITY',l.status==='handoff'?'handoff pending':l.status==='waiting'?'parked / waiting':'receipt required'],
@@ -183,7 +266,7 @@
     const lanes=current();const visible=filteredLanes(lanes);if(!visible.some(x=>x.id===selected))selected=visible[0]?.id||'';
     $('stage-caption').textContent=connected?'Observed receipts only · 15s polling · a missing stage stays unobserved':'Sample receipts only · stage cells are not evidence of live execution';
     $('thread-meta').textContent=lanes.length+' '+(connected?'observed':'sample')+' lanes';
-    metrics(lanes);renderLanes(lanes);renderEvents(lanes);renderTrace(lanes);updateMode();renderWorkforce();
+    renderIdentities(lanes);metrics(lanes);renderLanes(lanes);renderEvents(lanes);renderTrace(lanes);updateMode();renderWorkforce();
     $('swimlanes').hidden=activityView!=='swim';$('event-stream').hidden=activityView!=='events';
   }
   function addMessage(text,kind='owner'){
@@ -206,6 +289,7 @@
     if(connected){await poll();}else{render();}
   });
   $('refresh').addEventListener('click',()=>{if(connected)poll();else render()});
+  $('identity-all').addEventListener('click',()=>{identityFilter='all';selected='';render()});
   $('view-doc').addEventListener('click',()=>$('about').showModal());
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
     activityView=b.dataset.view;document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('selected',x===b));render();
@@ -218,10 +302,10 @@
     render();
   }));
   document.querySelectorAll('[data-session]').forEach(b=>b.addEventListener('click',()=>{
-    session=b.dataset.session;document.querySelectorAll('[data-session]').forEach(x=>x.classList.toggle('active',x===b));selected='';render();
+    identityFilter='all';session=b.dataset.session;document.querySelectorAll('[data-session]').forEach(x=>x.classList.toggle('active',x===b));selected='';render();
   }));
   $('new-thread').addEventListener('click',()=>{
-    session='build';connected=false;lastFeed=null;selected='';$('messages').replaceChildren();
+    identityFilter='all';session='build';connected=false;lastFeed=null;selected='';$('messages').replaceChildren();
     addMessage('New draft conversation. Messages are not dispatched from the static prototype.','system');render();$('prompt').focus();
   });
   $('composer').addEventListener('submit',async(e)=>{
