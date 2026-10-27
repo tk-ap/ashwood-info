@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#101412">
+  <title>OmniChat — AgentOS prototype</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="OmniChat navigation">
+      <div class="brand"><span class="brand-icon"><span></span><span></span><span></span><span></span></span><div><strong>omnichat</strong><small>ASHWOOD · WORKFORCE</small></div></div>
+      <button class="new" type="button" id="new-thread"><span>＋</span> New session <span class="shortcut">N</span></button>
+      <div class="side-heading">SESSION CONTEXTS <span>03</span></div>
+      <nav class="sessions" id="sessions">
+        <button class="session active" data-session="build"><span class="session-icon">◇</span><span><strong>AgentOS continuity</strong><small>4 harness lanes · today</small></span></button>
+        <button class="session" data-session="site"><span class="session-icon">□</span><span><strong>ASHWOOD release</strong><small>2 harness lanes · yesterday</small></span></button>
+        <button class="session" data-session="career"><span class="session-icon">⌕</span><span><strong>Career operations</strong><small>1 harness lane · Oct 25</small></span></button>
+      </nav>
+      <div class="side-spacer"></div>
+      <div class="runtime-mini"><div class="tiny-label"><span class="indicator" id="sidebar-indicator"></span><span id="sidebar-mode">SIMULATED RUNTIME</span></div><p>One front door. Your portfolio, active sessions, and governed workforce.</p><span class="mini-divider"></span><span>Dispatch · Jev shadow routing</span><span>Authority · LEDGATo</span></div>
+      <div class="side-bottom"><div class="avatar">TK</div><div><b>Owner workspace</b><small>Prototype · read-only by default</small></div><span>⌄</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="crumb"><span>WORKSPACE</span><span class="crumb-div">/</span><strong>OmniChat</strong><span class="version">V0.4</span></div>
+        <div class="top-actions"><span class="mode-label" id="mode-label">DEMO DATA</span><button id="toggle-mode" class="ghost" type="button">Connect feed</button><button id="view-doc" class="icon-button" type="button" title="About data sources">?</button></div>
+      </header>
+
+      <section class="workforce-overview" aria-label="Autonomous workforce overview">
+        <div class="overview-header">
+          <div class="overview-eyebrow"><span class="indicator connected"></span> WORKFORCE CONTROL CENTER <span class="preview-tag">INTERACTIVE CONCEPT · DEMO DATA</span></div>
+          <div class="overview-title-row"><div><h1>The ecosystem is bigger than the prompt.</h1><p>Observe the workforce already in motion. Enter a work session when you need to take the lead.</p></div><div class="reality-stamp" id="reality-stamp"><span>DATA ORIGIN</span><strong>SIMULATION</strong><small>Not connected to live AgentOS</small></div></div>
+          <div class="perspective-tabs" role="tablist" aria-label="OmniChat high-level perspectives">
+            <button id="view-build" type="button" class="perspective-tab active" role="tab" aria-selected="true" aria-controls="build-dashboard"><span class="perspective-glyph">01</span><span><strong>Building the Build</strong><small>Autonomous portfolio · market · growth</small></span></button>
+            <button id="view-team" type="button" class="perspective-tab" role="tab" aria-selected="false" aria-controls="team-dashboard"><span class="perspective-glyph">02</span><span><strong>Building the Team</strong><small>Owner sessions · LEDGATo · AgentOS</small></span></button>
+          </div>
+        </div>
+        <div class="priority-ribbon"><div class="priority-copy"><span class="priority-dot" id="priority-dot"></span><div><strong id="priority-title">Autonomous mode — background eligible</strong><span id="priority-description">Owner not in a registered session. Background work may use bounded spare capacity.</span></div></div><div class="priority-actions"><span class="priority-explainer">A view change does not pause workers.</span><button id="simulate-focus" type="button" class="priority-button">Simulate owner session</button></div></div>
+
+        <section id="build-dashboard" class="perspective-body" role="tabpanel" aria-labelledby="view-build">
+          <div class="perspective-intro"><div><div class="eyebrow">THE WORKFORCE WHEN YOU ARE NOT DIRECTING IT</div><h2>Building the Build</h2><p>Discover → evaluate → route → execute → verify → learn. The portfolio advances through standing, bounded authorization—not an endless series of manual “continue” prompts.</p></div><span class="concept-marker">ILLUSTRATIVE WORKFLOW</span></div>
+          <div class="mission-stats" aria-label="Sample portfolio snapshot">
+            <div><span class="stat-label">DISCOVERY PULSE</span><strong>06<span> / 08</span></strong><small>product signals observed · sample</small></div>
+            <div><span class="stat-label">BOUNDED WORK</span><strong>03</strong><small>candidate missions · sample</small></div>
+            <div><span class="stat-label">STAGED OUTPUT</span><strong>02</strong><small>drafts or review gates · sample</small></div>
+            <div><span class="stat-label">GROWTH LOOP</span><strong>01</strong><small>test hypothesis · sample</small></div>
+          </div>
+          <div class="overview-panels">
+            <div class="overview-panel"><div class="panel-heading"><div><div class="eyebrow">ECOSYSTEM OBSERVATION</div><h3>Product radar</h3></div><span class="panel-side-label">Value over activity</span></div><div class="radar-list" id="radar-list"></div></div>
+            <div class="overview-panel"><div class="panel-heading"><div><div class="eyebrow">PERSISTENT MISSION PIPELINE</div><h3>Autonomous work queue</h3></div><span class="panel-side-label">Standing mandates only</span></div><div class="mission-list" id="autonomous-queue"></div></div>
+          </div>
+          <div class="growth-panel"><div><div class="eyebrow">SCOUT · MARKETING ENGINEERING</div><h3>From market signal to real demand</h3><p>Signals produce one measurable experiment at a time. Drafting is autonomous; public posting, outreach and spending remain governed.</p></div><div class="growth-steps"><span>Market evidence</span><span>Hypothesis</span><span>Staged test</span><span>Verified learning</span></div></div>
+        </section>
+
+        <section id="team-dashboard" class="perspective-body" role="tabpanel" aria-labelledby="view-team" hidden>
+          <div class="perspective-intro"><div><div class="eyebrow">OWNER-LED SESSIONS · FOREGROUND FIRST</div><h2>Building the Team</h2><p>Your active LEDGATo and AgentOS work takes precedence. Background workloads using the same quota pool must yield safely, checkpoint, and resume automatically after checkout.</p></div><span class="concept-marker">ILLUSTRATIVE WORKFLOW</span></div>
+          <div class="team-workspaces"><article class="team-workspace-card"><div class="team-card-header"><span class="team-card-icon">L</span><span class="state-label">OWNER FOCUS · SAMPLE</span></div><h3>LEDGATo</h3><p>Enforcement boundaries, protected host actions and runtime approvals.</p><div class="team-card-footer"><span>Foreground workspace</span><strong>Owner-directed</strong></div></article><article class="team-workspace-card"><div class="team-card-header"><span class="team-card-icon">A</span><span class="state-label">COORDINATION · SAMPLE</span></div><h3>AgentOS</h3><p>Capacity reconciliation, session receipts and durable worker handoffs.</p><div class="team-card-footer"><span>Active build priority</span><strong>Shared runtime</strong></div></article></div>
+          <div class="attention-panel"><div class="panel-heading"><div><div class="eyebrow">FOREGROUND-AWARE RESOURCE POLICY</div><h3>When you start a live session</h3></div><span class="panel-side-label">Proposed · not activated</span></div><div class="attention-rows"><div><strong>01</strong><span>Identify the active owner session and affected provider buckets.</span><em>REGISTER</em></div><div><strong>02</strong><span>Prevent new competing background calls; ask in-flight workers to checkpoint at safe boundaries.</span><em>YIELD</em></div><div><strong>03</strong><span>Keep no-model wake, incident monitoring, and independently available capacity operational.</span><em>PERSIST</em></div><div><strong>04</strong><span>On checkout or verified lease expiry, restore background eligibility automatically.</span><em>RESUME</em></div></div></div>
+        </section>
+        <section class="identity-overview" aria-label="Persistent agent identity and work attribution">
+          <div class="identity-head"><div><div class="eyebrow">WHO OWNS THE WORK · HARNESS INDEPENDENT</div><h2>Identity contributions</h2><p>Agent identities persist across Codex, Claude, Hermes and future execution hosts. Select an identity to follow its owned tasks, attempts and evidence.</p></div><div class="identity-key"><span><i class="key-dot key-identity"></i> Accountable identity</span><span><i class="key-dot key-harness"></i> Replaceable harness</span><span><i class="key-dot key-evidence"></i> Independently verified</span></div></div>
+          <div class="identity-toolbar"><div class="identity-label" id="identity-label">SAMPLE REGISTERED TEAM · SELECT A ROLE</div><button type="button" id="identity-all" class="identity-clear" hidden>Show all agents</button></div>
+          <div id="identity-cards" class="identity-cards" aria-label="Agent identity contribution cards"></div>
+          <div class="identity-detail" id="identity-detail" role="region" aria-label="Selected identity's work attribution"><span>Select an identity to inspect its owned work, harness attempts and evidence.</span></div>
+        </section>
+      </section>
+      <div class="workspace-grid">
+        <section class="conversation" aria-label="One chat, multiple governed agents">
+          <div class="conversation-head"><div><div class="eyebrow"><span class="lime-dot"></span> SINGLE SESSION INTERFACE</div><h1 id="thread-title">AgentOS continuity</h1><p id="thread-subtitle">One composer, multiple agent sessions. The workforce operates without waiting for this composer.</p></div><span class="head-count" id="thread-meta">4 example lanes</span></div>
+          <div class="messages" id="messages" role="log" aria-live="polite">
+            <div class="message owner"><div class="msg-label"><span class="avatar small">TK</span><b>You</b><time>10:42</time></div><p>Close the gaps in persistent agent check-in, checkout, wake, and automatic handoffs when a harness exhausts its capacity.</p></div>
+            <div class="message system"><div class="msg-label"><span class="a-mark">A</span><b>AgentOS</b><span class="message-chip">ROUTING PREVIEW</span><time>10:42</time></div><p>I would split this into a bounded continuity test: lifecycle reconciliation, harness capacity receipt, Jev-scored handoff, and evidence validation. Protected monitor changes remain approval-gated.</p><div class="decision-note"><span class="mini-branch"></span> Jev suggests <strong>Codex</strong> for implementation; <strong>Claude</strong> for review. This is sample routing data.</div></div>
+            <div class="handoff-rail"><span class="rail-node"></span><span>Jev · candidate selection</span><span class="rail-arrow">→</span><span>Codex · implementation</span><span class="rail-arrow">→</span><span>Claude · review</span></div>
+          </div>
+          <div class="composer-wrap">
+            <form class="composer" id="composer">
+              <label class="sr-only" for="prompt">Message AgentOS</label>
+              <textarea id="prompt" rows="2" placeholder="Message your entire team from one place…"></textarea>
+              <div class="composer-footer"><span class="composer-prefix"><span class="stack-icon">◎</span> AgentOS <span>·</span> Jev auto-route <span>⌄</span></span><span class="composer-controls"><span id="send-hint">Demo: no real dispatch</span><button id="send" type="submit" aria-label="Send message">↑</button></span></div>
+            </form>
+            <p class="under-composer"><span class="protected-dot"></span> Protected actions are approved in LEDGATo. No model or harness can self-grant authority.</p>
+          </div>
+        </section>
+
+        <section class="activity" aria-label="Live harness activity swim lanes">
+          <div class="activity-header"><div><div class="eyebrow">EXECUTION OBSERVABILITY</div><h2>Identity-first swim lanes</h2><p>Follow each persistent agent through its tasks and harness attempts. Select a lane to inspect how the work was performed.</p></div><button id="refresh" class="refresh" type="button" aria-label="Refresh activity">↻</button></div>
+          <div class="activity-kpis"><div><small>WORKING</small><strong id="metric-working">2</strong></div><div><small>WAITING</small><strong id="metric-waiting">1</strong></div><div><small>HANDOFFS</small><strong id="metric-handoffs">1</strong></div><div><small>CAPACITY</small><strong id="metric-capacity">1 <em>alert</em></strong></div></div>
+          <div class="lane-controls"><div class="segmented" role="group" aria-label="Activity view"><button data-view="swim" class="selected" type="button">Swim lanes</button><button data-view="events" type="button">Event stream</button></div><div class="timeline-controls"><span id="time-label">Sample sequence</span><span class="live-pulse" id="live-pulse"></span></div></div>
+          <div class="journey-controls"><span class="journey-note" id="stage-caption">Each marker is a recorded lifecycle event · demo shown until a feed is connected</span><div class="journey-filters" role="group" aria-label="Filter execution lanes"><button type="button" data-lane-filter="all" class="selected" aria-pressed="true">All</button><button type="button" data-lane-filter="active" aria-pressed="false">Working</button><button type="button" data-lane-filter="waiting" aria-pressed="false">Waiting</button><button type="button" data-lane-filter="handoff" aria-pressed="false">Handoffs</button></div></div>
+          <div class="journey-scroll" id="journey-scroll" tabindex="0" aria-label="Agent lifecycle swimlane matrix; scroll horizontally for stages">
+            <div class="journey-head" aria-hidden="true"><span>IDENTITY / OWNED TASK</span><span>01 <b>Wake</b></span><span>02 <b>Check-in</b></span><span>03 <b>Execute</b></span><span>04 <b>Checkpoint</b></span><span>05 <b>Handoff</b></span><span>06 <b>Check-out</b></span></div>
+            <div class="swimlanes" id="swimlanes"></div>
+          </div>
+          <div class="event-stream" id="event-stream" hidden></div>
+          <div class="activity-foot"><span id="freshness">Sample data · not a live telemetry source</span><span>Read-only telemetry</span></div>
+          <div class="trace" id="trace"><div class="trace-title"><div><small>ACCOUNTABLE IDENTITY · EXECUTION HISTORY</small><h3 id="trace-agent">Scout · growth intelligence</h3></div><span id="trace-state" class="status-pill working">WORKING</span></div><div class="trace-details" id="trace-details"></div><div class="trace-evidence" id="trace-evidence"></div></div>
+          <div class="notice"><span class="notice-star">✳</span><div><b>Continuity over activity theater</b><p>Heartbeat receipts, capacity exhaustion, checkpoint persistence, and Jev handoffs require observed canonical events. Unknown is shown as unknown.</p></div></div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <dialog id="about"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button><h2>How OmniChat connects</h2><p>This is a static design prototype. Sample swim lanes are deliberately marked <strong>Demo data</strong>. Use the Connect feed control only when this route is hosted behind an authenticated AgentOS read-only telemetry bridge.</p><p>The bridge must serve <code>GET /api/omnichat/activity</code> with <code>observed_at</code>, <code>lanes[]</code>, heartbeat timestamps, and durable lifecycle evidence. The write path is separately governed: <code>POST /api/omnichat/command</code> through AgentOS and LEDGATo, never direct harness execution.</p><p>21st.dev references: Agent Elements (chat/tool states) and Agent Activity (collapsible activity timeline). Design recreated for the existing ASHWOOD direction, no third-party runtime scripts.</p><button class="dialog-button" type="submit">Close</button></form></dialog>
+</body>
+</html>
