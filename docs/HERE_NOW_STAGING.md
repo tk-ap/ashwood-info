@@ -1,3 +1,30 @@
+## 2026-10-27 — Consolidated release candidate: one full-site here.now update
+
+**User request:** batch completed ASHWOOD + Workspace demo work into **one version-aware update** of the existing `mighty-yoga-pgph` sandbox, instead of repeated partial releases/new slugs. This section is a deployment candidate record, **not proof that the stable URL has changed**.
+
+**Release candidate source**:
+- Public site source: existing `tk-ap/ashwood-info` branch `codex/here-now-current-staging` (current PR #295). Latest known validated predecessor: `ed25179e3562868a01e0054b1a3dc920249ab7e9`; retrieve exact public SHA again at final assembly.
+- Private Workspace source: existing `tk-ap/ashwood-command-center` PR #2 branch `codex/omnichat-static-preview-20261021`, validation head `8069e029a97b1fb2e795b7c39395d17a4807fbcf`. The underlying UI changes include the `e883e510eb625ea30e5ed089dd517671867e2e75` identity-first model and `8069e0...` deployment-batching change.
+- Proof: [Workspace source tests, TypeScript and static build](https://github.com/tk-ap/ashwood-command-center/actions/runs/40604615392) passed. [Complete ASHWOOD + Workspace assembly](https://github.com/tk-ap/ashwood-command-center/actions/runs/40604529922) passed on preceding source `e883e510`, generating a private artifact; no here.now publication occurred. The subsequent commit changes deployment scheduling, not user-facing Workspace code.
+- The former full assembly workflow `.github/workflows/ashwood-omnichat-staging.yml` is now **`workflow_dispatch` only**; lightweight source CI still runs on pushes. This is the intended **one-assembly/one-publication** pathway. Do not invoke the other historical Gravity or hardcoded-old-lease workflows as a release substitute.
+
+**Included in one complete artifact**:
+1. Existing ASHWOOD public home/pages, artwork gallery and Physical Works previews; current publicly prepared surfaces are preview data, not physical print proof.
+2. All eight Workspace demo routes and shell/navigation/themes, with established Brain/Self interactive visualization and Physical Works Studio (one original → multiple surfaces).
+3. Existing `/workspace/operator/` OmniChat: Building the Team / Building the Build scenario, one composer and legacy Operator controls, six-stage lifecycle, persistent registered agent-identity ownership and selectable identity → task → harness attempt histories. Harness switching never creates a second agent identity; Jev remains an advisory provider.
+4. Demo data clearly labeled, with canonical authenticated read path guarded and unavailable on the static host; no private records, credentials, user-authenticated API, or production model calls.
+
+**Not operationally live / excluded from release claims**: autonomous portfolio backlog discovery/execution, true persistent Herdr pane wake/continuation, provider capacity and global owner-priority throttling, live Jev route→LEDGATo approval→Herdr delivery, actual model usage metering, authenticated private AgentOS telemetry, and public marketing delivery. Those require separately verified backend emitter, authenticated origin-bound bridge, governed action receipts and end-to-end tests. A static interactive preview is not proof of any of them.
+
+**One release procedure and guardrails**:
+1. Freeze public and Workspace SHAs after source tests, TypeScript, full static build, and combined privacy/security checks pass. Re-run the one manual complete assembly against those immutable SHAs; archive a private artifact, inspect the merged output and validate public landing, art, `/workspace/`, `/workspace/operator/`, `/workspace/self/`, `/workspace/work/studio/` on desktop and 390px. Avoid introducing a new domain or independent app.
+2. If user explicitly permits demo-only stable sandbox release despite unavailable live Operator backend, separately record that the public Operator will be disconnected; **do not silently clear the existing live Operator E2E hard gate**. If the user still requires functioning live lanes first, hold the full release until the backend is proven.
+3. Use the authorized owner-connected deployment host holding both checked-out sources and here.now credentials; the public ASHWOOD Actions secret cannot read the private Workspace repository, and the private CI lacks the provider secret. Do not duplicate secrets into source or weaken site access.
+4. Fetch `GET /api/v1/publish/mighty-yoga-pgph` under owner authorization **immediately before the update**. Compare `currentVersionId` to the owner-confirmed expected lease and reconcile the currently hosted manifest. Historical lease IDs in files are **not** current. Stop if version differs; no force, no overwrite, no stale-base publishing.
+5. Publish **one full staged artifact** to the existing slug using the publisher's `.herenow/state.json` expected-version semantics; inspect new provider version and live SHA manifest, then verify every preserved route and no private data. Record artifact SHA, provider version, release receipt, browser screenshots, route checks, and explicit unimplemented runtime limitations. No Vercel production merge.
+
+**Decision:** assembly-ready as a *static disconnected design preview*; not authorized or operationally ready as the autonomous workforce release. The canonical stable slug was not touched by this record.
+
 # here.now staging artifact
 
 The stable `mighty-yoga-pgph` URL is a public, static staging surface for the
