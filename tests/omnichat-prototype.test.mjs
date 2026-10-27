@@ -61,3 +61,34 @@ test("Foreground priority remains concept-only and portfolio feed is fail-closed
   assert.match(script, /No authenticated portfolio signal projection is attached/);
   assert.match(script, /Switching perspectives never changes capacity/);
 });
+
+test("Swimlane visualizes six evidenced lifecycle stages, not guessed percent progress", () => {
+  for(const stage of ["Wake","Check-in","Execute","Checkpoint","Handoff","Check-out"]){
+    assert.ok(html.includes(">" + stage + "</b>"), stage + " column absent");
+  }
+  assert.match(html, /id="journey-scroll"/);
+  assert.match(html, /id="stage-caption"/);
+  assert.match(html, /data-lane-filter="all"/);
+  assert.match(html, /data-lane-filter="waiting"/);
+  assert.match(html, /data-lane-filter="handoff"/);
+  assert.match(script, /const lifecycleStages=\[/);
+  assert.match(script, /const present=events\.map\(stageFor\)\.filter\(Boolean\)/);
+  assert.match(script, /const matching=events\.filter\(e=>stageFor\(e\)===stage\.id\)/);
+  assert.match(script, /class=.*journey-cell|journey-cell /);
+  assert.match(script, /No .* event /);
+  assert.doesNotMatch(script.slice(script.indexOf("function renderLanes"),script.indexOf("function renderEvents")), /lane\.start|lane\.width|bar\.style/);
+});
+test("Swimlane controls are interactive but do not dispatch or fabricate production event data", () => {
+  assert.match(script,/data-lane-filter/);
+  assert.match(script,/laneFilter=b\.dataset\.laneFilter/);
+  assert.match(script,/row\.addEventListener\('click',/);
+  assert.match(script,/selected=lane\.id;render\(\)/);
+  assert.match(script,/source_system:'demo'/);
+  assert.match(script,/last_heartbeat_at:null/);
+  assert.match(script,/No .* event .*observed/);
+  assert.match(script,/usage:v\.usage&&typeof v\.usage==='object'/);
+  assert.match(script,/l\.usage\?\.input_tokens!=null/);
+  assert.match(css,/\.journey-scroll\{/);
+  assert.match(css,/\.journey-persona\{position:sticky/);
+  assert.match(css,/\.journey-cell\.unobserved/);
+});
