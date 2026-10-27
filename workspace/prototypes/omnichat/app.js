@@ -170,7 +170,7 @@
       ['LAST CHECKPOINT',l.checkpoint||'not observed'],
       ['CAPACITY',l.capacity?.state||'not observed'],['CONTINUITY',l.status==='handoff'?'handoff pending':l.status==='waiting'?'parked / waiting':'receipt required'],
       ['INPUT / OUTPUT TOKENS',l.usage?.input_tokens!=null&&l.usage?.output_tokens!=null?(l.usage.input_tokens+' / '+l.usage.output_tokens+(connected?' observed':' · sample')):'not observed'],
-      ['MODEL COST',l.usage?.cost_usd!=null?('
+      ['MODEL COST',l.usage?.cost_usd!=null?('USD '+Number(l.usage.cost_usd).toFixed(4)+(connected?' observed':' · sample')):'not observed']
     ];
     for(const [a,b] of fields){const cell=elt('div','');cell.append(elt('small','',a),elt('strong','',b));$('trace-details').append(cell)}
     $('trace-evidence').append(elt('b','',connected?'OBSERVED RECEIPTS':'SAMPLE EVENTS'));
