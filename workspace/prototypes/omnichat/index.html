@@ -82,11 +82,14 @@
         </section>
 
         <section class="activity" aria-label="Live harness activity swim lanes">
-          <div class="activity-header"><div><div class="eyebrow">EXECUTION OBSERVABILITY</div><h2>Runtime swim lanes</h2><p>See who is executing, where, and what happens at the next handoff.</p></div><button id="refresh" class="refresh" type="button" aria-label="Refresh activity">↻</button></div>
+          <div class="activity-header"><div><div class="eyebrow">EXECUTION OBSERVABILITY</div><h2>Runtime swim lanes</h2><p>A six-stage evidence timeline for each agent. Select a row to inspect its receipts, capacity and next handoff.</p></div><button id="refresh" class="refresh" type="button" aria-label="Refresh activity">↻</button></div>
           <div class="activity-kpis"><div><small>WORKING</small><strong id="metric-working">2</strong></div><div><small>WAITING</small><strong id="metric-waiting">1</strong></div><div><small>HANDOFFS</small><strong id="metric-handoffs">1</strong></div><div><small>CAPACITY</small><strong id="metric-capacity">1 <em>alert</em></strong></div></div>
           <div class="lane-controls"><div class="segmented" role="group" aria-label="Activity view"><button data-view="swim" class="selected" type="button">Swim lanes</button><button data-view="events" type="button">Event stream</button></div><div class="timeline-controls"><span id="time-label">Sample sequence</span><span class="live-pulse" id="live-pulse"></span></div></div>
-          <div class="timeline-head"><span>AGENT / HARNESS</span><div class="timeline-ticks"><span>START</span><span>CHECKPOINT</span><span>NOW</span></div></div>
-          <div class="swimlanes" id="swimlanes"></div>
+          <div class="journey-controls"><span class="journey-note" id="stage-caption">Each marker is a recorded lifecycle event · demo shown until a feed is connected</span><div class="journey-filters" role="group" aria-label="Filter execution lanes"><button type="button" data-lane-filter="all" class="selected" aria-pressed="true">All</button><button type="button" data-lane-filter="active" aria-pressed="false">Working</button><button type="button" data-lane-filter="waiting" aria-pressed="false">Waiting</button><button type="button" data-lane-filter="handoff" aria-pressed="false">Handoffs</button></div></div>
+          <div class="journey-scroll" id="journey-scroll" tabindex="0" aria-label="Agent lifecycle swimlane matrix; scroll horizontally for stages">
+            <div class="journey-head" aria-hidden="true"><span>AGENT / TASK</span><span>01 <b>Wake</b></span><span>02 <b>Check-in</b></span><span>03 <b>Execute</b></span><span>04 <b>Checkpoint</b></span><span>05 <b>Handoff</b></span><span>06 <b>Check-out</b></span></div>
+            <div class="swimlanes" id="swimlanes"></div>
+          </div>
           <div class="event-stream" id="event-stream" hidden></div>
           <div class="activity-foot"><span id="freshness">Sample data · not a live telemetry source</span><span>Read-only telemetry</span></div>
           <div class="trace" id="trace"><div class="trace-title"><div><small>SELECTED EXECUTION</small><h3 id="trace-agent">Codex · implementation</h3></div><span id="trace-state" class="status-pill working">WORKING</span></div><div class="trace-details" id="trace-details"></div><div class="trace-evidence" id="trace-evidence"></div></div>
