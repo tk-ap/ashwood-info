@@ -14,9 +14,16 @@ name: PR Review (shadow)
 #
 # This repository is public: job summaries are visible to anyone, and
 # review.py refuses to write output that matches a credential pattern.
+#
+# Trust boundary: nothing from the PR head is ever executed. pull_request_target
+# runs this workflow as it exists on the base branch, the reviewer script,
+# prompts and rules are checked out from the base branch into trusted/, and the
+# PR head is checked out into pr/ only as review data. CLAUDE_CODE_OAUTH_TOKEN is
+# given to the one step that runs trusted code. (With a plain pull_request
+# trigger, a same-repo branch could edit the reviewer and send the token out.)
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
@@ -52,12 +59,28 @@ jobs:
             echo "run=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # Trusted code: the reviewer as it exists on the base branch.
+      - uses: actions/checkout@v4
+        if: steps.auth.outputs.run == 'true'
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+
+      # Review data only: never run anything from this checkout.
       - uses: actions/checkout@v4
         if: steps.auth.outputs.run == 'true'
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Make the base commit available for the diff
+        if: steps.auth.outputs.run == 'true'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: git -C pr cat-file -e "$BASE^{commit}" 2>/dev/null || git -C pr fetch --no-tags --depth=1 origin "$BASE"
 
       - name: Install Claude Code
         if: steps.auth.outputs.run == 'true'
@@ -72,8 +95,8 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.sha }}
           PR: ${{ github.event.pull_request.number }}
         run: |
-          python3 .github/pr-review/review.py --repo . --base "$BASE" --head "$HEAD" \
-            --rules .github/pr-review/rules/ashwood-info.md --pr "$PR" --gh-repo "$GITHUB_REPOSITORY" \
+          python3 trusted/.github/pr-review/review.py --repo pr --base "$BASE" --head "$HEAD" \
+            --rules trusted/.github/pr-review/rules/ashwood-info.md --pr "$PR" --gh-repo "$GITHUB_REPOSITORY" \
             --out "$RUNNER_TEMP/pr-review" --budget 1.5
           cat "$RUNNER_TEMP/pr-review/report.md" >> "$GITHUB_STEP_SUMMARY"
 
