@@ -55,3 +55,5 @@ jobs:
           echo "CURRENT_VERSION_ID=$version"
           echo "CURRENT_VERSION_SOURCE=$source"
           echo "Verified owned site metadata by read-only API call. Version: `$version`, source: `$source`. No update was attempted." >> "$GITHUB_STEP_SUMMARY"
+
+# Post-publication owner metadata verification.
