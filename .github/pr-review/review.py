@@ -19,12 +19,17 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 MAX_DIFF_CHARS = 60_000
 OVERLAP_DAYS, OVERLAP_MAX = 14, 10  # older or extra overlapping PRs are noise
-READ_ONLY_TOOLS = ["Read", "Grep", "Glob", "Bash(git diff:*)", "Bash(git log:*)",
-                   "Bash(git show:*)", "Bash(git grep:*)", "Bash(git ls-files:*)"]
-# The claude process must hold the OAuth token in its environment. Keep its file
-# tools inside the review checkout: no process, system or home paths, even if PR
-# content asks for them. Symlinks are also removed from the checkout before review.
+# The claude process must hold the OAuth token in its environment, so the model gets
+# no shell at all (git diff --no-index can read /proc/self/environ). Its only tools are
+# Read, Grep and Glob, in "default" permission mode with no allow rules: reads inside
+# the review checkout are permitted, anything outside needs an approval a headless run
+# never grants (checked empirically with Claude Code 2.1.296). Explicit denials cover
+# process, system and home paths as well. Symlinks are removed from the checkout, and
+# the diff and base file versions are written into it from trusted Git objects.
+MODEL_TOOLS = "Read,Grep,Glob"
 DENIED_READS = [f"Read(//{d}/**)" for d in ("proc", "sys", "dev", "etc", "home", "root", "run", "var")]
+REVIEW_DATA = ".pr-review"
+MAX_BASE_FILE_BYTES = 400_000
 SECRET_PATTERNS = [re.compile(p, re.I) for p in (
     r"hnk_[a-z0-9]{8,}", r"postgres(?:ql)?://\S+:\S+@", r"authorization\s*:\s*bearer\s+[a-z0-9._-]{12,}",
     r"BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY", r"sk-ant-[a-z0-9-]{10,}", r"gh[pousr]_[A-Za-z0-9]{20,}")]
@@ -86,12 +91,36 @@ def remove_symlinks(root):
     return removed
 
 
+def write_review_data(repo, checkout, base, head):
+    """Give the model the full diff and base versions of changed files without a shell.
+
+    Everything comes from Git objects in the trusted process; base files are written
+    only for regular blobs, under REVIEW_DATA/base, and never outside it.
+    """
+    data = Path(checkout, REVIEW_DATA)
+    (data / "base").mkdir(parents=True, exist_ok=True)
+    (data / "diff.patch").write_text(git(repo, "diff", f"{base}...{head}"))
+    root = (data / "base").resolve()
+    written = 0
+    for line in git(repo, "diff", "--name-only", f"{base}...{head}").splitlines():
+        text = trusted_blob(repo, base, line) if line else None
+        if text is None or len(text) > MAX_BASE_FILE_BYTES:
+            continue
+        target = (root / line).resolve()
+        if root not in target.parents:
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text)
+        written += 1
+    return written
+
+
 def build_context(repo, base, head, rules, pr, gh_repo):
     changed = git(repo, "diff", "--name-status", f"{base}...{head}")
     files = {line.split("\t")[-1] for line in changed.splitlines() if line}
     diff = git(repo, "diff", f"{base}...{head}")
     if len(diff) > MAX_DIFF_CHARS:
-        diff = diff[:MAX_DIFF_CHARS] + f"\n[diff truncated at {MAX_DIFF_CHARS} characters; run git diff for the rest]\n"
+        diff = diff[:MAX_DIFF_CHARS] + f"\n[diff truncated at {MAX_DIFF_CHARS} characters; read {REVIEW_DATA}/diff.patch for the rest]\n"
     parts, overlaps, title = [], [], ""
     if pr and gh_repo:
         meta = gh_json("pr", "view", str(pr), "--repo", gh_repo, "--json", "title,body,baseRefName") or {}
@@ -117,7 +146,7 @@ def build_context(repo, base, head, rules, pr, gh_repo):
 
 def claude(prompt, schema, cwd, budget):
     cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(schema),
-           "--tools", "Read,Grep,Glob,Bash", "--allowedTools", *READ_ONLY_TOOLS,
+           "--tools", MODEL_TOOLS, "--permission-mode", "default",
            "--disallowedTools", *DENIED_READS,
            "--strict-mcp-config", "--no-session-persistence", "--max-budget-usd", str(budget)]
     # A PR can carry its own .claude settings or CLAUDE.md; never load them.
@@ -161,6 +190,7 @@ def main():
         for name in ("CLAUDE.md", ".claude"):
             for p in checkout.rglob(name):
                 shutil.rmtree(p) if p.is_dir() else p.unlink()
+        write_review_data(repo, checkout, base, head)
 
         review_prompt = (HERE / "prompts/review.md").read_text().replace("{base}", base).replace("{context}", context)
         found, review_run = claude(review_prompt, FINDINGS_SCHEMA, checkout, a.budget)
