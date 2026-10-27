@@ -17,6 +17,21 @@ jobs:
     env:
       HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
     steps:
+      - name: Check private Workspace source access without changing anything
+        shell: bash
+        env:
+          REPO_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          code=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 20 \
+            -H "Authorization: Bearer ${REPO_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/tk-ap/ashwood-command-center")
+          if [[ "$code" == "200" ]]; then
+            echo "CROSS_REPO_PRIVATE_WORKSPACE=READABLE"
+          else
+            echo "CROSS_REPO_PRIVATE_WORKSPACE=NOT_READABLE (HTTP $code)"
+          fi
       - name: Check owner site metadata without changing anything
         shell: bash
         run: |
