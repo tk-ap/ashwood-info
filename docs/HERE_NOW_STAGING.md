@@ -14,13 +14,13 @@ content. It writes a non-secret `staging-manifest.json` describing both source
 commits.
 
 The current Workspace source for the next static build is the validated, demo-only OmniChat integration at
-`tk-ap/ashwood-command-center` commit `9de2878a57e984817c9df896918719acf1f5a4eb` (existing draft PR #2, reconciled with latest Workspace V2 PR #1).
+`tk-ap/ashwood-command-center` commit `6f1fdd9fad47420170766d1af1424bdbbce1a03b` (existing draft PR #2, reconciled with latest Workspace V2 PR #1).
 Build it first with `WORKSPACE_STATIC=1 bun run build`, then create a new artifact:
 
 ```sh
 node scripts/build-here-now-staging.mjs /tmp/ashwood-here-now-stage \
   --workspace-static /absolute/path/to/.output/public \
-  --workspace-source-ref 9de2878a57e984817c9df896918719acf1f5a4eb
+  --workspace-source-ref 6f1fdd9fad47420170766d1af1424bdbbce1a03b
 ```
 
 Publishing remains an explicit separate step. Reconcile the provider version
@@ -54,7 +54,7 @@ Local browser review: desktop 1363px and 390px iframe (375px client area), zero 
 
 The existing Workspace V2 /operator route now houses the unified OmniChat composer, sample sessions, responsive runtime swim lanes, event timeline, capacity/exhaustion markers, per-agent receipts, and an explicit unavailable live-mode state. The UI inherits ASHWOOD theme tokens (warm-dark, paper-light, Tokyo Night, phosphor) and existing navigation; no second app or tab. The original Operator controls stay available in a disclosure. **All displayed agent activity is fictional demo data; the static here.now sandbox has no authenticated AgentOS/Herdr/LEDGATo connection.**
 
-Workspace source: `9de2878a57e984817c9df896918719acf1f5a4eb` (tk-ap/ashwood-command-center PR #2). CI [run 40575138845](https://github.com/tk-ap/ashwood-command-center/actions/runs/40575138845) passed 36 tests, TypeScript and `WORKSPACE_STATIC=1 bun run build`. The staging assembler's full-source/privacy checks and the here.now in-place version-aware publish remain separate. No production deploy is authorized.
+Workspace source: `6f1fdd9fad47420170766d1af1424bdbbce1a03b` (tk-ap/ashwood-command-center PR #2). CI [run 40575138845](https://github.com/tk-ap/ashwood-command-center/actions/runs/40575138845) passed 36 tests, TypeScript and `WORKSPACE_STATIC=1 bun run build`. The staging assembler's full-source/privacy checks and the here.now in-place version-aware publish remain separate. No production deploy is authorized.
 
 
 ## 2026-10-27 — Live Operator requirement and safety hold
@@ -68,3 +68,12 @@ User explicitly rejected a static Operator/swim-lane simulation as a usable rele
 - Existing canonical provider site version must be read from authenticated here.now API using owner key; checked with optimistic concurrency before changing `mighty-yoga-pgph`. Owner connection is unavailable in ChatGPT/GitHub Actions; do not overwrite or anonymously republish.
 
 **Release gate**: (1) authenticated private telemetry and ingress work over the **actual stable here.now origin** without public access to owner data, (2) real worker session receipt wakes/check-ins/heartbeats/handoffs reach UI, (3) stale/unobserved are correctly labeled, (4) end-to-end command-to-attributed response/trace proven, (5) safe in-place version-aware publish and mobile/desktop route regression review. Static build passing does not meet these gates.
+
+
+## 2026-10-27 — Jev/Herdr audit and corrected here.now deployment handoff
+
+- Source pin above now includes the **routing, approval, and Herdr pane receipt viewer** in the Operator command thread. It displays actual AgentOS-synced receipts only, otherwise unrecorded. Companion source contract: `tk-ap/ashwood-command-center/docs/OMNICHAT_JEV_HERDR_PROTOCOL.md`.
+- [Full source tests, TypeScript and static build passed](https://github.com/tk-ap/ashwood-command-center/actions/runs/40585547947); [full assembled ASHWOOD review artifact passed](https://github.com/tk-ap/ashwood-command-center/actions/runs/40585547901). No here.now publishing occurred in either run.
+- Root deployment error fixed at private source `.github/workflows/ashwood-omnichat-staging.yml`: the here.now publisher **does not support** the `--base-version-id` flag. It loads optimistic concurrency from `.herenow/state.json`, keyed to the **absolute artifact directory**; workflow now explicitly reads owner-authenticated `currentVersionId`, checks it against the expected lease, writes proper state, then invokes `publish.sh ... --slug mighty-yoga-pgph` from the correct directory. Anonymous separate-site publishing is disabled.
+- Existing owner connection reference `owner:provider:here-now` lives in AgentOS/deployment topology; it is **not** a credential available in the ChatGPT tool session or current private Workspace GitHub Actions repo. Do not confuse provider ownership with tool session permissions. No owner key or provider session was obtained by this build. Stable site remains unchanged until the connection is used from its actual authorized host, after the secure bridge and live Jev/Herdr end-to-end proof.
+- The owner explicitly requires chat → Jev candidate → AgentOS/LEDGATo policy and approval receipt → verified existing Herdr pane handoff, with actual wake/check-in/out/heartbeat swim lanes. Static design demos are not acceptable as the primary release. AgentOS #427 and #451 track the host emitter/dispatcher. No fake liveness or completion claims.
