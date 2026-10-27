@@ -68,6 +68,37 @@ Response example (schema version TBD; values below illustrative only):
 - Keep per-user ingress/cookies off a publicly accessible static page. For a real rollout, use an authenticated Workspace-origin backend or equivalent scoped gateway; no static credential storage.
 - Owner commands only through existing authenticated governed ingress. The UI's optional `POST /api/omnichat/command` is disabled until server explicitly sets `commands_enabled: true`; treat success only when a durable acceptance receipt is returned.
 
+## Persistent workforce identity attribution (v0.4 visual contract)
+
+Canonical registry: `tk-ap/agent-os/registry/agents.yaml` (12 stable role IDs at the 2026-10-27 review). **Agent identity remains constant when an execution harness changes.** An agent is accountable for a task; Codex/Claude/Hermes are replaceable execution resources; Jev is a bounded advisory decision provider, not automatically a workforce member.
+
+OmniChat displays three distinct levels:
+
+1. **Contribution / roster:** `agent_id`, registered display name/role, owned tasks, observed check-outs, and independently verified outcomes. Selecting an agent scopes the task evidence and stage matrix.
+2. **Task / lifecycle:** `task_id` / `work_id`, immutable source and authorization, current status and distinct progress receipts. A task keeps its responsible agent across harness replacement unless canonical ownership explicitly changes.
+3. **Attempt / harness:** `attempt_id` or fenced generation, `harness`, `host/session_id`, model/provider when observed, usage, checkpoint, result, and any capacity or handoff receipt.
+
+The proposed authenticated projection should provide a **canonical** `agent_id` (or `owning_agent`) on every observed lane, and a bounded `attempts[]` history with `harness` and observed `result`. For data without an accepted AgentOS identity key the UI explicitly shows **Unattributed**; it never treats `Claude`, `Codex`, or `Jev` as the persistent agent based on display text. Legacy `agent` is not reliable identity evidence. Separate `decision_provider` is optional, advisory only.
+
+Example *schema shape only* (not a live receipt):
+```json
+{
+  "agent_id": "eugene",
+  "task_id": "canonical-task-ref",
+  "work_id": "canonical-work-ref",
+  "harness": "claude-code",
+  "attempts": [
+    {"harness": "codex-cli", "result": "capacity"},
+    {"harness": "claude-code", "result": "resumed"}
+  ],
+  "events": []
+}
+```
+
+**Evidence rules:** An apparent `done` task is not automatically independently verified. Checked-out and verified contribution counts are separate; the current concept only counts a verified outcome if an explicit `independently_verified` event is in the trusted projection. The producing agent receives product-work attribution; the reviewer is separately credited for verification activity, not silently recast as producer. Proper cryptographic/provenance validation and independently sourced outcome reconciliation remain backend duties, not static UI guarantees. Stage cells represent actual events only; a provider session changing does not automatically imply a valid handoff.
+
+The sample UI demonstrates Eugene switching from Codex CLI to Claude Code **within the same identity**. These are fabricated example attempts. Do not mistake the visual simulation for proof of a live host adapter, real completion, or original consumer-chat session portability. The real bridge remains to be implemented and reviewed, with task IDs, accepted identity registry keys, verified fences, sanitized provenance, and source-of-truth freshness.
+
 ## Desktop cockpit integration
 
 Companion branch in `tk-ap/agent-os`: `feat/cockpit-runtime-swimlanes-20261027`. Adds `runtime_swim_lanes` as a sanitized read-only field of the **existing** `cockpit.json` projection and draws six stage segments in the existing Quickshell/Omarchy `Panel.qml`. It does not introduce a new panel, daemon, state authority, task dispatcher, or approval route.
