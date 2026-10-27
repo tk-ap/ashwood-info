@@ -14,13 +14,13 @@ content. It writes a non-secret `staging-manifest.json` describing both source
 commits.
 
 The current Workspace source for the next static build is the validated, demo-only OmniChat integration at
-`tk-ap/ashwood-command-center` commit `72d11758e76ca56abbc8e681fdd74039d0e4ac80` (existing draft PR #2, reconciled with latest Workspace V2 PR #1).
+`tk-ap/ashwood-command-center` commit `9de2878a57e984817c9df896918719acf1f5a4eb` (existing draft PR #2, reconciled with latest Workspace V2 PR #1).
 Build it first with `WORKSPACE_STATIC=1 bun run build`, then create a new artifact:
 
 ```sh
 node scripts/build-here-now-staging.mjs /tmp/ashwood-here-now-stage \
   --workspace-static /absolute/path/to/.output/public \
-  --workspace-source-ref 72d11758e76ca56abbc8e681fdd74039d0e4ac80
+  --workspace-source-ref 9de2878a57e984817c9df896918719acf1f5a4eb
 ```
 
 Publishing remains an explicit separate step. Reconcile the provider version
@@ -54,4 +54,17 @@ Local browser review: desktop 1363px and 390px iframe (375px client area), zero 
 
 The existing Workspace V2 /operator route now houses the unified OmniChat composer, sample sessions, responsive runtime swim lanes, event timeline, capacity/exhaustion markers, per-agent receipts, and an explicit unavailable live-mode state. The UI inherits ASHWOOD theme tokens (warm-dark, paper-light, Tokyo Night, phosphor) and existing navigation; no second app or tab. The original Operator controls stay available in a disclosure. **All displayed agent activity is fictional demo data; the static here.now sandbox has no authenticated AgentOS/Herdr/LEDGATo connection.**
 
-Workspace source: `72d11758e76ca56abbc8e681fdd74039d0e4ac80` (tk-ap/ashwood-command-center PR #2). CI [run 40575138845](https://github.com/tk-ap/ashwood-command-center/actions/runs/40575138845) passed 36 tests, TypeScript and `WORKSPACE_STATIC=1 bun run build`. The staging assembler's full-source/privacy checks and the here.now in-place version-aware publish remain separate. No production deploy is authorized.
+Workspace source: `9de2878a57e984817c9df896918719acf1f5a4eb` (tk-ap/ashwood-command-center PR #2). CI [run 40575138845](https://github.com/tk-ap/ashwood-command-center/actions/runs/40575138845) passed 36 tests, TypeScript and `WORKSPACE_STATIC=1 bun run build`. The staging assembler's full-source/privacy checks and the here.now in-place version-aware publish remain separate. No production deploy is authorized.
+
+
+## 2026-10-27 — Live Operator requirement and safety hold
+
+User explicitly rejected a static Operator/swim-lane simulation as a usable release. **Do not promote an inert sample view to the stable sandbox as if it were live.** The source pin above includes a real-data-first `OmniChatLive` view and a collapsed, expressly fictional layout study. Validated on the existing Workspace branch with:
+
+- [React + TypeScript + tests](https://github.com/tk-ap/ashwood-command-center/actions/runs/40580751888) — pass.
+- [Full public ASHWOOD + Workspace assembly](https://github.com/tk-ap/ashwood-command-center/actions/runs/40580751887) — pass, with an intentionally skipped publish absent provider ownership/version lease.
+- Private authenticated read: existing `/api/workspace-auth`, `/api/workspace-agentos`, `/api/workspace-state?view=commands`; existing governed `submit_command` ingress. Public static here.now has none of these backend routes, so the UI **must** show disconnected there until a secure owner-authenticated bridge is verified. Do not embed bearer keys or Neon connection strings in JS or use a public here.now proxy that shares owner secrets with all visitors.
+- Latest observed database mirror evidence (read-only, 2026-10-27): 313 rows, latest observed 2026-10-27 19:59:12Z; zero `recent_events.kind=heartbeat` projected. Full per-harness lifecycle emitter, durable exhaustion evidence, Jev handoff receipts, attempt/fencing and independent tests remain in `tk-ap/agent-os#451`.
+- Existing canonical provider site version must be read from authenticated here.now API using owner key; checked with optimistic concurrency before changing `mighty-yoga-pgph`. Owner connection is unavailable in ChatGPT/GitHub Actions; do not overwrite or anonymously republish.
+
+**Release gate**: (1) authenticated private telemetry and ingress work over the **actual stable here.now origin** without public access to owner data, (2) real worker session receipt wakes/check-ins/heartbeats/handoffs reach UI, (3) stale/unobserved are correctly labeled, (4) end-to-end command-to-attributed response/trace proven, (5) safe in-place version-aware publish and mobile/desktop route regression review. Static build passing does not meet these gates.
