@@ -1,0 +1,77 @@
+name: OmniChat here.now sandbox (not production)
+on:
+  push:
+    branches:
+      - prototype/omnichat-swimlanes-20261027
+    paths:
+      - 'workspace/prototypes/omnichat/**'
+      - '.github/workflows/omnichat-here-now.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: omnichat-here-now-sandbox
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+      OMNICHAT_SLUG: ${{ vars.OMNICHAT_HERENOW_SLUG }}
+    steps:
+      - name: Checkout prototype branch
+        uses: actions/checkout@v4
+      - name: Validate static JavaScript
+        run: |
+          set -euo pipefail
+          node --check workspace/prototypes/omnichat/app.js
+          node --test tests/omnichat-prototype.test.mjs
+      - name: Install pinned publisher repository
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/heredotnow/skill.git "$RUNNER_TEMP/here-now-skill"
+      - name: Publish to separate here.now site
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(--client github-actions/omnichat)
+          if [[ -n "${OMNICHAT_SLUG}" ]]; then args+=(--slug "${OMNICHAT_SLUG}"); fi
+          # Do not print provider claim URLs or one-time tokens in public workflow logs.
+          if ! bash "$RUNNER_TEMP/here-now-skill/here-now/scripts/publish.sh" \
+            workspace/prototypes/omnichat "${args[@]}" > "$RUNNER_TEMP/here-now-result.log" 2>&1; then
+            echo "here.now publish failed; inspect owner-connected provider diagnostics privately."
+            exit 1
+          fi
+          site_url=$(grep -oE 'https://[a-z0-9-]+\.here\.now/?' "$RUNNER_TEMP/here-now-result.log" | head -n1 || true)
+          if [[ -z "$site_url" ]]; then
+            echo "Publish returned no recognizable here.now site URL."
+            exit 1
+          fi
+          echo "url=$site_url" >> "$GITHUB_OUTPUT"
+          {
+            echo "### OmniChat sandbox"
+            echo ""
+            echo "- URL: $site_url"
+            echo "- Source SHA: ${GITHUB_SHA}"
+            if [[ -z "${HERENOW_API_KEY}" ]]; then
+              echo "- **Anonymous preview: expires in 24 hours. Not a durable owner-controlled site.**"
+            else
+              echo "- Owner credential was supplied by GitHub Actions secret."
+            fi
+            echo "- Sample data, not connected to live AgentOS. No production deployment."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify published site
+        env:
+          SITE_URL: ${{ steps.publish.outputs.url }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --max-time 20 "$SITE_URL" -o "$RUNNER_TEMP/omnichat.html"
+          grep -Fq 'Runtime swim lanes' "$RUNNER_TEMP/omnichat.html"
+          curl --fail --silent --show-error --max-time 20 "${SITE_URL%/}/app.js" -o "$RUNNER_TEMP/omnichat.js"
+          node --check "$RUNNER_TEMP/omnichat.js"
+          echo "Sandbox URL and JS successfully verified."
