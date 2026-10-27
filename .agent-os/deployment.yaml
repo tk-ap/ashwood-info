@@ -38,7 +38,7 @@ sandboxes:
     source_ref: 015f5296c92919ee940177ee1e0cedbb4c44cebb
     workspace_source:
       repository: tk-ap/ashwood-command-center
-      source_ref: 628523c641f2862c7c634f0a3ac8447b78c69a26
+      source_ref: 0d5a67d47d2533d797388f9976675b67d449a6ba
       mode: demo-only-no-private-api-or-records
     verification:
       state: passed
