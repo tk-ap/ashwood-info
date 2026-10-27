@@ -34,8 +34,13 @@ on:
         type: string
         default: "pr-review"
 
-  pull_request:
-    types: [opened, ready_for_review]
+  # Automatic PR runs are paused: Hermes now requires a Nous Portal login, so the
+  # credential-free nous/welcome path fails every PR ("Hermes is not logged into
+  # Nous Portal"). Restore once Hermes is authenticated; run manually meanwhile.
+  # The shadow reviewer (.github/workflows/pr-review-shadow.yml, PR #305) covers
+  # PR review in the interim.
+  # pull_request:
+  #   types: [opened, ready_for_review]
 
   # Nightly triage / audit — disabled by default.
   # schedule:
