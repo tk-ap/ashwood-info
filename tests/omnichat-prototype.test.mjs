@@ -35,3 +35,29 @@ test("Default is explicit simulation and cannot imply real command dispatch", ()
   assert.match(html, /Protected actions are approved in LEDGATo/);
   assert.doesNotMatch(script, /localStorage|sessionStorage/);
 });
+test("Two cockpit perspectives are visible, selectable, and never represent demo work as live", () => {
+  for (const id of [
+    "view-build","view-team","build-dashboard","team-dashboard",
+    "priority-title","priority-description","simulate-focus",
+    "radar-list","autonomous-queue","reality-stamp"
+  ]) assert.match(html, new RegExp('id="' + id + '"'), id + " absent");
+  assert.match(html, /Building the Build/);
+  assert.match(html, /Building the Team/);
+  assert.match(html, /INTERACTIVE CONCEPT · DEMO DATA/);
+  assert.match(html, /Illustrative|ILLUSTRATIVE WORKFLOW/);
+  assert.match(script, /let workspacePerspective='build'/);
+  assert.match(script, /foregroundDemo=!foregroundDemo/);
+  assert.match(script, /if\(connected\)\{/);
+  assert.match(script, /No canonical autonomous mission queue projection is attached/);
+  assert.match(css, /\.main\[data-workspace-view="build"\]/);
+  assert.match(css, /\.main\[data-workspace-view="team"\]/);
+});
+
+test("Foreground priority remains concept-only and portfolio feed is fail-closed", () => {
+  assert.match(script, /This capture listener visually demonstrates/);
+  assert.match(script, /It does not call providers, pause jobs, persist session leases/);
+  assert.match(script, /!connected&&\$\('prompt'\)\.value\.trim\(\)/);
+  assert.match(script, /\$\('simulate-focus'\)\.disabled=connected/);
+  assert.match(script, /No authenticated portfolio signal projection is attached/);
+  assert.match(script, /Switching perspectives never changes capacity/);
+});
