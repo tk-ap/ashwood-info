@@ -56,6 +56,5 @@ jobs:
           echo "CURRENT_VERSION_SOURCE=$source"
           echo "Verified owned site metadata by read-only API call. Version: `$version`, source: `$source`. No update was attempted." >> "$GITHUB_STEP_SUMMARY"
 
-# Post-publication owner metadata verification.
-
-# Validate provider state after interactive seeded-demo release.
+# One-batch in-place release preflight: owner authenticated, read-only.
+# No publish action in this diagnostic; verify currentVersionId before release.
