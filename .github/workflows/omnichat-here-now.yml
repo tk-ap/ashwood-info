@@ -71,7 +71,8 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --retry 3 --max-time 20 "$SITE_URL" -o "$RUNNER_TEMP/omnichat.html"
-          grep -Fq 'Runtime swim lanes' "$RUNNER_TEMP/omnichat.html"
+          grep -Fq 'Identity-first swim lanes' "$RUNNER_TEMP/omnichat.html"
+          grep -Fq 'Identity contributions' "$RUNNER_TEMP/omnichat.html"
           curl --fail --silent --show-error --max-time 20 "${SITE_URL%/}/app.js" -o "$RUNNER_TEMP/omnichat.js"
           node --check "$RUNNER_TEMP/omnichat.js"
           echo "Sandbox URL and JS successfully verified."
