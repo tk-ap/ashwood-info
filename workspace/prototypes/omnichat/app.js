@@ -176,7 +176,13 @@
   }
   function renderLanes(lanes) {
     const root=$('swimlanes');root.replaceChildren();
-    const visible=filteredLanes(lanes);
+    // Group *by accountable identity*, not by harness or upstream event order.
+    // Preserve a stable task-level ordering inside each identity.
+    const visible=[...filteredLanes(lanes)].sort((a,b)=>{
+      const left=identityOf(a),right=identityOf(b);
+      if(left!==right)return left==='unknown'?1:right==='unknown'?-1:left.localeCompare(right);
+      return String(a.task_id||a.id).localeCompare(String(b.task_id||b.id));
+    });
     if(!visible.length){
       root.append(elt('p','journey-empty',connected?'No observed sessions match the filter. This does not prove the fleet is idle.':'No sample sessions match the filter.'));
       return;
