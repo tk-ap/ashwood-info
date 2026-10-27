@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p screenshots
-          cat > /tmp/check-ashwood-layout.mjs <<'JS'
+          cat > ./ashwood-layout-check.mjs <<'JS'
           import { chromium } from 'playwright';
           import fs from 'node:fs/promises';
           const browser=await chromium.launch({headless:true});
@@ -55,7 +55,7 @@ jobs:
           await browser.close();
           if(errors.length)throw Error(errors.join('\n'));
           JS
-          node /tmp/check-ashwood-layout.mjs
+          node ./ashwood-layout-check.mjs
       - name: Retain layout screenshots
         if: always()
         uses: actions/upload-artifact@v4
