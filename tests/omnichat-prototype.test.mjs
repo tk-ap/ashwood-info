@@ -92,3 +92,35 @@ test("Swimlane controls are interactive but do not dispatch or fabricate product
   assert.match(css,/\.journey-persona\{position:sticky/);
   assert.match(css,/\.journey-cell\.unobserved/);
 });
+
+test("Agent identities are persistent and distinct from replaceable harnesses", () => {
+  for (const id of ["identity-cards", "identity-detail", "identity-label", "identity-all"]) {
+    assert.match(html, new RegExp('id="' + id + '"'));
+  }
+  assert.match(html, /Identity contributions/);
+  assert.match(html, /IDENTITY \/ OWNED TASK/);
+  assert.match(script, /const identities=\{/);
+  for(const name of ["scout","eugene","router","polly","w-dog","milchik"]) {
+    assert.ok(script.includes("agent_id:'" + name + "'") || script.includes(name+":{") || script.includes("'"+name+"':{"), name+" not mapped");
+  }
+  assert.match(script, /const identityOf=\(lane\)=>identities\[lane\?\.agent_id\]/);
+  assert.match(script, /agent_id:identities\[String\(v\.agent_id\|\|v\.owning_agent\|\|''\)/);
+  assert.match(script, /const attemptHistory=\(lane\)=>/);
+  assert.match(script, /renderIdentities\(lanes\)/);
+  assert.match(script, /identityFilter=identityFilter===id\?'all':id/);
+  assert.match(script, /handoff|harness-chain/);
+  assert.match(css, /\.identity-card\{/);
+  assert.match(css, /\.harness-chain\{/);
+  assert.match(css, /\.identity-group\{/);
+});
+test("Attribution does not silently treat model or decision-provider name as an agent", () => {
+  assert.match(script, /id:'codex',agent_id:'eugene',agent:'Eugene'/);
+  assert.match(script, /id:'jev',agent_id:'router',agent:'Router'/);
+  assert.match(script, /decision_provider:'jev'/);
+  assert.match(script, /id:'claude',agent_id:'w-dog',agent:'W Dog'/);
+  assert.match(script, /attempts:\[\{harness:'codex-cli',result:'capacity'\},\{harness:'claude-code',result:'resumed'\}\]/);
+  assert.match(script, /No canonical identity\/task observations/);
+  assert.match(script, /e\.kind==='independently_verified'/);
+  assert.match(script, /['"]check_out['"]/);
+  assert.match(script, /identityOf\(l\)==='unknown'\?'UNKNOWN · unattributed'/);
+});
