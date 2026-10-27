@@ -107,7 +107,7 @@
     $('thread-subtitle').textContent=connected?'Live read-only projection. The shared conversation remains a governed AgentOS ingress.':v.sub;
     const lanes=current();if(!lanes.some(x=>x.id===selected))selected=lanes[0]?.id||'';
     $('thread-meta').textContent=lanes.length+' '+(connected?'observed':'sample')+' lanes';
-    metrics(lanes);renderLanes(lanes);renderEvents(lanes);renderTrace(lanes);updateMode();
+    metrics(lanes);renderLanes(lanes);renderEvents(lanes);renderTrace(lanes);updateMode();renderWorkforce();
     $('swimlanes').hidden=activityView!=='swim';$('event-stream').hidden=activityView!=='events';
   }
   function addMessage(text,kind='owner'){
@@ -156,5 +156,94 @@
   });
   $('prompt').addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('composer').requestSubmit()}});
   heartbeatTimer=setInterval(()=>{if(connected)poll()},15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&connected)poll()});
+
+  // Cockpit perspectives are UI presentation only. Autonomous work must already exist
+  // in AgentOS; the static sample never starts tasks or controls real provider capacity.
+  let workspacePerspective='build';
+  let foregroundDemo=false;
+  const sampleRadar=[
+    {product:'ALVIRA',detail:'Portable context: observe onboarding comprehension and bridge reliability',label:'Opportunity',color:'blue'},
+    {product:'ailhat',detail:'Marketing Engineering pilot: test audience language and acquisition signal',label:'Growth pilot',color:''},
+    {product:'ASHWOOD',detail:'Catalog discoverability, portfolio clarity, sandbox staging',label:'Design review',color:'slate'},
+    {product:'Career Ops',detail:'Application tracker consistency and evidence-backed job matching',label:'Quality gate',color:'amber'}
+  ];
+  const sampleMissions=[
+    {n:'01',title:'Observe market signals',detail:'Scout + Steward · source-backed findings for ailhat',state:'PROPOSED',color:'blue'},
+    {n:'02',title:'Stage ALVIRA clarity improvements',detail:'Bill → Router → Eugene → W Dog · isolated draft only',state:'STAGING',color:''},
+    {n:'03',title:'Verify ASHWOOD navigation',detail:'Designer + W Dog · preserve modeling route and existing design',state:'REVIEW',color:'amber'},
+    {n:'04',title:'Prepare a measurable growth test',detail:'Scout · no public posting without governed approval',state:'BOUNDED',color:'slate'}
+  ];
+  function addRadarItem(item) {
+    const node=elt('div','radar-item'),body=elt('div','');
+    body.append(elt('b','',item.product),elt('small','',item.detail));
+    node.append(body,elt('span','mini-status '+(item.color||''),item.label));return node;
+  }
+  function addMissionItem(item) {
+    const node=elt('div','mission-item'),body=elt('div','');
+    body.append(elt('b','',item.title),elt('small','',item.detail));
+    node.append(elt('span','mission-step',item.n),body,elt('span','mini-status '+(item.color||''),item.state));return node;
+  }
+  function renderWorkforce() {
+    const main=document.querySelector('main.main');
+    main.dataset.workspaceView=workspacePerspective;
+    main.classList.toggle('is-connected',connected);
+    $('build-dashboard').hidden=workspacePerspective!=='build';
+    $('team-dashboard').hidden=workspacePerspective!=='team';
+    for (const view of ['build','team']) {
+      const b=$('view-'+view),active=view===workspacePerspective;
+      b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;
+    }
+    const ribbon=document.querySelector('.priority-ribbon');
+    const isForeground=foregroundDemo&&!connected;
+    ribbon.classList.toggle('foreground',isForeground);
+    $('priority-title').textContent=isForeground?'Foreground priority — simulated owner session':
+      connected?'Connected feed — foreground reservation unverified':'Autonomous mode — background eligible';
+    $('priority-description').textContent=isForeground?
+      'Example: no new background calls on competing quota buckets. Safe checkpoint/yield; keep no-model wakes active. Nothing is paused on your host.':
+      connected?'The connected activity feed does not attest global owner-session priority. Do not infer that workers have been paused.':
+      'Example background workforce may act on existing standing mandates while no owner session is registered.';
+    $('simulate-focus').disabled=connected;
+    $('simulate-focus').textContent=connected?'Control unavailable on feed':isForeground?'End example session':'Simulate owner session';
+    $('priority-explainer').textContent=connected?'This bridge does not control quotas.':'Switching perspectives never changes capacity.';
+    const stamp=$('reality-stamp');
+    stamp.querySelector('strong').textContent=connected?'SESSION FEED ONLY':'SIMULATION';
+    stamp.querySelector('small').textContent=connected?'Portfolio/priority telemetry not connected':'Sample missions, not host events';
+    document.querySelectorAll('.concept-marker').forEach(el=>el.textContent=connected?'PORTFOLIO DATA UNAVAILABLE':'ILLUSTRATIVE WORKFLOW');
+    const radar=$('radar-list'),queue=$('autonomous-queue');
+    radar.replaceChildren();queue.replaceChildren();
+    if(connected){
+      radar.append(elt('p','notice','No authenticated portfolio signal projection is attached. Session lanes below may be observed, but these product states are UNKNOWN.'));
+      queue.append(elt('p','notice','No canonical autonomous mission queue projection is attached. Do not infer dispatch or staged work from this concept panel.'));
+    }else{
+      for(const item of sampleRadar)radar.append(addRadarItem(item));
+      for(const item of sampleMissions)queue.append(addMissionItem({
+        ...item,
+        state:isForeground&&item.state==='STAGING'?'YIELD · DEMO':item.state,
+        color:isForeground&&item.state==='STAGING'?'amber':item.color
+      }));
+    }
+  }
+  $('view-build').addEventListener('click',()=>{workspacePerspective='build';renderWorkforce()});
+  $('view-team').addEventListener('click',()=>{workspacePerspective='team';renderWorkforce()});
+  $('simulate-focus').addEventListener('click',()=>{if(connected)return;foregroundDemo=!foregroundDemo;workspacePerspective=foregroundDemo?'team':'build';renderWorkforce()});
+  // This capture listener visually demonstrates the desired foreground-preemption rule.
+  // It does not call providers, pause jobs, persist session leases, or grant authority.
+  $('composer').addEventListener('submit',()=>{
+    if(!connected&&$('prompt').value.trim()){
+      foregroundDemo=true;
+      workspacePerspective='team';
+      renderWorkforce();
+    }
+  },true);
+  document.querySelectorAll('.perspective-tab').forEach((button,i,all)=>{
+    button.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault();
+        const next=all[(i+(e.key==='ArrowRight'?1:all.length-1))%all.length];
+        next.click();next.focus();
+      }
+    });
+  });
+
   render();
 })();
