@@ -21,6 +21,10 @@ MAX_DIFF_CHARS = 60_000
 OVERLAP_DAYS, OVERLAP_MAX = 14, 10  # older or extra overlapping PRs are noise
 READ_ONLY_TOOLS = ["Read", "Grep", "Glob", "Bash(git diff:*)", "Bash(git log:*)",
                    "Bash(git show:*)", "Bash(git grep:*)", "Bash(git ls-files:*)"]
+# The claude process must hold the OAuth token in its environment. Keep its file
+# tools inside the review checkout: no process, system or home paths, even if PR
+# content asks for them. Symlinks are also removed from the checkout before review.
+DENIED_READS = [f"Read(//{d}/**)" for d in ("proc", "sys", "dev", "etc", "home", "root", "run", "var")]
 SECRET_PATTERNS = [re.compile(p, re.I) for p in (
     r"hnk_[a-z0-9]{8,}", r"postgres(?:ql)?://\S+:\S+@", r"authorization\s*:\s*bearer\s+[a-z0-9._-]{12,}",
     r"BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY", r"sk-ant-[a-z0-9-]{10,}", r"gh[pousr]_[A-Za-z0-9]{20,}")]
@@ -58,6 +62,30 @@ def gh_json(*args):
     return json.loads(out.stdout) if out.returncode == 0 and out.stdout.strip() else None
 
 
+def trusted_blob(repo, commit, path):
+    """A regular file's text at a commit, read from Git objects, never the filesystem.
+
+    A PR can make a tracked file a symlink (for example to /proc/self/environ);
+    reading Git blobs from the trusted commit cannot follow one.
+    """
+    entry = git(repo, "ls-tree", commit, "--", path).split()
+    if len(entry) < 3 or entry[0] not in ("100644", "100755") or entry[1] != "blob":
+        return None
+    return git(repo, "cat-file", "blob", entry[2])
+
+
+def remove_symlinks(root):
+    """Delete every symlink under root so file tools cannot follow one out of the checkout."""
+    removed = 0
+    for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
+        for name in dirnames + filenames:
+            path = Path(dirpath, name)
+            if path.is_symlink():
+                path.unlink()
+                removed += 1
+    return removed
+
+
 def build_context(repo, base, head, rules, pr, gh_repo):
     changed = git(repo, "diff", "--name-status", f"{base}...{head}")
     files = {line.split("\t")[-1] for line in changed.splitlines() if line}
@@ -77,9 +105,9 @@ def build_context(repo, base, head, rules, pr, gh_repo):
         overlaps = [f"- #{o['number']} {o['title']}: " + ", ".join(sorted(files & {f['path'] for f in o.get('files', [])}))
                     for o in recent if files & {f["path"] for f in o.get("files", [])}][:OVERLAP_MAX]
         parts.append(f"## Other open PRs touching the same files (updated in the last {OVERLAP_DAYS} days)\n" + ("\n".join(overlaps) or "None."))
-    agents = Path(repo, "AGENTS.md")
-    if agents.exists():
-        parts.append("## Repository AGENTS.md (at the source checkout)\n" + agents.read_text()[:20000])
+    agents = trusted_blob(repo, base, "AGENTS.md")
+    if agents is not None:
+        parts.append("## Repository AGENTS.md (at the base commit)\n" + agents[:20000])
     if rules:
         parts.append("## Rule pack\n" + Path(rules).read_text())
     parts.append(f"## Changed files\n{changed}")
@@ -90,6 +118,7 @@ def build_context(repo, base, head, rules, pr, gh_repo):
 def claude(prompt, schema, cwd, budget):
     cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(schema),
            "--tools", "Read,Grep,Glob,Bash", "--allowedTools", *READ_ONLY_TOOLS,
+           "--disallowedTools", *DENIED_READS,
            "--strict-mcp-config", "--no-session-persistence", "--max-budget-usd", str(budget)]
     # A PR can carry its own .claude settings or CLAUDE.md; never load them.
     cmd += ["--bare"] if os.environ.get("ANTHROPIC_API_KEY") else ["--setting-sources", "user"]
@@ -128,6 +157,7 @@ def main():
     checkout = work / "head"
     git(repo, "worktree", "add", "--detach", str(checkout), head)
     try:
+        remove_symlinks(checkout)
         for name in ("CLAUDE.md", ".claude"):
             for p in checkout.rglob(name):
                 shutil.rmtree(p) if p.is_dir() else p.unlink()
