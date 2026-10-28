@@ -1,3 +1,25 @@
+# 2026-10-28 00:52 UTC — PUBLISHED: ASHWOOD-owned OmniChat in canonical here.now sandbox
+
+**Verified live URL:** https://mighty-yoga-pgph.here.now/workspace/operator/
+
+**Owner-confirmed architecture:** OmniChat is sourced from `tk-ap/ashwood-info`, PR #308 branch `prototype/omnichat-swimlanes-20261027`, immutable source commit `3951a857d0d1ef2d9f9e19d873f835e3fd0e5aaf`. `tk-ap/ashwood-command-center` is a design reference only, not a deployment input or credential dependency.
+
+**Actual publish receipt:** [GitHub Actions run 40611470754](https://github.com/tk-ap/ashwood-info/actions/runs/40611470754), success. Owner API `currentVersionId` changed from `01M5ZS03Y4DMAWVPKN8ZW009PS` to **`01M5ZZWASXBZZXX50TJAC68FY6`**. Both preflight and the real publish confirmed that the existing owner site had 245 files retained with identical SHA-256 hashes, and only four files were changed/added:
+- `workspace/operator/index.html`: additional OmniChat workforce region embedded inside its **existing** workspace shell; the preexisting Operator interface remains.
+- `workspace/operator/omnichat/index.html`
+- `workspace/operator/omnichat/app.js`
+- `workspace/operator/omnichat/styles.css`
+
+**This was a single owner-authenticated, base-version-protected incremental publish**, not a full replacement, a new site slug, or a Vercel production change. The uploader passed all preexisting live file paths and hashes to here.now, checked that unchanged files were skipped, and verified that the resulting complete 249-file owner manifest matched expected hashes. It then read back each changed file through owner management API. Public readback succeeded for `/`, `/physical-works/`, `/workspace/`, `/workspace/operator/`, `/workspace/self/`, `/workspace/work/studio/`, and the OmniChat child route.
+
+**UI functionality now available in the existing Operator page:** Building the Team, Building the Build, identity-first contribution cards (persistent identity separate from harness), six-stage evidence-only demo swimlanes, sample/unknown attribution, responsive panes, simulated foreground capacity throttle behavior. The framed component is same-origin and expands via an origin-scoped height message, while ASHWOOD's outer navigation/layout remains unchanged.
+
+**Honest limitation:** All new OmniChat workforce records are fictional and labeled DEMO. This release does not implement a real AgentOS/Herdr session bridge, standing-mandate autonomous task initiation, LEDGATo authorization, live capacity accounting, or actual preemption. Existing authenticated/private runtime controls were not changed. HTTP checks and provider file hashes passed; a fresh desktop/mobile visual review remains outstanding.
+
+**Repo provenance:** release workflow `.github/workflows/ashwood-omnichat-inplace.yml` and `scripts/publish-operator-omnichat-preserve.py`, both in `tk-ap/ashwood-info`; no private Command Center token, checkout or build required. For future edits, derive from the then-current provider version again and preserve unchanged files through the same manifest protocol.
+
+---
+
 # Corrected source-of-truth ruling — 2026-10-28 (owner)
 
 **AUTHORITATIVE: The canonical ASHWOOD here.now sandbox `mighty-yoga-pgph` belongs to `tk-ap/ashwood-info`.** The `tk-ap/ashwood-command-center` work was a **design reference only** and is **not** the required build input, deployment owner, or a dependency of the OmniChat prototype. The source of the **standalone OmniChat prototype** is `tk-ap/ashwood-info`, branch `prototype/omnichat-swimlanes-20261027`, existing PR #308, under `workspace/prototypes/omnichat/`.
