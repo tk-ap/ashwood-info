@@ -32,17 +32,24 @@ sandboxes:
     static_primary: true
     slug: mighty-yoga-pgph
     url: https://mighty-yoga-pgph.here.now/
-    current_version_id: 01M5FT6CYX5VFQ0G6N6KAPC55P
-    # The public source and the separately built, DEMO-only Workspace are
-    # recorded independently so this static artifact can be reconstructed.
+    current_version_id: 01M5ZZWASXBZZXX50TJAC68FY6
+    # Current version preserves all preexisting here.now files by SHA-256.
+    # The ASHWOOD-owned OmniChat prototype is an in-place Operator overlay,
+    # not a dependency on the Command Center design-reference repository.
     source_ref: 015f5296c92919ee940177ee1e0cedbb4c44cebb
     workspace_source:
-      repository: tk-ap/ashwood-command-center
-      source_ref: 72d11758e76ca56abbc8e681fdd74039d0e4ac80
+      repository: tk-ap/ashwood-info
+      source_ref: 3951a857d0d1ef2d9f9e19d873f835e3fd0e5aaf
       mode: demo-only-no-private-api-or-records
+      overlay_scope: workspace/operator/index.html;workspace/operator/omnichat/
+      base_provider_version: 01M5ZS03Y4DMAWVPKN8ZW009PS
+      retained_existing_files_unchanged: 245
+      resulting_file_count: 249
     verification:
       state: passed
-      evidence_ref: manual-browser:2026-10-21-career-operating-layer-live-interaction-and-390px-no-horizontal-scroll
+      evidence_ref: github-actions:tk-ap/ashwood-info:40611470754
+      details: provider-manifest-sha256-and-http-route-readback
+      browser_visual_acceptance: pending
 
 release_rules:
   - treat-this-file-as-the-canonical-deployment-topology
