@@ -1,3 +1,15 @@
+# Corrected source-of-truth ruling — 2026-10-28 (owner)
+
+**AUTHORITATIVE: The canonical ASHWOOD here.now sandbox `mighty-yoga-pgph` belongs to `tk-ap/ashwood-info`.** The `tk-ap/ashwood-command-center` work was a **design reference only** and is **not** the required build input, deployment owner, or a dependency of the OmniChat prototype. The source of the **standalone OmniChat prototype** is `tk-ap/ashwood-info`, branch `prototype/omnichat-swimlanes-20261027`, existing PR #308, under `workspace/prototypes/omnichat/`.
+
+**Incident correction:** Prior assistant wrongly promoted the separate Command Center reference into the canonical here.now build. Its newly added cross-repository workflow requiring `ASHWOOD_WORKSPACE_READ_TOKEN` was deleted from this branch in commit `2db5c1cc8c6c788885fa5f321363e1e368a0d3dd`. **Do not create or request that token to release the OmniChat prototype.** The only justified here.now publishing path is an ASHWOOD-owned, complete-source artifact using the already verified owner `HERENOW_API_KEY`, with current-version protection and preservation of all existing public and Workspace pages.
+
+**Superseded historical descriptions below** mentioning a Command Center artifact pin are **not authoritative deployment instructions**. They describe work previously staged against a *reference copy*, not ownership. Do not re-run the old `build-here-now-staging.mjs` invocation that requires an external private Workspace source: that flow is deprecated for this prototype. Before a canonical write, reconcile the ASHWOOD-owned source with the currently hosted complete here.now artifact and rebase the OmniChat components without deleting any existing routes, interactive Brain, Studio, navigation, credentials boundaries or user changes.
+
+The owner-authorized goal remains **one in-place update** to `mighty-yoga-pgph`, not another standalone slug or a production Vercel release. Previous public here.now provider preflight found version `01M5ZS03Y4DMAWVPKN8ZW009PS` at 2026-10-27 23:56 UTC; this is a historical observation, **never** an indefinite expected-version lease. Fetch actual owner current version anew immediately before publishing. The old cross-repository action failed before publication; this correction did not alter the hosted site.
+
+---
+
 ## 2026-10-27 — Consolidated release candidate: one full-site here.now update
 
 **User request:** batch completed ASHWOOD + Workspace demo work into **one version-aware update** of the existing `mighty-yoga-pgph` sandbox, instead of repeated partial releases/new slugs. This section is a deployment candidate record, **not proof that the stable URL has changed**.
