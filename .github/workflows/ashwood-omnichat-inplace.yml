@@ -23,7 +23,7 @@ jobs:
     env:
       HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
       PROTOTYPE_SHA: 3951a857d0d1ef2d9f9e19d873f835e3fd0e5aaf
-      OMNICHAT_SOURCE_DIR: ${{ runner.temp }}/ashwood-omnichat
+      OMNICHAT_SOURCE_DIR: /tmp/ashwood-omnichat
     steps:
       - name: Checkout canonical ASHWOOD owner repository
         uses: actions/checkout@v4
