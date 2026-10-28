@@ -1,0 +1,83 @@
+name: ASHWOOD canonical OmniChat one-batch update
+# Existing here.now version is the source of truth; unchanged files are
+# copied server-side by SHA256. No external private repository dependencies.
+on:
+  push:
+    branches:
+      - codex/here-now-current-staging
+    paths:
+      - '.github/workflows/ashwood-omnichat-inplace.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ashwood-here-now-mighty-yoga-pgph
+  cancel-in-progress: false
+
+jobs:
+  preserve-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+      PROTOTYPE_SHA: 3951a857d0d1ef2d9f9e19d873f835e3fd0e5aaf
+      OMNICHAT_SOURCE_DIR: ${{ runner.temp }}/ashwood-omnichat
+    steps:
+      - name: Checkout canonical ASHWOOD owner repository
+        uses: actions/checkout@v4
+        with:
+          ref: codex/here-now-current-staging
+          persist-credentials: false
+      - name: Extract immutable OmniChat source from ASHWOOD PR 308
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --quiet --no-tags --depth=1 origin prototype/omnichat-swimlanes-20261027
+          test "$(git rev-parse FETCH_HEAD)" = "$PROTOTYPE_SHA"
+          mkdir -p "$OMNICHAT_SOURCE_DIR"
+          for file in index.html app.js styles.css; do
+            git show "FETCH_HEAD:workspace/prototypes/omnichat/$file" > "$OMNICHAT_SOURCE_DIR/$file"
+            test -s "$OMNICHAT_SOURCE_DIR/$file"
+          done
+          node --check "$OMNICHAT_SOURCE_DIR/app.js"
+          grep -Fq 'Building the Team' "$OMNICHAT_SOURCE_DIR/index.html"
+          grep -Fq 'Building the Build' "$OMNICHAT_SOURCE_DIR/index.html"
+          grep -Fq 'Identity contributions' "$OMNICHAT_SOURCE_DIR/index.html"
+          grep -Fq 'renderIdentities' "$OMNICHAT_SOURCE_DIR/app.js"
+          echo "ASHWOOD prototype source and identity UI verified."
+      - name: Syntax and protected preview of owner live site update
+        env:
+          ASHWOOD_PUBLISH_DRY_RUN: "true"
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-operator-omnichat-preserve.py
+          python3 scripts/publish-operator-omnichat-preserve.py
+      - name: Publish once in place preserving every unchanged live file
+        env:
+          ASHWOOD_PUBLISH_DRY_RUN: "false"
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/publish-operator-omnichat-preserve.py
+      - name: Verify browser-facing Operator and preserved ASHWOOD routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://mighty-yoga-pgph.here.now"
+          for route in / /physical-works/ /workspace/ /workspace/operator/ /workspace/self/ /workspace/work/studio/; do
+            url="${base}${route}"
+            curl -fsSL --retry 4 --retry-delay 2 --max-time 25 "$url" -o "$RUNNER_TEMP/ashwood-page.html"
+            test -s "$RUNNER_TEMP/ashwood-page.html"
+            if [[ "$route" == '/workspace/operator/' ]]; then
+              grep -Fq 'ashwood-omnichat-workforce' "$RUNNER_TEMP/ashwood-page.html"
+              grep -Fq '/workspace/operator/omnichat/index.html' "$RUNNER_TEMP/ashwood-page.html"
+            fi
+          done
+          curl -fsSL --retry 4 --retry-delay 2 --max-time 25 "$base/workspace/operator/omnichat/" -o "$RUNNER_TEMP/ashwood-omni.html"
+          grep -Fq "Building the Team" "$RUNNER_TEMP/ashwood-omni.html"
+          grep -Fq "Building the Build" "$RUNNER_TEMP/ashwood-omni.html"
+          grep -Fq "Identity contributions" "$RUNNER_TEMP/ashwood-omni.html"
+          echo "IN_PLACE_PUBLIC_READBACK_PASSED https://mighty-yoga-pgph.here.now/workspace/operator/"
