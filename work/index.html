@@ -16,17 +16,17 @@
   <title>Work — ASHWOOD</title>
   <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
   <link rel="stylesheet" href="/creative-shell.css?v=20260829-mobile-tap" />
-  <link rel="stylesheet" href="/work/work.css?v=20260919-1" />
-  <script src="/theme.js?v=20260909-cache1" defer></script>
+  <link rel="stylesheet" href="/work/work.css?v=20261020-selected1" />
+  <script src="/theme.js?v=20261020-nav-cleanup1" defer></script>
 </head>
 <body class="work-page">
   <header class="ashwood-site-header" aria-label="ASHWOOD navigation">
     <div class="ashwood-site-header__brand-lockup">
       <a class="ashwood-site-header__brand" href="/" aria-label="ASHWOOD home">ASHWOOD</a>
-      <span class="ashwood-site-header__section">/ WORK</span>
+      <span class="ashwood-site-header__section">/ WORK / OVERVIEW</span>
     </div>
     <nav class="ashwood-site-header__nav" aria-label="Primary">
-      <a aria-current="page" href="/work">Work</a>
+      <a aria-current="page" href="/work">Work overview</a>
       <a href="/journal">Builds</a>
       <a href="/career">Career</a>
       <a href="/about">About</a>
@@ -34,50 +34,100 @@
     </nav>
   </header>
 
-  <main>
+  <main id="main">
     <section class="work-hero" aria-labelledby="work-title">
-      <p class="work-kicker">TK Ashwood / Creative practice</p>
-      <h1 id="work-title">One point of view.<br /><span>Many forms.</span></h1>
-      <p class="work-deck">Move through the work by medium. The image, the voice, the sound, the words, and the objects do not need to collapse into one thing to belong to the same practice.</p>
-      <a class="work-scroll" href="#practices">Enter the work ↓</a>
+      <div class="work-hero__copy">
+        <p class="work-kicker">TK Ashwood / Creative overview</p>
+        <h1 id="work-title">One point of view.<br /><em>Many forms.</em></h1>
+        <p class="work-deck">An artistic practice expressed through image, voice, sound, words, and the things I build. Each form stands on its own. Together, they tell a fuller story.</p>
+        <a class="work-text-link" href="#selected">View selected work</a>
+      </div>
+      <figure class="work-hero__portrait">
+        <img src="/assets/digitals2026/IMG_6052-homepage.webp" width="900" height="1200" alt="TK Ashwood, portrait from their current creative portfolio" loading="eager" fetchpriority="high" />
+        <figcaption>Current portrait / Creative practice</figcaption>
+      </figure>
     </section>
 
-    <section class="practice-field" id="practices" aria-label="Creative practices">
-      <a class="practice practice--modeling" href="/modeling">
-        <div class="practice-media">
-          <img src="/assets/campaigns/barelysain/hero-6729.jpg?v=20260827-fixed" alt="TK Ashwood in the BarelySain campaign" loading="eager" />
+    <section class="work-curation" id="selected" aria-labelledby="selected-title">
+      <header class="work-section-intro">
+        <p class="work-kicker">01 / Selected work</p>
+        <h2 id="selected-title">Different mediums.<br /><em>One instinct.</em></h2>
+        <p>Fragments of the practice, not a replacement for the full collections.</p>
+      </header>
+
+      <article class="work-story work-story--modeling" aria-labelledby="modeling-title">
+        <div class="work-story__images work-story__images--modeling">
+          <img src="/assets/campaigns/barelysain/hero-6729.jpg?v=20260827-fixed" alt="TK Ashwood modeling in the BarelySain campaign" loading="lazy" />
+          <img src="/assets/campaigns/barelysain/IMG_5688-web-v2.jpg" alt="Another portrait of TK Ashwood from the BarelySain campaign" loading="lazy" />
         </div>
-        <div class="practice-label"><small>01</small><h2>Modeling</h2><span>Image / movement / presence ↗</span></div>
-      </a>
-
-      <a class="practice practice--performance" href="/performance">
-        <div class="practice-media practice-media--split">
-          <img src="/assets/performance/forthem-poster.jpg" alt="TK Ashwood in ForThem branded content" loading="lazy" />
-          <img src="/assets/performance/preview-models-commercial-demo-poster.jpg" alt="TK Ashwood commercial demo frame" loading="lazy" />
+        <div class="work-story__caption">
+          <div><p class="work-kicker">01 / Image / Campaign</p><h3 id="modeling-title">Presence in a frame.</h3></div>
+          <div><p>BarelySain and selected image-making. The fuller modeling collection includes campaigns, editorial work, and current digitals.</p><a class="work-text-link" href="/modeling/">View modeling work</a></div>
         </div>
-        <div class="practice-label"><small>02</small><h2>Performance</h2><span>Voice Only / On Camera ↗</span></div>
-      </a>
+      </article>
 
-      <a class="practice practice--music" href="/music">
-        <div class="practice-type" aria-hidden="true"><span>IN</span><span>ME.</span></div>
-        <div class="practice-label"><small>03</small><h2>Music</h2><span>t.kap / released + becoming ↗</span></div>
-      </a>
+      <article class="work-story work-story--performance" aria-labelledby="performance-title">
+        <div class="work-story__caption">
+          <div><p class="work-kicker">02 / Performance</p><h3 id="performance-title">Voice. Presence.</h3></div>
+          <div><p>On-camera and voice work, including selected ForThem and Preview Models material.</p><a class="work-text-link" href="/performance/">View performance work</a></div>
+        </div>
+        <div class="work-story__images work-story__images--performance">
+          <img src="/assets/performance/forthem-poster.jpg" alt="ForThem branded content, performance by TK Ashwood" loading="lazy" />
+          <img src="/assets/performance/preview-models-commercial-demo-poster.jpg" alt="Preview Models commercial demo, TK Ashwood" loading="lazy" />
+        </div>
+      </article>
 
-      <section class="practice practice--words" aria-labelledby="words-title">
-        <div class="practice-type practice-type--words" aria-hidden="true"><span>WAI.</span><span>INY</span></div>
-        <div class="practice-label"><small>04</small><h2 id="words-title">Words</h2><span>Poetry / field notes / archive forming</span></div>
-      </section>
+      <article class="work-story work-story--music" aria-labelledby="music-title">
+        <div class="work-sound__art" aria-hidden="true"><span>IN</span><span>ME.</span></div>
+        <div class="work-sound__content">
+          <p class="work-kicker">03 / Music / t.kap</p>
+          <h3 id="music-title">A thought you can hear.</h3>
+          <p><strong>IN ME</strong> featuring Cashden. One released recording, alongside a continuing practice of writing and making music.</p>
+          <label class="work-sound__label" for="work-in-me">Listen / IN ME</label>
+          <audio id="work-in-me" controls preload="none" src="/audio/in-me.mp3">Your browser does not support audio playback.</audio>
+          <a class="work-text-link" href="/music/">Enter the music room</a>
+        </div>
+      </article>
 
-      <section class="practice practice--physical" aria-labelledby="physical-title">
-        <div class="physical-mark" aria-hidden="true"><i></i><i></i><i></i></div>
-        <div class="practice-label"><small>05</small><h2 id="physical-title">Physical Works</h2><span>Objects / studies / archive forming</span></div>
-      </section>
+      <article class="work-story work-story--poetry" aria-labelledby="poetry-title">
+        <div class="work-poetry__identity" aria-hidden="true">WAI.<span>INY</span></div>
+        <div class="work-poetry__caption">
+          <p class="work-kicker">04 / Poetry / Writing</p>
+          <h3 id="poetry-title">The words have their own place.</h3>
+          <p>Poetry is a distinct part of the creative practice, not a subsection of build notes. The selected public poetry archive is still being assembled.</p>
+          <span class="work-archive-state">Archive in formation</span>
+        </div>
+      </article>
     </section>
 
-    <section class="work-end">
-      <p>Different work. Same person.</p>
-      <a href="/about">Follow the point of view ↗</a>
+    <section class="work-systems" id="builds" aria-labelledby="builds-title">
+      <div class="work-section-intro">
+        <p class="work-kicker">02 / Ideas made tangible</p>
+        <h2 id="builds-title">And the things<br /><em>I build.</em></h2>
+        <p>A selection from the build journal. These links document the questions, experiments, and evidence behind the products; they are not claims that every capability is finished.</p>
+      </div>
+      <div class="work-systems__grid">
+        <a class="work-system" href="/journal/alvira/"><small>Context / Intelligence</small><h3>ALVIRA</h3><p>What becomes possible when useful context can survive a conversation?</p><span>Read the build record</span></a>
+        <a class="work-system" href="/journal/ledgato/"><small>Governance / Enforcement</small><h3>LEDGATo</h3><p>How do you know an agent is still acting inside the authority you gave it?</p><span>Read the build record</span></a>
+        <a class="work-system" href="/journal/ailhat/"><small>Portfolio / Intelligence</small><h3>ailhat</h3><p>What deserves attention when many ideas compete for the same limited time?</p><span>Read the build record</span></a>
+      </div>
+      <a class="work-text-link work-systems__journal" href="/journal/">Explore the full build journal</a>
     </section>
+
+    <nav class="work-paths" aria-label="Explore complete work collections">
+      <div><p class="work-kicker">03 / Go further</p><h2>Follow a form.</h2></div>
+      <div class="work-paths__links">
+        <a href="/modeling/">Modeling <span>Full image portfolio</span></a>
+        <a href="/performance/">Performance <span>On camera and voice</span></a>
+        <a href="/music/">Music <span>Releases and works in progress</span></a>
+        <a href="/journal/">Build journal <span>Projects, decisions, evidence</span></a>
+      </div>
+    </nav>
+
+    <footer class="work-end">
+      <p>Different work.<br /><em>Same person.</em></p>
+      <a class="work-text-link" href="/about/">Follow the point of view</a>
+    </footer>
   </main>
 </body>
 </html>

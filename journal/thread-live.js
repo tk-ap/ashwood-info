@@ -36,7 +36,7 @@
         <h2>See the artifact while you read the record.</h2>
         <p>${build.note}</p>
       </div>
-      <a class="thread-live__open" href="${build.url}" target="_blank" rel="noreferrer">Open ${build.name} ↗</a>
+      <a class="thread-live__open" href="${build.url}" target="_blank" rel="noreferrer">Open ${build.name}</a>
     </div>
     <div class="thread-live__frame">
       <div class="thread-live__chrome" aria-hidden="true">

@@ -46,7 +46,7 @@
             <div><span>VALIDATION DECISION</span><p>Founding Beta is a small, reviewed cohort. Approved testers receive complimentary customer-facing access for the life of the service under that account in exchange for genuine use and candid workflow, UI, relevance, and effectiveness feedback.</p></div>
           </div>
           <p class="journal-note"><strong>Current product thesis:</strong> Capture → Understand → Reflect → Update → Reuse. <strong>Current trust thesis:</strong> your Context should belong to you.</p>
-          <p class="journal-note"><a href="https://alviratech.vercel.app/" target="_blank" rel="noopener">Explore current ALVIRA ↗</a> · <a href="https://alviratech.vercel.app/founding-beta?source=ashwood" target="_blank" rel="noopener">Apply for Founding Beta ↗</a></p>
+          <p class="journal-note"><a href="https://alviratech.vercel.app/" target="_blank" rel="noopener">Explore current ALVIRA</a> · <a href="https://alviratech.vercel.app/founding-beta?source=ashwood" target="_blank" rel="noopener">Apply for Founding Beta</a></p>
         </div>
       </article>
     `;
@@ -91,7 +91,7 @@
     if (!openAlvira.querySelector(".alvira-beta-link")) {
       const p = document.createElement("p");
       p.className = "journal-note alvira-beta-link";
-      p.innerHTML = '<a href="https://alviratech.vercel.app/founding-beta?source=ashwood" target="_blank" rel="noopener">Interested in testing the workflow? Apply for the limited ALVIRA Founding Beta ↗</a>';
+      p.innerHTML = '<a href="https://alviratech.vercel.app/founding-beta?source=ashwood" target="_blank" rel="noopener">Interested in testing the workflow? Apply for the limited ALVIRA Founding Beta</a>';
       openAlvira.append(p);
     }
   }

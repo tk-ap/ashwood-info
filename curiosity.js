@@ -97,7 +97,7 @@
     .ashwood-capability-map__description{grid-column:2;margin:0 0 3px;color:var(--ashwood-ink);font-size:9px;line-height:1.42;opacity:.86}
     .ashwood-capability-map__authorship{grid-column:2;display:block;margin:2px 0 0;color:var(--ashwood-muted);font-size:7px;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;opacity:.72}
     .ashwood-capability-map__practice{grid-column:2;display:inline-flex;align-items:center;gap:6px;width:max-content;max-width:100%;font-size:9px;font-weight:500;letter-spacing:.055em;color:var(--ashwood-ink);text-decoration:none}
-    .ashwood-capability-map__practice::after{content:"↗";font-size:8px;color:var(--ashwood-muted);transition:transform .2s ease,color .2s ease}
+    .ashwood-capability-map__practice::after{content:"";font-size:8px;color:var(--ashwood-muted);transition:transform .2s ease,color .2s ease}
     .ashwood-capability-map__practice[data-internal="true"]::after{content:"→"}
     .ashwood-capability-map__practice:hover,.ashwood-capability-map__practice:focus-visible{color:var(--ashwood-gold);font-style:italic}
     .ashwood-capability-map__practice:hover::after,.ashwood-capability-map__practice:focus-visible::after{color:var(--ashwood-gold);transform:translateX(2px)}
