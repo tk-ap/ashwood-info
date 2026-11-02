@@ -1,19 +1,27 @@
 {
-  "generated_at": "2026-10-26T15:56:55.073Z",
+  "generated_at": "2026-11-02T19:16:59.612Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
-    "total_posts": 86,
-    "latest_post_at": "2026-10-26T12:55:02.000Z",
-    "posts_30d": 1,
-    "avg_likes": 161,
+    "total_posts": 87,
+    "latest_post_at": "2026-10-31T15:00:37.000Z",
+    "posts_30d": 2,
+    "avg_likes": 167,
     "avg_comments": 7,
     "recent_posts": [
       {
+        "at": "2026-10-31T15:00:37.000Z",
+        "caption": "the best time to wear @stripedattire , is all the time 😌",
+        "likes": null,
+        "comments": 0,
+        "type": "Sidecar",
+        "url": "https://www.instagram.com/p/DfKbgDym689/"
+      },
+      {
         "at": "2026-10-26T12:55:02.000Z",
         "caption": "30 or whatever.",
-        "likes": 18,
-        "comments": 1,
+        "likes": null,
+        "comments": 2,
         "type": "Sidecar",
         "url": "https://www.instagram.com/p/De9VLupmxb2/"
       }
@@ -21,37 +29,37 @@
   },
   "tiktok": {
     "account": "tiktokoftk",
-    "followers": 71,
-    "following": 58,
+    "followers": 73,
+    "following": 64,
     "verified": false,
-    "total_videos": 37,
-    "latest_video_at": "2026-10-26T05:41:19.000Z",
+    "total_videos": 45,
+    "latest_video_at": "2026-11-02T17:04:12.000Z",
     "videos_30d": 12,
-    "avg_plays": 265,
-    "avg_likes": 19,
-    "avg_comments": 2,
+    "avg_plays": 233,
+    "avg_likes": 16,
+    "avg_comments": 1,
     "recent_videos": [
       {
-        "at": "2026-10-26T05:41:19.000Z",
-        "caption": "#draftdump #artistsoftiktok #dtla #barelysain #youmatter ",
-        "plays": 86,
-        "likes": 6,
+        "at": "2026-11-02T17:04:12.000Z",
+        "caption": "when this shit is over, might wish I spent more time sober 🤷🏽",
+        "plays": 0,
+        "likes": 0,
         "comments": 0,
         "shares": 0
       },
       {
-        "at": "2026-10-26T05:31:36.000Z",
-        "caption": "grateful #peaceful #moonlight ",
-        "plays": 296,
-        "likes": 7,
+        "at": "2026-11-02T16:59:59.000Z",
+        "caption": "some shots for STRIPEDATTIRE 😌",
+        "plays": 4,
+        "likes": 0,
         "comments": 0,
         "shares": 0
       },
       {
-        "at": "2026-10-08T01:58:05.000Z",
-        "caption": "so maybe I need to make use of this fabric , but more importantly, I ran out of black pastel 😭💀 so who know how to sew? Lmao I’m trynna se",
-        "plays": 112,
-        "likes": 2,
+        "at": "2026-10-31T21:38:39.000Z",
+        "caption": "my inner child got the wheel in this era 😂🤞🏾",
+        "plays": 140,
+        "likes": 5,
         "comments": 0,
         "shares": 0
       }
