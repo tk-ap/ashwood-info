@@ -38,3 +38,9 @@ test("Brain selection, connections, keyboard, reduced-motion and mobile contract
   const check=spawnSync(process.execPath,["--check",new URL("../workspace/brain-explorer.mjs",import.meta.url).pathname],{encoding:"utf8"});
   assert.equal(check.status,0,check.stderr);
 });
+
+test("Brain graph points are indexed by concept ID, not floating-point coordinates", () => {
+  assert.match(js, /const nodePositions = new Map\\(DEMO\\.map/);
+  assert.match(js, /return \\[n\\.id, \\[Math\\.cos\\(angle\\)/);
+  assert.match(js, /nodePositions\\.get\\(n\\.id\\)/);
+});
