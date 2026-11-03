@@ -143,6 +143,36 @@ async function inspect(width, height) {
   await page.locator(nav + ' [data-workspace-nav="self"]').click();
   assert.equal(await page.locator('#brain-explorer').getAttribute('data-workspace-active'), 'true');
 
+
+  // Consolidated Self Alignment Mirror preserves a selection-driven reflection
+  // without writing private values into the public static page.
+  const lens = page.locator('#self-alignment-mirror [data-self-reset="wealth"]');
+  await lens.click();
+  assert.equal(await lens.getAttribute('aria-pressed'), 'true');
+  assert.match(await page.locator('#self-alignment-mirror [data-mirror-thinker]').innerText(), /Erich Fromm/);
+
+  // The hosted Operator's two cockpit perspectives must work in the *same*
+  // canonical shell, with the original owner command still present.
+  await page.locator(nav + ' [data-workspace-nav="operator"]').click();
+  assert.equal(await page.locator('body').getAttribute('data-workspace-current-view'), 'operator');
+  const operator = page.locator('#operator-v2');
+  assert.equal(await operator.getAttribute('data-workspace-active'), 'true');
+  await operator.locator('[data-operator-perspective="build"]').click();
+  assert.equal(await operator.locator('#operator-v2-build').getAttribute('hidden'), null);
+  assert.equal(await operator.locator('#operator-v2-team').getAttribute('hidden'), '');
+  assert.match(await operator.locator('[data-operator-v2-status]').innerText(),
+    /unavailable|snapshot|reading/i);
+  await operator.locator('[data-operator-perspective="team"]').click();
+  assert.equal(await operator.locator('#operator-v2-team').getAttribute('hidden'), null);
+  await operator.scrollIntoViewIfNeeded();
+  await operator.screenshot({ path: out + '/operator-' + name + '.png', animations:'disabled' });
+  await operator.locator('[data-operator-v2-compose]').click();
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator('#today-command-input').evaluate(x=>document.activeElement===x), true);
+  // Navigate back to Self for an explicit final view ownership check.
+  await page.locator(nav + ' [data-workspace-nav="self"]').click();
+  assert.equal(await page.locator('body').getAttribute('data-workspace-current-view'), 'self');
+
   const result = { viewport: width, ...snapshot, brainPixels, currentViewAfterReturn: 'self', pageErrors: errors };
   report.push(result);
   if (errors.length) {
