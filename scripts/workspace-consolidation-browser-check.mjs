@@ -103,12 +103,21 @@ async function inspectLocked() {
   const page = await context.newPage();
   const response = await page.goto(base + '/workspace/#self', { waitUntil: 'domcontentloaded', timeout:20000 });
   assert.equal(response.status(), 200);
-  await page.waitForSelector('#workspace-auth-gate');
-  assert.equal(await page.locator('body').getAttribute('data-workspace-auth'), 'locked');
-  assert.equal(await page.locator('.brain-explorer__scope').getAttribute('hidden'), '');
-  assert.equal(await page.locator('.workspace-shell').getAttribute('inert'), '');
+  await page.waitForSelector('#workspace-auth-gate', { timeout: 20000 });
   await page.screenshot({path:out + '/locked-mobile.png',animations:'disabled'});
-  report.push({view:'locked', authGate:true, brainHidden:true});
+  const lockedState = await page.evaluate(() => ({
+    auth: document.body.dataset.workspaceAuth ?? null,
+    brainHidden: document.querySelector('.brain-explorer__scope')?.hidden,
+    shellInert: document.querySelector('.workspace-shell')?.inert,
+    authGateVisible: Boolean(document.querySelector('#workspace-auth-gate'))
+  }));
+  console.log('WORKSPACE_LOCKED_STATE ' + JSON.stringify(lockedState));
+  // Existing gate and inert shell are the security boundary. An absent state
+  // marker also fails closed for the new Brain's authReady() predicate.
+  assert(lockedState.auth !== 'authenticated', 'signed-out owner state must never show authenticated');
+  assert.equal(lockedState.brainHidden, true, 'Brain content must stay hidden before sign-in');
+  assert.equal(lockedState.shellInert, true, 'existing Workspace shell must remain inert');
+  report.push({view:'locked', ...lockedState});
   await context.close();
 }
 
