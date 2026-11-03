@@ -98,6 +98,7 @@ const GROUPS = {
     "details.attention"
   ],
   self: [
+    "#brain-explorer",
     "#self-daily-wisdom",
     "#meos-profile",
     "#meos-places",
@@ -125,6 +126,7 @@ const VIEW_FOR_HASH = {
   sources:"evidence",
   "evidence-panel":"evidence",
   self:"self",
+  "brain-explorer":"self",
   frame:"self",
   checkin:"self"
 };
