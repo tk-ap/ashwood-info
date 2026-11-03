@@ -65,6 +65,7 @@ const VIEW_META = {
 
 const GROUPS = {
   operator: [
+    "#operator-v2",
     "#operator"
   ],
   today: [
