@@ -129,6 +129,8 @@ const VIEW_FOR_HASH = {
   "evidence-panel":"evidence",
   self:"self",
   "brain-explorer":"self",
+  "self-alignment-mirror":"self",
+  "operator-v2":"operator",
   frame:"self",
   checkin:"self"
 };
