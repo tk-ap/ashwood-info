@@ -41,3 +41,6 @@
 @media(max-width:850px){#operator-v2 .operator-v2__stages{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){#operator-v2{padding:18px 14px;border-radius:9px}#operator-v2 .operator-v2__tabs{grid-template-columns:1fr}#operator-v2 .operator-v2__grid{grid-template-columns:1fr}#operator-v2 .operator-v2__stages{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){#operator-v2 *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Anchor/deep-link scroll clearance below the mobile sticky masthead. */
+#operator-v2 { scroll-margin-top: 112px; }
