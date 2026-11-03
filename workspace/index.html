@@ -39,6 +39,7 @@
   <script type="module" src="/workspace/operator-actions.mjs?v=20260921-operator1"></script>
   <script type="module" src="/workspace/sprint.mjs?v=20260921-sprint1"></script>
   <script type="module" src="/workspace/operator-console.mjs?v=20260922-operator1"></script>
+  <script type="module" src="/workspace/operator-v2.mjs?v=20261103-consolidated1"></script>
   <script type="module" src="/workspace/build-command-center.mjs?v=20260923-command-center1"></script>
   <script type="module" src="/workspace/views.mjs?v=20260926-careerhealth1"></script>
   <script type="module" src="/workspace/self-alignment.mjs?v=20261103-self2"></script>
@@ -57,6 +58,7 @@
   <link rel="stylesheet" href="/workspace/meos-self.css?v=20260925-meos2" />
   <link rel="stylesheet" href="/workspace/self-daily-wisdom.css?v=20260925-1" />
   <link rel="stylesheet" href="/workspace/self-alignment.css?v=20261103-self2" />
+  <link rel="stylesheet" href="/workspace/operator-v2.css?v=20261103-consolidated1" />
   <link rel="stylesheet" href="/workspace/brain-explorer.css?v=20261103-native1" />
   <link rel="stylesheet" href="/workspace/shell-consolidation.css?v=20261103-shell1" />
   <script type="module" src="/workspace/brain-explorer.mjs?v=20261103-native1"></script>
@@ -143,6 +145,44 @@
         </form>
         <div id="content-feed" class="content-feed" aria-live="polite"></div>
       </details>
+    </section>
+
+
+    <section class="operator-v2" id="operator-v2" aria-labelledby="operator-v2-title">
+      <div class="operator-v2__head">
+        <div>
+          <p class="section-kicker">Operator · governed workforce</p>
+          <h2 id="operator-v2-title">One workforce. Two perspectives.</h2>
+          <p>See what the canonical board actually records. Review AgentOS and LEDGATo work in one place, then move to the owner command thread when action is needed.</p>
+        </div>
+        <div class="operator-v2__actions">
+          <button type="button" data-operator-v2-refresh>Refresh source</button>
+          <button type="button" data-operator-v2-compose>Open owner command</button>
+        </div>
+      </div>
+      <div class="operator-v2__tabs" role="tablist" aria-label="Operator perspectives">
+        <button type="button" role="tab" id="operator-v2-team-tab" data-operator-perspective="team" aria-selected="true" aria-controls="operator-v2-team">
+          <strong>Building the Team</strong><span>AgentOS · LEDGATo · governed owner sessions</span>
+        </button>
+        <button type="button" role="tab" id="operator-v2-build-tab" data-operator-perspective="build" aria-selected="false" aria-controls="operator-v2-build">
+          <strong>Building the Build</strong><span>Portfolio work · delivery · research · growth</span>
+        </button>
+      </div>
+      <p class="operator-v2__status" role="status" aria-live="polite" data-operator-v2-status>Locked · Sign in to read the owner board.</p>
+      <div data-operator-panel="team" id="operator-v2-team" role="tabpanel" aria-labelledby="operator-v2-team-tab">
+        <div class="operator-v2__subhead"><h3>Team work</h3><span class="operator-v2__small" data-operator-v2-count>Unavailable</span></div>
+        <div class="operator-v2__roster" data-operator-v2-roster aria-label="Board-assigned work owners"></div>
+        <div class="operator-v2__grid" data-operator-items="team" aria-live="polite"><p class="operator-v2__empty">Owner board not loaded.</p></div>
+      </div>
+      <div data-operator-panel="build" id="operator-v2-build" role="tabpanel" aria-labelledby="operator-v2-build-tab" hidden>
+        <div class="operator-v2__subhead"><h3>Portfolio work</h3><span class="operator-v2__small">Source-attributed work cards</span></div>
+        <div class="operator-v2__grid" data-operator-items="build" aria-live="polite"><p class="operator-v2__empty">Owner board not loaded.</p></div>
+      </div>
+      <div class="operator-v2__lifecycle">
+        <div class="operator-v2__subhead"><h3>Execution receipts</h3><span class="operator-v2__small">Lifecycle · evidence first</span></div>
+        <div data-operator-lifecycle><p class="operator-v2__muted">No verified harness receipts are connected.</p></div>
+      </div>
+      <p class="operator-v2__foot operator-v2__muted">This view reads the existing owner-authenticated AgentOS board; it does not create tasks, infer harness activity from task phases, or authorize Jev/Herdr/LEDGATo actions. Use the existing Operator thread below for governed commands. No fictional runtime data is substituted when disconnected.</p>
     </section>
 
     <section class="operator-console" id="operator" aria-labelledby="operator-title">
