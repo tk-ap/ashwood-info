@@ -18,3 +18,5 @@
 .self-alignment-mirror__private-aim{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
 .self-alignment-mirror__private-aim summary{cursor:pointer;font-weight:600}
 @media(max-width:750px){.self-alignment-mirror__reading{grid-template-columns:1fr;gap:4px}}
+
+#self-alignment-mirror { scroll-margin-top: 112px; }
