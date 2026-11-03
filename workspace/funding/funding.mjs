@@ -129,11 +129,32 @@ async function loadRegistry({automatic=false}={}) {
   } catch(error) {state.textContent='Refresh unavailable';stamp.textContent=error.message+'; previously loaded records retained.';}
   finally {registryRequest=false;}
 }
+let fundingReady=false;
+let awaitingWorkspaceAuth=false;
 async function start() {
+  if(fundingReady) return;
   const response=await fetch('/api/workspace-auth',{credentials:'same-origin'});
   if(!response.ok) throw new Error('Workspace authentication unavailable');
   const status=await response.json();
-  if(!status.authenticated) {location.replace('/workspace/');return;}
+  if(!status.authenticated) {
+    // The Funding module is loaded within /workspace/ itself. Redirecting to
+    // /workspace/ while already there caused an infinite navigation loop and
+    // prevented the existing owner sign-in gate from stabilizing.
+    const state=document.querySelector('#funding-registry-state');
+    if(state) state.textContent='Unlock Workspace to view Funding';
+    if(!awaitingWorkspaceAuth) {
+      awaitingWorkspaceAuth=true;
+      window.addEventListener('ashwood:workspace-authenticated', ()=>{
+        awaitingWorkspaceAuth=false;
+        start().catch(error=>{
+          const current=document.querySelector('#funding-registry-state');
+          if(current) current.textContent=error.message;
+        });
+      },{once:true});
+    }
+    return;
+  }
+  fundingReady=true;
   renderFilters();
   document.querySelector('#funding-search').addEventListener('input',event=>{search=event.target.value;render();});
   document.querySelector('#funding-refresh').addEventListener('click',loadRegistry);
