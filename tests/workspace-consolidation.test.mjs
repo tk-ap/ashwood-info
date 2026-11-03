@@ -23,7 +23,7 @@ test("V2 Brain is in the canonical Workspace shell, with every existing owner co
   assert.equal((html.match(/id="brain-explorer"/g) || []).length, 1);
 });
 test("The existing fail-closed router owns Self, including its Brain deep link", () => {
-  assert.match(router, /self:\s*\[\s*"#brain-explorer"/);
+  assert.match(router,/self:\\s*\\[\\s*"#self-alignment-mirror",\\s*"#brain-explorer"/);
   assert.match(router, /"brain-explorer":"self"/);
   assert.match(router, /node\.dataset\.workspaceView = "unassigned"/);
   assert.match(router, /function enforceViewOwnership/);
