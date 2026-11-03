@@ -3,13 +3,17 @@
  * No production sessions, private Context records, database or mutations.
  */
 import assert from 'node:assert/strict';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
 const base = 'http://127.0.0.1:8765';
 const out = 'workspace-qa-artifacts';
 await mkdir(out, { recursive: true });
-const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+const browser = await chromium.launch({
+  headless: true,
+  ...(process.env.PLAYWRIGHT_CHROME_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROME_PATH } : {}),
+  args: ['--no-sandbox']
+});
 const report = [];
 
 async function configureMock(context, isAuthenticated) {
@@ -83,6 +87,8 @@ async function inspect(width, height) {
   assert.match(await page.locator('.brain-explorer__reading-title').innerText(), /Self-reliance/);
 
   const name = width < 700 ? 'mobile-390' : 'desktop-1440';
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: out + '/self-' + name + '-viewport.png', fullPage: false, animations: 'disabled' });
   await page.screenshot({ path: out + '/self-' + name + '.png', fullPage: true, animations: 'disabled' });
 
   await page.locator('.workspace-section-nav [data-workspace-nav="today"]').click();
@@ -140,6 +146,7 @@ try {
   await inspectLocked();
   await inspect(390, 844);
   await inspect(1440, 900);
+  await writeFile(out + '/qa-report.json', JSON.stringify({ok:true,report}, null, 2));
   console.log('WORKSPACE_BROWSER_QA_PASSED ' + JSON.stringify(report));
 } catch(error) {
   console.error('WORKSPACE_BROWSER_QA_FAILED ' + error.stack);
