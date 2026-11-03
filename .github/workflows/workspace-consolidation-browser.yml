@@ -1,0 +1,49 @@
+name: Workspace consolidation browser QA
+on:
+  push:
+    branches:
+      - feat/workspace-consolidation-shell-brain-20261103
+    paths:
+      - '.github/workflows/workspace-consolidation-browser.yml'
+      - 'scripts/workspace-consolidation-browser-check.mjs'
+      - 'workspace/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout PR source without credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing app and isolated Chromium QA dependencies
+        run: |
+          npm ci
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Host only local repository files, no production backend
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ashwood-qa-server.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/workspace/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/ashwood-qa-server.log
+          exit 1
+      - name: Browser check signed-out, authenticated synthetic UI, mobile and desktop
+        run: node scripts/workspace-consolidation-browser-check.mjs
+      - name: Upload screenshots and QA receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace-native-browser-qa
+          path: workspace-qa-artifacts/
+          if-no-files-found: ignore
+          retention-days: 7
