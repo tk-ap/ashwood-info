@@ -36,7 +36,7 @@ if (root) {
     const angle = i * Math.PI * (3-Math.sqrt(5));
     const z = 1 - 2*(i+.5)/DEMO.length;
     const r = Math.sqrt(1-z*z);
-    return [Math.cos(angle)*r*1.03,Math.sin(angle)*r*.76,z*.72];
+    return [n.id, [Math.cos(angle)*r*1.03,Math.sin(angle)*r*.76,z*.72]];
   }));
   const brainDots=[];
   const count=2879;
