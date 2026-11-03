@@ -54,8 +54,8 @@ test("Workspace shell adapts without replacing application routes or production 
 
 test("Funding waits behind existing owner login rather than redirect-looping Workspace", () => {
   const funding = source("workspace/funding/funding.mjs");
-  assert.doesNotMatch(funding, /location\\.replace\\(['"]\\/workspace\\//);
-  assert.match(funding, /if\\(!status\\.authenticated\\)/);
-  assert.match(funding, /ashwood:workspace-authenticated/);
-  assert.match(funding, /awaitingWorkspaceAuth/);
+  assert.ok(!funding.includes("location.replace('/workspace/')"));
+  assert.ok(funding.includes("if(!status.authenticated)"));
+  assert.ok(funding.includes("ashwood:workspace-authenticated"));
+  assert.ok(funding.includes("awaitingWorkspaceAuth"));
 });
