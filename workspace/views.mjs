@@ -98,6 +98,7 @@ const GROUPS = {
     "details.attention"
   ],
   self: [
+    "#self-alignment-mirror",
     "#brain-explorer",
     "#self-daily-wisdom",
     "#meos-profile",
