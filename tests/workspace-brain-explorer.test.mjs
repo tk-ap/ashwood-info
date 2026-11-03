@@ -40,7 +40,7 @@ test("Brain selection, connections, keyboard, reduced-motion and mobile contract
 });
 
 test("Brain graph points are indexed by concept ID, not floating-point coordinates", () => {
-  assert.match(js, /const nodePositions = new Map\\(DEMO\\.map/);
-  assert.match(js, /return \\[n\\.id, \\[Math\\.cos\\(angle\\)/);
-  assert.match(js, /nodePositions\\.get\\(n\\.id\\)/);
+  assert.ok(js.includes("const nodePositions = new Map(DEMO.map"));
+  assert.ok(js.includes("return [n.id, [Math.cos(angle)"));
+  assert.ok(js.includes("nodePositions.get(n.id)"));
 });
