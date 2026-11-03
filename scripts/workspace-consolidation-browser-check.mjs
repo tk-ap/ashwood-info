@@ -47,7 +47,7 @@ async function inspect(width, height) {
   await configureMock(context, true);
   const page = await context.newPage();
   const errors = [];
-  page.on('pageerror', err => errors.push(err.message));
+  page.on('pageerror', err => errors.push(err.stack || err.message));
   const response = await page.goto(base + '/workspace/#self', { waitUntil: 'domcontentloaded', timeout: 20000 });
   assert.equal(response.status(), 200, 'Workspace entry HTML must load');
   await page.waitForFunction(() => document.body.dataset.workspaceAuth === 'authenticated', { timeout: 15000 });
@@ -93,7 +93,10 @@ async function inspect(width, height) {
 
   const result = { viewport: width, ...snapshot, currentViewAfterReturn: 'self', pageErrors: errors };
   report.push(result);
-  if (errors.length) throw Error('Browser JS errors at ' + width + 'px: ' + errors.join('; ').slice(0, 1000));
+  if (errors.length) {
+    console.log('WORKSPACE_PAGE_ERROR_STACKS ' + JSON.stringify(errors.slice(0, 4)));
+    throw Error('Browser JS errors at ' + width + 'px: ' + errors.join('; ').slice(0, 1000));
+  }
   await context.close();
 }
 
