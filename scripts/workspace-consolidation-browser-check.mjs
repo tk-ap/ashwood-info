@@ -66,7 +66,9 @@ async function inspect(width, height) {
       viewportWidth: document.documentElement.clientWidth,
       canvas: { width: r.width, height: r.height },
       navLabels: [...document.querySelectorAll('.workspace-section-nav a')].map(x => x.textContent.trim()),
-      active: document.querySelector('#brain-explorer').dataset.workspaceActive
+      active: document.querySelector('#brain-explorer').dataset.workspaceActive,
+      topNavVisible: getComputedStyle(document.querySelector('.workspace-section-nav')).display !== 'none',
+      bottomNavVisible: getComputedStyle(document.querySelector('.workspace-mobile-nav')).display !== 'none'
     };
   });
   assert.equal(snapshot.authState, 'authenticated');
@@ -77,6 +79,13 @@ async function inspect(width, height) {
     'Unexpected horizontal document overflow at ' + width + 'px: ' + JSON.stringify(snapshot));
   assert(snapshot.navLabels.includes('Today') && snapshot.navLabels.includes('Self'));
   assert(snapshot.navLabels.includes('Operator') && snapshot.navLabels.includes('Career'));
+  if (width <= 680) {
+    assert.equal(snapshot.topNavVisible, false, 'mobile must not show a duplicate top tab strip');
+    assert.equal(snapshot.bottomNavVisible, true, 'mobile bottom navigation must be visible');
+  } else {
+    assert.equal(snapshot.topNavVisible, true);
+    assert.equal(snapshot.bottomNavVisible, false);
+  }
 
   const select = page.locator('.brain-explorer__select');
   await select.selectOption('thoreau');
@@ -91,10 +100,11 @@ async function inspect(width, height) {
   await page.screenshot({ path: out + '/self-' + name + '-viewport.png', fullPage: false, animations: 'disabled' });
   await page.screenshot({ path: out + '/self-' + name + '.png', fullPage: true, animations: 'disabled' });
 
-  await page.locator('.workspace-section-nav [data-workspace-nav="today"]').click();
+  const nav = width <= 680 ? '.workspace-mobile-nav' : '.workspace-section-nav';
+  await page.locator(nav + ' [data-workspace-nav="today"]').click();
   assert.equal(await page.locator('body').getAttribute('data-workspace-current-view'), 'today');
   assert.equal(await page.locator('#brain-explorer').getAttribute('data-workspace-active'), 'false');
-  await page.locator('.workspace-section-nav [data-workspace-nav="self"]').click();
+  await page.locator(nav + ' [data-workspace-nav="self"]').click();
   assert.equal(await page.locator('#brain-explorer').getAttribute('data-workspace-active'), 'true');
 
   const result = { viewport: width, ...snapshot, currentViewAfterReturn: 'self', pageErrors: errors };
