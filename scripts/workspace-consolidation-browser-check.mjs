@@ -101,20 +101,32 @@ async function inspectLocked() {
   const context = await browser.newContext({ viewport: {width:390,height:844}, reducedMotion:'reduce',serviceWorkers:'block' });
   await configureMock(context, false);
   const page = await context.newPage();
-  const response = await page.goto(base + '/workspace/#self', { waitUntil: 'domcontentloaded', timeout:20000 });
+  const navHistory = [];
+  const pageErrors = [];
+  page.on('framenavigated', frame => {
+    if (frame === page.mainFrame()) navHistory.push(frame.url());
+  });
+  page.on('pageerror', error => pageErrors.push(error.message));
+  const response = await page.goto(base + '/workspace/', { waitUntil: 'load', timeout:30000 });
   assert.equal(response.status(), 200);
-  await page.waitForSelector('#workspace-auth-gate', { timeout: 20000 });
-  await page.screenshot({path:out + '/locked-mobile.png',animations:'disabled'});
+  // Avoid Playwright's unstable-element auto-retry while the app is initializing.
+  // Sample the final DOM after JS and auth fetch have had a moment to settle.
+  await page.waitForTimeout(1600);
   const lockedState = await page.evaluate(() => ({
     auth: document.body.dataset.workspaceAuth ?? null,
     brainHidden: document.querySelector('.brain-explorer__scope')?.hidden,
     shellInert: document.querySelector('.workspace-shell')?.inert,
-    authGateVisible: Boolean(document.querySelector('#workspace-auth-gate'))
+    authGateVisible: Boolean(document.querySelector('#workspace-auth-gate')),
+    url: location.href
   }));
+  console.log('WORKSPACE_LOCKED_NAV ' + JSON.stringify(navHistory.slice(-10)));
+  console.log('WORKSPACE_LOCKED_ERRORS ' + JSON.stringify(pageErrors.slice(-10)));
+  await page.screenshot({path:out + '/locked-mobile.png',animations:'disabled'});
   console.log('WORKSPACE_LOCKED_STATE ' + JSON.stringify(lockedState));
   // Existing gate and inert shell are the security boundary. An absent state
   // marker also fails closed for the new Brain's authReady() predicate.
   assert(lockedState.auth !== 'authenticated', 'signed-out owner state must never show authenticated');
+  assert.equal(lockedState.authGateVisible, true, 'signed-out owner must see auth gate');
   assert.equal(lockedState.brainHidden, true, 'Brain content must stay hidden before sign-in');
   assert.equal(lockedState.shellInert, true, 'existing Workspace shell must remain inert');
   report.push({view:'locked', ...lockedState});
