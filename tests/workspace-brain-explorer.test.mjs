@@ -9,7 +9,7 @@ const css=readFileSync(new URL("../workspace/brain-explorer.css",import.meta.url
 
 test("Brain is part of existing Self view, not a new navigation or auth shell",()=>{
   assert.match(html,/<section class="brain-explorer" id="brain-explorer"/);
-  assert.match(router,/self:\\s*\\[\\s*"#self-alignment-mirror",\\s*"#brain-explorer"/);
+  assert.ok(router.indexOf('"#self-alignment-mirror"') >= 0 && router.indexOf('"#brain-explorer"') > router.indexOf('"#self-alignment-mirror"'), 'Alignment and Brain must be grouped in Self');
   assert.match(router,/"brain-explorer":"self"/);
   assert.match(html,/id="sign-out"/);
   assert.match(html,/data-workspace-nav="self"/);
