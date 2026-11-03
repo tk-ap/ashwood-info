@@ -43,11 +43,14 @@ async function configureMock(context, isAuthenticated) {
   });
 }
 
-async function inspect(width, height) {
+async function inspect(width, height, theme = 'warm-dark') {
   const context = await browser.newContext({
     viewport: { width, height }, reducedMotion: 'reduce',
-    colorScheme: 'dark', serviceWorkers: 'block'
+    colorScheme: theme === 'paper-light' ? 'light' : 'dark', serviceWorkers: 'block'
   });
+  if (theme !== 'warm-dark') {
+    await context.addInitScript(value => { try { localStorage.setItem('ashwood.theme',value); } catch {} }, theme);
+  }
   await configureMock(context, true);
   const page = await context.newPage();
   const errors = [];
@@ -95,7 +98,7 @@ async function inspect(width, height) {
   await page.locator('.brain-explorer__reset').click();
   assert.match(await page.locator('.brain-explorer__reading-title').innerText(), /Self-reliance/);
 
-  const name = width < 700 ? 'mobile-390' : 'desktop-1440';
+  const name = (width < 700 ? 'mobile-390' : 'desktop-1440') + (theme === 'warm-dark' ? '' : '-' + theme);
   // The page's first viewport is a separate introductory hero. Capture that
   // for shell QA, but do NOT mistake it for proof of the Brain rendering.
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -173,7 +176,7 @@ async function inspect(width, height) {
   await page.locator(nav + ' [data-workspace-nav="self"]').click();
   assert.equal(await page.locator('body').getAttribute('data-workspace-current-view'), 'self');
 
-  const result = { viewport: width, ...snapshot, brainPixels, currentViewAfterReturn: 'self', pageErrors: errors };
+  const result = { viewport: width, theme, ...snapshot, brainPixels, currentViewAfterReturn: 'self', pageErrors: errors };
   report.push(result);
   if (errors.length) {
     console.log('WORKSPACE_PAGE_ERROR_STACKS ' + JSON.stringify(errors.slice(0, 4)));
@@ -222,6 +225,8 @@ try {
   await inspectLocked();
   await inspect(390, 844);
   await inspect(1440, 900);
+  await inspect(390, 844, 'paper-light');
+  await inspect(1440, 900, 'paper-light');
   await writeFile(out + '/qa-report.json', JSON.stringify({ok:true,report}, null, 2));
   console.log('WORKSPACE_BROWSER_QA_PASSED ' + JSON.stringify(report));
 } catch(error) {
