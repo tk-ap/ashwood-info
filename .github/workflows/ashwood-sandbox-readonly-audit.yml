@@ -1,0 +1,142 @@
+name: ASHWOOD sandbox read-only owner audit
+
+# Safe diagnostics on an isolated branch. This workflow does not call PUT,
+# POST, publish/finalize, or Vercel and does not alter the existing here.now slug.
+on:
+  push:
+    branches:
+      - audit/workspace-sandbox-readonly-20261103
+    paths:
+      - '.github/workflows/ashwood-sandbox-readonly-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ashwood-sandbox-readonly-audit
+  cancel-in-progress: false
+
+jobs:
+  provider-and-routes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+    steps:
+      - name: Read current provider manifest and public route health only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          from datetime import datetime, timezone
+          from urllib.error import HTTPError, URLError
+          from urllib.request import Request, urlopen
+
+          key = os.getenv("HERENOW_API_KEY") or ""
+          if not key:
+              raise SystemExit("Owner credential unavailable: no writes attempted")
+          owner_url = "https://here.now/api/v1/publish/mighty-yoga-pgph"
+          public_base = "https://mighty-yoga-pgph.here.now"
+          routes = {
+              "/": "index.html",
+              "/physical-works/": "physical-works/index.html",
+              "/workspace/": "workspace/index.html",
+              "/workspace/self/": "workspace/self/index.html",
+              "/workspace/operator/": "workspace/operator/index.html",
+              "/workspace/operator/omnichat/": "workspace/operator/omnichat/index.html",
+              "/workspace/work/studio/": "workspace/work/studio/index.html",
+          }
+          def get(url, authenticated=False):
+              headers = {"User-Agent": "ASHWOOD-sandbox-readonly-audit/1.0"}
+              if authenticated:
+                  headers["Authorization"] = "Bearer " + key
+                  headers["X-HereNow-Client"] = "github-actions/ashwood-audit"
+              try:
+                  with urlopen(Request(url, headers=headers, method="GET"), timeout=25) as r:
+                      return r.status, r.read()
+              except HTTPError as e:
+                  return e.code, b""
+              except (URLError, TimeoutError):
+                  return 0, b""
+
+          status, raw = get(owner_url, True)
+          if status != 200:
+              raise SystemExit(f"Owner API read failed: HTTP {status}; no changes made")
+          state = json.loads(raw)
+          version = state.get("currentVersionId")
+          manifest = state.get("manifest")
+          if not version or not isinstance(manifest, list):
+              raise SystemExit("Owner response missing version/manifest; no changes made")
+          paths = {i["path"]: i for i in manifest if isinstance(i, dict) and "path" in i}
+          if len(paths) != len(manifest):
+              raise SystemExit("Duplicate or invalid provider paths; no changes made")
+          owner_checks = {}
+          public_checks = {}
+          for route, path in routes.items():
+              if path not in paths:
+                  owner_checks[route] = "MISSING_MANIFEST"
+              else:
+                  s, body = get(owner_url + "/files/" + path, True)
+                  good = s == 200 and hashlib.sha256(body).hexdigest() == paths[path].get("hash")
+                  owner_checks[route] = "HASH_OK" if good else f"READ_OR_HASH_ERROR_HTTP_{s}"
+              s, body = get(public_base + route)
+              public_checks[route] = {"http": s, "nonempty": bool(body)}
+
+          # Record presence of existing routes without dumping private page text.
+          optional_paths = [
+              "workspace/brain/index.html",
+              "workspace/today/index.html",
+              "workspace/self/brain/index.html",
+              "workspace/self/insights/index.html",
+              "workspace/perspective/index.html",
+          ]
+          optional_present = {path: path in paths for path in optional_paths}
+          report = {
+              "checked_at_utc": datetime.now(timezone.utc).isoformat(),
+              "slug": "mighty-yoga-pgph",
+              "version": version,
+              "file_count": len(manifest),
+              "owner_hash_checks": owner_checks,
+              "public_checks": public_checks,
+              "optional_route_files": optional_present,
+              "manifest_digest": hashlib.sha256(
+                  json.dumps(sorted((p, v.get("hash")) for p, v in paths.items()),
+                             separators=(",", ":")).encode()
+              ).hexdigest(),
+              "write_operations": 0,
+          }
+          with open("sandbox-readonly-report.json", "w") as f:
+              json.dump(report, f, indent=2)
+          summary = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary:
+              with open(summary, "a") as f:
+                  f.write("## ASHWOOD sandbox owner read-only audit\n")
+                  f.write(f"- Current provider version: \`{version}\`\n")
+                  f.write(f"- Manifest paths: **{len(manifest)}**\n")
+                  f.write("- Zero mutations; Vercel production untouched.\n\n")
+                  f.write("| Route | Owner file | Public HTTP |\n|---|---|---|\n")
+                  for route in routes:
+                      c = public_checks[route]
+                      f.write(f"| \`{route}\` | {owner_checks[route]} | {c['http']} |\n")
+          print("AUDIT_READ_ONLY provider_version=" + version +
+                " manifest_paths=" + str(len(manifest)))
+          for route, check in owner_checks.items():
+              print("ROUTE", route, check, "HTTP", public_checks[route]["http"])
+          if any(v != "HASH_OK" for v in owner_checks.values()):
+              raise SystemExit("Required owner-file verification failed (no write)")
+          if any(v["http"] != 200 or not v["nonempty"] for v in public_checks.values()):
+              raise SystemExit("Some public routes unavailable (no write)")
+          PY
+      - name: Upload non-secret audit receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ashwood-sandbox-readonly-audit
+          path: sandbox-readonly-report.json
+          if-no-files-found: ignore
+          retention-days: 7
