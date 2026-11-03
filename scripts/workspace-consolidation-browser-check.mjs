@@ -96,9 +96,44 @@ async function inspect(width, height) {
   assert.match(await page.locator('.brain-explorer__reading-title').innerText(), /Self-reliance/);
 
   const name = width < 700 ? 'mobile-390' : 'desktop-1440';
+  // The page's first viewport is a separate introductory hero. Capture that
+  // for shell QA, but do NOT mistake it for proof of the Brain rendering.
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: out + '/self-' + name + '-viewport.png', fullPage: false, animations: 'disabled' });
   await page.screenshot({ path: out + '/self-' + name + '.png', fullPage: true, animations: 'disabled' });
+
+  // Check actual drawn canvas pixels, not merely element dimensions.
+  const brainPixels = await page.locator('.brain-explorer__canvas').evaluate(canvas => {
+    const ctx = canvas.getContext('2d');
+    if (!ctx || canvas.width < 100 || canvas.height < 100) return 0;
+    const rgba = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let bright = 0;
+    for (let i = 0; i < rgba.length; i += 16) {
+      if (rgba[i] > 55 || rgba[i + 1] > 65 || rgba[i + 2] > 65) bright++;
+    }
+    return bright;
+  });
+  assert(brainPixels > 100,
+    'Brain canvas must contain visible drawn nodes rather than a blank backdrop; found ' + brainPixels);
+
+  // Explicit evidence photos: scroll the real browser to the interactive
+  // section before capturing, and independently capture the brain stage.
+  await page.locator('#brain-explorer').scrollIntoViewIfNeeded();
+  await page.evaluate(() => {
+    const target = document.querySelector('#brain-explorer');
+    const y = target.getBoundingClientRect().top + window.scrollY - 18;
+    window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+  });
+  await page.waitForTimeout(150);
+  await page.screenshot({
+    path: out + '/brain-' + name + '-viewport.png',
+    fullPage: false, animations: 'disabled'
+  });
+  await page.locator('.brain-explorer__stage').screenshot({
+    path: out + '/brain-' + name + '-canvas.png',
+    animations: 'disabled'
+  });
+  console.log('WORKSPACE_BRAIN_CAPTURE ' + JSON.stringify({name, brainPixels, section:'brain-explorer'}));
 
   const nav = width <= 680 ? '.workspace-mobile-nav' : '.workspace-section-nav';
   await page.locator(nav + ' [data-workspace-nav="today"]').click();
@@ -107,7 +142,7 @@ async function inspect(width, height) {
   await page.locator(nav + ' [data-workspace-nav="self"]').click();
   assert.equal(await page.locator('#brain-explorer').getAttribute('data-workspace-active'), 'true');
 
-  const result = { viewport: width, ...snapshot, currentViewAfterReturn: 'self', pageErrors: errors };
+  const result = { viewport: width, ...snapshot, brainPixels, currentViewAfterReturn: 'self', pageErrors: errors };
   report.push(result);
   if (errors.length) {
     console.log('WORKSPACE_PAGE_ERROR_STACKS ' + JSON.stringify(errors.slice(0, 4)));
