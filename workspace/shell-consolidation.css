@@ -98,6 +98,11 @@
 @media (max-width: 779px) {
   body.workspace-page .workspace-section-nav > a::before { display: none; }
 }
+/* Once the bottom bar becomes active at 680px, avoid rendering a second
+   scrollable top nav. Both navs share the same canonical hash/view handlers. */
+@media (max-width: 680px) {
+  body.workspace-page .workspace-section-nav { display: none; }
+}
 /* Preserve the existing mobile bottom navigation and its tap targets. */
 body.workspace-page .workspace-mobile-nav a:focus-visible {
   outline: 2px solid var(--ink);
