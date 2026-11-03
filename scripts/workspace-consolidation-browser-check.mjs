@@ -121,7 +121,8 @@ async function inspect(width, height) {
   await page.locator('#brain-explorer').scrollIntoViewIfNeeded();
   await page.evaluate(() => {
     const target = document.querySelector('#brain-explorer');
-    const y = target.getBoundingClientRect().top + window.scrollY - 18;
+    const clearance = window.innerWidth <= 680 ? 136 : 18;
+    const y = target.getBoundingClientRect().top + window.scrollY - clearance;
     window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
   });
   await page.waitForTimeout(150);
