@@ -51,3 +51,11 @@ test("Workspace shell adapts without replacing application routes or production 
   assert.match(config.ignoreCommand, /VERCEL_GIT_COMMIT_REF/);
   assert.ok(!config.rewrites?.some(x=>x.source === "/workspace" && x.destination !== "/workspace"));
 });
+
+test("Funding waits behind existing owner login rather than redirect-looping Workspace", () => {
+  const funding = source("workspace/funding/funding.mjs");
+  assert.doesNotMatch(funding, /location\\.replace\\(['"]\\/workspace\\//);
+  assert.match(funding, /if\\(!status\\.authenticated\\)/);
+  assert.match(funding, /ashwood:workspace-authenticated/);
+  assert.match(funding, /awaitingWorkspaceAuth/);
+});
