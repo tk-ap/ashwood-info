@@ -1,0 +1,111 @@
+/* ASHWOOD native Workspace shell consolidation — V2 design cues, existing view ownership.
+ * This is a presentation layer only. It does not change auth, actions, routes, data
+ * sources, or the owner's theme preference.
+ */
+.workspace-page .workspace-section-nav {
+  --workspace-rail-width: 220px;
+  counter-reset: ashwood-workspace-section;
+}
+.workspace-page .workspace-section-nav > a {
+  counter-increment: ashwood-workspace-section;
+  min-height: 42px;
+  text-underline-offset: 4px;
+}
+.workspace-page .workspace-section-nav > a::before {
+  content: counter(ashwood-workspace-section, decimal-leading-zero);
+  font-size: 10px;
+  letter-spacing: .10em;
+  opacity: .65;
+  margin-right: .75em;
+  font-variant-numeric: tabular-nums;
+}
+.workspace-page .workspace-section-nav > a[aria-current="page"]::before {
+  color: var(--ashwood-field-green, #b8cf97);
+  opacity: 1;
+}
+.workspace-page .workspace-section-nav > a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+/* Desktop: hosted Workspace V2's left-rail reading hierarchy, without
+   duplicating or replacing ASHWOOD's authenticated shell and seven routes.
+   All legacy links, ids, and view handlers stay in the canonical document. */
+@media (min-width: 1300px) {
+  body.workspace-page .workspace-shell {
+    width: min(1440px, calc(100% - 295px));
+    margin-left: clamp(245px, 17vw, 290px);
+    margin-right: 24px;
+  }
+  body.workspace-page .workspace-section-nav {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 4px;
+    width: 220px;
+    height: 100dvh;
+    overflow-y: auto;
+    padding: 90px 24px 40px;
+    border-right: 1px solid var(--line);
+    background: var(--paper);
+    backdrop-filter: none;
+  }
+  body.workspace-page .workspace-section-nav::before {
+    content: "ASHWOOD  /  WORKSPACE";
+    display: block;
+    position: absolute;
+    top: 44px;
+    left: 24px;
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--muted);
+  }
+  body.workspace-page .workspace-section-nav > a {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 10px;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    text-align: left;
+  }
+  body.workspace-page .workspace-section-nav > a::before {
+    flex: 0 0 21px;
+    margin-right: 0;
+  }
+  body.workspace-page .workspace-section-nav > a[aria-current="page"] {
+    background: var(--panel);
+    color: var(--ink);
+  }
+}
+@media (min-width: 780px) and (max-width: 1299px) {
+  body.workspace-page .workspace-section-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  body.workspace-page .workspace-section-nav > a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 779px) {
+  body.workspace-page .workspace-section-nav > a::before { display: none; }
+}
+/* Preserve the existing mobile bottom navigation and its tap targets. */
+body.workspace-page .workspace-mobile-nav a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.workspace-page .workspace-section-nav > a {
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
