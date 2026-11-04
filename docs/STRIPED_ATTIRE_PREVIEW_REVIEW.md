@@ -8,23 +8,13 @@ Recovered all 20 earlier uploads and all 13 subsequent photos. Earlier upload #1
 
 Original JPEG uploads remain unchanged in the owner's file collection, separate from public web crops. Original filenames, SHA-256, exact crop boxes, output dimensions and ranked choices are recorded in `modeling/striped-attire-assets.json`. The exported WebP files are lossless and verified pixel-for-pixel against the corresponding original crop. No color adjustments, retouching, upscaling, stretching or generative edits. Small extra edge trims on newer images remove the slanted Polaroid aperture edges. Source originals are not served by the site. Visually reviewed: public campaign park setting; no readable addresses, residential identifiers or precise location credits added. Exported files have no EXIF/geotags.
 
-## Ranked edit and exhibition sequence
+## Current owner-approved exclusions and sequence
 
-Re-reviewed all 33 recovered uploads (32 distinct photographs). This is editorial judgment, not an objectively provable top-seven ranking. The goal is a stronger modeling and clothing campaign: expression, body line, garment visibility, range across looks and minimal repetition.
+TK excluded #27 (hands in hair) and #16 (pink stripes with undershirt showing at the collar). Neither appears in the rendered gallery or image viewer. Original files remain preserved separately.
 
-| Sequence | Review photo | Role and reason |
-| --- | --- | --- |
-| 1 | #18 | Hero: strongest statement of the striped clothing and standing fashion silhouette |
-| 2 | #24 | Direct gaze: clear facial connection after the opening garment image |
-| 3 | #10 | Blue overalls: warmer expression, seated line, a different look |
-| 4 | #27 | Hands in hair: stronger gesture and body shape than another neutral seated portrait |
-| 5 | #16 | Pink look: garment coverage and a change of camera angle |
-| 6 | #1 | Polaroid toss: movement, play and the shoot's analog-picture story |
-| 7 | #32 | Quiet seated outfit detail to close the sequence |
+Current five-frame gallery sequence: **#18 → #24 → #10 → #1 → #32**. No replacements have been added. #24 remains the opening /modeling page hero, and #18 leads the campaign gallery. #25 remains an alternate. All 33 uploads (32 unique photographs) were recovered; editorial strength rankings do not override TK's explicit exclusions.
 
-Pairing after the full-width hero: #24/#10, #27/#16, #1/#32. The sequence alternates looks and changes energy, rather than front-loading three similar white-shirt seated photographs. #25 moves to alternate because #24 and #27 already cover that look more usefully. #21 is a candid alternate; #6 is a reclining alternative. Double exposures are intentional photographic effects, retained in originals, but omitted from this modeling-first edit because they obscure face/body/clothing detail. No images were fabricated or artistically retouched.
-
-Both section intros use the same form: “A [brand] campaign featuring TK Ashwood.” Both credit Photography & creative direction with a direct personal Instagram link, then Brand with the brand's link. TK confirmed Dylan directed/photographed his brand campaign, and Cashden directed/photographed his. Dylan links to @itndylan; Cashden links to @cashdenglobal; brands link to @stripedattire and @barelysain, with striped.world additionally linked. The copy does not assign creative direction to TK.
+Both campaign intros use the same neutral format and Photography & creative direction / Brand contact structure, with Dylan linked at @itndylan and Cashden at @cashdenglobal.
 
 ## Image delivery diagnosis and correction
 

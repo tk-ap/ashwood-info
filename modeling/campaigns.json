@@ -85,54 +85,6 @@
         ]
       },
       {
-        "src": "/assets/campaigns/striped-attire/web/frame-27-720-61e7e4d015.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 hands in hair",
-        "width": 990,
-        "height": 1331,
-        "fullSrc": "/assets/campaigns/striped-attire/frame-27.webp",
-        "sources": [
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-27-360-5c7e790c1d.webp",
-            "width": 360,
-            "bytes": 49526
-          },
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-27-720-61e7e4d015.webp",
-            "width": 720,
-            "bytes": 118948
-          },
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-27-990-b6f44f1cd9.webp",
-            "width": 990,
-            "bytes": 166598
-          }
-        ]
-      },
-      {
-        "src": "/assets/campaigns/striped-attire/web/frame-16-720-b6872cf8c4.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 pink striped shirt",
-        "width": 998,
-        "height": 1342,
-        "fullSrc": "/assets/campaigns/striped-attire/frame-16.webp",
-        "sources": [
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-16-360-6b857c8c8e.webp",
-            "width": 360,
-            "bytes": 53198
-          },
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-16-720-b6872cf8c4.webp",
-            "width": 720,
-            "bytes": 129398
-          },
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-16-998-42107ac36e.webp",
-            "width": 998,
-            "bytes": 194694
-          }
-        ]
-      },
-      {
         "src": "/assets/campaigns/striped-attire/web/frame-01-720-a213d84566.webp",
         "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
         "width": 1003,
