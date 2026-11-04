@@ -56,13 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const img = images[(index + images.length) % images.length];
     if (!img) return;
     const pre = new Image();
-    pre.src = img.currentSrc || img.src;
+    pre.src = img.dataset.fullSrc || img.currentSrc || img.src;
   };
 
   const show = (index) => {
     current = (index + images.length) % images.length;
     const img = images[current];
-    preview.src = img.currentSrc || img.src;
+    preview.src = img.dataset.fullSrc || img.currentSrc || img.src;
     preview.alt = img.alt || "";
     caption.textContent = img.alt || "";
     counter.textContent = `${current + 1} / ${images.length}`;

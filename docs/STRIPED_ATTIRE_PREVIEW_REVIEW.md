@@ -8,20 +8,29 @@ Recovered all 20 earlier uploads and all 13 subsequent photos. Earlier upload #1
 
 Original JPEG uploads remain unchanged in the owner's file collection, separate from public web crops. Original filenames, SHA-256, exact crop boxes, output dimensions and ranked choices are recorded in `modeling/striped-attire-assets.json`. The exported WebP files are lossless and verified pixel-for-pixel against the corresponding original crop. No color adjustments, retouching, upscaling, stretching or generative edits. Small extra edge trims on newer images remove the slanted Polaroid aperture edges. Source originals are not served by the site. Visually reviewed: public campaign park setting; no readable addresses, residential identifiers or precise location credits added. Exported files have no EXIF/geotags.
 
-## Ranked edit
+## Ranked edit and exhibition sequence
 
-| Rank | Review photo | Portfolio role |
+Re-reviewed all 33 recovered uploads (32 distinct photographs). This is editorial judgment, not an objectively provable top-seven ranking. The goal is a stronger modeling and clothing campaign: expression, body line, garment visibility, range across looks and minimal repetition.
+
+| Sequence | Review photo | Role and reason |
 | --- | --- | --- |
-| 1 | #24 | Direct gaze |
-| 2 | #27 | Hands in hair |
-| 3 | #25 | Side profile |
-| 4 | #10 | Seated in blue overalls |
-| 5 | #18 | Orange striped shirt |
-| 6 | #1 | Polaroid toss |
-| 7 | #16 | Pink striped shirt |
-| 8 | #32 | Seated outfit detail |
+| 1 | #18 | Hero: strongest statement of the striped clothing and standing fashion silhouette |
+| 2 | #24 | Direct gaze: clear facial connection after the opening garment image |
+| 3 | #10 | Blue overalls: warmer expression, seated line, a different look |
+| 4 | #27 | Hands in hair: stronger gesture and body shape than another neutral seated portrait |
+| 5 | #16 | Pink look: garment coverage and a change of camera angle |
+| 6 | #1 | Polaroid toss: movement, play and the shoot's analog-picture story |
+| 7 | #32 | Quiet seated outfit detail to close the sequence |
 
-Selection is the recommended eight-image edit of the recovered collection, pending TK's visual approval. #21 remains an alternate; #25 and #32 have been retained to add profile and outfit detail. No provisional substitute assets were needed. Photographer credit verified by TK during implementation: all photos by Dylan, owner and upcycler; linked to @itndylan. Individual clothing-label attribution is not inferred from this. Brand attribution links only to the user-identified @stripedattire account; no official website or additional commercial claims are invented. Owner will provide an optional official brand reference.
+Pairing after the full-width hero: #24/#10, #27/#16, #1/#32. The sequence alternates looks and changes energy, rather than front-loading three similar white-shirt seated photographs. #25 moves to alternate because #24 and #27 already cover that look more usefully. #21 is a candid alternate; #6 is a reclining alternative. Double exposures are intentional photographic effects, retained in originals, but omitted from this modeling-first edit because they obscure face/body/clothing detail. No images were fabricated or artistically retouched.
+
+Both section intros use the same form: “A [brand] campaign featuring TK Ashwood.” Both credit Photography & creative direction with a direct personal Instagram link, then Brand with the brand's link. TK confirmed Dylan directed/photographed his brand campaign, and Cashden directed/photographed his. Dylan links to @itndylan; Cashden links to @cashdenglobal; brands link to @stripedattire and @barelysain, with striped.world additionally linked. The copy does not assign creative direction to TK.
+
+## Image delivery diagnosis and correction
+
+The first eight lossless crops totalled 8,174,264 bytes with no responsive alternatives. These are static files served by Vercel, not an upload/database/image-generation backend. Observed original asset response: HTTP 200, image/webp, 1,032,100 bytes for #24. Previous browser checks loaded all campaign photographs; that does not rule out intermittent failures on TK's device. Heavy downloads and lazy loading can contribute to blank/late images; no evidence supports blaming TK's connection.
+
+Seven retained pixel-exact lossless masters total 7,178,850 bytes. Web delivery now has 360px, 720px and original-width WebP candidates at quality 90, preserving crop, proportions and color treatment, with no artistic alterations. These are compressed delivery copies, not pixel-identical masters. The seven 720px copies total 933,286 bytes (87% smaller than masters); the 360px copies total 378,338 bytes (95% smaller). High-density devices may select larger candidates. Content-hashed filenames have immutable caching only under the new delivery directory. The hero has high fetch priority; native lazy loading remains for the gallery. The lightbox explicitly opens the untouched full-resolution crop using data-full-src; legacy images retain their prior currentSrc/src fallback.
 
 ## Implementation
 
@@ -58,7 +67,7 @@ TK explicitly authorized a Vercel preview for this bounded task despite the repo
 | 116292E3-E31C-454F-9E6C-FBC71C1C8F53.jpeg | Selected, rank 1, review #24 |
 | 51C57097-9DA9-4243-9C8A-8D53C0EEB3BF.jpeg | Reviewed; reserve / omitted for redundancy |
 | 8048E6A0-3AAC-42C8-91E6-D522B9783B3B.jpeg | Selected, rank 8, review #32 |
-| 88680B6C-2F73-4BE2-A145-7B22D5BA9DE5.jpeg | Selected, rank 3, review #25 |
+| 88680B6C-2F73-4BE2-A145-7B22D5BA9DE5.jpeg | Alternate, review #25 (removed from active sequence) |
 | 88CD4132-3CC6-44BB-8742-5C8359481466.jpeg | Reviewed; reserve / omitted for redundancy |
 | 991BF991-A292-400B-A601-77C995EC1B1C.jpeg | Reviewed; reserve / omitted for redundancy |
 | 9D0AD012-3060-4B09-97E8-0A7BAF6971F8.jpeg | Reviewed; reserve / omitted for redundancy |

@@ -1,78 +1,6 @@
 [
   {
     "rank": 1,
-    "reviewNumber": 24,
-    "label": "Direct gaze",
-    "sourceFilename": "116292E3-E31C-454F-9E6C-FBC71C1C8F53.jpeg",
-    "sourceSha256": "bb18485403bd90dfa73119177e595c0a67384fe375c5d38ee1409eae35e46568",
-    "cropBox": [
-      185,
-      256,
-      1175,
-      1587
-    ],
-    "width": 990,
-    "height": 1331,
-    "pixelExact": true,
-    "src": "/assets/campaigns/striped-attire/frame-24.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 direct gaze"
-  },
-  {
-    "rank": 2,
-    "reviewNumber": 27,
-    "label": "Hands in hair",
-    "sourceFilename": "DE4324BB-DFAB-4E96-9434-9911E7CE8AD2.jpeg",
-    "sourceSha256": "bd5eac1662fd5b5271f5c902261609eb02a1f889a72ff2d3ac46f4ca243708ed",
-    "cropBox": [
-      185,
-      256,
-      1175,
-      1587
-    ],
-    "width": 990,
-    "height": 1331,
-    "pixelExact": true,
-    "src": "/assets/campaigns/striped-attire/frame-27.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 hands in hair"
-  },
-  {
-    "rank": 3,
-    "reviewNumber": 25,
-    "label": "Side profile",
-    "sourceFilename": "88680B6C-2F73-4BE2-A145-7B22D5BA9DE5.jpeg",
-    "sourceSha256": "785e596318320745cebd7831a7f90aef71e41947bbf37578bd480e01dc45b2cd",
-    "cropBox": [
-      185,
-      256,
-      1175,
-      1587
-    ],
-    "width": 990,
-    "height": 1331,
-    "pixelExact": true,
-    "src": "/assets/campaigns/striped-attire/frame-25.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 side profile"
-  },
-  {
-    "rank": 4,
-    "reviewNumber": 10,
-    "label": "Seated in blue overalls",
-    "sourceFilename": "EECD142A-DAB6-4471-A64A-2C501A5CE29E.jpeg",
-    "sourceSha256": "b20a73e3c2baa2a78c8be68d9e2f327f1eec087bf0e5c5354193ac633b2cfec1",
-    "cropBox": [
-      160,
-      238,
-      1166,
-      1584
-    ],
-    "width": 1006,
-    "height": 1346,
-    "pixelExact": true,
-    "src": "/assets/campaigns/striped-attire/frame-10.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls"
-  },
-  {
-    "rank": 5,
     "reviewNumber": 18,
     "label": "Orange striped shirt",
     "sourceFilename": "8FEEF8AB-01C6-42A1-A825-1C36CEEB567D.jpeg",
@@ -87,10 +15,72 @@
     "height": 1335,
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-18.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt"
+    "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt",
+    "sequence": 1,
+    "selectionStatus": "selected"
   },
   {
-    "rank": 6,
+    "rank": 2,
+    "reviewNumber": 24,
+    "label": "Direct gaze",
+    "sourceFilename": "116292E3-E31C-454F-9E6C-FBC71C1C8F53.jpeg",
+    "sourceSha256": "bb18485403bd90dfa73119177e595c0a67384fe375c5d38ee1409eae35e46568",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-24.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
+    "sequence": 2,
+    "selectionStatus": "selected"
+  },
+  {
+    "rank": 3,
+    "reviewNumber": 10,
+    "label": "Seated in blue overalls",
+    "sourceFilename": "EECD142A-DAB6-4471-A64A-2C501A5CE29E.jpeg",
+    "sourceSha256": "b20a73e3c2baa2a78c8be68d9e2f327f1eec087bf0e5c5354193ac633b2cfec1",
+    "cropBox": [
+      160,
+      238,
+      1166,
+      1584
+    ],
+    "width": 1006,
+    "height": 1346,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-10.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
+    "sequence": 3,
+    "selectionStatus": "selected"
+  },
+  {
+    "rank": 4,
+    "reviewNumber": 27,
+    "label": "Hands in hair",
+    "sourceFilename": "DE4324BB-DFAB-4E96-9434-9911E7CE8AD2.jpeg",
+    "sourceSha256": "bd5eac1662fd5b5271f5c902261609eb02a1f889a72ff2d3ac46f4ca243708ed",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-27.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 hands in hair",
+    "sequence": 4,
+    "selectionStatus": "selected"
+  },
+  {
+    "rank": 5,
     "reviewNumber": 1,
     "label": "Polaroid toss",
     "sourceFilename": "7430AEED-6DBB-4C4D-B5DC-FB4A179001B0.jpeg",
@@ -105,10 +95,12 @@
     "height": 1344,
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-01.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss"
+    "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
+    "sequence": 6,
+    "selectionStatus": "selected"
   },
   {
-    "rank": 7,
+    "rank": 6,
     "reviewNumber": 16,
     "label": "Pink striped shirt",
     "sourceFilename": "B513EE6C-D597-45D2-9E24-C0AFE20DFA8A.jpeg",
@@ -123,10 +115,12 @@
     "height": 1342,
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-16.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 pink striped shirt"
+    "alt": "TK Ashwood for Striped Attire \u2014 pink striped shirt",
+    "sequence": 5,
+    "selectionStatus": "selected"
   },
   {
-    "rank": 8,
+    "rank": 7,
     "reviewNumber": 32,
     "label": "Seated outfit detail",
     "sourceFilename": "8048E6A0-3AAC-42C8-91E6-D522B9783B3B.jpeg",
@@ -141,6 +135,28 @@
     "height": 1331,
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-32.webp",
-    "alt": "TK Ashwood for Striped Attire \u2014 seated outfit detail"
+    "alt": "TK Ashwood for Striped Attire \u2014 seated outfit detail",
+    "sequence": 7,
+    "selectionStatus": "selected"
+  },
+  {
+    "rank": 8,
+    "reviewNumber": 25,
+    "label": "Side profile",
+    "sourceFilename": "88680B6C-2F73-4BE2-A145-7B22D5BA9DE5.jpeg",
+    "sourceSha256": "785e596318320745cebd7831a7f90aef71e41947bbf37578bd480e01dc45b2cd",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-25.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 side profile",
+    "sequence": null,
+    "selectionStatus": "alternate \u2014 redundant third seated portrait"
   }
 ]

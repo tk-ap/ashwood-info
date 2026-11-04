@@ -8,65 +8,186 @@
       "Striped",
       "Attire"
     ],
-    "intro": "Striped Attire, through TK Ashwood\u2019s point of view.",
+    "intro": "A Striped Attire campaign featuring TK Ashwood.",
     "brandUrl": "https://www.instagram.com/stripedattire/",
     "brandLabel": "@stripedattire",
     "images": [
       {
-        "src": "/assets/campaigns/striped-attire/frame-24.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
-        "width": 990,
-        "height": 1331
-      },
-      {
-        "src": "/assets/campaigns/striped-attire/frame-27.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 hands in hair",
-        "width": 990,
-        "height": 1331
-      },
-      {
-        "src": "/assets/campaigns/striped-attire/frame-25.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 side profile",
-        "width": 990,
-        "height": 1331
-      },
-      {
-        "src": "/assets/campaigns/striped-attire/frame-10.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
-        "width": 1006,
-        "height": 1346
-      },
-      {
-        "src": "/assets/campaigns/striped-attire/frame-18.webp",
+        "src": "/assets/campaigns/striped-attire/web/frame-18-720-31c88fc1bc.webp",
         "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt",
         "width": 993,
-        "height": 1335
+        "height": 1335,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-18.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-18-360-29d83c25cd.webp",
+            "width": 360,
+            "bytes": 34942
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-18-720-31c88fc1bc.webp",
+            "width": 720,
+            "bytes": 92120
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-18-993-988544d686.webp",
+            "width": 993,
+            "bytes": 144776
+          }
+        ]
       },
       {
-        "src": "/assets/campaigns/striped-attire/frame-01.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
-        "width": 1003,
-        "height": 1344
+        "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
+        "width": 990,
+        "height": 1331,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-24.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-24-360-aa5c6c4634.webp",
+            "width": 360,
+            "bytes": 55142
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
+            "width": 720,
+            "bytes": 126492
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-24-990-3384502c76.webp",
+            "width": 990,
+            "bytes": 191558
+          }
+        ]
       },
       {
-        "src": "/assets/campaigns/striped-attire/frame-16.webp",
+        "src": "/assets/campaigns/striped-attire/web/frame-10-720-769eafdb53.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
+        "width": 1006,
+        "height": 1346,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-10.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-10-360-2f1d0fa679.webp",
+            "width": 360,
+            "bytes": 63736
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-10-720-769eafdb53.webp",
+            "width": 720,
+            "bytes": 161458
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-10-1006-00415a133f.webp",
+            "width": 1006,
+            "bytes": 240988
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-27-720-61e7e4d015.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 hands in hair",
+        "width": 990,
+        "height": 1331,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-27.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-27-360-5c7e790c1d.webp",
+            "width": 360,
+            "bytes": 49526
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-27-720-61e7e4d015.webp",
+            "width": 720,
+            "bytes": 118948
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-27-990-b6f44f1cd9.webp",
+            "width": 990,
+            "bytes": 166598
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-16-720-b6872cf8c4.webp",
         "alt": "TK Ashwood for Striped Attire \u2014 pink striped shirt",
         "width": 998,
-        "height": 1342
+        "height": 1342,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-16.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-16-360-6b857c8c8e.webp",
+            "width": 360,
+            "bytes": 53198
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-16-720-b6872cf8c4.webp",
+            "width": 720,
+            "bytes": 129398
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-16-998-42107ac36e.webp",
+            "width": 998,
+            "bytes": 194694
+          }
+        ]
       },
       {
-        "src": "/assets/campaigns/striped-attire/frame-32.webp",
+        "src": "/assets/campaigns/striped-attire/web/frame-01-720-a213d84566.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
+        "width": 1003,
+        "height": 1344,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-01.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-01-360-bc2c7b79b1.webp",
+            "width": 360,
+            "bytes": 62340
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-01-720-a213d84566.webp",
+            "width": 720,
+            "bytes": 157804
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-01-1003-c2c91406e0.webp",
+            "width": 1003,
+            "bytes": 227054
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-32-720-5464ba4527.webp",
         "alt": "TK Ashwood for Striped Attire \u2014 seated outfit detail",
         "width": 990,
-        "height": 1331
+        "height": 1331,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-32.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-32-360-5a9f4209e4.webp",
+            "width": 360,
+            "bytes": 59454
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-32-720-5464ba4527.webp",
+            "width": 720,
+            "bytes": 147066
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-32-990-1d4f63af23.webp",
+            "width": 990,
+            "bytes": 206254
+          }
+        ]
       }
     ],
-    "credit": "Photography by Dylan.",
     "photographerUrl": "https://www.instagram.com/itndylan/",
     "photographerLabel": "@itndylan",
     "headerStyle": "striped",
     "websiteUrl": "https://striped.world/",
-    "websiteLabel": "striped.world"
+    "websiteLabel": "striped.world",
+    "creditLabel": "Photography & creative direction",
+    "creditName": "Dylan"
   },
   {
     "id": "barelysain",
@@ -76,8 +197,7 @@
     "titleLines": [
       "BarelySain"
     ],
-    "intro": "Selected campaign work from TK Ashwood\u2019s modeling portfolio.",
-    "credit": "Campaign imagery by Cashden.",
+    "intro": "A BarelySain campaign featuring TK Ashwood.",
     "images": [
       {
         "frameClass": "asset-frame asset-frame-wide",
@@ -172,6 +292,10 @@
     ],
     "headerStyle": "barelysain",
     "brandUrl": "https://www.instagram.com/barelysain/",
-    "brandLabel": "@barelysain"
+    "brandLabel": "@barelysain",
+    "creditLabel": "Photography & creative direction",
+    "creditName": "Cashden",
+    "photographerUrl": "https://www.instagram.com/cashdenglobal/",
+    "photographerLabel": "@cashdenglobal"
   }
 ]
