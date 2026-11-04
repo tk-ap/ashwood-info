@@ -5,7 +5,7 @@ const root = new URL('../', import.meta.url);
 const campaigns = JSON.parse(readFileSync(new URL('modeling/campaigns.json', root), 'utf8'));
 const escape = (value) => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 export function renderCampaign(campaign) {
-  const { id, index, location, name, titleLines, intro, creditLabel, creditName, photographerUrl, photographerLabel, brandUrl, brandLabel, websiteUrl, websiteLabel, headerStyle, images } = campaign;
+  const { id, index, location, name, titleLines, creditLabel, creditName, photographerUrl, photographerLabel, brandUrl, brandLabel, websiteUrl, websiteLabel, headerStyle, images } = campaign;
   const title = headerStyle === 'barelysain'
     ? readFileSync(new URL('assets/brand-marks/barelysain-garment.svg', root), 'utf8').trim()
     : titleLines.map(line => `<span>${escape(line)}</span>`).join('<br>');
@@ -14,7 +14,6 @@ export function renderCampaign(campaign) {
         <div class="feature-heading">
           <h2 id="${escape(id)}-title" class="outline-title campaign-wordmark campaign-wordmark--${escape(headerStyle || 'editorial')}" aria-label="${escape(name)}">${title}</h2>
           <div class="feature-intro">
-            <p>${escape(intro)}</p>
             <dl class="campaign-credits">
               <div><dt>${escape(creditLabel)}</dt><dd><a href="${escape(photographerUrl)}" target="_blank" rel="noopener">${escape(creditName)} · ${escape(photographerLabel)} ↗</a></dd></div>
               <div><dt>Brand</dt><dd><a href="${escape(brandUrl)}" target="_blank" rel="noopener">${escape(brandLabel)} ↗</a>${websiteUrl ? `<a href="${escape(websiteUrl)}" target="_blank" rel="noopener">${escape(websiteLabel)} ↗</a>` : ''}</dd></div>
