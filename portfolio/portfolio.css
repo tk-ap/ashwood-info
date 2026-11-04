@@ -280,22 +280,22 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
 .lightbox-open{overflow:hidden}
 @media (max-width:640px){.portfolio-lightbox{grid-template-columns:1fr;gap:10px}.portfolio-lightbox__figure{grid-column:1}.portfolio-lightbox__nav{position:absolute;bottom:clamp(38px,9vw,64px)}.portfolio-lightbox__nav--prev{left:clamp(12px,4vw,28px)}.portfolio-lightbox__nav--next{right:clamp(12px,4vw,28px)}}
 @media (prefers-reduced-motion:reduce){.portfolio-lightbox,.portfolio-lightbox__nav{transition:none}}
-/* BARELYSAIN gallery: one dependable editorial system, scoped away from the core UI. */
-#barelysain .outline-title {
+/* Shared campaign gallery: preserve the live BARELYSAIN system for both campaigns. */
+:is(#barelysain, #striped-attire) .outline-title {
   display: block;
   width: auto;
   max-width: none;
   overflow: visible;
 }
 
-#barelysain .campaign-grid {
+:is(#barelysain, #striped-attire) .campaign-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(14px, 1.6vw, 26px);
   margin-top: clamp(54px, 8vw, 110px);
   align-items: start;
 }
-#barelysain .campaign-grid > .asset-frame {
+:is(#barelysain, #striped-attire) .campaign-grid > .asset-frame {
   display: block;
   grid-column: auto;
   width: 100%;
@@ -306,10 +306,10 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
   align-self: start;
   background: none;
 }
-#barelysain .campaign-grid > .asset-frame:first-child {
+:is(#barelysain, #striped-attire) .campaign-grid > .asset-frame:first-child {
   grid-column: 1 / -1;
 }
-#barelysain .campaign-grid img {
+:is(#barelysain, #striped-attire) .campaign-grid img {
   display: block;
   width: 100%;
   height: auto;
@@ -317,7 +317,7 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
   object-fit: contain;
 }
 @media (max-width: 700px) {
-  #barelysain .outline-title {
+  :is(#barelysain, #striped-attire) .outline-title {
     width: 100%;
     max-width: 100%;
     font-size: clamp(44px, 15.5vw, 76px);
@@ -327,10 +327,10 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
     word-break: normal;
   }
 
-  #barelysain .campaign-grid {
+  :is(#barelysain, #striped-attire) .campaign-grid {
     grid-template-columns: 1fr;
   }
-  #barelysain .campaign-grid > .asset-frame:first-child {
+  :is(#barelysain, #striped-attire) .campaign-grid > .asset-frame:first-child {
     grid-column: auto;
   }
 }
@@ -338,7 +338,7 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
 
 /* BarelySain desktop heading visibility safeguard */
 @media (min-width: 701px) {
-  #barelysain .feature-heading {
+  :is(#barelysain, #striped-attire) .feature-heading {
     position: relative;
     z-index: 2;
     display: grid;
@@ -349,7 +349,7 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
     opacity: 1;
   }
 
-  #barelysain .outline-title {
+  :is(#barelysain, #striped-attire) .outline-title {
     display: block;
     visibility: visible;
     opacity: 1;
@@ -360,7 +360,7 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
     overflow: visible;
   }
 
-  #barelysain .feature-intro {
+  :is(#barelysain, #striped-attire) .feature-intro {
     position: relative;
     z-index: 2;
     visibility: visible;

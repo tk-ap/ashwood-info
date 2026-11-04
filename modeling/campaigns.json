@@ -1,0 +1,171 @@
+[
+  {
+    "id": "striped-attire",
+    "index": "01 / Latest work",
+    "location": "October 28, 2026",
+    "name": "Striped Attire",
+    "titleLines": [
+      "Striped",
+      "Attire"
+    ],
+    "intro": "Striped Attire, through TK Ashwood\u2019s point of view.",
+    "brandUrl": "https://www.instagram.com/stripedattire/",
+    "brandLabel": "@stripedattire",
+    "images": [
+      {
+        "src": "/assets/campaigns/striped-attire/frame-24.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
+        "width": 990,
+        "height": 1331
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/frame-27.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 hands in hair",
+        "width": 990,
+        "height": 1331
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/frame-25.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 side profile",
+        "width": 990,
+        "height": 1331
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/frame-10.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
+        "width": 1006,
+        "height": 1346
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/frame-18.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt",
+        "width": 993,
+        "height": 1335
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/frame-01.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
+        "width": 1003,
+        "height": 1344
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/frame-16.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 pink striped shirt",
+        "width": 998,
+        "height": 1342
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/frame-32.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 seated outfit detail",
+        "width": 990,
+        "height": 1331
+      }
+    ],
+    "credit": "Photography by Dylan.",
+    "photographerUrl": "https://www.instagram.com/itndylan/",
+    "photographerLabel": "@itndylan"
+  },
+  {
+    "id": "barelysain",
+    "index": "02 / Selected work",
+    "location": "Malibu + DTLA / Los Angeles",
+    "name": "BarelySain",
+    "titleLines": [
+      "BarelySain"
+    ],
+    "intro": "Selected campaign work from TK Ashwood\u2019s modeling portfolio.",
+    "credit": "Campaign imagery by Cashden.",
+    "images": [
+      {
+        "frameClass": "asset-frame asset-frame-wide",
+        "src": "/assets/campaigns/barelysain/hero-6729.jpg?v=20260827-fixed",
+        "alt": "BARELYSAIN campaign hero",
+        "loading": "eager"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_5688-web-v2.jpg",
+        "alt": "BARELYSAIN campaign frame 2",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_5859-edited.jpg",
+        "alt": "BARELYSAIN campaign frame 3",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_5539-web.jpg",
+        "alt": "BARELYSAIN campaign frame 4",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_6201-web-v2.jpg",
+        "alt": "BARELYSAIN campaign frame 5",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_6420-edited.jpg",
+        "alt": "BARELYSAIN campaign frame 6",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_6881-edited.jpg",
+        "alt": "BARELYSAIN campaign frame 7",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_6474-web-v2.jpg",
+        "alt": "BARELYSAIN campaign frame 8",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_6718-web-v2.jpg",
+        "alt": "BARELYSAIN campaign frame 9",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_6050-edited.jpg",
+        "alt": "BARELYSAIN campaign frame 10",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_6238-edited.jpg",
+        "alt": "BARELYSAIN campaign frame 11",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_6339-edited.jpg",
+        "alt": "BARELYSAIN campaign frame 12",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_6716-edited.jpg",
+        "alt": "BARELYSAIN campaign frame 13",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/barelysain-alley.webp",
+        "alt": "TK Ashwood walking through a sunlit alley in BarelySain",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/barelysain-seated.webp",
+        "alt": "TK Ashwood seated beside a glass storefront in BarelySain",
+        "loading": "lazy"
+      }
+    ]
+  }
+]

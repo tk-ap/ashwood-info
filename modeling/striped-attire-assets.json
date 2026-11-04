@@ -1,0 +1,146 @@
+[
+  {
+    "rank": 1,
+    "reviewNumber": 24,
+    "label": "Direct gaze",
+    "sourceFilename": "116292E3-E31C-454F-9E6C-FBC71C1C8F53.jpeg",
+    "sourceSha256": "bb18485403bd90dfa73119177e595c0a67384fe375c5d38ee1409eae35e46568",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-24.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 direct gaze"
+  },
+  {
+    "rank": 2,
+    "reviewNumber": 27,
+    "label": "Hands in hair",
+    "sourceFilename": "DE4324BB-DFAB-4E96-9434-9911E7CE8AD2.jpeg",
+    "sourceSha256": "bd5eac1662fd5b5271f5c902261609eb02a1f889a72ff2d3ac46f4ca243708ed",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-27.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 hands in hair"
+  },
+  {
+    "rank": 3,
+    "reviewNumber": 25,
+    "label": "Side profile",
+    "sourceFilename": "88680B6C-2F73-4BE2-A145-7B22D5BA9DE5.jpeg",
+    "sourceSha256": "785e596318320745cebd7831a7f90aef71e41947bbf37578bd480e01dc45b2cd",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-25.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 side profile"
+  },
+  {
+    "rank": 4,
+    "reviewNumber": 10,
+    "label": "Seated in blue overalls",
+    "sourceFilename": "EECD142A-DAB6-4471-A64A-2C501A5CE29E.jpeg",
+    "sourceSha256": "b20a73e3c2baa2a78c8be68d9e2f327f1eec087bf0e5c5354193ac633b2cfec1",
+    "cropBox": [
+      160,
+      238,
+      1166,
+      1584
+    ],
+    "width": 1006,
+    "height": 1346,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-10.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls"
+  },
+  {
+    "rank": 5,
+    "reviewNumber": 18,
+    "label": "Orange striped shirt",
+    "sourceFilename": "8FEEF8AB-01C6-42A1-A825-1C36CEEB567D.jpeg",
+    "sourceSha256": "3b9b3dfee6bcdd68c15f392e33a129ac68c40b6747792798c49bb238dbee0b2b",
+    "cropBox": [
+      189,
+      255,
+      1182,
+      1590
+    ],
+    "width": 993,
+    "height": 1335,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-18.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt"
+  },
+  {
+    "rank": 6,
+    "reviewNumber": 1,
+    "label": "Polaroid toss",
+    "sourceFilename": "7430AEED-6DBB-4C4D-B5DC-FB4A179001B0.jpeg",
+    "sourceSha256": "9965a46eba2f184de125c2a5ef07d5756465c4e2a7cde8f8f5aecbc66273e790",
+    "cropBox": [
+      180,
+      248,
+      1183,
+      1592
+    ],
+    "width": 1003,
+    "height": 1344,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-01.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss"
+  },
+  {
+    "rank": 7,
+    "reviewNumber": 16,
+    "label": "Pink striped shirt",
+    "sourceFilename": "B513EE6C-D597-45D2-9E24-C0AFE20DFA8A.jpeg",
+    "sourceSha256": "de1a19ca5d307a1174091bae218ac1c7b60de89bd3a854d387d387536103a65d",
+    "cropBox": [
+      159,
+      238,
+      1157,
+      1580
+    ],
+    "width": 998,
+    "height": 1342,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-16.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 pink striped shirt"
+  },
+  {
+    "rank": 8,
+    "reviewNumber": 32,
+    "label": "Seated outfit detail",
+    "sourceFilename": "8048E6A0-3AAC-42C8-91E6-D522B9783B3B.jpeg",
+    "sourceSha256": "593eee29770e92b4a4e815951bf95f99146e869f89654a6bc5054b8bedc5156a",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-32.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 seated outfit detail"
+  }
+]
