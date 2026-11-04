@@ -62,9 +62,11 @@ function buildSelf(){
   const item=el("article","hosted-rhythm__item");item.append(el("h3","",name),el("strong","","—"),el("p","",description));rhythmGrid.append(item)
  }
  rhythm.append(rhythmGrid);
+ rhythm.dataset.workspaceView="self";rhythm.dataset.workspaceActive="false";rhythm.classList.add("workspace-view-section");
  const second=section("B","Second Brain","Capture · connections · provenance");
  const status=el("p","hosted-provenance","Owner Brain records are not loaded in this preview. Sample concepts above are illustrative and are not private notes.");
  second.append(status);
+ second.dataset.workspaceView="self";second.dataset.workspaceActive="false";second.classList.add("workspace-view-section");
  const existing=q("#self-daily-wisdom");
  if(existing)existing.before(rhythm,second);else brain.after(rhythm,second);
  mirror.classList.add("hosted-self-followup");
