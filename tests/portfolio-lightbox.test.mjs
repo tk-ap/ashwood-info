@@ -8,7 +8,7 @@ const source = readFileSync(new URL('../portfolio-lightbox.js', import.meta.url)
 function viewer() {
   const classes = () => {
     const values = new Set();
-    return { add: value => values.add(value), remove: value => values.delete(value), contains: value => values.has(value) };
+    return { add: value => values.add(value), remove: value => values.delete(value), contains: value => values.has(value), toggle: (value, force) => force ? values.add(value) : values.delete(value) };
   };
   const element = (props = {}) => ({
     ...props, style: {}, handlers: {}, classList: classes(),
@@ -75,4 +75,13 @@ test('closing the viewer prevents a pending original from replacing its image', 
   v.close();
   original.onload();
   assert.equal(v.preview.src, '/delivery-720.webp');
+});
+
+test('verified source credits appear with the image and do not leak into the next photograph', () => {
+  const v = viewer();
+  v.images[0].dataset.sourceCaption = 'San Diego, CA | Photographer IG: @mintwhisper';
+  v.open();
+  assert.equal(v.controls['.portfolio-lightbox__caption'].textContent, 'New campaign · San Diego, CA | Photographer IG: @mintwhisper');
+  v.next();
+  assert.equal(v.controls['.portfolio-lightbox__caption'].textContent, 'Existing campaign');
 });

@@ -12,7 +12,7 @@ Original JPEG uploads remain unchanged in the owner's file collection, separate 
 
 TK excluded #27 (hands in hair) and #16 (pink stripes with undershirt showing at the collar). Neither appears in the rendered gallery or image viewer. Original files remain preserved separately.
 
-Current five-frame gallery sequence: **#18 → #24 → #10 → #1 → #32**. No replacements have been added. #24 remains the opening /modeling page hero, and #18 leads the campaign gallery. #25 remains an alternate. All 33 uploads (32 unique photographs) were recovered; editorial strength rankings do not override TK's explicit exclusions.
+Current five-frame gallery sequence: **#18 → #25 → #10 → #1 → #32**. No replacements have been added. #24 remains the opening /modeling page hero, and #18 leads the campaign gallery. #25 supplies the gallery profile view, replacing the duplicate of page-hero #24. All 33 uploads (32 unique photographs) were recovered; editorial strength rankings do not override TK's explicit exclusions.
 
 Both campaign intros use the same neutral format and Photography & creative direction / Brand contact structure, with Dylan linked at @itndylan and Cashden at @cashdenglobal.
 
@@ -75,3 +75,9 @@ Striped Attire now uses literal blue-and-white horizontal bands clipped into the
 ## Opening page hero
 
 TK selected #24 as the opening /modeling portrait. The renderer derives it from the newest campaign's `pageHeroImage` data, falling back to that campaign's first image, and updates the opening campaign CTA from the same record. This is separate from #18, which leads the campaign gallery sequence. Existing hero layout/navigation are preserved; the hero uses the same responsive delivery candidates and original-resolution viewer target.
+
+## Archive and booking review
+
+The Archive section is now named Archive. Original Adobe source captions were recovered for 13 of its 17 frames and three of four current runway-strip frames, matched to the exact photographs. They appear below those photographs and in the viewer, with direct photographer links. Five unmatched/uncaptioned frames remain explicitly unresolved in modeling/archive-credits.json. See docs/MODELING_ARCHIVE_BOOKING_AUDIT.md for evidence and booking recommendations.
+
+The opening hero is stored as its own image record under the latest campaign's pageHero, so it can remain #24 while the gallery uses #25. The owner-excluded #27 and #16 remain excluded.

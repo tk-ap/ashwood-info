@@ -204,6 +204,11 @@ img { max-width: 100%; display: block; }
 .campaign-credits div { display: grid; gap: 7px; }
 .campaign-credits dt { color: var(--muted); font-size: 10px; line-height: 1.4; letter-spacing: .12em; text-transform: uppercase; }
 .campaign-credits dd { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; font-size: 16px; line-height: 1.5; }
+.archive-grid .asset-frame.has-credit,.runway-strip .asset-frame.has-credit { position: relative; overflow: visible; margin-bottom: 3.5rem !important; }
+.asset-frame .archive-credit { position: absolute; top: 100%; left: 0; right: 0; padding-top: 10px; color: var(--ink); font-size: 10px; line-height: 1.6; letter-spacing: .025em; text-transform: none; }
+.archive-credit a { text-underline-offset: 3px; }
+.portfolio-page:is(.ashwood-index-mode,.ashwood-spatial-mode) .archive-credit { display: none; }
+.portfolio-page:is(.ashwood-index-mode,.ashwood-spatial-mode) .asset-frame.has-credit { margin-bottom: 0 !important; }
 .campaign-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 22px); margin-top: clamp(54px, 8vw, 110px); }
 .campaign-grid > :nth-child(1) { grid-column: 1 / -1; }
 .campaign-grid > :nth-child(2) { grid-column: 1 / span 5; }
@@ -273,6 +278,8 @@ img { max-width: 100%; display: block; }
 .portfolio-lightbox__figure{grid-column:2;margin:0;display:grid;place-items:center;gap:14px;min-width:0}
 .portfolio-lightbox img{max-width:min(92vw,1400px);max-height:82vh;width:auto;height:auto;object-fit:contain}
 .portfolio-lightbox__caption{max-width:60ch;color:rgba(255,255,255,.72);font-size:13px;line-height:1.5;text-align:center;text-wrap:balance}
+.portfolio-lightbox--credited img{max-height:65vh}
+.portfolio-lightbox--credited .portfolio-lightbox__caption{max-height:20vh;overflow:auto;padding-inline:6px}
 .portfolio-lightbox__close{position:absolute;top:clamp(12px,2vw,24px);right:clamp(12px,2vw,32px);border:0;background:none;color:#fff;font-size:36px;line-height:1;cursor:pointer;padding:4px 10px;border-radius:6px}
 .portfolio-lightbox__nav{border:0;background:rgba(255,255,255,.08);color:#fff;font-size:clamp(28px,4vw,42px);line-height:1;cursor:pointer;padding:clamp(8px,1.4vw,18px) clamp(10px,1.2vw,16px);border-radius:8px;transition:background .18s ease}
 .portfolio-lightbox__nav:hover{background:rgba(255,255,255,.18)}

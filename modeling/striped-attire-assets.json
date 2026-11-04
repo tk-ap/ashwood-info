@@ -36,8 +36,8 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-24.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
-    "sequence": 2,
-    "selectionStatus": "selected"
+    "sequence": null,
+    "selectionStatus": "page hero only"
   },
   {
     "rank": 3,
@@ -156,7 +156,7 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-25.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 side profile",
-    "sequence": null,
-    "selectionStatus": "alternate \u2014 redundant third seated portrait"
+    "sequence": 2,
+    "selectionStatus": "selected \u2014 profile variation replacing duplicate hero"
   }
 ]

@@ -37,26 +37,26 @@
         ]
       },
       {
-        "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
+        "alt": "TK Ashwood for Striped Attire \u2014 side profile",
         "width": 990,
         "height": 1331,
-        "fullSrc": "/assets/campaigns/striped-attire/frame-24.webp",
+        "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
+        "fullSrc": "/assets/campaigns/striped-attire/frame-25.webp",
         "sources": [
           {
-            "src": "/assets/campaigns/striped-attire/web/frame-24-360-aa5c6c4634.webp",
+            "src": "/assets/campaigns/striped-attire/web/frame-25-360-b8bf871675.webp",
             "width": 360,
-            "bytes": 55142
+            "bytes": 56942
           },
           {
-            "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
+            "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
             "width": 720,
-            "bytes": 126492
+            "bytes": 138246
           },
           {
-            "src": "/assets/campaigns/striped-attire/web/frame-24-990-3384502c76.webp",
+            "src": "/assets/campaigns/striped-attire/web/frame-25-990-34cd9be214.webp",
             "width": 990,
-            "bytes": 191558
+            "bytes": 199266
           }
         ]
       },
@@ -140,7 +140,31 @@
     "websiteLabel": "striped.world",
     "creditLabel": "Photography & creative direction",
     "creditName": "Dylan",
-    "pageHeroImage": "/assets/campaigns/striped-attire/frame-24.webp"
+    "pageHeroImage": "/assets/campaigns/striped-attire/frame-24.webp",
+    "pageHero": {
+      "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
+      "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
+      "width": 990,
+      "height": 1331,
+      "fullSrc": "/assets/campaigns/striped-attire/frame-24.webp",
+      "sources": [
+        {
+          "src": "/assets/campaigns/striped-attire/web/frame-24-360-aa5c6c4634.webp",
+          "width": 360,
+          "bytes": 55142
+        },
+        {
+          "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
+          "width": 720,
+          "bytes": 126492
+        },
+        {
+          "src": "/assets/campaigns/striped-attire/web/frame-24-990-3384502c76.webp",
+          "width": 990,
+          "bytes": 191558
+        }
+      ]
+    }
   },
   {
     "id": "barelysain",

@@ -75,7 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
       original.src = img.dataset.fullSrc;
     }
     preview.alt = img.alt || "";
-    caption.textContent = img.alt || "";
+    caption.textContent = [img.alt, img.dataset.sourceCaption].filter(Boolean).join(" · ");
+    overlay.classList.toggle("portfolio-lightbox--credited", Boolean(img.dataset.sourceCaption));
     counter.textContent = `${current + 1} / ${images.length}`;
     warm(current + 1);
     warm(current - 1);
