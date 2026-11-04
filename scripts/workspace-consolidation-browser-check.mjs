@@ -221,8 +221,59 @@ async function inspectLocked() {
   await context.close();
 }
 
+
+async function inspectAuthLifecycle() {
+  // Synthetic auth transport, real Workspace UI and handlers. This is NOT a
+  // production session test; it verifies the UI never exposes the Brain before
+  // a verified login and locks it again after a logout/navigation cycle.
+  const context = await browser.newContext({
+    viewport: {width:390,height:844}, reducedMotion:'reduce', serviceWorkers:'block'
+  });
+  await configureMock(context, false);
+  const state = {authenticated:false, loginCalls:0, verifyCalls:0, logoutCalls:0};
+  await context.route('**/api/workspace-auth*', async route => {
+    const req = route.request();
+    if (req.method() === 'POST') {
+      const body = JSON.parse(req.postData() || '{}');
+      if (body.action === 'login') {
+        state.loginCalls++;
+        state.authenticated = true;
+      } else if (body.action === 'logout') {
+        state.logoutCalls++;
+        state.authenticated = false;
+      }
+    }
+    if (req.url().includes('?verify=')) state.verifyCalls++;
+    await route.fulfill({
+      status:200, contentType:'application/json',
+      body:JSON.stringify({ok:true, configured:true, authenticated:state.authenticated})
+    });
+  });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto(base + '/workspace/#self', {waitUntil:'domcontentloaded'});
+  await page.locator('#workspace-auth-gate input[name="passphrase"]').fill('synthetic-only-passphrase');
+  assert.equal(await page.locator('.brain-explorer__scope').getAttribute('hidden'), '');
+  await page.locator('#workspace-auth-gate button[type="submit"]').click();
+  await page.waitForFunction(() => document.body.dataset.workspaceAuth === 'authenticated');
+  await page.locator('.brain-explorer__scope:not([hidden])').waitFor();
+  assert.equal(state.loginCalls,1);
+  assert(state.verifyCalls >= 1, 'must verify session after login POST');
+  assert.equal(await page.locator('.workspace-shell').getAttribute('inert'), null);
+  await page.locator('#sign-out').click();
+  await page.waitForFunction(() => document.body.dataset.workspaceAuth === 'locked');
+  assert.equal(state.logoutCalls,1);
+  assert.equal(await page.locator('.brain-explorer__scope').getAttribute('hidden'), '');
+  assert.equal(await page.locator('.workspace-shell').getAttribute('inert'), '');
+  assert.equal(errors.length,0,'auth lifecycle must not cause JS exceptions: '+errors.join('; '));
+  report.push({view:'auth-lifecycle',loginVerified:true,logoutLocked:true,loginCalls:state.loginCalls,verifyCalls:state.verifyCalls,logoutCalls:state.logoutCalls});
+  await context.close();
+}
+
 try {
   await inspectLocked();
+  await inspectAuthLifecycle();
   await inspect(390, 844);
   await inspect(1440, 900);
   await inspect(390, 844, 'paper-light');
