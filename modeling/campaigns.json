@@ -37,30 +37,6 @@
         ]
       },
       {
-        "alt": "TK Ashwood for Striped Attire \u2014 side profile",
-        "width": 990,
-        "height": 1331,
-        "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
-        "fullSrc": "/assets/campaigns/striped-attire/frame-25.webp",
-        "sources": [
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-25-360-b8bf871675.webp",
-            "width": 360,
-            "bytes": 56942
-          },
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
-            "width": 720,
-            "bytes": 138246
-          },
-          {
-            "src": "/assets/campaigns/striped-attire/web/frame-25-990-34cd9be214.webp",
-            "width": 990,
-            "bytes": 199266
-          }
-        ]
-      },
-      {
         "src": "/assets/campaigns/striped-attire/web/frame-10-720-769eafdb53.webp",
         "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
         "width": 1006,
@@ -81,6 +57,30 @@
             "src": "/assets/campaigns/striped-attire/web/frame-10-1006-00415a133f.webp",
             "width": 1006,
             "bytes": 240988
+          }
+        ]
+      },
+      {
+        "alt": "TK Ashwood for Striped Attire \u2014 side profile",
+        "width": 990,
+        "height": 1331,
+        "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
+        "fullSrc": "/assets/campaigns/striped-attire/frame-25.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-25-360-b8bf871675.webp",
+            "width": 360,
+            "bytes": 56942
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
+            "width": 720,
+            "bytes": 138246
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-25-990-34cd9be214.webp",
+            "width": 990,
+            "bytes": 199266
           }
         ]
       },

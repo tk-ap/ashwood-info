@@ -21,7 +21,7 @@ The 2023 Adobe age, shaved-hair details, old San Diego base and historical digit
 
 ## Curation
 
-Hero #24 is a strong introductory direct-gaze portrait. Repeating it in the short five-frame gallery adds less range than a distinct view. Preview gallery now uses #18 → #25 → #10 → #1 → #32, with #25 adding profile and garment detail. #24 remains exclusively the page hero; #27 and #16 remain excluded. Hero data is independent of the gallery selection while still owned by the newest campaign record.
+Hero #24 is a strong introductory direct-gaze portrait. Repeating it in the short five-frame gallery adds less range than a distinct view. Preview gallery now uses #18 → #10 → #25 → #1 → #32, with #25 adding profile and garment detail. #24 remains exclusively the page hero; #27 and #16 remain excluded. Hero data is independent of the gallery selection while still owned by the newest campaign record.
 
 ## Booking assessment — recommendations, not conversion claims
 

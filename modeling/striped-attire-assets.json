@@ -56,7 +56,7 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-10.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
-    "sequence": 3,
+    "sequence": 2,
     "selectionStatus": "selected"
   },
   {
@@ -156,7 +156,7 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-25.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 side profile",
-    "sequence": 2,
+    "sequence": 3,
     "selectionStatus": "selected \u2014 profile variation replacing duplicate hero"
   }
 ]
