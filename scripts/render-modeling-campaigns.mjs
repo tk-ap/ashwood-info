@@ -23,8 +23,8 @@ export function renderCampaign(campaign) {
         </div>
         <div class="campaign-grid" aria-label="${escape(name)} campaign images">
 ${images.map((img, i) => {
-  const responsive = img.sources ? ` srcset="${img.sources.map(source => `${escape(source.src)} ${source.width}w`).join(', ')}" sizes="${i === 0 ? '(max-width: 700px) calc(100vw - 36px), min(94vw, 1540px)' : '(max-width: 700px) calc(100vw - 36px), min(46vw, 756px)'}" data-full-src="${escape(img.fullSrc)}" decoding="async"${i === 0 ? ' fetchpriority="high"' : ''}` : '';
-  return `          <div class="${escape(img.frameClass || 'asset-frame')}"><img src="${escape(img.src)}" alt="${escape(img.alt)}"${img.width ? ` width="${img.width}" height="${img.height}"` : ''}${responsive} loading="${i === 0 ? 'eager' : 'lazy'}" /></div>`;
+  const responsive = img.sources ? ` srcset="${img.sources.map(source => `${escape(source.src)} ${source.width}w`).join(', ')}" sizes="${i === 0 ? '(max-width: 700px) calc(100vw - 36px), min(94vw, 1540px)' : '(max-width: 700px) calc(100vw - 36px), min(46vw, 756px)'}" data-full-src="${escape(img.fullSrc)}" decoding="async" fetchpriority="${i === 0 ? 'high' : 'low'}"` : '';
+  return `          <div class="${escape(img.frameClass || 'asset-frame')}"><img src="${escape(img.src)}" alt="${escape(img.alt)}"${img.width ? ` width="${img.width}" height="${img.height}"` : ''}${responsive} loading="${img.sources || i === 0 ? 'eager' : 'lazy'}" /></div>`;
 }).join('\n')}
         </div>
       </section>`;
