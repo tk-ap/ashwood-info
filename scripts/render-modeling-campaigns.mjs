@@ -12,7 +12,7 @@ export function renderCampaign(campaign) {
   return `      <section id="${escape(id)}" class="feature-section section-shell" aria-labelledby="${escape(id)}-title">
         <div class="section-kicker"><span>${escape(index)}</span><span>${escape(location)}</span></div>
         <div class="feature-heading">
-          <h2 id="${escape(id)}-title" class="outline-title campaign-title campaign-title--${escape(headerStyle || 'editorial')}" aria-label="${escape(name)}">${title}</h2>
+          <h2 id="${escape(id)}-title" class="outline-title campaign-wordmark campaign-wordmark--${escape(headerStyle || 'editorial')}" aria-label="${escape(name)}">${title}</h2>
           <div class="feature-intro"><p>${escape(intro)}</p>${credit ? `<p class="credit">${escape(credit)}${photographerUrl ? ` <a href="${escape(photographerUrl)}" target="_blank" rel="noopener">${escape(photographerLabel)} ↗</a>` : ''}</p>` : ''}${brandUrl ? `<p class="credit"><a href="${escape(brandUrl)}" target="_blank" rel="noopener">${escape(brandLabel)} ↗</a></p>` : ''}${websiteUrl ? `<p class="credit"><a href="${escape(websiteUrl)}" target="_blank" rel="noopener">${escape(websiteLabel)} ↗</a></p>` : ''}</div>
         </div>
         <div class="campaign-grid" aria-label="${escape(name)} campaign images">
