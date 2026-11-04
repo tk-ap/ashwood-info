@@ -261,6 +261,7 @@ async function inspectAuthLifecycle() {
   assert.equal(state.loginCalls,1);
   assert(state.verifyCalls >= 1, 'must verify session after login POST');
   assert.equal(await page.locator('.workspace-shell').getAttribute('inert'), null);
+  await page.locator('details.workspace-menu > summary').click();
   await page.locator('#sign-out').click();
   await page.waitForFunction(() => document.body.dataset.workspaceAuth === 'locked');
   assert.equal(state.logoutCalls,1);
