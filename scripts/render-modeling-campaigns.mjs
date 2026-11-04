@@ -31,7 +31,13 @@ ${images.map((img, i) => {
 }
 const path = fileURLToPath(new URL('modeling/index.html', root));
 const current = readFileSync(path, 'utf8');
-const output = current.replace(/      <!-- campaigns:start -->[\s\S]*?      <!-- campaigns:end -->/, `      <!-- campaigns:start -->\n${campaigns.map(renderCampaign).join('\n\n')}\n      <!-- campaigns:end -->`);
+let output = current.replace(/      <!-- campaigns:start -->[\s\S]*?      <!-- campaigns:end -->/, `      <!-- campaigns:start -->\n${campaigns.map(renderCampaign).join('\n\n')}\n      <!-- campaigns:end -->`);
+const latest = campaigns[0];
+const hero = latest.images.find(img => (img.fullSrc || img.src) === latest.pageHeroImage) || latest.images[0];
+const heroSources = hero.sources ? ` srcset="${hero.sources.map(source => `${escape(source.src)} ${source.width}w`).join(', ')}" sizes="min(100vw, 1640px)" data-full-src="${escape(hero.fullSrc)}"` : '';
+const heroMarkup = `<img src="${escape(hero.src)}" alt="${escape(hero.alt)}"${hero.width ? ` width="${hero.width}" height="${hero.height}"` : ''}${heroSources} loading="eager" decoding="async" fetchpriority="high" />`;
+output = output.replace(/<!-- campaign-hero:start -->[\s\S]*?<!-- campaign-hero:end -->/, `<!-- campaign-hero:start -->\n          ${heroMarkup}\n          <!-- campaign-hero:end -->`);
+output = output.replace(/(<div class="hero-actions">\s*)<a class="button button-primary" href="#[^"]+">View [^<]+ campaign<\/a>/, `$1<a class="button button-primary" href="#${escape(latest.id)}">View ${escape(latest.name)} campaign</a>`);
 if (process.argv.includes('--check')) {
   if (output !== current) throw new Error('Campaign HTML is stale. Run node scripts/render-modeling-campaigns.mjs');
 } else writeFileSync(path, output);
