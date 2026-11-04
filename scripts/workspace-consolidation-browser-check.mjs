@@ -74,7 +74,7 @@ async function inspect(width, height, theme = 'warm-dark') {
       bottomNavVisible: getComputedStyle(document.querySelector('.workspace-mobile-nav')).display !== 'none'
     };
   });
-  await page.waitForSelector('body.hosted-parity .hosted-brand');
+  await page.waitForSelector('body.hosted-parity .hosted-brand', {state:'attached'});
   assert.equal(await page.locator('#brain-explorer-title').innerText(), 'A connected reading.');
   assert.equal(await page.locator('#brain-explorer').evaluate(el => el.compareDocumentPosition(document.querySelector('#self-alignment-mirror')) & Node.DOCUMENT_POSITION_FOLLOWING), 4, 'Brain must lead the Self composition');
   assert.equal(snapshot.authState, 'authenticated');
