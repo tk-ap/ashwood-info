@@ -62,7 +62,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const show = (index) => {
     current = (index + images.length) % images.length;
     const img = images[current];
-    preview.src = img.dataset.fullSrc || img.currentSrc || img.src;
+    // Show the already-loaded delivery image immediately. Upgrade only after
+    // the original has loaded, so opening the viewer never waits on a large file.
+    preview.src = img.currentSrc || img.src;
+    if (img.dataset.fullSrc) {
+      const requestedIndex = current;
+      const original = new Image();
+      original.onload = () => {
+        if (current === requestedIndex && isOpen()) preview.src = img.dataset.fullSrc;
+      };
+      // A failed original leaves the working delivery image visible.
+      original.src = img.dataset.fullSrc;
+    }
     preview.alt = img.alt || "";
     caption.textContent = img.alt || "";
     counter.textContent = `${current + 1} / ${images.length}`;
