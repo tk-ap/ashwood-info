@@ -74,6 +74,9 @@ async function inspect(width, height, theme = 'warm-dark') {
       bottomNavVisible: getComputedStyle(document.querySelector('.workspace-mobile-nav')).display !== 'none'
     };
   });
+  await page.waitForSelector('body.sandbox-parity .sandbox-parity-brand');
+  assert.equal(await page.locator('#brain-explorer-title').innerText(), 'A connected reading.');
+  assert.equal(await page.locator('#brain-explorer').evaluate(el => el.compareDocumentPosition(document.querySelector('#self-alignment-mirror')) & Node.DOCUMENT_POSITION_FOLLOWING), 4, 'Brain must lead the Self composition');
   assert.equal(snapshot.authState, 'authenticated');
   assert.equal(snapshot.currentView, 'self');
   assert.equal(snapshot.active, 'true');
@@ -90,6 +93,13 @@ async function inspect(width, height, theme = 'warm-dark') {
     assert.equal(snapshot.bottomNavVisible, false);
   }
 
+  await page.evaluate(() => { location.hash = '#today'; });
+  await page.waitForFunction(() => document.body.dataset.workspaceCurrentView === 'today');
+  const editorial = await page.locator('#today .sandbox-parity-heading h2').allInnerTexts();
+  assert.deepEqual(editorial, ['What may be slipping','What matters','What agents are doing','Needs you']);
+  await page.screenshot({path:out+'/today-parity-'+width+'-'+theme+'.png',fullPage:false,animations:'disabled'});
+  await page.evaluate(() => { location.hash = '#self'; });
+  await page.waitForFunction(() => document.body.dataset.workspaceCurrentView === 'self');
   const select = page.locator('.brain-explorer__select');
   await select.selectOption('thoreau');
   assert.match(await page.locator('.brain-explorer__reading-title').innerText(), /Deliberate living/);
