@@ -1,0 +1,26 @@
+/* Source: hosted here.now V2 editorial hierarchy; do not expose fictional fixtures. */
+body.sandbox-parity { --sandbox-gold:#c4a66a; }
+body.sandbox-parity .workspace-view-intro {border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:36px;}
+body.sandbox-parity .workspace-view-intro h1 {font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing:-.055em;}
+body.sandbox-parity .sandbox-parity-heading {display:flex;align-items:baseline;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--line);padding:0 0 14px;margin:44px 0 20px;}
+body.sandbox-parity .sandbox-parity-heading__number {font-size:11px;letter-spacing:.12em;color:var(--sandbox-gold);font-variant-numeric:tabular-nums;}
+body.sandbox-parity .sandbox-parity-heading h2 {font-family:Georgia,"Times New Roman",serif;font-size:clamp(21px,2.2vw,29px);font-weight:400;letter-spacing:-.04em;line-height:1.2;margin:0;}
+body.sandbox-parity .sandbox-parity-heading p {font-size:11px;color:var(--muted);margin:0 0 0 auto;}
+body.sandbox-parity .sandbox-parity-status {font-size:12px;color:var(--muted);margin:0 0 15px;}
+body.sandbox-parity .brain-explorer__head h2 {font-family:Georgia,"Times New Roman",serif;font-size:clamp(32px,4vw,54px);font-weight:400;letter-spacing:-.05em;}
+body.sandbox-parity .brain-explorer__reading-title {font-family:Georgia,"Times New Roman",serif;letter-spacing:-.05em;}
+body.sandbox-parity .brain-explorer__stage {border-radius:0;}
+body.sandbox-parity .sandbox-parity-brand {display:flex;flex-direction:column;gap:2px;padding:0 10px 22px;letter-spacing:.14em;font-size:10px;}
+body.sandbox-parity .sandbox-parity-brand strong {font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:400;letter-spacing:-.04em;}
+body.sandbox-parity .sandbox-parity-brand span {color:var(--muted);}
+@media(min-width:1300px){
+ body.sandbox-parity .workspace-section-nav {justify-content:flex-start!important;padding-top:44px!important;width:224px!important;}
+ body.sandbox-parity .workspace-section-nav::before {display:none!important;}
+ body.sandbox-parity .workspace-shell {margin-left:clamp(245px,17vw,290px);}
+}
+@media(max-width:1299px){body.sandbox-parity .sandbox-parity-brand{display:none;}}
+@media(max-width:680px){
+ body.sandbox-parity .sandbox-parity-heading{margin:32px 0 16px;}
+ body.sandbox-parity .sandbox-parity-heading p{width:100%;margin-left:28px;}
+ body.sandbox-parity .brain-explorer__head h2{font-size:34px;}
+}
