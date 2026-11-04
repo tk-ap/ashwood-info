@@ -369,6 +369,39 @@ main img[role="button"]:focus-visible{outline:2px solid var(--ashwood-ochre,#c88
 }
 
 /* V0: remove visible box outline from hero/header image */
+/* Campaign identities: literal Striped bands and BARELYSAIN's actual garment print.
+   Layout, photographs and the shared campaign gallery remain unchanged. */
+#striped-attire .campaign-title--striped {
+  color: #1175b5;
+  -webkit-text-stroke: 0;
+}
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  #striped-attire .campaign-title--striped > span {
+    display: inline-block;
+    background: repeating-linear-gradient(180deg, #1175b5 0 .07em, #1175b5 .07em, #f5f3ee .07em .14em);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+#barelysain .campaign-title--barelysain {
+  color: #c8de66;
+  line-height: 0;
+  -webkit-text-stroke: 0;
+}
+#barelysain .campaign-title--barelysain > svg {
+  display: block;
+  width: min(100%, 480px);
+  height: auto;
+}
+@media (forced-colors: active) {
+  #striped-attire .campaign-title--striped > span {
+    background: none;
+    color: CanvasText;
+  }
+  #barelysain .campaign-title--barelysain { color: CanvasText; }
+}
+
 .hero img,
 .hero .asset-frame,
 .hero .hero-image {

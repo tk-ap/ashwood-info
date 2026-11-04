@@ -63,7 +63,10 @@
     ],
     "credit": "Photography by Dylan.",
     "photographerUrl": "https://www.instagram.com/itndylan/",
-    "photographerLabel": "@itndylan"
+    "photographerLabel": "@itndylan",
+    "headerStyle": "striped",
+    "websiteUrl": "https://striped.world/",
+    "websiteLabel": "striped.world"
   },
   {
     "id": "barelysain",
@@ -166,6 +169,9 @@
         "alt": "TK Ashwood seated beside a glass storefront in BarelySain",
         "loading": "lazy"
       }
-    ]
+    ],
+    "headerStyle": "barelysain",
+    "brandUrl": "https://www.instagram.com/barelysain/",
+    "brandLabel": "@barelysain"
   }
 ]

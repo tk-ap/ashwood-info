@@ -66,3 +66,9 @@ TK explicitly authorized a Vercel preview for this bounded task despite the repo
 | DE4324BB-DFAB-4E96-9434-9911E7CE8AD2.jpeg | Selected, rank 2, review #27 |
 | E9A40F58-EED6-426F-9DB2-C729B791BB04.jpeg | Reviewed; reserve / omitted for redundancy |
 | EA87900F-FA6E-43F3-B4BB-F7756B028CB3.jpeg | Reviewed; reserve / omitted for redundancy |
+
+## Brand header revision
+
+TK requested campaign-specific brand headers and the BARELYSAIN Instagram link. BARELYSAIN now links to https://www.instagram.com/barelysain/. Its header uses a native SVG silhouette traced directly from the repeated lowercase yellow-green print in `assets/campaigns/barelysain/IMG_6718-edited.jpg`, rather than a substitute font. The vector retains the photographed garment's printed contours; it is not claimed to be an official supplied logo master. SVG source crop provenance is embedded in `assets/brand-marks/barelysain-garment.svg`.
+
+Striped Attire now uses literal blue-and-white horizontal bands clipped into the existing editorial letterforms, reflecting the stripes observed on the clothing and the official https://striped.world/ landing page. The official site is also linked. Both headings retain a single accessible campaign name; the decorative SVG does not become a gallery/lightbox image. Forced-color mode uses readable system colors. Campaign photographs and gallery behavior are unchanged.
