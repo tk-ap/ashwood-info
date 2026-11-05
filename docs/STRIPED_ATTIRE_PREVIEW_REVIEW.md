@@ -12,9 +12,9 @@ Original JPEG uploads remain unchanged in the owner's file collection, separate 
 
 TK excluded #27 (hands in hair) and #16 (pink stripes with undershirt showing at the collar). Neither appears in the rendered gallery or image viewer. Original files remain preserved separately.
 
-Current five-frame gallery sequence: **#18 → #10 → #25 → #1 → #32**. No replacements have been added. #24 remains the opening /modeling page hero, and #18 leads the campaign gallery. #25 supplies the gallery profile view, replacing the duplicate of page-hero #24. All 33 uploads (32 unique photographs) were recovered; editorial strength rankings do not override TK's explicit exclusions.
+Current owner-approved four-frame gallery sequence: **#1 → #18 → #11 → #25** (contact-sheet **A08 → A13 → A16 → B06**). #24 / B03 remains exclusively the page hero. #10 and #32 are reserves; #16 and #27 remain excluded. The sequence alternates overalls, orange/navy, overalls, and grey/navy looks.
 
-Both campaign intros use the same neutral format and Photography & creative direction / Brand contact structure, with Dylan linked at @itndylan and Cashden at @cashdenglobal.
+Both campaign headers go directly to the Photography & creative direction / Brand contact structure, with Dylan linked at @itndylan and Cashden at @cashdenglobal.
 
 ## Image delivery diagnosis and correction
 
@@ -24,7 +24,7 @@ Seven retained pixel-exact lossless masters total 7,178,850 bytes. Web delivery 
 
 ## Implementation
 
-Shared data-driven static campaign renderer: `scripts/render-modeling-campaigns.mjs`, `modeling/campaigns.json`. Run `node scripts/render-modeling-campaigns.mjs` after editing campaign data; `--check` detects stale output. No browser JavaScript is required to see campaigns. The existing BARELYSAIN gallery rules are extended through a shared selector with equal specificity. Its 15 photographs, frame classes, loading behavior, credit and interactions remain intact. Both campaign intros use the same neutral campaign format and direct creator/brand contacts. Other modeling sections are preserved with sequential numbering. Booking links are unchanged; hero campaign link now points to Striped Attire.
+Shared data-driven static campaign renderer: `scripts/render-modeling-campaigns.mjs`, `modeling/campaigns.json`. Run `node scripts/render-modeling-campaigns.mjs` after editing campaign data; `--check` detects stale output. No browser JavaScript is required to see campaigns. The existing BARELYSAIN gallery rules are extended through a shared selector with equal specificity. Its 15 photographs, frame classes, loading behavior, credit and interactions remain intact. Both campaign headers preserve direct creator/brand contacts without generic introductory sentences. Other modeling sections are preserved with sequential numbering. Booking links are unchanged; hero campaign link now points to Striped Attire.
 
 TK explicitly authorized a Vercel preview for this bounded task despite the repository's usual here.now-only preview policy. No production deployment, main merge, project-wide protection change, Workspace modification or paid service is authorized.
 
@@ -85,3 +85,9 @@ The opening hero is stored as its own image record under the latest campaign's p
 ## Alternating looks
 
 TK flagged consecutive overalls frames #10 and #1. #25 now separates them, retaining the seated garment view and energetic toss while alternating looks throughout the gallery: #18 → #10 → #25 → #1 → #32. #24 remains the page hero only.
+
+## Approved face-first edit
+
+TK approved the tighter four-frame recommendation after the Muse review was reconciled against the actual preview. #1 opens with expression and movement; #18 supplies the standing orange/navy look; #11 / A16 replaces #10 with the smiling commercial frame; #25 closes with a profile. #32 is omitted. #18 is a standing portrait with the face visible, not a headless torso detail or a complete feet-in-frame full-length photograph. The recovered inventory remains 33 uploads / 32 unique photographs.
+
+Frame #11 uses the original JPEG crop [159, 238, 1157, 1580], matched to the reviewed crop archive (normalized correlation 0.99990). The WebP master is pixel-identical to that source crop; responsive copies use quality 90. Source colors/composition are preserved beyond border removal. BARELYSAIN assets, order and layout are unchanged; generic image descriptions are replaced with visually verified descriptions. Creator credits remain at campaign level; no per-image location is guessed.

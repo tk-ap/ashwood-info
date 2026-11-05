@@ -16,7 +16,7 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-18.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt",
-    "sequence": 1,
+    "sequence": 2,
     "selectionStatus": "selected"
   },
   {
@@ -56,8 +56,8 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-10.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
-    "sequence": 2,
-    "selectionStatus": "selected"
+    "sequence": null,
+    "selectionStatus": "reserve \u2014 replaced in owner-approved tighter gallery"
   },
   {
     "rank": 4,
@@ -96,7 +96,7 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-01.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
-    "sequence": 4,
+    "sequence": 1,
     "selectionStatus": "selected"
   },
   {
@@ -136,8 +136,8 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-32.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 seated outfit detail",
-    "sequence": 5,
-    "selectionStatus": "selected"
+    "sequence": null,
+    "selectionStatus": "reserve \u2014 replaced in owner-approved tighter gallery"
   },
   {
     "rank": 8,
@@ -156,7 +156,28 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-25.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 side profile",
-    "sequence": 3,
+    "sequence": 4,
     "selectionStatus": "selected \u2014 profile variation replacing duplicate hero"
+  },
+  {
+    "rank": null,
+    "reviewNumber": 11,
+    "label": "Smiling overalls, flicking an instant print",
+    "contactSheetId": "A16",
+    "sourceFilename": "B4ECD10B-A798-4366-B8E7-16981C26FAAA.jpeg",
+    "sourceSha256": "78b13008d8d590ce6ac9b11414ed7189b1efe0c41e26bda0302f64d70e7d1af3",
+    "cropBox": [
+      159,
+      238,
+      1157,
+      1580
+    ],
+    "width": 998,
+    "height": 1342,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-11.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 smiling in denim overalls, flicking an instant print from one knee",
+    "sequence": 3,
+    "selectionStatus": "selected \u2014 owner-approved commercial smile"
   }
 ]
