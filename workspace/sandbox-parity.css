@@ -1,0 +1,58 @@
+/* Structural translation of hosted ASHWOOD V2's component system.
+   Source reference: mighty-yoga-pgph.here.now/workspace/{,self}.
+   Native authentication, data controllers, and accessible IDs remain intact. */
+body.hosted-parity{--hosted-gold:#c8a869;--hosted-border:var(--line);--hosted-muted:var(--muted);}
+body.hosted-parity .hosted-workspace{max-width:1720px;box-sizing:border-box;}
+body.hosted-parity .hosted-intro{padding-bottom:22px;margin-bottom:38px;border-bottom:1px solid var(--hosted-border);}
+body.hosted-parity .hosted-intro h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing:-.05em;}
+body.hosted-parity .hosted-brand{display:flex;flex-direction:column;gap:4px;padding:0 10px 30px;}
+body.hosted-parity .hosted-brand strong{font:400 23px/1.1 Georgia,serif;letter-spacing:-.05em;}
+body.hosted-parity .hosted-brand span{font-size:10px;letter-spacing:.16em;color:var(--hosted-muted);}
+body.hosted-parity .hosted-section{margin:0 0 64px;min-width:0;}
+body.hosted-parity .hosted-section__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid var(--hosted-border);padding-bottom:12px;margin-bottom:20px;}
+body.hosted-parity .hosted-section__title{display:flex;align-items:baseline;gap:12px;margin:0;font:400 clamp(21px,2vw,27px)/1.25 Georgia,serif;letter-spacing:-.04em;}
+body.hosted-parity .hosted-section__number{font:500 11px/1.2 system-ui,sans-serif;letter-spacing:.08em;color:var(--hosted-gold);}
+body.hosted-parity .hosted-section__description{font:400 11px/1.5 system-ui,sans-serif;color:var(--hosted-muted);margin:0;text-align:right;}
+body.hosted-parity .hosted-provenance{font:400 12px/1.6 system-ui,sans-serif;color:var(--hosted-muted);margin:12px 0 20px;}
+body.hosted-parity #today .hosted-summary{width:100%;}
+body.hosted-parity #today .today-cockpit{margin:0;border:0;background:transparent;padding:0;}
+body.hosted-parity #today .today-cockpit__intro{display:none;}
+body.hosted-parity #today .today-cockpit__metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--hosted-border);border-bottom:1px solid var(--hosted-border);}
+body.hosted-parity #today .today-cockpit__metrics article{border:0;border-bottom:1px solid var(--hosted-border);border-radius:0;background:transparent;padding:18px 14px;}
+body.hosted-parity #today .today-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;}
+body.hosted-parity #today .today-panel{border:0;border-radius:0;background:transparent;padding:0;min-width:0;}
+body.hosted-parity #today .today-panel__topline{border-bottom:1px solid var(--hosted-border);padding-bottom:12px;}
+body.hosted-parity #today .today-movement{margin:0;}
+body.hosted-parity #today .hosted-secondary{margin-top:45px;}
+body.hosted-parity #brain-explorer{margin-bottom:72px;}
+body.hosted-parity #brain-explorer .brain-explorer__head h2{font:400 clamp(33px,4vw,54px)/1.1 Georgia,serif;letter-spacing:-.05em;}
+body.hosted-parity #brain-explorer .brain-explorer__stage{background:#111b18;border:1px solid var(--hosted-border);border-radius:0;overflow:hidden;}
+body.hosted-parity #brain-explorer .brain-explorer__stage-top{font-size:10px;letter-spacing:.12em;}
+body.hosted-parity #brain-explorer .brain-explorer__canvas{width:100%;height:520px;max-height:none;}
+body.hosted-parity #brain-explorer .brain-explorer__reading{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.8fr);gap:48px;padding:32px 0;border-bottom:1px solid var(--hosted-border);border-radius:0;background:transparent;}
+body.hosted-parity #brain-explorer .brain-explorer__reading-title{font:400 clamp(28px,3.6vw,48px)/1.12 Georgia,serif;letter-spacing:-.05em;}
+body.hosted-parity #brain-explorer .brain-explorer__index{border:0;background:transparent;padding:20px 0;}
+body.hosted-parity .hosted-rhythm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+body.hosted-parity .hosted-rhythm__item{border-top:1px solid var(--hosted-border);padding:16px 0;}
+body.hosted-parity .hosted-rhythm__item h3{font:400 14px/1.4 system-ui,sans-serif;margin:0 0 10px;}
+body.hosted-parity .hosted-rhythm__item strong{font:400 32px/1.2 Georgia,serif;}
+body.hosted-parity .hosted-rhythm__item p{font:400 12px/1.6 system-ui,sans-serif;color:var(--hosted-muted);}
+@media(min-width:1300px){
+ body.hosted-parity .workspace-section-nav{justify-content:flex-start!important;width:224px!important;padding-top:42px!important;}
+ body.hosted-parity .workspace-section-nav::before{display:none!important;}
+ body.hosted-parity .workspace-shell{margin-left:clamp(245px,17vw,290px);max-width:calc(100% - 310px);}
+}
+@media(max-width:1299px){body.hosted-parity .hosted-brand{display:none;}}
+@media(max-width:780px){
+ body.hosted-parity #today .today-grid{grid-template-columns:1fr;}
+ body.hosted-parity #brain-explorer .brain-explorer__reading{grid-template-columns:1fr;gap:20px;}
+ body.hosted-parity .hosted-rhythm{grid-template-columns:1fr;gap:0;}
+}
+@media(max-width:680px){
+ body.hosted-parity .hosted-section{margin-bottom:48px;}
+ body.hosted-parity .hosted-section__head{flex-wrap:wrap;}
+ body.hosted-parity .hosted-section__description{margin-left:25px;text-align:left;}
+ body.hosted-parity #today .today-cockpit__metrics{grid-template-columns:1fr 1fr;}
+ body.hosted-parity #brain-explorer .brain-explorer__canvas{height:330px;}
+ body.hosted-parity #brain-explorer .brain-explorer__head h2{font-size:33px;}
+}

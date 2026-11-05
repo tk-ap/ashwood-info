@@ -65,6 +65,7 @@ const VIEW_META = {
 
 const GROUPS = {
   operator: [
+    "#operator-v2",
     "#operator"
   ],
   today: [
@@ -98,6 +99,8 @@ const GROUPS = {
     "details.attention"
   ],
   self: [
+    "#self-alignment-mirror",
+    "#brain-explorer",
     "#self-daily-wisdom",
     "#meos-profile",
     "#meos-places",
@@ -125,6 +128,9 @@ const VIEW_FOR_HASH = {
   sources:"evidence",
   "evidence-panel":"evidence",
   self:"self",
+  "brain-explorer":"self",
+  "self-alignment-mirror":"self",
+  "operator-v2":"operator",
   frame:"self",
   checkin:"self"
 };
