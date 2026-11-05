@@ -56,15 +56,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const img = images[(index + images.length) % images.length];
     if (!img) return;
     const pre = new Image();
-    pre.src = img.currentSrc || img.src;
+    pre.src = img.dataset.fullSrc || img.currentSrc || img.src;
   };
 
   const show = (index) => {
     current = (index + images.length) % images.length;
     const img = images[current];
+    // Show the already-loaded delivery image immediately. Upgrade only after
+    // the original has loaded, so opening the viewer never waits on a large file.
     preview.src = img.currentSrc || img.src;
+    if (img.dataset.fullSrc) {
+      const requestedIndex = current;
+      const original = new Image();
+      original.onload = () => {
+        if (current === requestedIndex && isOpen()) preview.src = img.dataset.fullSrc;
+      };
+      // A failed original leaves the working delivery image visible.
+      original.src = img.dataset.fullSrc;
+    }
     preview.alt = img.alt || "";
-    caption.textContent = img.alt || "";
+    caption.textContent = [img.alt, img.dataset.sourceCaption].filter(Boolean).join(" · ");
+    overlay.classList.toggle("portfolio-lightbox--credited", Boolean(img.dataset.sourceCaption));
     counter.textContent = `${current + 1} / ${images.length}`;
     warm(current + 1);
     warm(current - 1);

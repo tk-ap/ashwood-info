@@ -1,0 +1,225 @@
+[
+  {
+    "rank": 1,
+    "reviewNumber": 18,
+    "label": "Orange striped shirt",
+    "sourceFilename": "8FEEF8AB-01C6-42A1-A825-1C36CEEB567D.jpeg",
+    "sourceSha256": "3b9b3dfee6bcdd68c15f392e33a129ac68c40b6747792798c49bb238dbee0b2b",
+    "cropBox": [
+      189,
+      255,
+      1182,
+      1590
+    ],
+    "width": 993,
+    "height": 1335,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-18.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt",
+    "sequence": 2,
+    "selectionStatus": "selected"
+  },
+  {
+    "rank": 2,
+    "reviewNumber": 24,
+    "label": "Direct gaze",
+    "sourceFilename": "116292E3-E31C-454F-9E6C-FBC71C1C8F53.jpeg",
+    "sourceSha256": "bb18485403bd90dfa73119177e595c0a67384fe375c5d38ee1409eae35e46568",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-24.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
+    "sequence": null,
+    "selectionStatus": "page hero only"
+  },
+  {
+    "rank": 3,
+    "reviewNumber": 10,
+    "label": "Seated in blue overalls",
+    "sourceFilename": "EECD142A-DAB6-4471-A64A-2C501A5CE29E.jpeg",
+    "sourceSha256": "b20a73e3c2baa2a78c8be68d9e2f327f1eec087bf0e5c5354193ac633b2cfec1",
+    "cropBox": [
+      160,
+      238,
+      1166,
+      1584
+    ],
+    "width": 1006,
+    "height": 1346,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-10.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 seated in blue overalls",
+    "sequence": null,
+    "selectionStatus": "reserve \u2014 replaced in owner-approved tighter gallery"
+  },
+  {
+    "rank": 4,
+    "reviewNumber": 27,
+    "label": "Hands in hair",
+    "sourceFilename": "DE4324BB-DFAB-4E96-9434-9911E7CE8AD2.jpeg",
+    "sourceSha256": "bd5eac1662fd5b5271f5c902261609eb02a1f889a72ff2d3ac46f4ca243708ed",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-27.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 hands in hair",
+    "sequence": null,
+    "selectionStatus": "excluded by TK"
+  },
+  {
+    "rank": 5,
+    "reviewNumber": 1,
+    "label": "Polaroid toss",
+    "sourceFilename": "7430AEED-6DBB-4C4D-B5DC-FB4A179001B0.jpeg",
+    "sourceSha256": "9965a46eba2f184de125c2a5ef07d5756465c4e2a7cde8f8f5aecbc66273e790",
+    "cropBox": [
+      180,
+      248,
+      1183,
+      1592
+    ],
+    "width": 1003,
+    "height": 1344,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-01.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
+    "sequence": 1,
+    "selectionStatus": "selected"
+  },
+  {
+    "rank": 6,
+    "reviewNumber": 16,
+    "label": "Pink striped shirt",
+    "sourceFilename": "B513EE6C-D597-45D2-9E24-C0AFE20DFA8A.jpeg",
+    "sourceSha256": "de1a19ca5d307a1174091bae218ac1c7b60de89bd3a854d387d387536103a65d",
+    "cropBox": [
+      159,
+      238,
+      1157,
+      1580
+    ],
+    "width": 998,
+    "height": 1342,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-16.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 pink striped shirt",
+    "sequence": null,
+    "selectionStatus": "excluded by TK"
+  },
+  {
+    "rank": 7,
+    "reviewNumber": 32,
+    "label": "Seated outfit detail",
+    "sourceFilename": "8048E6A0-3AAC-42C8-91E6-D522B9783B3B.jpeg",
+    "sourceSha256": "593eee29770e92b4a4e815951bf95f99146e869f89654a6bc5054b8bedc5156a",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-32.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 seated outfit detail",
+    "sequence": null,
+    "selectionStatus": "reserve \u2014 replaced in owner-approved tighter gallery"
+  },
+  {
+    "rank": 8,
+    "reviewNumber": 25,
+    "label": "Side profile",
+    "sourceFilename": "88680B6C-2F73-4BE2-A145-7B22D5BA9DE5.jpeg",
+    "sourceSha256": "785e596318320745cebd7831a7f90aef71e41947bbf37578bd480e01dc45b2cd",
+    "cropBox": [
+      185,
+      256,
+      1175,
+      1587
+    ],
+    "width": 990,
+    "height": 1331,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-25.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 side profile",
+    "sequence": 4,
+    "selectionStatus": "selected \u2014 profile variation replacing duplicate hero"
+  },
+  {
+    "rank": null,
+    "reviewNumber": 11,
+    "label": "Smiling overalls, flicking an instant print",
+    "contactSheetId": "A16",
+    "sourceFilename": "B4ECD10B-A798-4366-B8E7-16981C26FAAA.jpeg",
+    "sourceSha256": "78b13008d8d590ce6ac9b11414ed7189b1efe0c41e26bda0302f64d70e7d1af3",
+    "cropBox": [
+      159,
+      238,
+      1157,
+      1580
+    ],
+    "width": 998,
+    "height": 1342,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-11.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 smiling in denim overalls, flicking an instant print from one knee",
+    "sequence": 5,
+    "selectionStatus": "selected \u2014 owner-approved commercial smile"
+  },
+  {
+    "rank": null,
+    "reviewNumber": 4,
+    "label": "Layered overalls portrait",
+    "contactSheetId": "A07",
+    "sourceFilename": "5EFFFB45-A2D9-41BE-A4CF-7DC7E90FBECB.jpeg",
+    "sourceSha256": "3b6fbb7cb8fe162f3a1bd1865154633b5afb3d850d6087ce2da4e6cdb740b735",
+    "cropBox": [
+      158,
+      238,
+      1157,
+      1583
+    ],
+    "width": 999,
+    "height": 1345,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-04.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 double exposure seated in denim overalls among instant prints",
+    "sequence": 3,
+    "selectionStatus": "selected \u2014 owner-requested experimental expansion"
+  },
+  {
+    "rank": null,
+    "reviewNumber": 2,
+    "label": "Overhead double exposure, raised arms",
+    "contactSheetId": "A06",
+    "sourceFilename": "32E28266-62FE-48B2-BB33-09B471735093.jpeg",
+    "sourceSha256": "9c5794c24d3f4fe294862b98a26eb41a78d6366d81d755c23122e97213e89561",
+    "cropBox": [
+      162,
+      238,
+      1173,
+      1588
+    ],
+    "width": 1011,
+    "height": 1350,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-02.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 overhead double exposure reclining among instant prints with arms raised",
+    "sequence": 6,
+    "selectionStatus": "selected \u2014 owner-requested experimental expansion"
+  }
+]

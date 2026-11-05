@@ -1,0 +1,189 @@
+{
+  "source": "https://tkashwood.myportfolio.com/",
+  "checkedOn": "2026-11-04",
+  "method": "Source HTML caption extraction; image comparison to repository files; matched pairs visually reviewed",
+  "verified": [
+    {
+      "path": "/assets/modeling/archive-navy-turtleneck.jpg",
+      "photographerHandle": "@ReyesBoBBY",
+      "photographerUrl": "https://www.instagram.com/reyesbobby/",
+      "location": "Hollywood, CA",
+      "originalCaption": "10/2023 - Hollywood, CA | Photographer IG: @ReyesBoBBY of @Thedreamersmgt",
+      "sourcePage": "https://tkashwood.myportfolio.com/digitals",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/0f2643a6-8be2-4cbe-aabd-6890e9520581_rw_600.JPG?h=9a859f3758c62361a15d6b85939027bd",
+      "visualMatchScore": 0.99999
+    },
+    {
+      "path": "/assets/modeling/archive-orange-suit.jpg",
+      "photographerHandle": "@mintwhisper",
+      "photographerUrl": "https://www.instagram.com/mintwhisper/",
+      "location": "San Diego, CA",
+      "originalCaption": "San Diego, CA | Photographer IG: @mintwhisper",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/6ae870fa-c9fa-4b98-b728-2044d11c58a8_rw_600.jpg?h=9bae35eb46a440d2f730524d457740c0",
+      "visualMatchScore": 0.99997
+    },
+    {
+      "path": "/assets/modeling/archive-hands-to-camera.jpg",
+      "photographerHandle": "@ultraephoto",
+      "photographerUrl": "https://www.instagram.com/ultraephoto/",
+      "location": "San Antonio, TX",
+      "originalCaption": "San Antonio, TX | Photographer IG: @ultraephoto",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/91d65544-46cd-4034-a993-1b5f237650ad_rw_600.jpg?h=018e0b5fcbc13078f623db177105b05e",
+      "visualMatchScore": 0.99998
+    },
+    {
+      "path": "/assets/modeling/archive-gold-chain.jpg",
+      "photographerHandle": "@vivid_media_production",
+      "photographerUrl": "https://www.instagram.com/vivid_media_production/",
+      "location": "Bay Area, CA",
+      "originalCaption": "Bay Area, CA | Photographer IG: @vivid_media_production",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/ee6db86e-3463-45b7-9150-eed6dfd45f27_rw_600.jpg?h=b336db5dc961e23b65e33b47782a0c05",
+      "visualMatchScore": 0.99999
+    },
+    {
+      "path": "/assets/modeling/archive-blue-suit.jpg",
+      "photographerHandle": "@ultraephoto",
+      "photographerUrl": "https://www.instagram.com/ultraephoto/",
+      "location": "San Antonio, TX",
+      "originalCaption": "San Antonio, TX | Photographer IG: @ultraephoto",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/51f1c4d0-a59f-4acc-a80c-a6e713405f28_rw_600.jpg?h=07061c914fce2dff0e5a6829a1f49ddd",
+      "visualMatchScore": 0.99966
+    },
+    {
+      "path": "/assets/modeling/archive-denim-dynamic.jpg",
+      "photographerHandle": "@vivid_media_production",
+      "photographerUrl": "https://www.instagram.com/vivid_media_production/",
+      "location": "Bay Area, CA",
+      "originalCaption": "Bay Area, CA | Photographer IG: @vivid_media_production",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/a5fb0ed5-07bb-425c-a4ed-a40521a47aff_rw_600.jpg?h=0e7cf4b0873655ab02cc72d6a1ad86ad",
+      "visualMatchScore": 0.99998
+    },
+    {
+      "path": "/assets/modeling/archive-visionary-locker.jpg",
+      "photographerHandle": "@spyfroman",
+      "photographerUrl": "https://www.instagram.com/spyfroman/",
+      "location": "Santa Monica, CA",
+      "originalCaption": "LA Fashion Week Festival | Mar 11, 2023 | Santa Monica, CA | Host IG: @themodelexperience | Designer IG: @visionaryapparelbrand | Photographer IG: @spyfroman",
+      "sourcePage": "https://tkashwood.myportfolio.com/fs",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/c04b9798-574d-47a9-9ef7-1da4e17748bb_rw_600.jpg?h=88153ef3dc16ab9f20a10e3533b6ac2a",
+      "visualMatchScore": 0.99998
+    },
+    {
+      "path": "/assets/modeling/archive-red-green-light.jpg",
+      "photographerHandle": "@ultraephoto",
+      "photographerUrl": "https://www.instagram.com/ultraephoto/",
+      "location": "San Antonio, TX",
+      "originalCaption": "San Antonio, TX | Photographer IG: @ultraephoto",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/d39f0d29-3652-4df5-b355-f3fa0ec385f4_rw_600.jpg?h=eb4d07c11596a75b20a7c6f067d14542",
+      "visualMatchScore": 0.99991
+    },
+    {
+      "path": "/assets/modeling/archive-grey-suit-stool.jpg",
+      "photographerHandle": "@mintwhisper",
+      "photographerUrl": "https://www.instagram.com/mintwhisper/",
+      "location": "San Diego, CA",
+      "originalCaption": "San Diego, CA | Photographer IG: @mintwhisper",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/a6716a1f-b2a3-4490-a54f-e5bbb911b51d_rw_600.jpg?h=96628084f1cbda7d16129d551edfca52",
+      "visualMatchScore": 0.99998
+    },
+    {
+      "path": "/assets/modeling/archive-motion-blur.jpg",
+      "photographerHandle": "@mintwhisper",
+      "photographerUrl": "https://www.instagram.com/mintwhisper/",
+      "location": "San Diego, CA",
+      "originalCaption": "San Diego, CA | Photographer IG: @mintwhisper",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/96598914-23c1-4548-acaf-d883b1f632db_rw_600.jpg?h=7e33059b96ef66d631099bd3a01c6a8d",
+      "visualMatchScore": 0.99996
+    },
+    {
+      "path": "/assets/modeling/archive-denim-hands-clasped.jpg",
+      "photographerHandle": "@vivid_media_production",
+      "photographerUrl": "https://www.instagram.com/vivid_media_production/",
+      "location": "Bay Area, CA",
+      "originalCaption": "Bay Area, CA | Photographer IG: @vivid_media_production",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/e59d280d-1c77-4b30-8a3a-346cee6f738b_rw_600.jpg?h=c64220c7020590fbb0d549bb3a572fc8",
+      "visualMatchScore": 0.99999
+    },
+    {
+      "path": "/assets/modeling/archive-yellow-jacket.jpg",
+      "photographerHandle": "@mintwhisper",
+      "photographerUrl": "https://www.instagram.com/mintwhisper/",
+      "location": "San Diego, CA",
+      "originalCaption": "San Diego, CA | Photographer IG: @mintwhisper",
+      "sourcePage": "https://tkashwood.myportfolio.com/",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/75220fc3-b81f-4792-95c2-935a7c8c8b65_rw_600.jpg?h=56f360386bee660827594a844619ed37",
+      "visualMatchScore": 0.99998
+    },
+    {
+      "path": "/assets/modeling/archive-runway-walk.jpg",
+      "photographerHandle": "@angeli_ascend_",
+      "photographerUrl": "https://www.instagram.com/angeli_ascend_/",
+      "location": "Hollywood, CA",
+      "originalCaption": "HOLLYWOOD, CA - BTS - ALIVE x Oct 21, 2023 | Show Presented by: @PreviewModels / CEO: @JWEinsteinent | Photographer IG: @angeli_ascend_",
+      "sourcePage": "https://tkashwood.myportfolio.com/fs",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/155c04c4-bf56-4b53-815f-4d254b0813a2_rw_600.JPG?h=74675cd01038e0d5c423d4c910fe7372",
+      "visualMatchScore": 0.99998
+    },
+    {
+      "path": "/assets/runway/up-next-164.jpg",
+      "photographerHandle": "@the_Quantum_Lotus",
+      "photographerUrl": "https://www.instagram.com/the_quantum_lotus/",
+      "location": "San Antonio, TX",
+      "originalCaption": "Up Next Fashion & Art Show | Jan 1, 2023 | San Antonio, TX | Host IG: @felixtambora | Designer IG: @oneelevenbrandjeans | Photographer IG: @the_Quantum_Lotus",
+      "sourcePage": "https://tkashwood.myportfolio.com/fs",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/75cdf35b-80a1-461a-9eb0-bf3705ac20dc_rw_600.jpg?h=157b332bb88c0b9d201c7c16bd654175",
+      "visualMatchScore": 0.99992
+    },
+    {
+      "path": "/assets/runway/up-next-155.jpg",
+      "photographerHandle": "@the_Quantum_Lotus",
+      "photographerUrl": "https://www.instagram.com/the_quantum_lotus/",
+      "location": "San Antonio, TX",
+      "originalCaption": "Up Next Fashion & Art Show | Jan 1, 2023 | San Antonio, TX | Host IG: @felixtambora | Designer IG: @oneelevenbrandjeans | Photographer IG: @the_Quantum_Lotus",
+      "sourcePage": "https://tkashwood.myportfolio.com/fs",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/54ab9eb6-ccaa-4404-9e3e-6cd0be8f0dd0_rw_600.jpg?h=05fba5d9bd20d94e3bc105c64dc10cce",
+      "visualMatchScore": 0.99994
+    },
+    {
+      "path": "/assets/runway/up-next-165.jpg",
+      "photographerHandle": "@the_Quantum_Lotus",
+      "photographerUrl": "https://www.instagram.com/the_quantum_lotus/",
+      "location": "San Antonio, TX",
+      "originalCaption": "Up Next Fashion & Art Show | Jan 1, 2023 | San Antonio, TX | Host IG: @felixtambora | Designer IG: @oneelevenbrandjeans | Photographer IG: @the_Quantum_Lotus",
+      "sourcePage": "https://tkashwood.myportfolio.com/fs",
+      "sourceAssetUrl": "https://cdn.myportfolio.com/03dd04c4-bb6b-4236-b8fb-0f46a591f405/f6e95f4c-8904-4055-90a1-25e4121787b9_rw_600.jpg?h=7a949d948360f5bd015904eeb0dc6035",
+      "visualMatchScore": 0.99995
+    }
+  ],
+  "unresolved": [
+    {
+      "path": "/assets/modeling/archive-street-monochrome.jpg",
+      "reason": "Source image matched but no original caption"
+    },
+    {
+      "path": "/assets/modeling/archive-black-crew.jpg",
+      "reason": "Source image matched but no original caption"
+    },
+    {
+      "path": "/assets/modeling/88800408.jpg",
+      "reason": "No reliable match in current Adobe source"
+    },
+    {
+      "path": "/assets/modeling/TKTKTK00420.jpg",
+      "reason": "No reliable match in current Adobe source"
+    },
+    {
+      "path": "/assets/runway/up-next-151.jpg",
+      "reason": "No reliable match in current Adobe source"
+    }
+  ]
+}

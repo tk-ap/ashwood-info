@@ -1,0 +1,300 @@
+[
+  {
+    "id": "striped-attire",
+    "index": "01 / Latest work",
+    "location": "October 28, 2026",
+    "name": "Striped Attire",
+    "titleLines": [
+      "Striped",
+      "Attire"
+    ],
+    "brandUrl": "https://www.instagram.com/stripedattire/",
+    "brandLabel": "@stripedattire",
+    "images": [
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-01-720-a213d84566.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 polaroid toss",
+        "width": 1003,
+        "height": 1344,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-01.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-01-360-bc2c7b79b1.webp",
+            "width": 360,
+            "bytes": 62340
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-01-720-a213d84566.webp",
+            "width": 720,
+            "bytes": 157804
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-01-1003-c2c91406e0.webp",
+            "width": 1003,
+            "bytes": 227054
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-18-720-31c88fc1bc.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 orange striped shirt",
+        "width": 993,
+        "height": 1335,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-18.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-18-360-29d83c25cd.webp",
+            "width": 360,
+            "bytes": 34942
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-18-720-31c88fc1bc.webp",
+            "width": 720,
+            "bytes": 92120
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-18-993-988544d686.webp",
+            "width": 993,
+            "bytes": 144776
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-04-720-3da1576f66.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 double exposure seated in denim overalls among instant prints",
+        "width": 999,
+        "height": 1345,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-04.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-04-360-8b88990001.webp",
+            "width": 360,
+            "bytes": 67206
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-04-720-3da1576f66.webp",
+            "width": 720,
+            "bytes": 153754
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-04-999-22a7a088e8.webp",
+            "width": 999,
+            "bytes": 238942
+          }
+        ]
+      },
+      {
+        "alt": "TK Ashwood for Striped Attire \u2014 side profile",
+        "width": 990,
+        "height": 1331,
+        "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
+        "fullSrc": "/assets/campaigns/striped-attire/frame-25.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-25-360-b8bf871675.webp",
+            "width": 360,
+            "bytes": 56942
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-25-720-881163c1d0.webp",
+            "width": 720,
+            "bytes": 138246
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-25-990-34cd9be214.webp",
+            "width": 990,
+            "bytes": 199266
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-11-720-a4f75e3538.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 smiling in denim overalls, flicking an instant print from one knee",
+        "width": 998,
+        "height": 1342,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-11.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-11-360-0da8e690a6.webp",
+            "width": 360,
+            "bytes": 57644
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-11-720-a4f75e3538.webp",
+            "width": 720,
+            "bytes": 141106
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-11-998-79fb4eabdb.webp",
+            "width": 998,
+            "bytes": 212236
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-02-720-04c2431ec4.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 overhead double exposure reclining among instant prints with arms raised",
+        "width": 1011,
+        "height": 1350,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-02.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-02-360-d3e6df9b91.webp",
+            "width": 360,
+            "bytes": 73086
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-02-720-04c2431ec4.webp",
+            "width": 720,
+            "bytes": 184426
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-02-1011-f3748bb294.webp",
+            "width": 1011,
+            "bytes": 292320
+          }
+        ]
+      }
+    ],
+    "photographerUrl": "https://www.instagram.com/itndylan/",
+    "photographerLabel": "@itndylan",
+    "headerStyle": "striped",
+    "websiteUrl": "https://striped.world/",
+    "websiteLabel": "striped.world",
+    "creditLabel": "Photography & creative direction",
+    "creditName": "Dylan",
+    "pageHeroImage": "/assets/campaigns/striped-attire/frame-24.webp",
+    "pageHero": {
+      "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
+      "alt": "TK Ashwood for Striped Attire \u2014 direct gaze",
+      "width": 990,
+      "height": 1331,
+      "fullSrc": "/assets/campaigns/striped-attire/frame-24.webp",
+      "sources": [
+        {
+          "src": "/assets/campaigns/striped-attire/web/frame-24-360-aa5c6c4634.webp",
+          "width": 360,
+          "bytes": 55142
+        },
+        {
+          "src": "/assets/campaigns/striped-attire/web/frame-24-720-f48dfb3ed3.webp",
+          "width": 720,
+          "bytes": 126492
+        },
+        {
+          "src": "/assets/campaigns/striped-attire/web/frame-24-990-3384502c76.webp",
+          "width": 990,
+          "bytes": 191558
+        }
+      ]
+    }
+  },
+  {
+    "id": "barelysain",
+    "index": "02 / Selected work",
+    "location": "Malibu + DTLA / Los Angeles",
+    "name": "BarelySain",
+    "titleLines": [
+      "BarelySain"
+    ],
+    "images": [
+      {
+        "frameClass": "asset-frame asset-frame-wide",
+        "src": "/assets/campaigns/barelysain/hero-6729.jpg?v=20260827-fixed",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 side torso detail beside a silver car, grey top and black trousers with lime lettering",
+        "loading": "eager"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_5688-web-v2.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 looking back in sunglasses and a dark hooded outfit beside a chain-link fence",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_5859-edited.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 standing in sunglasses and layered streetwear at an open storefront",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_5539-web.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 crossing a city intersection in a dark outfit with lime lettering",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_6201-web-v2.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 seated on a low wall in a dark hooded outfit, head angled downward",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_6420-edited.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 adjusting a hood over sunglasses on the beach",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_6881-edited.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 bent forward beside a railing, lime lettering visible on black trousers",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_6474-web-v2.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 leaning against a silver car in sunglasses and a black hoodie with lime lettering",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_6718-web-v2.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 close garment detail of lime brand lettering on black fabric beside a car",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_6050-edited.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 close portrait looking downward, dark hoodie with pink lettering over a white top",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-square",
+        "src": "/assets/campaigns/barelysain/IMG_6238-edited.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 standing against a pale wall in a dark outfit with lime lettering",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-landscape",
+        "src": "/assets/campaigns/barelysain/IMG_6339-edited.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 standing beside another model in a red hoodie, beach and mountains behind",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/IMG_6716-edited.jpg",
+        "alt": "TK Ashwood for BARELYSAIN \u2014 leaning against a car in a grey crop top beside a seated model in a red hoodie",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/barelysain-alley.webp",
+        "alt": "TK Ashwood walking through a sunlit alley in BARELYSAIN, sunglasses and lime-lettered dark streetwear",
+        "loading": "lazy"
+      },
+      {
+        "frameClass": "asset-frame asset-frame-tall",
+        "src": "/assets/campaigns/barelysain/barelysain-seated.webp",
+        "alt": "TK Ashwood seated beside a glass storefront in BARELYSAIN, sunglasses and a lime-lettered dark outfit",
+        "loading": "lazy"
+      }
+    ],
+    "headerStyle": "barelysain",
+    "brandUrl": "https://www.instagram.com/barelysain/",
+    "brandLabel": "@barelysain",
+    "creditLabel": "Photography & creative direction",
+    "creditName": "Cashden",
+    "photographerUrl": "https://www.instagram.com/cashdenglobal/",
+    "photographerLabel": "@cashdenglobal"
+  }
+]
