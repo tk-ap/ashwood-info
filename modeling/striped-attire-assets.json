@@ -177,7 +177,49 @@
     "pixelExact": true,
     "src": "/assets/campaigns/striped-attire/frame-11.webp",
     "alt": "TK Ashwood for Striped Attire \u2014 smiling in denim overalls, flicking an instant print from one knee",
-    "sequence": 3,
+    "sequence": 5,
     "selectionStatus": "selected \u2014 owner-approved commercial smile"
+  },
+  {
+    "rank": null,
+    "reviewNumber": 4,
+    "label": "Layered overalls portrait",
+    "contactSheetId": "A07",
+    "sourceFilename": "5EFFFB45-A2D9-41BE-A4CF-7DC7E90FBECB.jpeg",
+    "sourceSha256": "3b6fbb7cb8fe162f3a1bd1865154633b5afb3d850d6087ce2da4e6cdb740b735",
+    "cropBox": [
+      158,
+      238,
+      1157,
+      1583
+    ],
+    "width": 999,
+    "height": 1345,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-04.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 double exposure seated in denim overalls among instant prints",
+    "sequence": 3,
+    "selectionStatus": "selected \u2014 owner-requested experimental expansion"
+  },
+  {
+    "rank": null,
+    "reviewNumber": 2,
+    "label": "Overhead double exposure, raised arms",
+    "contactSheetId": "A06",
+    "sourceFilename": "32E28266-62FE-48B2-BB33-09B471735093.jpeg",
+    "sourceSha256": "9c5794c24d3f4fe294862b98a26eb41a78d6366d81d755c23122e97213e89561",
+    "cropBox": [
+      162,
+      238,
+      1173,
+      1588
+    ],
+    "width": 1011,
+    "height": 1350,
+    "pixelExact": true,
+    "src": "/assets/campaigns/striped-attire/frame-02.webp",
+    "alt": "TK Ashwood for Striped Attire \u2014 overhead double exposure reclining among instant prints with arms raised",
+    "sequence": 6,
+    "selectionStatus": "selected \u2014 owner-requested experimental expansion"
   }
 ]

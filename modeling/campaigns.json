@@ -60,26 +60,26 @@
         ]
       },
       {
-        "src": "/assets/campaigns/striped-attire/web/frame-11-720-a4f75e3538.webp",
-        "alt": "TK Ashwood for Striped Attire \u2014 smiling in denim overalls, flicking an instant print from one knee",
-        "width": 998,
-        "height": 1342,
-        "fullSrc": "/assets/campaigns/striped-attire/frame-11.webp",
+        "src": "/assets/campaigns/striped-attire/web/frame-04-720-3da1576f66.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 double exposure seated in denim overalls among instant prints",
+        "width": 999,
+        "height": 1345,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-04.webp",
         "sources": [
           {
-            "src": "/assets/campaigns/striped-attire/web/frame-11-360-0da8e690a6.webp",
+            "src": "/assets/campaigns/striped-attire/web/frame-04-360-8b88990001.webp",
             "width": 360,
-            "bytes": 57644
+            "bytes": 67206
           },
           {
-            "src": "/assets/campaigns/striped-attire/web/frame-11-720-a4f75e3538.webp",
+            "src": "/assets/campaigns/striped-attire/web/frame-04-720-3da1576f66.webp",
             "width": 720,
-            "bytes": 141106
+            "bytes": 153754
           },
           {
-            "src": "/assets/campaigns/striped-attire/web/frame-11-998-79fb4eabdb.webp",
-            "width": 998,
-            "bytes": 212236
+            "src": "/assets/campaigns/striped-attire/web/frame-04-999-22a7a088e8.webp",
+            "width": 999,
+            "bytes": 238942
           }
         ]
       },
@@ -104,6 +104,54 @@
             "src": "/assets/campaigns/striped-attire/web/frame-25-990-34cd9be214.webp",
             "width": 990,
             "bytes": 199266
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-11-720-a4f75e3538.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 smiling in denim overalls, flicking an instant print from one knee",
+        "width": 998,
+        "height": 1342,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-11.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-11-360-0da8e690a6.webp",
+            "width": 360,
+            "bytes": 57644
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-11-720-a4f75e3538.webp",
+            "width": 720,
+            "bytes": 141106
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-11-998-79fb4eabdb.webp",
+            "width": 998,
+            "bytes": 212236
+          }
+        ]
+      },
+      {
+        "src": "/assets/campaigns/striped-attire/web/frame-02-720-04c2431ec4.webp",
+        "alt": "TK Ashwood for Striped Attire \u2014 overhead double exposure reclining among instant prints with arms raised",
+        "width": 1011,
+        "height": 1350,
+        "fullSrc": "/assets/campaigns/striped-attire/frame-02.webp",
+        "sources": [
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-02-360-d3e6df9b91.webp",
+            "width": 360,
+            "bytes": 73086
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-02-720-04c2431ec4.webp",
+            "width": 720,
+            "bytes": 184426
+          },
+          {
+            "src": "/assets/campaigns/striped-attire/web/frame-02-1011-f3748bb294.webp",
+            "width": 1011,
+            "bytes": 292320
           }
         ]
       }

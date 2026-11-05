@@ -12,7 +12,7 @@ Original JPEG uploads remain unchanged in the owner's file collection, separate 
 
 TK excluded #27 (hands in hair) and #16 (pink stripes with undershirt showing at the collar). Neither appears in the rendered gallery or image viewer. Original files remain preserved separately.
 
-Current owner-approved four-frame gallery sequence: **#1 → #18 → #11 → #25** (contact-sheet **A08 → A13 → A16 → B06**). #24 / B03 remains exclusively the page hero. #10 and #32 are reserves; #16 and #27 remain excluded. The sequence alternates overalls, orange/navy, overalls, and grey/navy looks.
+Current six-frame preview sequence: **#1 → #18 → #4 → #25 → #11 → #2** (contact-sheet **A08 → A13 → A07 → B06 → A16 → A06**). #24 / B03 remains exclusively the page hero. #10 and #32 are reserves; #16 and #27 remain excluded. The sequence alternates looks while making room for Dylan’s original double exposures.
 
 Both campaign headers go directly to the Photography & creative direction / Brand contact structure, with Dylan linked at @itndylan and Cashden at @cashdenglobal.
 
@@ -91,3 +91,7 @@ TK flagged consecutive overalls frames #10 and #1. #25 now separates them, retai
 TK approved the tighter four-frame recommendation after the Muse review was reconciled against the actual preview. #1 opens with expression and movement; #18 supplies the standing orange/navy look; #11 / A16 replaces #10 with the smiling commercial frame; #25 closes with a profile. #32 is omitted. #18 is a standing portrait with the face visible, not a headless torso detail or a complete feet-in-frame full-length photograph. The recovered inventory remains 33 uploads / 32 unique photographs.
 
 Frame #11 uses the original JPEG crop [159, 238, 1157, 1580], matched to the reviewed crop archive (normalized correlation 0.99990). The WebP master is pixel-identical to that source crop; responsive copies use quality 90. Source colors/composition are preserved beyond border removal. BARELYSAIN assets, order and layout are unchanged; generic image descriptions are replaced with visually verified descriptions. Creator credits remain at campaign level; no per-image location is guessed.
+
+## Experimental expansion for visual review
+
+TK requested adding the layered overalls double exposure (A07 / #4) and an overhead double exposure to the preview. A06 / #2 was selected over A04 because its face and raised-arm gesture read more clearly. The final six-frame sequence alternates overalls → orange/navy → layered overalls → grey/navy profile → smiling overalls → pink/denim overhead. #24 remains hero only. No claim of TK directing or photographing the shoot is introduced. Dylan’s original exposure effects and color casts are preserved; both additions use border-only source crops and pixel-exact lossless masters, with quality-90 responsive web copies. This remains a preview for visual review, without production authorization.
