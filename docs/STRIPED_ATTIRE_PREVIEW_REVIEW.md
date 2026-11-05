@@ -95,3 +95,9 @@ Frame #11 uses the original JPEG crop [159, 238, 1157, 1580], matched to the rev
 ## Experimental expansion for visual review
 
 TK requested adding the layered overalls double exposure (A07 / #4) and an overhead double exposure to the preview. A06 / #2 was selected over A04 because its face and raised-arm gesture read more clearly. The final six-frame sequence alternates overalls → orange/navy → layered overalls → grey/navy profile → smiling overalls → pink/denim overhead. #24 remains hero only. No claim of TK directing or photographing the shoot is introduced. Dylan’s original exposure effects and color casts are preserved; both additions use border-only source crops and pixel-exact lossless masters, with quality-90 responsive web copies. This remains a preview for visual review, without production authorization.
+
+## Release cleanup — November 4, 2026
+
+TK approved the latest six-frame preview visually and requested release cleanup. Removed the temporary `modeling/preview-review.html` route and the task-specific Vercel branch deployment exception; restored the main-only ignore command. Immutable caching for content-hashed campaign delivery assets is retained. No portfolio layout, campaign sequence, music-player placement, authentication, or Workspace changes were made during cleanup. Music-player placement is deferred at TK’s request. This approval covers visual acceptance and release preparation; merge and production promotion remain separate actions.
+
+Preflight: canonical main and production both reference `0e9d155a60a8bbaa54621e236b3bdb7d30f6e8ce`; production is project `ashwood` at `https://ashwood-info.vercel.app`. The approved six-frame implementation is `055451e389c32140bab5b180ca26f45851b9a7df`. GitHub Actions validation is recorded on the release-cleanup PR head.
