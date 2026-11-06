@@ -410,6 +410,17 @@
     }
   });
 
+  // Prepared MP3 derivatives enter the established intake; they never auto-publish.
+  root.addEventListener('ashwood:prepared-audio', event => {
+    const item = event.detail;
+    if (!(item?.file instanceof File) || item.file.type !== 'audio/mpeg') return;
+    setFiles([item.file]);
+    form.elements.title.value = item.file.name.replace(/\.mp3$/i, '').replace(/[-_]+/g, ' ').trim();
+    if (item.sourceUrl) form.elements.sourceUrl.value = item.sourceUrl;
+    form.elements.publishToMusic.checked = false;
+    status.textContent = 'Prepared MP3 staged locally. Review its rights and upload it when ready. Original sources are not overwritten.';
+  });
+
   mountMusicIntelligence();
   loadLibrary();
 })();
