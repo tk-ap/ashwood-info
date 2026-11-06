@@ -1,0 +1,30 @@
+/* Readability and layout repair for the six-section Workspace (sandbox review, 2026-10-20).
+   Loaded last so it settles conflicts between the older stacked stylesheets without editing them. */
+
+/* 1. Layout: the sidebar owns column 1 for the full height; every other block lives in column 2.
+      Without this the grid auto-placed the view intro, operator actions and footer into the
+      184px sidebar column and left an empty band under the section nav. */
+@media (min-width:1100px){
+  .workspace-page .workspace-shell{grid-template-columns:200px minmax(0,1fr);row-gap:0}
+  .workspace-page .workspace-shell>.workspace-masthead{grid-column:1;grid-row:1 / span 60;align-self:start;position:sticky;top:24px;flex-direction:column;align-items:flex-start;gap:14px}
+  .workspace-page .workspace-shell>:not(.workspace-masthead){grid-column:2;min-width:0}
+}
+
+/* 2. Today has its own editorial hero; the generic view intro duplicated it. */
+body[data-workspace-current-view="today"] .workspace-view-intro{display:none!important}
+
+/* 3. "What matters": one bordered card per item, no grey filler when there are fewer than three. */
+.workspace-page .today-matters__list{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;background:none;border:0}
+.workspace-page .today-matter{border:1px solid var(--line)}
+
+/* 4. Type scale: nothing under 11px; labels a little brighter. */
+.workspace-page .provenance-chip{font-size:10.5px;color:color-mix(in srgb,var(--muted) 80%,var(--ink))}
+.workspace-page .provenance-chip span{padding:5px 7px}
+.workspace-page :is(.today-item__eyebrow,.today-session__status,.today-session dt,.today-cockpit__metrics small,
+  .today-cockpit__actions a,.today-movement__item time,.today-movement__item small,.today-last-visit,
+  .today-brief__status button,.today-signal-bar small,.today-signal-bar span,.today-matter dt,.today-decision dt,
+  .today-item details summary,.today-owner-item__due,.today-session-detail summary small,
+  .today-session-detail summary>span:last-child){font-size:11px!important;letter-spacing:.09em;line-height:1.45!important}
+.workspace-page :is(.workspace-section-nav a,.today-command-label,.today-command-row button,.today-objective button,.today-objective__kicker){font-size:11.5px!important;letter-spacing:.08em}
+.workspace-page :is(.today-matter dt,.today-decision dt,.today-signal-bar small,.today-last-visit){color:color-mix(in srgb,var(--muted) 75%,var(--ink))}
+.workspace-page :is(.today-matter dd,.today-item p,.today-owner-item p){font-size:14px;line-height:1.55}
