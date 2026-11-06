@@ -1,5 +1,5 @@
 (() => {
-  const routes = ["/portfolio/", "/music/", "/journal/", "/about/"];
+  const routes = ["/modeling/", "/music/", "/journal/", "/about/"];
   const target = routes[Math.floor(Math.random() * routes.length)];
   const link = document.querySelector(".iridescent-word");
   if (link) {
@@ -186,7 +186,7 @@
     </ol>
     <div class="ashwood-capability-map__footer">
       <p class="ashwood-capability-map__closing">Different roles. Different people. The same patterns kept showing up.</p>
-      <a class="ashwood-capability-map__link" href="/dive-deeper?found=all-six">Dive deeper →</a>
+      <a class="ashwood-capability-map__link" href="/guide/?found=all-six">Choose a path →</a>
     </div>`;
   const shell = document.querySelector(".shell") || document.body;
   shell.append(capabilityMap);

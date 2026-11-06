@@ -106,6 +106,8 @@
     .v3-wordmark--hero{display:none;margin:0 0 24px;color:var(--ashwood-ink);font-size:clamp(22px,7.5vw,34px);letter-spacing:.13em!important}
     html[data-ashwood-theme="phosphor-cyber"] .v3-wordmark__text{color:var(--ashwood-field-green);text-shadow:0 0 10px rgba(var(--ashwood-field-green-rgb),.32)}
     html[data-ashwood-theme="phosphor-cyber"] .v3-wordmark__caret{display:inline-block;color:var(--ashwood-field-green);box-shadow:0 0 7px rgba(var(--ashwood-field-green-rgb),.45)}
+    html[data-ashwood-theme="tokyo-night"] .v3-wordmark__text{color:var(--ashwood-accent-2);text-shadow:0 0 10px rgba(122,162,247,.22)}
+    html[data-ashwood-theme="tokyo-night"] .v3-wordmark__caret{display:inline-block;color:var(--ashwood-accent-2);box-shadow:0 0 7px rgba(122,162,247,.32)}
     .v3-name-audio{position:relative;z-index:3;margin:0 0 22px!important}
     .v3-name-audio .ashwood-name-audio__trigger.is-touch-revealed .ashwood-name-audio__ashwood{opacity:0;transform:translateY(-2px);animation:none}
     .v3-name-audio .ashwood-name-audio__trigger.is-touch-revealed .ashwood-name-audio__inme{opacity:1;transform:translateY(0)}

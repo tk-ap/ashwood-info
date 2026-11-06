@@ -2,13 +2,13 @@
   "use strict";
 
   const randomRoutes = [
-    "/portfolio/",
+    "/modeling/",
     "/music/",
     "/journal/",
     "/dispatch/",
     "/ai-from-zero/",
     "/about/",
-    "/dive-deeper/"
+    "/guide/"
   ];
 
   const pickRoute = () => randomRoutes[Math.floor(Math.random() * randomRoutes.length)];
