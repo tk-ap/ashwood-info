@@ -19,6 +19,7 @@
     { "source": "/assets/campaigns/striped-attire/web/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
   ],
   "rewrites": [
+    { "source": "/api/workspace-brain", "destination": "/api/workspace-auth?view=brain" },
     { "source": "/api/workspace-analyses", "destination": "/api/workspace-agentos?view=analyses" },
     { "source": "/api/workspace-career-ops", "destination": "/api/workspace-career" },
     { "source": "/api/workspace-career-opportunities", "destination": "/api/workspace-career?view=opportunities" },

@@ -26,7 +26,7 @@ Do not assume the currently selected Neon context is authoritative.
 
 | Product / surface | Neon status | Neon context / organization | Neon project | Runtime variable | Confidence |
 | --- | --- | --- | --- | --- | --- |
-| ASHWOOD / Workspace / Dispatch | Active and verified | **ALVIRA** | **ASHWOOD Dispatch** | `ASHWOOD_DATABASE_URL` (fallback `DATABASE_URL`) | Verified against the live Workspace and repository |
+| ASHWOOD Brain (isolated private derived notes; **not** canonical Workspace auth) | Schema verified; API unreleased | **ALVIRA** | **ASHWOOD Brain** (`lingering-union-27877472`) | `ASHWOOD_BRAIN_DATABASE_URL` (unbound as checked Oct 21) | Stage only; source-key migration pending |\n| ASHWOOD / Workspace / Dispatch | Active and verified | **ALVIRA** | **ASHWOOD Dispatch** | `ASHWOOD_DATABASE_URL` (fallback `DATABASE_URL`) | Verified against the live Workspace and repository |
 | ALVIRA | Active Neon-backed application | **Vercel: ALVIRA** | **ALVIRA** | `DATABASE_URL` | Verified from Neon organization/project listing screenshot |
 | ailhat | Neon project exists | **ALVIRA** | **AILHAT** | Not yet verified in repo | Verified project placement from Neon organization/project listing screenshot |
 | ledgato | Neon project exists | **ALVIRA** | **LEDGATo** | Not yet verified in repo | Verified project placement from Neon organization/project listing screenshot |
