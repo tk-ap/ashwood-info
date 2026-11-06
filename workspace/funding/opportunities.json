@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-10-14T15:32:55.667Z",
+  "generated_at": "2026-10-15T14:41:24.177Z",
   "source_note": "One canonical registry. Discovery is not verification. Owner profile, actions and outcomes remain browser-private. Refresh reloads records; it does not verify sources.",
   "opportunities": [
     {
@@ -578,6 +578,17 @@
             "value"
           ],
           "summary": "The October 15 close remains published for 25 finalist awards of $1,000 plus one free program. Veteran or military-spouse ownership, an active US employer business with 2–100 employees, one year in business and no more than $5 million revenue remain required; first disbursement is Net 60 after complete approved documents."
+        },
+        {
+          "url": "https://foundersfirstcdc.org/stephen-tadlock",
+          "checked_at": "2026-10-15T14:41:11.920Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The official page still lists an October 15 close, 25 finalists, a $1,000 microgrant plus one free program, and veteran or military-spouse ownership of an active U.S. employer business with 2–100 employees, at least one year in business and no more than $5 million annual revenue."
         }
       ],
       "eligibility_rules": [
@@ -660,7 +671,7 @@
       ],
       "effort": "medium",
       "next_action": "Before October 15, check the 2–100 employee and one-year business requirements. Do not treat this as immediate housing cash.",
-      "last_verified_at": "2026-10-14T15:31:02.393Z",
+      "last_verified_at": "2026-10-15T14:41:11.920Z",
       "source_url": "https://foundersfirstcdc.org/stephen-tadlock",
       "source_label": "Founders First CDC — Tadlock Veteran Business Grant",
       "program_key": "founders-first-tadlock-2026",
@@ -774,6 +785,28 @@
             "value"
           ],
           "summary": "November 4 full proposal deadline remains 5 p.m. applicant local time. Phase I up to $305,000 requires pitch invitation; PI primary employment can conflict with other full-time work."
+        },
+        {
+          "url": "https://seedfund.nsf.gov/solicitations/",
+          "checked_at": "2026-10-15T14:41:11.920Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "NSF America’s Seed Fund continues to list NSF 26-510 and the November 4, 2026 full-proposal deadline. Phase I submission requires an eligible unused Project Pitch invitation issued on or after July 3, 2025."
+        },
+        {
+          "url": "https://seedfund.nsf.gov/apply/full-proposal/",
+          "checked_at": "2026-10-15T14:41:11.920Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The official proposal guide confirms the November 4, 2026 deadline and requires active SAM and Research.gov registrations. A failed retrieval of one linked NSF solicitation route is not treated as program closure."
         }
       ],
       "eligibility_rules": [
@@ -845,7 +878,7 @@
       ],
       "effort": "high",
       "next_action": "Run an eligibility and project-fit screen for ALVIRA, ledgato, and governed-agent infrastructure before drafting anything.",
-      "last_verified_at": "2026-10-08T14:43:43.234Z",
+      "last_verified_at": "2026-10-15T14:41:11.920Z",
       "source_url": "https://www.nsf.gov/funding/opportunities/small-business-innovation-research-small-business-technology/nsf26-510/solicitation",
       "source_label": "NSF 26-510",
       "program_key": "nsf-sbir-26-510",
@@ -2915,6 +2948,28 @@
             "value"
           ],
           "summary": "The live October intake still displays an October 15 closing time of 3:00 p.m. while stating deadlines use Pacific Time, and it promises November 15 notification. The official conflict remains; retain HOLD and the earlier 11:59 a.m. safe cutoff."
+        },
+        {
+          "url": "https://cciarts.org/quick-grant/",
+          "checked_at": "2026-10-15T14:41:11.920Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The official page still lists the October 15 cycle as open for up to $600, with a recurring deadline of 11:59 a.m. Pacific and following-month notification/activity timing on the 16th."
+        },
+        {
+          "url": "https://centerforculturalinnovation.submittable.com/submit",
+          "checked_at": "2026-10-15T14:41:11.920Z",
+          "authoritative": true,
+          "supports": [
+            "availability",
+            "criteria",
+            "value"
+          ],
+          "summary": "The live intake still lists the October 15 cycle ending at 3:00 p.m. Pacific and notification on November 15. The first-party cutoff and timing conflict remains, so HOLD and the earlier 11:59 a.m. safe cutoff are preserved."
         }
       ],
       "eligibility_rules": [
@@ -3928,5 +3983,5 @@
       ]
     }
   ],
-  "last_scan_at": "2026-10-14T15:32:55.667Z"
+  "last_scan_at": "2026-10-15T14:41:24.177Z"
 }
