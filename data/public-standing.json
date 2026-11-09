@@ -1,14 +1,30 @@
 {
-  "generated_at": "2026-11-02T19:16:59.612Z",
+  "generated_at": "2026-11-09T19:36:26.741Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
-    "total_posts": 87,
-    "latest_post_at": "2026-10-31T15:00:37.000Z",
-    "posts_30d": 2,
+    "total_posts": 89,
+    "latest_post_at": "2026-11-05T06:26:20.000Z",
+    "posts_30d": 4,
     "avg_likes": 167,
     "avg_comments": 7,
     "recent_posts": [
+      {
+        "at": "2026-11-05T06:26:20.000Z",
+        "caption": "tales from my twenties I guess. still can’t believe I been alive this long.",
+        "likes": null,
+        "comments": 1,
+        "type": "Sidecar",
+        "url": "https://www.instagram.com/p/DfWYnq-G0Dj/"
+      },
+      {
+        "at": "2026-11-04T21:07:15.000Z",
+        "caption": "stripe me downnnnn 👔🤭",
+        "likes": null,
+        "comments": 0,
+        "type": "Sidecar",
+        "url": "https://www.instagram.com/p/DfVYo0skpj6/"
+      },
       {
         "at": "2026-10-31T15:00:37.000Z",
         "caption": "the best time to wear @stripedattire , is all the time 😌",
@@ -16,50 +32,42 @@
         "comments": 0,
         "type": "Sidecar",
         "url": "https://www.instagram.com/p/DfKbgDym689/"
-      },
-      {
-        "at": "2026-10-26T12:55:02.000Z",
-        "caption": "30 or whatever.",
-        "likes": null,
-        "comments": 2,
-        "type": "Sidecar",
-        "url": "https://www.instagram.com/p/De9VLupmxb2/"
       }
     ]
   },
   "tiktok": {
     "account": "tiktokoftk",
-    "followers": 73,
-    "following": 64,
+    "followers": 81,
+    "following": 83,
     "verified": false,
-    "total_videos": 45,
-    "latest_video_at": "2026-11-02T17:04:12.000Z",
-    "videos_30d": 12,
-    "avg_plays": 233,
-    "avg_likes": 16,
+    "total_videos": 59,
+    "latest_video_at": "2026-11-08T18:04:23.000Z",
+    "videos_30d": 23,
+    "avg_plays": 226,
+    "avg_likes": 15,
     "avg_comments": 1,
     "recent_videos": [
       {
-        "at": "2026-11-02T17:04:12.000Z",
-        "caption": "when this shit is over, might wish I spent more time sober 🤷🏽",
-        "plays": 0,
-        "likes": 0,
-        "comments": 0,
+        "at": "2026-11-08T18:04:23.000Z",
+        "caption": "We all supposed to be duelin niggas on here n shit? 💀😭",
+        "plays": 229,
+        "likes": 9,
+        "comments": 3,
         "shares": 0
       },
       {
-        "at": "2026-11-02T16:59:59.000Z",
-        "caption": "some shots for STRIPEDATTIRE 😌",
-        "plays": 4,
-        "likes": 0,
-        "comments": 0,
+        "at": "2026-11-07T01:09:34.000Z",
+        "caption": "😅💀",
+        "plays": 209,
+        "likes": 6,
+        "comments": 5,
         "shares": 0
       },
       {
-        "at": "2026-10-31T21:38:39.000Z",
-        "caption": "my inner child got the wheel in this era 😂🤞🏾",
-        "plays": 140,
-        "likes": 5,
+        "at": "2026-11-06T17:08:52.000Z",
+        "caption": "can’t remember the last time I picked up an instrument though, 😩",
+        "plays": 204,
+        "likes": 9,
         "comments": 0,
         "shares": 0
       }
