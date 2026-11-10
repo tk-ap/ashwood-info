@@ -1,0 +1,28 @@
+name: Import reviewed archive expansion
+on:
+  push:
+    branches: [feature/adobe-archive-stories]
+    paths: [scripts/archive-expansion-import.json]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==12.0.0
+      - run: python scripts/import_archive_expansion.py
+      - name: Commit verified media and retire temporary importer
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add assets/modeling/adobe-archive
+          git rm scripts/import_archive_expansion.py scripts/archive-expansion-import.json .github/workflows/archive-expansion-import.yml
+          git commit -m 'Import 19 reviewed historical modeling frames with verified source hashes'
+          git push origin HEAD:feature/adobe-archive-stories
