@@ -28,3 +28,6 @@
 .runway-event__photos{display:grid;gap:24px}
 .runway-event__more{font-size:13px;margin-top:24px}
 @media(max-width:700px){.runway-events{grid-template-columns:1fr;gap:56px}.runway-event h3{font-size:30px}}
+
+.archive-count{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.65;margin-top:28px}.archive-nav-count{font-size:11px;opacity:.6;margin-left:5px}.archive-back+.archive-back{margin-left:24px}
+@media(max-width:600px){.archive-back{display:block}.archive-back+.archive-back{margin:16px 0 0}}

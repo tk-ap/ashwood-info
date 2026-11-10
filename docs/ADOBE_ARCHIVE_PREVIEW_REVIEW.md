@@ -46,3 +46,7 @@ Current provider version: `01M71FTMBCCYANMC43TFAW5087`. Built source commit: `17
 ## Runway overview correction (2026-11-10)
 
 The modeling page's “On the walk” section now represents ALIVE, LA Fashion Week Festival and Up Next as three named event groups, with two verified archive photographs per show, dates/locations, photographer links, original-resolution viewing and links to each complete archive story. The previous overview showed only Up Next even though all three shows were present in the deeper archive. Preview-only; production approval remains pending.
+
+## Wider archive exploration (2026-11-10)
+
+TK requested exploration of preserving the greater archive. The deeper preview now includes 57 reviewed professional photographs across nine stories, adding 19 editorial reserves while retaining the 12-photo selected overview. `docs/MODELING_ARCHIVE_COVERAGE.md` accounts for all 65 mapped professional source frames, with 8 holds and video recovery explicitly unresolved. This supersedes the earlier 38-photo deep-gallery count; production remains pending.
