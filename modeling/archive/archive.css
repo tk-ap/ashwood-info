@@ -1,0 +1,21 @@
+/* Keep every photograph's full composition, including landscape frames. */
+.selected-archive-grid,.story-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,5vw,76px);align-items:start}
+.archive-photo{margin:0;min-width:0}
+.archive-photo img{display:block;width:100%;height:auto;object-fit:contain;background:var(--panel,#151515)}
+.archive-photo figcaption{font-size:12px;line-height:1.6;margin-top:10px;opacity:.7}
+.archive-photo figcaption a{text-decoration:none}
+.archive-continue{margin-top:40px;font-size:clamp(16px,2vw,22px)}
+.archive-intro{padding-top:clamp(60px,10vw,150px);padding-bottom:80px}
+.archive-intro h1{font-size:clamp(54px,10vw,148px);letter-spacing:-.065em;line-height:.93;margin:30px 0}
+.archive-deck{font-size:clamp(18px,2.4vw,30px);max-width:650px}
+.archive-story-nav{display:flex;flex-wrap:wrap;gap:12px 24px;max-width:920px;margin:42px 0 28px}
+.archive-story-nav a{font-size:14px;text-underline-offset:5px;line-height:1.8}
+.archive-back{font-size:13px;opacity:.7}
+.archive-story{padding-top:60px;padding-bottom:80px;scroll-margin-top:90px}
+.archive-story .split-heading{margin-bottom:36px}
+.archive-story .split-heading h2{font-size:clamp(32px,5vw,68px);max-width:740px}
+.archive-story .split-heading p{max-width:380px}
+.archive-story .section-kicker a{color:inherit}
+.archive-footer{display:flex;justify-content:space-between;gap:24px;padding-top:40px;padding-bottom:60px;font-size:14px}
+@media(min-width:900px){.selected-archive-grid .archive-photo:nth-child(4n+2){margin-top:80px}.story-grid .archive-photo:nth-child(even){margin-top:60px}}
+@media(max-width:600px){.selected-archive-grid,.story-grid{grid-template-columns:1fr;gap:32px}.archive-intro{padding-bottom:40px}.archive-story{padding-top:35px;padding-bottom:45px}.archive-story-nav{gap:9px 18px}.archive-footer{flex-direction:column}}
