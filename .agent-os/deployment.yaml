@@ -12,6 +12,11 @@ hosting:
   production_url: https://ashwood-info.vercel.app
   role: production-only
   preview_policy: do-not-use-vercel-preview-for-sandbox-work
+  preview_exceptions:
+    - branch: feature/adobe-archive-stories
+      purpose: owner-requested-modeling-portfolio-review
+      environment: preview
+      authorization: TK explicitly requested Vercel previews for modeling portfolio updates on 2026-11-09
 
 database:
   provider: neon
@@ -32,11 +37,11 @@ sandboxes:
     static_primary: true
     slug: mighty-yoga-pgph
     url: https://mighty-yoga-pgph.here.now/
-    current_version_id: 01M359HV4JJ4JKVWBRM2EXBAKM
-    source_ref: 479e51466a9244af3c8a606921232de730df7da4
+    current_version_id: 01M71FTMBCCYANMC43TFAW5087
+    source_ref: 17164fb411eefb628d4d154b788e2e94e3946b81
     verification:
       state: passed
-      evidence_ref: github-actions:35774173010
+      evidence_ref: github-actions:42733223652
 
 release_rules:
   - treat-this-file-as-the-canonical-deployment-topology
