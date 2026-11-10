@@ -30,3 +30,11 @@ New source images retain the full frame and source dimensions; EXIF is removed. 
 - The temporary import/publish workflows are removed from the final PR; they are review-branch preparation only.
 
 Canonical main at preparation: `3e6e9e503de64cc1287a6a1e002cc3d82061cdb3`. Production observed at `0c22d1e52c66ba7d9bbf1153cf0fa14ad81260ac`, Vercel project `ashwood`. No Vercel Preview was requested.
+
+The modeling routes load a scoped copy of the tested viewer (`modeling/archive/viewer.js`) so an older sandbox shared viewer cannot omit source captions or full-resolution upgrades. Other routes keep their existing viewer.
+
+## Verified sandbox receipt
+
+Preview: https://mighty-yoga-pgph.here.now/modeling/archive/
+
+Current provider version: `01M71FTMBCCYANMC43TFAW5087`. Built source commit: `17164fb411eefb628d4d154b788e2e94e3946b81`. This is an incremental overlay on the existing sandbox, not a replacement of its other content. Initial archive owner-byte readback passed in run 42733084592. The scoped viewer publication and byte verification passed in run 42733223652; final manifest has 314 files. Full-size navigation and source captions were then verified in the browser. The prior timeout was a lost finalize response; fresh provider state established completion before any further mutation. Main remained `3e6e9e503de64cc1287a6a1e002cc3d82061cdb3`.
