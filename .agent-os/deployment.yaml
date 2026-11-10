@@ -12,6 +12,11 @@ hosting:
   production_url: https://ashwood-info.vercel.app
   role: production-only
   preview_policy: do-not-use-vercel-preview-for-sandbox-work
+  preview_exceptions:
+    - branch: feature/adobe-archive-stories
+      purpose: owner-requested-modeling-portfolio-review
+      environment: preview
+      authorization: TK explicitly requested Vercel previews for modeling portfolio updates on 2026-11-09
 
 database:
   provider: neon

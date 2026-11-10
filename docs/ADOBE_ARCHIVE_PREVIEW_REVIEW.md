@@ -1,5 +1,9 @@
 # Adobe modeling archive review
 
+## Owner-requested Vercel review (2026-11-09)
+
+TK requested a Vercel preview for the modeling portfolio updates. The existing archive branch is authorized for Preview deployments, with a branch-specific build exception. This supplements the previously verified here.now review; it does not authorize a merge or production promotion.
+
 Status: implemented on `feature/adobe-archive-stories`; owner visual approval and production promotion remain pending.
 
 ## Result
