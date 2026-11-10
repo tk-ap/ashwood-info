@@ -42,3 +42,7 @@ The modeling routes load a scoped copy of the tested viewer (`modeling/archive/v
 Preview: https://mighty-yoga-pgph.here.now/modeling/archive/
 
 Current provider version: `01M71FTMBCCYANMC43TFAW5087`. Built source commit: `17164fb411eefb628d4d154b788e2e94e3946b81`. This is an incremental overlay on the existing sandbox, not a replacement of its other content. Initial archive owner-byte readback passed in run 42733084592. The scoped viewer publication and byte verification passed in run 42733223652; final manifest has 314 files. Full-size navigation and source captions were then verified in the browser. The prior timeout was a lost finalize response; fresh provider state established completion before any further mutation. Main remained `3e6e9e503de64cc1287a6a1e002cc3d82061cdb3`.
+
+## Runway overview correction (2026-11-10)
+
+The modeling page's “On the walk” section now represents ALIVE, LA Fashion Week Festival and Up Next as three named event groups, with two verified archive photographs per show, dates/locations, photographer links, original-resolution viewing and links to each complete archive story. The previous overview showed only Up Next even though all three shows were present in the deeper archive. Preview-only; production approval remains pending.
