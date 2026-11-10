@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Publish only archive delta with current-version lease
+      - name: Verify published archive without mutations
         run: |
           python -u <<'PY'
           import hashlib
@@ -48,7 +48,7 @@ jobs:
                   headers["Authorization"] = f"Bearer {KEY}"
               req = Request(url, data=data, headers=headers, method=method)
               try:
-                  with urlopen(req, timeout=180) as response:
+                  with urlopen(req, timeout=60) as response:
                       return response.read(), response.headers
               except HTTPError as error:
                   # Do not print protected body or presigned URLs.
@@ -100,66 +100,22 @@ jobs:
           # Preserve shared sandbox resources; add dependencies only when absent.
           for path in ['portfolio/portfolio.css','creative-shell.css','portfolio-lightbox.js','theme.js','favicon.svg']:
               if path not in by_path:updates[path]=Path(path).read_bytes()
-          updates={p:b for p,b in updates.items() if p not in by_path or hashlib.sha256(b).hexdigest()!=by_path[p]['hash']}
-          new_manifest=[]
-          for i in manifest:
-              if i['path'] not in updates:
-                  new_manifest.append({k:i[k] for k in ['path','size','contentType','hash']})
-          for p,b in updates.items():
-              ctype=mimetypes.guess_type(p)[0] or 'application/octet-stream'
-              new_manifest.append({'path':p,'size':len(b),'contentType':ctype,'hash':hashlib.sha256(b).hexdigest()})
-          original_hashes={i['path']:i['hash'] for i in manifest if i['path'] not in updates}
-          if original_hashes!={i['path']:i['hash'] for i in new_manifest if i['path'] not in updates}:
-              raise RuntimeError("Unrelated files changed")
-          print(f"PREFLIGHT_OK base={base} retained={len(original_hashes)} changed={len(updates)}")
-          if DRY_RUN:
-              sys.exit(0)
-          if not updates:
-              print('ALREADY_CURRENT');sys.exit(0)
-          payload={"baseVersionId":base,"files":new_manifest}
-          result=getjson(API,"PUT",payload)
-          upload=result.get("upload") or {}
-          uploads=upload.get("uploads") or []
-          skipped=set(upload.get("skipped") or [])
-          expected_uploads=set(updates)
-          if set(x["path"] for x in uploads) != expected_uploads:
-              raise RuntimeError("Unexpected upload plan; refusing to finalize")
-          if any(path not in skipped for path in original_hashes):
-              raise RuntimeError("Unchanged owner files not listed as skipped; refusing to finalize")
-          for transfer in uploads:
-              path=transfer["path"]
-              url=transfer.get("url")
-              host=urlparse(url).hostname if isinstance(url,str) else ""
-              if not host or not host.endswith(".r2.cloudflarestorage.com") or not url.startswith("https://"):
-                  raise RuntimeError("Unexpected storage upload destination; refusing publish")
-              transfer_headers=transfer.get("headers") or {}
-              transfer_headers.pop("Authorization",None)
-              request(url, "PUT", updates[path], transfer_headers)
-          finalize_url=upload.get("finalizeUrl")
-          if not isinstance(finalize_url,str) or not origin_safe(finalize_url):
-              raise RuntimeError("Unexpected finalize endpoint")
-          version=upload.get("versionId")
-          if not version:
-              raise RuntimeError("Provider did not supply a staged version")
-          final=getjson(finalize_url,"POST",{"versionId":version})
-          if not final.get("success") or final.get("slug") != SLUG:
-              raise RuntimeError("Finalize did not attest success")
-          if final.get("previousVersionId") not in (base,None):
-              raise RuntimeError("Unexpected release predecessor")
-          latest=getjson(API)
-          live_version=latest.get("currentVersionId")
-          if live_version != final.get("currentVersionId"):
-              raise RuntimeError("Provider version readback mismatch")
-          live_manifest = {item["path"]:item["hash"] for item in latest.get("manifest",[])}
-          if live_manifest != {item["path"]:item["hash"] for item in new_manifest}:
-              raise RuntimeError("Post-publish manifest differs; investigate immediately")
-          # Verify changed bytes by provider owner read, independent of SPA path routing.
-          for path in updates:
-              restored,_=request(API+"/files/"+path)
-              if hashlib.sha256(restored).hexdigest()!=hashlib.sha256(updates[path]).hexdigest():
-                  raise RuntimeError(f"Published file verification failed: {path}")
-          print(f"PUBLISHED_AND_VERIFIED slug={SLUG} old={base} current={live_version} total_files={len(new_manifest)}")
-          Path('archive-preview-receipt.json').write_text(json.dumps({'base':base,'version':live_version,'source_sha':os.environ.get('GITHUB_SHA'),'preserved_count':len(original_hashes),'updated_paths':sorted(updates)},indent=2))
+          from concurrent.futures import ThreadPoolExecutor
+          expected=updates
+          for path,blob in expected.items():
+              assert by_path.get(path,{}).get('hash')==hashlib.sha256(blob).hexdigest(),path
+          
+          def verify(pair):
+              path,blob=pair
+              actual,_=request(API+'/files/'+path)
+              assert hashlib.sha256(actual).hexdigest()==hashlib.sha256(blob).hexdigest(),path
+              return path
+          with ThreadPoolExecutor(max_workers=6) as pool:
+              checked=list(pool.map(verify,expected.items()))
+          assert getjson(API)['currentVersionId']==base
+          receipt={'version':base,'source_sha':os.environ.get('GITHUB_SHA'),'verified_file_count':len(checked),'total_files':len(manifest),'original_base':'01M5ZZWASXBZZXX50TJAC68FY6','public_url':'https://mighty-yoga-pgph.here.now/modeling/archive/','write_operations':0}
+          Path('archive-preview-receipt.json').write_text(json.dumps(receipt,indent=2))
+          print('ARCHIVE_READBACK_VERIFIED '+json.dumps(receipt))
           PY
       - uses: actions/upload-artifact@v4
         with:
