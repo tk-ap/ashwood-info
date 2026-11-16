@@ -110,7 +110,8 @@
           <a href="/"><small>01</small><span>Home</span><b>↗</b></a>
           <a href="/guide/"><small>02</small><span>Visit guide</span><b>↗</b></a>
           <a href="/work/"><small>03</small><span>Work</span><b>↗</b></a>
-          <a href="/career/"><small>04</small><span>Career evidence</span><b>↗</b></a>
+          <a href="/universe/"><small>04</small><span>Universe</span><b>↗</b></a>
+          <a href="/career/"><small>05</small><span>Career evidence</span><b>↗</b></a>
         </details>
         <details class="v3-global-nav__group" open>
           <summary>Creative practice</summary>
