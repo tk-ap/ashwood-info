@@ -1,7 +1,14 @@
 name: ASHWOOD Universe sandbox preview
 
+# This one-time branch trigger is required because GitHub only exposes manual
+# dispatch for workflows already present on the default branch. It is restored
+# to manual-only immediately after the sandbox receipt is captured.
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - codex/ashwood-editorial-universe-20261116
+    paths:
+      - '.github/workflows/ashwood-universe-sandbox.yml'
 
 permissions:
   contents: read
