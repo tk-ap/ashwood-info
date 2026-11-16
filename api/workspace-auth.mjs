@@ -1,6 +1,9 @@
+import brainHandler from './_brain-handler.mjs';
 import { clearSession, getSql, hashPassphrase, issueSession, json, parseBody, requireSession, sameOrigin, sha256, timingSafeEqualHex, verifyPassphrase } from './_workspace.mjs';
 
 export default async function handler(req, res) {
+  const route = new URL(req.url || '/api/workspace-auth', 'https://localhost');
+  if (route.searchParams.get('view') === 'brain') return brainHandler(req, res);
   try {
     const sql = getSql();
     if (req.method === 'GET') {
