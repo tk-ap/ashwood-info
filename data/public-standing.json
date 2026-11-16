@@ -1,14 +1,22 @@
 {
-  "generated_at": "2026-11-09T19:36:26.741Z",
+  "generated_at": "2026-11-16T19:23:03.780Z",
   "source": "apify",
   "instagram": {
     "account": "picturesoftk",
-    "total_posts": 89,
-    "latest_post_at": "2026-11-05T06:26:20.000Z",
-    "posts_30d": 4,
+    "total_posts": 90,
+    "latest_post_at": "2026-11-12T23:50:30.000Z",
+    "posts_30d": 5,
     "avg_likes": 167,
     "avg_comments": 7,
     "recent_posts": [
+      {
+        "at": "2026-11-12T23:50:30.000Z",
+        "caption": "might fafo just who I’m meant to be 😅🤞🏾",
+        "likes": null,
+        "comments": 4,
+        "type": "Sidecar",
+        "url": "https://www.instagram.com/p/DfqRrexGd86/"
+      },
       {
         "at": "2026-11-05T06:26:20.000Z",
         "caption": "tales from my twenties I guess. still can’t believe I been alive this long.",
@@ -24,52 +32,44 @@
         "comments": 0,
         "type": "Sidecar",
         "url": "https://www.instagram.com/p/DfVYo0skpj6/"
-      },
-      {
-        "at": "2026-10-31T15:00:37.000Z",
-        "caption": "the best time to wear @stripedattire , is all the time 😌",
-        "likes": null,
-        "comments": 0,
-        "type": "Sidecar",
-        "url": "https://www.instagram.com/p/DfKbgDym689/"
       }
     ]
   },
   "tiktok": {
     "account": "tiktokoftk",
-    "followers": 81,
-    "following": 83,
+    "followers": 86,
+    "following": 100,
     "verified": false,
-    "total_videos": 59,
-    "latest_video_at": "2026-11-08T18:04:23.000Z",
-    "videos_30d": 23,
-    "avg_plays": 226,
-    "avg_likes": 15,
+    "total_videos": 70,
+    "latest_video_at": "2026-11-14T01:32:05.000Z",
+    "videos_30d": 34,
+    "avg_plays": 223,
+    "avg_likes": 14,
     "avg_comments": 1,
     "recent_videos": [
       {
-        "at": "2026-11-08T18:04:23.000Z",
-        "caption": "We all supposed to be duelin niggas on here n shit? 💀😭",
-        "plays": 229,
-        "likes": 9,
-        "comments": 3,
+        "at": "2026-11-14T01:32:05.000Z",
+        "caption": "I just be having fun on these people beats 💀 ain even finished this joint #unreleasedmusic #bandlab #bandlabartist #wlwartist ",
+        "plays": 110,
+        "likes": 4,
+        "comments": 2,
         "shares": 0
       },
       {
-        "at": "2026-11-07T01:09:34.000Z",
-        "caption": "😅💀",
-        "plays": 209,
-        "likes": 6,
-        "comments": 5,
-        "shares": 0
-      },
-      {
-        "at": "2026-11-06T17:08:52.000Z",
-        "caption": "can’t remember the last time I picked up an instrument though, 😩",
-        "plays": 204,
-        "likes": 9,
+        "at": "2026-11-13T18:04:29.000Z",
+        "caption": "barely making sense to me atp 💀😭",
+        "plays": 343,
+        "likes": 22,
         "comments": 0,
-        "shares": 0
+        "shares": 1
+      },
+      {
+        "at": "2026-11-11T07:28:28.000Z",
+        "caption": "side one of a double sided joint btw #wlw #artistsoftiktok #blackart #muse #mixedmediaartist ",
+        "plays": 475,
+        "likes": 22,
+        "comments": 1,
+        "shares": 1
       }
     ]
   }
