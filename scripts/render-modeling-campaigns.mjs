@@ -3,6 +3,9 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
 const campaigns = JSON.parse(readFileSync(new URL('modeling/campaigns.json', root), 'utf8'));
+// The site lead can be newer editorial work than the latest credited campaign.
+// Keep it independently editable so campaign metadata remains truthful.
+const siteHero = JSON.parse(readFileSync(new URL('modeling/site-hero.json', root), 'utf8'));
 const escape = (value) => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 export function renderCampaign(campaign) {
   const { id, index, location, name, titleLines, creditLabel, creditName, photographerUrl, photographerLabel, brandUrl, brandLabel, websiteUrl, websiteLabel, headerStyle, images } = campaign;
@@ -32,7 +35,7 @@ const path = fileURLToPath(new URL('modeling/index.html', root));
 const current = readFileSync(path, 'utf8');
 let output = current.replace(/      <!-- campaigns:start -->[\s\S]*?      <!-- campaigns:end -->/, `      <!-- campaigns:start -->\n${campaigns.map(renderCampaign).join('\n\n')}\n      <!-- campaigns:end -->`);
 const latest = campaigns[0];
-const hero = latest.pageHero || latest.images.find(img => (img.fullSrc || img.src) === latest.pageHeroImage) || latest.images[0];
+const hero = siteHero || latest.pageHero || latest.images.find(img => (img.fullSrc || img.src) === latest.pageHeroImage) || latest.images[0];
 const heroSources = hero.sources ? ` srcset="${hero.sources.map(source => `${escape(source.src)} ${source.width}w`).join(', ')}" sizes="min(100vw, 1640px)" data-full-src="${escape(hero.fullSrc)}"` : '';
 const heroMarkup = `<img src="${escape(hero.src)}" alt="${escape(hero.alt)}"${hero.width ? ` width="${hero.width}" height="${hero.height}"` : ''}${heroSources} loading="eager" decoding="async" fetchpriority="high" />`;
 output = output.replace(/<!-- campaign-hero:start -->[\s\S]*?<!-- campaign-hero:end -->/, `<!-- campaign-hero:start -->\n          ${heroMarkup}\n          <!-- campaign-hero:end -->`);
