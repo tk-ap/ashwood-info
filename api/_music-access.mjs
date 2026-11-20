@@ -30,7 +30,7 @@ function renderGate(res, error = "", status = 200) {
 <label for="guest-name">Name</label>
 <input id="guest-name" name="name" autocomplete="name" placeholder="What should I call you?" maxlength="80" required>
 <label for="guest-contact">Email or phone number</label>
-<input id="guest-contact" name="contact" placeholder="Where can I find you after the last track?" maxlength="254" required>
+<input id="guest-contact" name="contact" placeholder="Where can I drop a line?" maxlength="254" required>
 <label class="music-entry__optin"><input type="checkbox" name="updates" value="yes"> <span>Send me occasional t.kap release updates.</span></label>
 <button type="submit">Enter listening room <span aria-hidden="true">→</span></button></fieldset>
 <p role="status">${error}</p></form>
