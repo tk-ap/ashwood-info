@@ -47,7 +47,13 @@ export async function musicAccess(req, res) {
     }
     const session = /(?:^|;\s*)ashwood_music=([a-f0-9]{64})(?:;|$)/.exec(req.headers.cookie || "")?.[1];
     if (method === "POST") {
-      if (req.headers.origin && req.headers.origin !== "https://ashwood-info.vercel.app") {
+      const allowedOrigins = new Set(["https://ashwood-info.vercel.app"]);
+      if (process.env.VERCEL_ENV === "preview") {
+        for (const host of [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]) {
+          if (host) allowedOrigins.add(`https://${host}`);
+        }
+      }
+      if (req.headers.origin && !allowedOrigins.has(req.headers.origin)) {
         res.statusCode = 403;
         return res.end();
       }
