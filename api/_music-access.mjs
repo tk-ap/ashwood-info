@@ -6,7 +6,8 @@ import { get } from "@vercel/blob";
 import { getSql, normalizeEmail, validEmail } from "./_dispatch.mjs";
 import { musicSubscription } from "./_music-subscription.mjs";
 
-const tracks = new Set(["hlf.mp4", "02-havingmyway.mp3", "03-lies.mp3", "04-sorryma.mp3"]);
+const entryVideo = "hlf.mp4";
+const tracks = new Set([entryVideo, "02-havingmyway.mp3", "03-lies.mp3", "04-sorryma.mp3"]);
 const hash = value => createHash("sha256").update(value).digest("hex");
 const lifetime = 30 * 24 * 60 * 60;
 
@@ -15,7 +16,11 @@ function renderGate(res, error = "", status = 200) {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.end(`<!doctype html><html lang="en" data-music-theme="dark">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>demoDanceR — ASHWOOD</title><link rel="stylesheet" href="/music/music.css?v=night-drive-entry"></head>
+<title>demoDanceR — ASHWOOD</title><link rel="stylesheet" href="/music/music.css?v=night-drive-entry"><style>
+.music-entry__video { margin: 0 0 20px; }
+.music-entry__video summary { color: var(--ashwood-ochre); cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
+.music-entry__video video { display: block; width: min(100%, 240px); aspect-ratio: 9 / 16; margin: 0 auto 12px; border-radius: 8px; background: #080808; }
+</style></head>
 <body class="music-page music-page--demos"><main class="music-shell music-entry">
 <a class="music-entry__home" href="/">ASHWOOD</a>
 <section class="music-entry__door" aria-labelledby="music-access-title">
@@ -24,8 +29,12 @@ function renderGate(res, error = "", status = 200) {
   <div><p>t.kap’s listening room</p><h1 id="music-access-title">demoDanceR</h1></div>
 </header>
 <div class="music-signup music-entry__form">
+<details class="music-entry__video">
+<summary>Watch HLF · Lyric video</summary>
+<video controls playsinline preload="none" poster="/music/media/hlf-feature.webp" src="/music/listen/${entryVideo}" aria-label="HLF lyric video by t.kap"></video>
+</details>
 <h2>Come in and listen.</h2>
-<p>Unreleased demos and the HLF lyric video.</p>
+<p>Enter the listening room for the rest of demoDanceR.</p>
 <form method="post" action="/music"><fieldset>
 <label for="guest-name">Name</label>
 <input id="guest-name" name="name" autocomplete="name" placeholder="What should I call you?" maxlength="80" required>
@@ -45,6 +54,8 @@ function renderGate(res, error = "", status = 200) {
 export async function musicAccess(req, res) {
   res.setHeader("Cache-Control", "private, no-store");
   const media = req.query?.list === "music-media";
+  const track = req.query?.track;
+  const isEntryVideo = media && track === entryVideo;
   try {
     const method = req.method;
     if (!["GET", "HEAD", "POST"].includes(method) || (media && method === "POST")) {
@@ -94,8 +105,8 @@ export async function musicAccess(req, res) {
       res.setHeader("Location", "/music");
       return res.end();
     }
-    if (!session || !(await getSql()`SELECT 1 FROM music_guest_access
-      WHERE session_hash = ${hash(session)} AND expires_at > NOW()`).length) {
+    if (!isEntryVideo && (!session || !(await getSql()`SELECT 1 FROM music_guest_access
+      WHERE session_hash = ${hash(session)} AND expires_at > NOW()`).length)) {
       if (!media) return renderGate(res);
       res.statusCode = 403;
       return res.end();
@@ -104,7 +115,6 @@ export async function musicAccess(req, res) {
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       return res.end(method === "HEAD" ? undefined : await readFile(new URL("./_music-listening.html", import.meta.url)));
     }
-    const track = req.query.track;
     if (!tracks.has(track)) {
       res.statusCode = 404;
       return res.end();
