@@ -6,6 +6,7 @@
 
   const list = root.querySelector('[data-ashwood-drop-list]');
   const state = root.querySelector('[data-ashwood-drop-state]');
+  const hiddenTracks = new Set(document.querySelector('[data-hidden-tracks]')?.dataset.hiddenTracks.split(/\s+/) || []);
 
   const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -17,63 +18,6 @@
       return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
     } catch { return ''; }
   };
-
-  const normalizeTitle = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
-
-  function trackPlayer(track) {
-    const fileUrl = safeUrl(track.url);
-    if (!fileUrl) return '';
-    const sourceUrl = safeUrl(track.source_url);
-    const rights = String(track.rights_note || '').trim();
-    return `
-      <div class="listen-track__actions">
-        <audio class="listen-track__special-audio" controls controlsList="nodownload noplaybackrate" preload="metadata" oncontextmenu="return false" aria-label="${escapeHtml(track.title || 'Track')} by ${escapeHtml(track.artist || 't.kap')}">
-          <source src="${escapeHtml(fileUrl)}"${track.content_type ? ` type="${escapeHtml(track.content_type)}"` : ''} />
-          Your browser does not support native audio playback.
-        </audio>
-        ${rights ? `<p class="listen-track__special-rights">${escapeHtml(rights)}</p>` : ''}
-        ${sourceUrl ? `<a class="listen-track__special-source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Original beat / license context on YouTube ↗</a>` : ''}
-      </div>`;
-  }
-
-  function canonicalSlotMarkup(track, index) {
-    const producer = String(track.producer_credit || '').trim();
-    const title = String(track.title || 'Untitled').trim();
-    return `
-      <div class="listen-track__identity">
-        <span class="listen-track__index">${String(index).padStart(2, '0')}</span>
-        <div class="listen-track__special-copy">
-          <strong>${escapeHtml(title)} (NON-COMMERCIAL/DEMO) - ${escapeHtml(track.artist || 't.kap')}${producer ? ` (${escapeHtml(producer)})` : ''}</strong>
-          <span class="listen-track__special-label">Non-commercial / demo · stream only</span>
-        </div>
-      </div>
-      ${trackPlayer(track)}`;
-  }
-
-  function placeCanonicalTracks(tracks) {
-    const remaining = [];
-    const bodyTwo = document.querySelector('#body-two .listen-queue');
-    if (!bodyTwo) return tracks;
-    const slots = [...bodyTwo.querySelectorAll('.listen-track')];
-
-    tracks.forEach(track => {
-      const key = normalizeTitle(track.title);
-      let slot = null;
-      let index = 0;
-      if (key === 'special') { slot = slots[1]; index = 2; }
-      if (key === 'withyou') { slot = slots[2]; index = 3; }
-
-      if (!slot) {
-        remaining.push(track);
-        return;
-      }
-
-      slot.classList.add('listen-track--special', 'listen-track--blob');
-      slot.innerHTML = canonicalSlotMarkup(track, index);
-    });
-
-    return remaining;
-  }
 
   function renderTrack(track, index) {
     const fileUrl = safeUrl(track.url);
@@ -104,25 +48,23 @@
 
   async function load() {
     try {
-      const res = await fetch('/api/music-library', { cache:'no-store' });
+      const res = await fetch('/music/published.json', { cache:'no-store' });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
-      const tracks = Array.isArray(body.tracks) ? body.tracks : [];
+      const tracks = (Array.isArray(body.tracks) ? body.tracks : []).filter(track => {
+        const key = String(track.title || '').toLowerCase()
+          .replace(/\s*\(prod(?:uced)?[.\s][^)]*\).*$/, '').replace(/[^a-z0-9]+/g, '');
+        return !hiddenTracks.has(key);
+      });
 
       if (!tracks.length) {
         root.hidden = true;
         return;
       }
 
-      const remaining = placeCanonicalTracks(tracks);
-      if (!remaining.length) {
-        root.hidden = true;
-        return;
-      }
-
       root.hidden = false;
-      state.textContent = `${remaining.length} ${remaining.length === 1 ? 'track' : 'tracks'} published from ASHWOOD Workspace`;
-      list.innerHTML = remaining.map(renderTrack).join('');
+      state.textContent = `${tracks.length} ${tracks.length === 1 ? 'track' : 'tracks'} published from ASHWOOD Workspace`;
+      list.innerHTML = tracks.map(renderTrack).join('');
     } catch (error) {
       root.hidden = false;
       state.textContent = 'Live ASHWOOD library unavailable';

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en" data-music-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="t.kap — recording artist work, released music, demos, and the sOuNds of T.KAP playlist." />
+    <link rel="canonical" href="https://ashwood-info.vercel.app/music" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" /><meta property="og:site_name" content="ASHWOOD" />
+    <meta property="og:title" content="Music — ASHWOOD" /><meta property="og:description" content="Released music and evolving bodies of unreleased draft work by t.kap." />
+    <meta property="og:url" content="https://ashwood-info.vercel.app/music" /><meta property="og:image" content="https://ashwood-info.vercel.app/assets/digitals2026/about-portrait-upright.jpg" /><meta property="og:image:alt" content="TK Ashwood portrait" />
+    <meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="Music — ASHWOOD" /><meta name="twitter:description" content="Released music and evolving draft work by t.kap." /><meta name="twitter:image" content="https://ashwood-info.vercel.app/assets/digitals2026/about-portrait-upright.jpg" />
+    <meta name="theme-color" content="#121212" />
+    <title>Music — ASHWOOD</title>
+    <script>
+      try {
+        if (localStorage.getItem("ashwood.music.theme") === "light") {
+          document.documentElement.dataset.musicTheme = "light";
+        }
+      } catch (_) {}
+    </script>
+    <link rel="stylesheet" href="/ashwood-core.css?v=20260909-cache1" />
+    <link rel="stylesheet" href="/creative-shell.css?v=20260829-mobile-tap" />
+    <link rel="stylesheet" href="/music/music.css?v=20261120-release-signup" />
+    <link rel="stylesheet" href="/audio-player.css?v=20261120-track-art" />
+    <script src="https://w.soundcloud.com/player/api.js" defer></script>
+    <script src="/music/soundcloud-controller.js?v=20261120-track-art" defer></script>
+    <script src="/audio-player.js?v=20261120-native-demos" defer></script>
+    <script src="/music/library.js?v=20261120-more-music" defer></script>
+    <script src="/music/release-signup.js" defer></script>
+  </head>
+  <body class="music-page music-page--demos">
+    <header class="music-masthead" aria-label="ASHWOOD Music">
+      <div class="music-masthead__inner">
+        <a href="https://ashwood-info.vercel.app/" aria-label="ASHWOOD home">ASHWOOD</a>
+        <div class="music-masthead__tools"><span>t.kap</span><button type="button" class="music-theme" data-music-theme-toggle hidden>Light mode</button></div>
+      </div>
+    </header>
+
+    <main class="music-shell" aria-labelledby="music-title">
+      <section class="music-intro">
+        <h1 id="music-title">Music.</h1>
+        <p class="music-intro__deck">Unreleased demos. Just for the fans.</p>
+      </section>
+
+      <section id="demos-for-dummies" class="demos" aria-labelledby="demos-title"
+        data-ashwood-demos data-hidden-tracks="pullup nobodyelse withyou special" data-source-url="https://untitled.stream/library/project/c8oQRGbaLuxdsvX8SWgig">
+        <div class="hlf-feature" data-demo-id="hlf" data-demo-title="HLF">
+          <div class="hlf-feature__copy">
+            <header class="demos__header hlf-feature__album">
+              <img src="/music/media/hlf-feature.webp" width="640" height="640" alt="" />
+              <div>
+                <span class="demos__eyebrow">New music</span>
+                <h2 id="demos-title">demoDanceR</h2>
+              </div>
+            </header>
+            <h3 class="hlf-feature__title">HLF</h3>
+            <p class="hlf-feature__meta">Lyric video <span aria-hidden="true">·</span> Produced by Bapop</p>
+            <a class="hlf-feature__listen" href="#demodancer-tracks">Listen to the other demos</a>
+            <noscript><p><a href="/music/listen/hlf.mp4">Play the HLF lyric video</a></p></noscript>
+          </div>
+          <div class="hlf-feature__screen">
+            <button type="button" class="hlf-feature__poster" data-demo-select
+              aria-expanded="false" aria-controls="hlf-video-panel" disabled>
+              <img src="/music/media/hlf-feature.webp" width="512" height="910" alt="" />
+              <span class="hlf-feature__play">
+                <svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" focusable="false"><path fill="currentColor" d="M7 4.5v11l9-5.5z"/></svg>
+                Watch HLF
+              </span>
+            </button>
+            <div id="hlf-video-panel" class="demos__video-panel" hidden>
+              <video playsinline controls preload="none" width="540" height="960"
+                poster="/music/media/hlf-feature.webp" data-source="/music/listen/hlf.mp4"
+                aria-label="HLF lyric video by t.kap"></video>
+              <p class="demos__status note" role="status" hidden></p>
+            </div>
+          </div>
+        </div>
+
+        <ul id="demodancer-tracks" class="music-native-queue" aria-label="More from demoDanceR">
+          <li data-demo-id="havingmyway" data-demo-source="/music/listen/02-havingmyway.mp3" data-demo-title="havingmyway">
+            <button type="button" data-demo-select hidden disabled><span>havingmyway</span><small class="music-native-duration">Prod. zem</small></button>
+          </li>
+          <li data-demo-id="lies" data-demo-source="/music/listen/03-lies.mp3" data-demo-title="LIES">
+            <button type="button" data-demo-select hidden disabled><span>LIES</span><small class="music-native-duration">Prod. peril</small></button>
+          </li>
+          <li data-demo-id="sorryma" data-demo-source="/music/listen/04-sorryma.mp3" data-demo-title="sorryma">
+            <button type="button" data-demo-select hidden disabled><span>sorryma</span><small class="music-native-duration">Prod. GAXILLIC</small></button>
+          </li>
+        </ul>
+        <div class="music-provider">
+          <a class="demos__source" href="https://untitled.stream/library/project/c8oQRGbaLuxdsvX8SWgig">Open in Untitled</a>
+          <p class="demos__rights">Non-commercial demos. Produced by Bapop (HLF), zem (havingmyway), peril (LIES) and GAXILLIC (sorryma).</p>
+        </div>
+      </section>
+
+      <section class="music-signup" aria-labelledby="music-signup-title">
+        <h2 id="music-signup-title">Get new releases</h2>
+        <p>Get new tracks and lyric videos from t.kap by email. Unsubscribe anytime.</p>
+        <form action="/api/dispatch-subscribe?list=music" method="post" aria-describedby="music-signup-status">
+          <fieldset>
+            <label for="release-email">Email</label>
+            <input id="release-email" name="email" type="email" autocomplete="email" required>
+            <label for="release-first-name">First name (optional)</label>
+            <input id="release-first-name" name="first_name" autocomplete="given-name" maxlength="80">
+            <button type="submit">Sign up</button>
+          </fieldset>
+          <p id="music-signup-status" role="status"></p>
+        </form>
+      </section>
+
+      <details class="music-more">
+        <summary>More music from t.kap</summary>
+        <section class="demos__listen music-more__soundcloud" aria-labelledby="soundcloud-title">
+          <h2 id="soundcloud-title">sOuNds of T.KAP</h2>
+          <ul class="music-native-queue" data-soundcloud-tracks hidden></ul>
+          <p class="music-source-status" data-soundcloud-status role="status" hidden></p>
+          <details class="music-provider" data-soundcloud-drawer>
+            <summary>SoundCloud player</summary>
+            <iframe id="soundcloud-playback" class="demos__embed music-more__playlist"
+            src="https://w.soundcloud.com/player/?visual=true&amp;url=https%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F2307252138&amp;show_artwork=true"
+            title="sOuNds of T.KAP on SoundCloud" width="100%" height="450"
+              allow="autoplay; encrypted-media"></iframe>
+          </details>
+          <a class="demos__source" href="https://soundcloud.com/tk-ap/sets/sounds-of-t-kap">Open in SoundCloud</a>
+        </section>
+        <section id="released" class="music-more__release" aria-labelledby="released-title">
+          <h2 id="released-title">Released</h2>
+          <ul class="music-native-queue">
+            <li><button type="button" data-play-release><span>IN ME</span><small class="music-native-duration">feat. Cashden</small></button></li>
+          </ul>
+          <a class="demos__source" href="https://music.apple.com/us/album/in-me-feat-cashden-single/6798975601">Open in Apple Music</a>
+        </section>
+
+      <section id="ashwood-drop-music" class="ashwood-section ashwood-rule drop-music" aria-labelledby="drop-music-title" hidden>
+        <div class="music-section-heading">
+          <div>
+            <p class="eyebrow">02 / From the workspace</p>
+            <h2 id="drop-music-title" class="ashwood-display">In rotation.</h2>
+          </div>
+          <p class="note" data-ashwood-drop-state>Loading tracks published from ASHWOOD Workspace…</p>
+        </div>
+        <div class="drop-music-list" data-ashwood-drop-list aria-live="polite"></div>
+      </section>
+
+
+
+      <section class="ashwood-section ashwood-rule signal-loop" aria-labelledby="signal-title">
+        <p class="eyebrow">05 / Release signal</p>
+        <div class="signal-loop__layout"><h2 id="signal-title">Listen → respond → decide.</h2><div><p>The eventual interaction layer is intentionally simple: listen to a track, back it once, and optionally say why. Those signals can help decide whether a song stays private, moves to SoundCloud for a public experiment, or enters the full DSP release workflow.</p><p class="signal-note">Backing a track is a signal, not an automatic release vote. The final decision remains part of the creative process.</p></div></div>
+      </section>
+
+      </details>
+
+      <nav class="future-nav" aria-label="ASHWOOD sections">
+        <a href="https://ashwood-info.vercel.app/">Home</a><a href="https://ashwood-info.vercel.app/work">Work</a><a aria-current="page" href="https://ashwood-info.vercel.app/music">Music</a><a href="https://ashwood-info.vercel.app/journal">Builds</a><a href="https://ashwood-info.vercel.app/about">About</a><a href="https://ashwood-info.vercel.app/connect">Connect</a><a href="https://ashwood-info.vercel.app/modeling#contact">Contact</a><a href="https://beacons.ai/tkashwood" rel="noopener">Links ↗</a>
+      </nav>
+    </main>
+  </body>
+</html>
