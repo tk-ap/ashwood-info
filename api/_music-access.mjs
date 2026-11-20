@@ -31,6 +31,7 @@ function renderGate(res, error = "", status = 200) {
 <div class="music-signup music-entry__form">
 <details class="music-entry__video">
 <summary>Watch HLF · Lyric video</summary>
+<p>t.kap · Produced by Bapop</p>
 <video controls playsinline preload="none" poster="/music/media/hlf-feature.webp" src="/music/listen/${entryVideo}" aria-label="HLF lyric video by t.kap"></video>
 </details>
 <h2>Come in and listen.</h2>
