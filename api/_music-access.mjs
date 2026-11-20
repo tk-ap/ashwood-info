@@ -126,7 +126,8 @@ export async function musicAccess(req, res) {
       return res.end();
     }
     const range = req.headers.range;
-    const asset = await get(`music/${track}`, {
+    const filename = track === entryVideo ? "hlf-credits.mp4" : track;
+    const asset = await get(`music/${filename}`, {
       access: "private",
       storeId,
       headers: range ? { Range: range } : undefined
