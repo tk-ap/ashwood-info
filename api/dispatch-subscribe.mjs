@@ -1,3 +1,5 @@
+import { musicAccess } from "./_music-access.mjs";
+import { musicSubscription } from "./_music-subscription.mjs";
 import { getSql, json, normalizeEmail, sendAgentMail, validEmail } from "./_dispatch.mjs";
 
 function parseBody(req) {
@@ -21,7 +23,11 @@ function redirect(res, state) {
 }
 
 export default async function handler(req, res) {
+  if (["music-access", "music-media"].includes(req.query?.list)) return musicAccess(req, res);
+  if (req.query?.list === "music" && req.method === "GET") return musicSubscription(req, res);
   if (req.method !== "POST") return json(res, 405, { ok: false, error: "Method not allowed" });
+
+  if (req.query?.list === "music") return musicSubscription(req, res);
 
   const browserForm = isBrowserForm(req);
 

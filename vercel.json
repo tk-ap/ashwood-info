@@ -18,7 +18,11 @@
   "headers": [
     { "source": "/assets/campaigns/striped-attire/web/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
   ],
+  "functions": { "api/dispatch-subscribe.mjs": { "includeFiles": "api/_music-listening.html" } },
   "rewrites": [
+    { "source": "/music", "destination": "/api/dispatch-subscribe?list=music-access" },
+    { "source": "/music/index.html", "destination": "/api/dispatch-subscribe?list=music-access" },
+    { "source": "/music/listen/:track", "destination": "/api/dispatch-subscribe?list=music-media&track=:track" },
     { "source": "/api/workspace-analyses", "destination": "/api/workspace-agentos?view=analyses" },
     { "source": "/api/workspace-career-ops", "destination": "/api/workspace-career" },
     { "source": "/api/workspace-career-opportunities", "destination": "/api/workspace-career?view=opportunities" },

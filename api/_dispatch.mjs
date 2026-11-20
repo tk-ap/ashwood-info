@@ -27,9 +27,9 @@ export function validUnsubscribeSignature(email, signature) {
   return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(String(signature)));
 }
 
-export async function sendAgentMail({ to, subject, text }) {
+export async function sendAgentMail({ to, subject, text, inbox }) {
   const apiKey = process.env.AGENTMAIL_API_KEY?.trim();
-  const inboxId = (process.env.ASHWOOD_AGENTMAIL_INBOX_ID || "ashwood@agentmail.to").trim();
+  const inboxId = (inbox || process.env.ASHWOOD_AGENTMAIL_INBOX_ID || "ashwood@agentmail.to").trim();
   if (!apiKey) return { provider: "skipped" };
 
   const response = await fetch(`https://api.agentmail.to/v0/inboxes/${encodeURIComponent(inboxId)}/messages/send`, {
