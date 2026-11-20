@@ -15,24 +15,30 @@ function renderGate(res, error = "", status = 200) {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.end(`<!doctype html><html lang="en" data-music-theme="dark">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Music — ASHWOOD</title><link rel="stylesheet" href="/music/music.css?v=listening-room-pet"></head>
-<body class="music-page music-page--demos"><main class="music-shell">
-<section class="music-signup" aria-labelledby="music-access-title">
-<h1 id="music-access-title">Enter the listening room</h1>
-<details class="listening-pet">
-<summary><span class="listening-pet__record" aria-hidden="true"><span class="listening-pet__face"></span></span><span class="listening-pet__label">A note from t.kap</span></summary>
-<p>Thanks for trusting me with your info. I’m really happy you’re here. I won’t sell your contact info or share it for anyone else’s marketing. If you opt in, you’ll only hear from me about t.kap music, like a new track or lyric video. No spam. — t.kap</p>
-</details>
-<p>Leave your name and either an email or a phone number to listen.</p>
+<title>demoDanceR — ASHWOOD</title><link rel="stylesheet" href="/music/music.css?v=night-drive-entry"></head>
+<body class="music-page music-page--demos"><main class="music-shell music-entry">
+<a class="music-entry__home" href="/">ASHWOOD</a>
+<section class="music-entry__door" aria-labelledby="music-access-title">
+<header class="music-entry__art">
+  <img src="/music/media/hlf-feature.webp" alt="" fetchpriority="high">
+  <div><p>t.kap’s listening room</p><h1 id="music-access-title">demoDanceR</h1></div>
+</header>
+<div class="music-signup music-entry__form">
+<h2>Come in and listen.</h2>
+<p>Unreleased demos and the HLF lyric video.</p>
 <form method="post" action="/music"><fieldset>
 <label for="guest-name">Name</label>
 <input id="guest-name" name="name" autocomplete="name" maxlength="80" required>
 <label for="guest-contact">Email or phone number</label>
 <input id="guest-contact" name="contact" maxlength="254" required>
-<label><input type="checkbox" name="updates" value="yes"> Send me related updates from t.kap, like new tracks and lyric videos.</label>
-<p>Updates are optional. You can unsubscribe anytime.</p>
-<button type="submit">Enter</button></fieldset>
+<label class="music-entry__optin"><input type="checkbox" name="updates" value="yes"> <span>Send me occasional t.kap release updates.</span></label>
+<button type="submit">Enter listening room <span aria-hidden="true">→</span></button></fieldset>
 <p role="status">${error}</p></form>
+<details class="listening-pet">
+<summary><span class="listening-pet__record" aria-hidden="true"><span class="listening-pet__face"></span></span><span class="listening-pet__label">A note from t.kap</span></summary>
+<p>Thanks for trusting me with your info. I’m really happy you’re here. I won’t sell your contact info or share it for anyone else’s marketing. Updates are optional, and if you choose them, you’ll only hear from me about t.kap music. No spam. — t.kap</p>
+</details>
+</div>
 </section></main></body></html>`);
 }
 
