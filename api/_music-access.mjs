@@ -17,23 +17,35 @@ function renderGate(res, error = "", status = 200) {
   res.end(`<!doctype html><html lang="en" data-music-theme="dark">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>demoDanceR — ASHWOOD</title><link rel="stylesheet" href="/music/music.css?v=night-drive-entry"><style>
-.music-entry__video { margin: 0 0 20px; }
-.music-entry__video summary { color: var(--ashwood-ochre); cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
-.music-entry__video video { display: block; width: min(100%, 240px); aspect-ratio: 9 / 16; margin: 0 auto 12px; border-radius: 8px; background: #080808; }
+.music-entry__video { position: relative; margin-top: 12px; }
+.music-entry__video summary { width: fit-content; padding: 10px 14px; border-radius: 5px; color: #17120e; background: #ffcb43; cursor: pointer; font-weight: 700; }
+.music-entry__video:not([open]) { position: static; }
+.music-entry__video:not([open]) summary::after { position: absolute; inset: 0; content: ""; }
+.music-entry__video summary:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.music-entry__video .music-entry__back, .music-entry__video[open] .music-entry__watch { display: none; }
+.music-entry__video[open] .music-entry__back { display: inline; }
+.music-entry__art:has(.music-entry__video[open]) { display: block; padding: 16px; background: #0b0a09; }
+.music-entry__art:has(.music-entry__video[open]) > img,
+.music-entry__art:has(.music-entry__video[open])::after { display: none; }
+.music-entry__art:has(.music-entry__video[open]) .music-entry__intro { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.music-entry__video[open] { margin: 0; }
+.music-entry__video[open] summary { margin-bottom: 12px; color: #ffcb43; background: transparent; padding-inline: 0 8px; }
+.music-entry__video video { display: block; width: min(100%, 300px); aspect-ratio: 9 / 16; margin-inline: auto; border-radius: 8px; background: #080808; }
+.music-entry__video p { margin-top: 10px; text-align: center; }
 </style></head>
 <body class="music-page music-page--demos"><main class="music-shell music-entry">
 <a class="music-entry__home" href="/">ASHWOOD</a>
 <section class="music-entry__door" aria-labelledby="music-access-title">
 <header class="music-entry__art">
   <img src="/music/media/hlf-feature.webp" alt="" fetchpriority="high">
-  <div><p>t.kap’s listening room</p><h1 id="music-access-title">demoDanceR</h1></div>
+  <div class="music-entry__intro"><p>t.kap’s listening room</p><h1 id="music-access-title">demoDanceR</h1></div>
+  <details class="music-entry__video">
+    <summary><span class="music-entry__watch">▶ Watch HLF</span><span class="music-entry__back">← Back to cover</span></summary>
+    <video controls playsinline preload="none" poster="/music/media/hlf-feature.webp" src="/music/listen/${entryVideo}" aria-label="HLF lyric video by t.kap"></video>
+    <p>t.kap · Produced by Bapop</p>
+  </details>
 </header>
 <div class="music-signup music-entry__form">
-<details class="music-entry__video">
-<summary>Watch HLF · Lyric video</summary>
-<p>t.kap · Produced by Bapop</p>
-<video controls playsinline preload="none" poster="/music/media/hlf-feature.webp" src="/music/listen/${entryVideo}" aria-label="HLF lyric video by t.kap"></video>
-</details>
 <h2>Come in and listen.</h2>
 <p>Enter the listening room for the rest of demoDanceR.</p>
 <form method="post" action="/music"><fieldset>
@@ -49,7 +61,18 @@ function renderGate(res, error = "", status = 200) {
 <p>Thanks for trusting me with your info. I’m really happy you’re here. I won’t sell your contact info or share it for anyone else’s marketing. Updates are optional, and if you choose them, you’ll only hear from me about t.kap music. No spam. — t.kap</p>
 </details>
 </div>
-</section></main></body></html>`);
+</section></main>
+<script>
+  const panel = document.querySelector(".music-entry__video");
+  const video = panel.querySelector("video");
+  panel.querySelector("summary").addEventListener("click", () => {
+    if (!panel.open) video.play().catch(() => {});
+  });
+  panel.addEventListener("toggle", () => {
+    if (!panel.open) video.pause();
+  });
+</script>
+</body></html>`);
 }
 
 export async function musicAccess(req, res) {
