@@ -17,6 +17,7 @@ function renderGate(res, error = "", status = 200) {
   res.end(`<!doctype html><html lang="en" data-music-theme="dark">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>demoDanceR — ASHWOOD</title><link rel="stylesheet" href="/music/music.css?v=night-drive-entry"><style>
+.music-entry__art { flex-direction: column; justify-content: flex-end; align-items: flex-start; }
 .music-entry__video { position: relative; margin-top: 12px; }
 .music-entry__video summary { width: fit-content; padding: 10px 14px; border-radius: 5px; color: #17120e; background: #ffcb43; cursor: pointer; font-weight: 700; }
 .music-entry__video:not([open]) { position: static; }
