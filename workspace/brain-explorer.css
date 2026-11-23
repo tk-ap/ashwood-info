@@ -1,0 +1,56 @@
+/* Native Self-view Brain. Inherits ASHWOOD Workspace's colors and type. */
+.brain-explorer{--brain-bg:#151d1b;margin:clamp(18px,3vw,38px) 0 clamp(48px,7vw,96px);padding:0;color:var(--ink);font-family:inherit}
+.brain-explorer__head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 20px}
+.brain-explorer__head h2{font-size:clamp(32px,5vw,66px);font-weight:400;line-height:1.03;letter-spacing:-.06em;margin:0}
+.brain-explorer__head p:last-child{color:var(--muted);font-size:14px;line-height:1.55;max-width:38ch;margin:0}
+.brain-explorer__demo{font-size:10px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);border-radius:40px;padding:8px 12px;color:var(--muted);white-space:nowrap;align-self:flex-start}
+.brain-explorer__scope[hidden],.brain-explorer__availability[hidden],.brain-explorer__quote[hidden]{display:none!important}
+.brain-explorer__availability{padding:44px 24px;border:1px solid var(--line);border-radius:8px;color:var(--muted)}
+.brain-explorer__stage{position:relative;overflow:hidden;min-height:410px;border:1px solid var(--line);border-radius:8px;background:var(--brain-bg)}
+.brain-explorer__canvas{display:block;width:100%;height:clamp(430px,53vw,630px);touch-action:none;outline-offset:-5px;cursor:grab}
+.brain-explorer__canvas:active{cursor:grabbing}
+.brain-explorer__stage-top{position:absolute;top:18px;left:22px;right:22px;display:flex;align-items:center;justify-content:space-between;gap:12px;pointer-events:none}
+.brain-explorer__stage-top span{color:#bdc5b8;font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+.brain-explorer__stage-controls{position:absolute;bottom:18px;left:22px;right:22px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brain-explorer__stage-controls p{margin:0;color:#abb8ab;font-size:12px}
+.brain-explorer__buttons{display:flex;gap:8px}
+.brain-explorer__buttons button{background:rgba(28,43,39,.90);color:#f1eee5;border:1px solid rgba(206,224,207,.33);border-radius:40px;min-height:40px;padding:8px 15px;font-size:12px;cursor:pointer}
+.brain-explorer__buttons button:hover{background:#34463c}
+.brain-explorer__reading{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(200px,.8fr);gap:clamp(22px,4vw,65px);border-bottom:1px solid var(--line);padding:clamp(24px,4vw,54px) 0}
+.brain-explorer__reading-main{min-width:0}
+.brain-explorer__reading-heading{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:0 0 20px}
+.brain-explorer__reading-title{font-size:clamp(30px,4vw,52px);font-weight:400;letter-spacing:-.05em;line-height:1.08;margin:0 0 10px}
+.brain-explorer__author{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 22px}
+.brain-explorer__quote{border:0;border-left:2px solid #dcaf78;padding:3px 0 4px 20px;margin:0 0 25px;font-family:Georgia,serif;font-size:clamp(19px,2.35vw,28px);font-style:italic;line-height:1.43;max-width:39ch}
+.brain-explorer__meaning{font-size:16px;line-height:1.65;max-width:66ch;margin:0 0 18px}
+.brain-explorer__source{display:inline-block;color:var(--ink);font-size:12px;text-underline-offset:4px;margin-top:5px}
+.brain-explorer__reading-side{border-left:1px solid var(--line);padding-left:clamp(20px,3vw,48px)}
+.brain-explorer__side-label{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin:0 0 12px}
+.brain-explorer__question{font-family:Georgia,serif;font-style:italic;font-size:clamp(18px,2vw,25px);line-height:1.35;margin:0 0 35px}
+.brain-explorer__connections{display:flex;gap:8px;flex-wrap:wrap}
+.brain-explorer__connection{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:10px 14px;min-height:42px;cursor:pointer;font-size:12px;text-align:left}
+.brain-explorer__connection:hover{border-color:var(--ink)}
+.brain-explorer__index{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:20px 0}
+.brain-explorer__index label{display:grid;gap:8px;color:var(--muted);font-size:11px;letter-spacing:.06em}
+.brain-explorer__index input,.brain-explorer__index select{width:min(100%,320px);min-width:190px;min-height:42px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:10px 12px;font-size:13px}
+.brain-explorer__index select{width:min(100%,360px)}
+.brain-explorer__note{color:var(--muted);font-size:11px;line-height:1.55;max-width:72ch;padding:4px 0 0;margin:0}
+html[data-ashwood-theme="paper-light"] .brain-explorer{--brain-bg:#22302b}
+@media (max-width:800px){
+  .brain-explorer__head{align-items:flex-start;flex-direction:column;gap:12px}
+  .brain-explorer__reading{grid-template-columns:1fr;gap:22px}
+  .brain-explorer__reading-side{border-left:0;border-top:1px solid var(--line);padding:24px 0 0}
+  .brain-explorer__question{margin-bottom:22px}
+}
+@media (max-width:560px){
+  .brain-explorer__stage{min-height:330px}
+  .brain-explorer__canvas{height:min(84vw,420px);min-height:330px}
+  .brain-explorer__stage-top{top:14px;left:14px;right:14px}
+  .brain-explorer__stage-controls{left:12px;right:12px;bottom:10px}
+  .brain-explorer__stage-controls p{font-size:10px}
+  .brain-explorer__buttons button{min-height:42px;padding:8px 11px}
+  .brain-explorer__index{display:grid;grid-template-columns:1fr}
+  .brain-explorer__index label{width:100%}
+  .brain-explorer__index input,.brain-explorer__index select{min-width:0;width:100%}
+}
+@media(prefers-reduced-motion:reduce){.brain-explorer__canvas{scroll-behavior:auto}}
