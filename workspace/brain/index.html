@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<title>Brain — ASHWOOD Workspace</title>
+<style>
+:root{color-scheme:dark;background:#101513;color:#eeeae1;font:16px/1.5 system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer;background:#b7d2c0;border:0;color:#122119;border-radius:7px;padding:.7rem 1rem}button:disabled{opacity:.5;cursor:wait}
+a{color:#cce2d1}.shell{max-width:1160px;padding:28px 22px 72px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #38443c;padding-bottom:22px}
+.eyebrow{letter-spacing:.13em;text-transform:uppercase;color:#a6bbaf;font-size:.7rem}h1{font-size:clamp(2.5rem,7vw,5rem);font-weight:500;letter-spacing:-.06em;line-height:1;margin:.45rem 0}p{color:#b4c3b7}
+.columns{display:grid;grid-template-columns:minmax(230px,1fr) minmax(0,2fr);gap:25px;margin-top:30px}
+.panel{border:1px solid #35443a;background:#18221d;border-radius:12px;padding:22px;min-width:0}h2{font-size:1.1rem;font-weight:550;margin:0 0 14px}
+input,textarea{width:100%;padding:.8rem;background:#0e1711;border:1px solid #566b5b;border-radius:7px;color:#fff}textarea{resize:vertical;min-height:180px}
+label{display:block;font-size:.82rem;color:#c3d5c7;margin:14px 0 7px}.items{display:grid;gap:8px;max-height:480px;overflow:auto}
+.note{display:block;background:#243028;color:#eeeae1;border:1px solid #3b4f40;text-align:left;width:100%;padding:13px;border-radius:8px}.note:hover,.note:focus-visible{border-color:#b7d2c0}.meta{font-size:.75rem;color:#a0b5a6;display:block}
+.bar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.secondary{background:transparent;border:1px solid #738878;color:#d9e9db}
+#status{min-height:1.5em;color:#d9e8d9}#viewer{white-space:pre-wrap;overflow-wrap:anywhere;background:#101a14;padding:16px;border-radius:7px;min-height:150px}
+.hidden{display:none}.warning{color:#f3c6a7}.layout{display:grid;gap:22px}
+@media(max-width:760px){.columns{grid-template-columns:1fr}.shell{padding:20px 14px}.top{align-items:flex-start}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top"><div><div class="eyebrow">ASHWOOD / PRIVATE WORKSPACE</div><h1>Second Brain</h1><p>Capture an idea. Find it later. Keep the source.</p></div><a href="/workspace/">Back to Workspace</a></header>
+<p id="status" role="status" aria-live="polite">Checking private access…</p>
+<section id="locked" class="panel hidden"><h2>Private access required</h2><p>Sign in through ASHWOOD Workspace, then return here. Notes are never loaded until the server validates your session.</p><a href="/workspace/">Open Workspace sign-in</a></section>
+<section id="brain" class="columns hidden">
+<aside class="panel layout">
+<div><h2>Find your notes</h2><label for="search">Search</label><input id="search" type="search" placeholder="Search saved ideas…" maxlength="200" autocomplete="off"></div>
+<div class="bar"><span class="eyebrow">Your notes</span><button id="refresh" class="secondary" type="button">Refresh</button></div>
+<div id="items" class="items" aria-live="polite"></div>
+</aside>
+<div class="layout">
+<section class="panel"><h2>Quick capture</h2><form id="capture"><label for="title">Title</label><input id="title" required maxlength="240" placeholder="A useful idea…" autocomplete="off"><label for="source">Source link (optional)</label><input id="source" type="url" maxlength="2048" placeholder="https://…"><label for="body">Notes (Markdown)</label><textarea id="body" maxlength="100000" placeholder="What matters? What connects to existing work?"></textarea><p class="eyebrow">Saved privately. Publishing is not enabled.</p><button id="save" type="submit">Save note</button></form></section>
+<section class="panel"><div class="bar"><h2>Selected note</h2><button id="export" type="button" class="secondary" disabled>Export Markdown</button></div><div id="viewer" aria-live="polite">Choose a saved note to read it.</div><p id="sourceLink"></p></section>
+</div>
+</section>
+</main>
+<script type="module">
+const $=id=>document.getElementById(id);
+let selected=null;
+function status(message,error=false){$('status').textContent=message;$('status').classList.toggle('warning',error)}
+async function request(path,options){
+ const res=await fetch(path,{credentials:'same-origin',cache:'no-store',...options});
+ if(res.status===401){$('brain').classList.add('hidden');$('locked').classList.remove('hidden');throw new Error('Sign in required')}
+ const payload=await res.json().catch(()=>({}));
+ if(!res.ok)throw new Error(payload.error||'Request failed');
+ return payload;
+}
+function showNotes(notes){
+ const items=$('items');items.replaceChildren();
+ if(!notes.length){const p=document.createElement('p');p.textContent='No matching notes yet.';items.append(p)}
+ for(const note of notes){
+ const b=document.createElement('button');b.type='button';b.className='note';
+ const title=document.createElement('span');title.textContent=note.title||'Untitled';
+ const meta=document.createElement('span');meta.className='meta';meta.textContent=new Date(note.updated_at).toLocaleDateString();
+ b.append(title,meta);b.addEventListener('click',()=>openNote(note.id));items.append(b)
+ }
+}
+async function list(){
+ try{const q=$('search').value.trim();const data=await request('/api/workspace-brain?limit=30&q='+encodeURIComponent(q));showNotes(data.notes);status(q?'Search results ready.':'Notes ready.')}
+ catch(e){status(e.message,true)}
+}
+async function openNote(id){
+ try{const data=await request('/api/workspace-brain?id='+encodeURIComponent(id));const n=data.note;
+ selected=id;$('viewer').textContent='# '+n.title+'\n\n'+(n.body_markdown||'');$('export').disabled=false;
+ const p=$('sourceLink');p.replaceChildren();
+ if(n.source_url){const a=document.createElement('a');a.href=n.source_url;a.textContent='View original source';a.rel='noopener noreferrer';a.target='_blank';p.append(a)}
+ status('Note loaded.')}
+ catch(e){status(e.message,true)}
+}
+$('capture').addEventListener('submit',async e=>{
+ e.preventDefault();const save=$('save');save.disabled=true;
+ try{const data=await request('/api/workspace-brain',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({title:$('title').value,body_markdown:$('body').value,source_url:$('source').value})});
+ $('capture').reset();await list();await openNote(data.note.id);status('Note saved privately.')}
+ catch(e){status(e.message,true)}finally{save.disabled=false}
+});
+let searchDelay; $('search').addEventListener('input',()=>{clearTimeout(searchDelay);searchDelay=setTimeout(list,300)});
+$('refresh').addEventListener('click',list);
+$('export').addEventListener('click',async()=>{
+ if(!selected)return;
+ try{
+ const res=await fetch('/api/workspace-brain?action=export&id='+encodeURIComponent(selected),{credentials:'same-origin',cache:'no-store'});
+ if(!res.ok)throw new Error(res.status===401?'Sign in required':'Export unavailable');
+ const text=await res.text();const blob=new Blob([text],{type:'text/markdown;charset=utf-8'});
+ const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='ashwood-brain-note.md';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);
+ status('Markdown exported.');
+ }catch(e){status(e.message,true)}
+});
+try{const auth=await request('/api/workspace-auth');if(!auth.authenticated)throw new Error('Sign in required');
+ $('brain').classList.remove('hidden');await list();
+}catch(e){$('locked').classList.remove('hidden');status(e.message,true)}
+</script>
+</body></html>
