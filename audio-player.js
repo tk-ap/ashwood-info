@@ -3,19 +3,42 @@
 
   const TRACK = Object.freeze({
     id: "in-me",
+    artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/85/2f/53/852f53d5-dae5-38d3-fac6-38355bb0de55/artwork.jpg/100x100bb.jpg",
     title: "IN ME",
     artist: "t.kap feat. Cashden",
     dspUrl: "https://distrokid.com/hyperfollow/tkap/in-me-feat-cashden?ref=release",
-    source: "/audio/in-me.mp3"
+    source: "https://ashwood-info.vercel.app/audio/in-me.mp3"
   });
 
   /* IN ME stays the canonical first entry, so if the library never loads the player
      behaves exactly as it always has. Anything published from ASHWOOD Drop is appended
      after it, which makes the mini player one continuous playlist across the site
      rather than a single hard-coded song. */
-  let playlist = [TRACK];
+  const demos = document.querySelector("[data-ashwood-demos]");
+  const hiddenTracks = new Set(demos?.dataset.hiddenTracks?.split(/\s+/) || []);
+  const demoRows = [...(demos?.querySelectorAll("[data-demo-id]") || [])];
+  const video = demos?.querySelector("video");
+  const videoPanel = video?.closest(".demos__video-panel");
+  const videoStatus = videoPanel?.querySelector("[role=status]");
+  const demoVideo = demoRows.find(row => row.contains(video));
+  const videoSource = video ? () => video.dataset.source : null;
+  const demoBase = (row) => ({
+    id: `demo-${row.dataset.demoId}`, title: row.dataset.demoTitle,
+    artist: "t.kap", artwork: demos.querySelector(".demos__header img").src, dspUrl: demos.dataset.sourceUrl
+  });
+  const demoTracks = videoSource ? [{ ...demoBase(demoVideo), source: videoSource, video }] : [];
+  const nativeDemos = demoRows.filter(row => row.dataset.demoSource);
+  for (const row of nativeDemos) {
+    demoTracks.push({ ...demoBase(row), source: row.dataset.demoSource });
+  }
+  let playlist = [TRACK, ...demoTracks];
   let trackIndex = 0;
   const current = () => playlist[trackIndex] || TRACK;
+  let siteTracks = [];
+  let soundCloudTracks = [];
+  const soundCloudRows = new Map();
+  const soundCloudQueue = document.querySelector("[data-soundcloud-tracks]");
+  const soundCloudStatus = document.querySelector("[data-soundcloud-status]");
 
   const STORAGE_KEY = "ashwood.audio.v1";
   const UI_STORAGE_KEY = "ashwood.audio.ui.v1";
@@ -119,21 +142,47 @@
   const audio = new Audio();
   audio.preload = "metadata";
   audio.volume = state.volume;
-  if (TRACK.source) audio.src = TRACK.source;
+  if (TRACK.source && (!demos || state.wasPlaying)) audio.src = TRACK.source;
 
-  const isMusicPage = location.pathname.replace(/\/+$/, "") === "/music";
+  let media = audio;
+  const isMusicPage = document.body.classList.contains("music-page");
   document.body.classList.add("ashwood-has-audio");
   if (isMusicPage) document.body.classList.add("ashwood-has-audio-room");
   installPreviewPlayerStyles();
 
+  const playerIcon = path => `<svg width="19" height="19" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false"><path d="${path}"/></svg>`;
+  const transport = {
+    play: playerIcon("M6 3.5v13l10-6.5z"),
+    pause: playerIcon("M5.5 4h3v12h-3zm6 0h3v12h-3z"),
+    previous: playerIcon("M4 4h2v12H4zm12 0v12L7 10z"),
+    next: playerIcon("M14 4h2v12h-2zM4 4v12l9-6z")
+  };
+  const themeButton = document.querySelector("[data-music-theme-toggle]");
+  if (themeButton) {
+    const root = document.documentElement;
+    const labelTheme = () => {
+      themeButton.textContent = root.dataset.musicTheme === "light" ? "Dark mode" : "Light mode";
+    };
+    labelTheme();
+    themeButton.hidden = false;
+    themeButton.addEventListener("click", () => {
+      const theme = root.dataset.musicTheme === "light" ? "dark" : "light";
+      root.dataset.musicTheme = theme;
+      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#121212" : "#ffffff";
+      try { localStorage.setItem("ashwood.music.theme", theme); } catch (_) {}
+      labelTheme();
+    });
+  }
+  let collectionQueued = Boolean(demos);
   const player = document.createElement("aside");
   player.className = `ashwood-audio${isMusicPage ? " ashwood-audio--room" : ""}`;
+  if (demos) player.classList.add("ashwood-audio--demos");
   player.setAttribute("aria-label", "ASHWOOD audio player");
   player.innerHTML = `
     <div class="ashwood-audio__bar">
-      <button class="ashwood-audio__step ashwood-audio__step--prev" type="button" aria-label="Previous track" hidden>‹</button>
+      <button class="ashwood-audio__step ashwood-audio__step--prev" type="button" aria-label="Previous track" hidden>${demos ? transport.previous : "‹"}</button>
       <button class="ashwood-audio__toggle" type="button" ${TRACK.source ? "" : "disabled"}>${TRACK.source ? "Sound off" : "Audio pending"}</button>
-      <button class="ashwood-audio__step ashwood-audio__step--next" type="button" aria-label="Next track" hidden>›</button>
+      <button class="ashwood-audio__step ashwood-audio__step--next" type="button" aria-label="Next track" hidden>${demos ? transport.next : "›"}</button>
       <div class="ashwood-audio__identity">
         <p class="ashwood-audio__eyebrow">${isMusicPage ? "Released / Now playing" : "ASHWOOD sound"}</p>
         <p class="ashwood-audio__title">${TRACK.title}</p>
@@ -156,6 +205,12 @@
       </div>
     </div>
     <button class="ashwood-audio__collapse" type="button" aria-expanded="true" aria-label="Collapse audio player">−</button>`;
+  if (demos) {
+    const art = demos.querySelector(".demos__header img").cloneNode();
+    art.className = "ashwood-audio__art";
+    art.alt = "";
+    player.prepend(art);
+  }
   document.body.append(player);
 
   const toggle = player.querySelector(".ashwood-audio__toggle");
@@ -167,7 +222,13 @@
   const nextButton = player.querySelector(".ashwood-audio__step--next");
   const titleNode = player.querySelector(".ashwood-audio__title");
   const artistNode = player.querySelector(".ashwood-audio__artist");
+  const artworkNode = player.querySelector(".ashwood-audio__art");
+  const emptyArtwork = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="#292724"/><text x="50" y="57" text-anchor="middle" fill="#eee" font-family="Arial" font-size="16">t.kap</text></svg>');
+  if (artworkNode) artworkNode.addEventListener("error", () => {
+    if (artworkNode.getAttribute("src") !== emptyArtwork) artworkNode.src = emptyArtwork;
+  });
   const dspLink = player.querySelector(".ashwood-audio__dsp");
+  const sourceNote = player.querySelector(".ashwood-audio__source-note");
   const mobile = window.matchMedia("(max-width: 760px)");
 
   const formatTime = (seconds) => {
@@ -180,9 +241,9 @@
     state = {
       ...state,
       trackId: current().id,
-      position: Number.isFinite(audio.currentTime) ? audio.currentTime : state.position,
-      volume: audio.volume,
-      wasPlaying: !audio.paused && !audio.ended,
+      position: Number.isFinite(media.currentTime) ? media.currentTime : state.position,
+      volume: media.volume,
+      wasPlaying: !media.paused && !media.ended,
       ...overrides
     };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
@@ -202,31 +263,60 @@
   };
 
   const render = () => {
-    const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
-    const position = Number.isFinite(audio.currentTime) ? audio.currentTime : state.position;
+    const duration = Number.isFinite(media.duration) ? media.duration : 0;
+    const position = Number.isFinite(media.currentTime) ? media.currentTime : state.position;
     time.textContent = `${formatTime(position)} / ${formatTime(duration || NaN)}`;
+    if (demos) progress.disabled = !duration;
     progress.max = String(duration);
     progress.value = String(Math.min(position, duration || position));
-    if (current().source) toggle.textContent = audio.paused ? (state.wasPlaying ? "Resume" : "Sound off") : "Pause";
-    player.classList.toggle("is-playing", !audio.paused && !audio.ended);
+    if (current().source) {
+      const label = media.paused ? (demos || current().video || state.wasPlaying ? "Play" : "Sound off") : "Pause";
+      if (demos) {
+        const icon = media.paused ? "play" : "pause";
+        if (toggle.dataset.icon !== icon) {
+          toggle.innerHTML = transport[icon];
+          toggle.dataset.icon = icon;
+        }
+        toggle.setAttribute("aria-label", label);
+      } else toggle.textContent = label;
+    }
+    player.classList.toggle("is-playing", !media.paused && !media.ended);
   };
 
   const play = async () => {
     if (!current().source) return;
+    const target = media;
     try {
-      await audio.play();
+      if (target.error) target.load();
+      if (target === video) videoStatus.hidden = true;
+      await target.play();
+      if (target !== media) return;
       saveState({ wasPlaying: true });
     } catch (_) {
+      if (target !== media) return;
       saveState({ wasPlaying: true });
-      toggle.textContent = "Resume";
+      if (target === video && !target.error) {
+        videoStatus.textContent = "Tap play on the video to start.";
+        videoStatus.hidden = false;
+      } else if (!demos) toggle.textContent = "Resume";
     }
     render();
   };
 
   const renderIdentity = () => {
     const track = current();
-    titleNode.textContent = track.title;
-    artistNode.textContent = track.artist;
+    for (const [id, row] of soundCloudRows) {
+      if (id === track.id) row.setAttribute("aria-current", "true");
+      else row.removeAttribute("aria-current");
+    }
+    titleNode.textContent = collectionQueued ? demos.querySelector("h2").textContent.trim() : track.title;
+    artistNode.textContent = collectionQueued ? "t.kap" : track.artist;
+    const artwork = collectionQueued ? demos.querySelector(".demos__header img").src : track.artwork;
+    if (artworkNode) {
+      const source = artwork || emptyArtwork;
+      if (artworkNode.getAttribute("src") !== source) artworkNode.src = source;
+    }
+    sourceNote.textContent = track.video ? "Playing the HLF lyric video." : "Playback continues across ASHWOOD pages.";
     if (track.dspUrl) { dspLink.href = track.dspUrl; dspLink.hidden = false; }
     else dspLink.hidden = true;
     // The stepper is meaningless with a single track, so it stays out of the way
@@ -236,68 +326,157 @@
     nextButton.hidden = !many;
     prevButton.disabled = trackIndex === 0;
     nextButton.disabled = trackIndex >= playlist.length - 1;
-    loadPlaylist();
-
-  if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist });
+    if (navigator.mediaSession && typeof MediaMetadata === "function") {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist, artwork: artwork ? [{ src: artwork }] : [] });
     }
   };
 
-  const setTrack = (index, { autoplay = false } = {}) => {
+  const setTrack = (index, { autoplay = false, position = 0 } = {}) => {
     if (index < 0 || index >= playlist.length) return;
+    collectionQueued = false;
+    const previous = media;
+    previous.pause();
+    const volumeSetting = previous.volume;
     trackIndex = index;
     const track = current();
-    state = { ...state, position: 0 };
-    lastPositionSave = 0;
-    audio.src = track.source;
+    media = track.controller || track.video || audio;
+    media.volume = volumeSetting;
+    if (soundCloudStatus) soundCloudStatus.hidden = true;
+    state = { ...state, trackId: track.id, position, wasPlaying: autoplay };
+    lastPositionSave = position;
+    const source = typeof track.source === "function" ? track.source() : track.source;
+    if (videoPanel) {
+      videoPanel.hidden = !track.video;
+      demoVideo.querySelector("button").setAttribute("aria-expanded", String(Boolean(track.video)));
+      videoStatus.hidden = true;
+    }
+    if (track.controller) track.controller.select(track, position);
+    else media.src = source;
     renderIdentity();
-    saveState({ position: 0, wasPlaying: autoplay });
+    saveState({ position, wasPlaying: autoplay });
     if (autoplay) play();
     render();
   };
 
-  prevButton.addEventListener("click", () => setTrack(trackIndex - 1, { autoplay: !audio.paused }));
-  nextButton.addEventListener("click", () => setTrack(trackIndex + 1, { autoplay: !audio.paused }));
+  prevButton.addEventListener("click", () => setTrack(trackIndex - 1, { autoplay: !media.paused }));
+  nextButton.addEventListener("click", () => setTrack(trackIndex + 1, { autoplay: !media.paused }));
 
   /* Published ASHWOOD Drop uploads become the rest of the playlist. This runs on every
      page because the player is rebuilt per page; a failure leaves the single canonical
      track in place rather than breaking playback. */
+  const normalize = title => String(title || "").toLowerCase()
+    .replace(/\s*\(prod(?:uced)?[.\s][^)]*\).*$/, "").replace(/[^a-z0-9]+/g, "");
+  const enableDemo = (row, id) => {
+    const button = row.querySelector("[data-demo-select]");
+    button.disabled = false;
+    button.hidden = false;
+    const fallback = row.querySelector("[data-demo-fallback]");
+    if (fallback) fallback.hidden = true;
+    button.addEventListener("click", () => {
+      setCollapsed(false);
+      if (current().id === id) {
+        if (media.paused) play();
+        else { media.pause(); saveState(); render(); }
+      } else setTrack(playlist.findIndex(track => track.id === id), { autoplay: true });
+      if (row === demoVideo && media === video) video.focus({ preventScroll: true });
+    });
+  };
+  if (demoVideo) enableDemo(demoVideo, "demo-hlf");
+  for (const row of nativeDemos) enableDemo(row, `demo-${row.dataset.demoId}`);
+
+  const updatePlaylist = () => {
+    const selectedId = current().id;
+    playlist = [TRACK, ...demoTracks, ...siteTracks, ...soundCloudTracks];
+    trackIndex = Math.max(0, playlist.findIndex(track => track.id === selectedId));
+    renderIdentity();
+    render();
+  };
+
+  const loadSoundCloudQueue = tracks => {
+    if (!soundCloudQueue || soundCloudTracks.length) return;
+    soundCloudTracks = tracks;
+    for (const track of tracks) {
+      const row = document.createElement("li");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.innerHTML = transport.play;
+      const title = document.createElement("span");
+      title.textContent = track.title;
+      const time = document.createElement("span");
+      time.className = "music-native-duration";
+      time.textContent = formatTime(track.duration);
+      button.append(title, time);
+      button.addEventListener("click", () => {
+        const index = playlist.findIndex(item => item.id === track.id);
+        if (current().id !== track.id) setTrack(index, { autoplay: true });
+        else if (media.paused) play();
+        else media.pause();
+      });
+      row.append(button);
+      soundCloudQueue.append(row);
+      soundCloudRows.set(track.id, button);
+    }
+    soundCloudQueue.hidden = false;
+    document.querySelector("[data-soundcloud-drawer]").hidden = true;
+    updatePlaylist();
+    if (current().id === TRACK.id && state.trackId?.startsWith("soundcloud-")) {
+      const index = playlist.findIndex(track => track.id === state.trackId);
+      if (index > 0) setTrack(index, { position: state.position });
+    }
+  };
+
   const loadPlaylist = async () => {
     try {
-      const res = await fetch("/api/music-library", { cache: "no-store" });
+      const res = await fetch("/music/published.json", { cache: "no-store" });
       if (!res.ok) return;
       const body = await res.json();
-      const seen = new Set([String(TRACK.title).toLowerCase().replace(/[^a-z0-9]+/g, "")]);
+      const seen = new Set([TRACK, ...demoTracks].map(track => normalize(track.title)));
       const added = (Array.isArray(body.tracks) ? body.tracks : []).reduce((list, row) => {
-        const key = String(row.title || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
-        if (!row.url || !key || seen.has(key)) return list;
+        const key = normalize(row.title);
+        if (!row.url || !key || hiddenTracks.has(key) || seen.has(key) || (demoVideo && key === demoVideo.dataset.demoId)) return list;
         seen.add(key);
         list.push({
           id: `upload-${row.id}`,
           title: row.title,
           artist: row.artist || "t.kap",
+          artwork: row.artwork_url || row.artwork || "",
           dspUrl: row.source_url || "",
           source: row.url
         });
         return list;
       }, []);
-      if (!added.length) return;
-      playlist = [TRACK, ...added];
-      // Resume whatever was playing before navigation, now that its track exists again.
+      const availableDemos = demoRows.filter(row => row !== demoVideo).flatMap(row => {
+        const match = added.find(track => normalize(track.title) === row.dataset.demoId);
+        if (!match) return [];
+        const track = { ...match, ...demoBase(row) };
+        enableDemo(row, track.id);
+        return [track];
+      });
+      const usedSources = new Set(availableDemos.map(track => track.source));
+      siteTracks = [...availableDemos, ...added.filter(track => !usedSources.has(track.source))];
+      updatePlaylist();
       const savedIndex = playlist.findIndex(track => track.id === state.trackId);
-      if (savedIndex > 0) {
-        trackIndex = savedIndex;
-        audio.src = playlist[savedIndex].source;
+      if (savedIndex > 0 && current().id === TRACK.id) {
+        const { position, wasPlaying } = state;
+        setTrack(savedIndex, { autoplay: wasPlaying, position });
       }
       renderIdentity();
       render();
     } catch (_) { /* the canonical track is already playing; nothing to recover */ }
   };
 
+  document.querySelector("[data-play-release]")?.addEventListener("click", () => {
+    if (current().id !== TRACK.id || collectionQueued || !audio.getAttribute("src")) {
+      setTrack(0, { autoplay: true });
+    } else if (media.paused) play();
+    else media.pause();
+  });
+
   toggle.addEventListener("click", () => {
-    if (audio.paused) play();
+    if (collectionQueued) { setTrack(1, { autoplay: true }); return; }
+    if (media.paused) play();
     else {
-      audio.pause();
+      media.pause();
       saveState({ wasPlaying: false });
       render();
     }
@@ -310,35 +489,67 @@
   });
 
   volume.addEventListener("input", () => {
-    audio.volume = Number(volume.value);
+    media.volume = Number(volume.value);
     saveState();
   });
 
   progress.addEventListener("input", () => {
-    if (Number.isFinite(audio.duration)) audio.currentTime = Number(progress.value);
+    if (Number.isFinite(media.duration)) media.currentTime = Number(progress.value);
     saveState();
     render();
   });
 
-  audio.addEventListener("loadedmetadata", () => {
-    audio.currentTime = Math.min(state.position, audio.duration || state.position);
+  const soundCloudMedia = window.connectAshwoodSoundCloud?.(
+    document.querySelector("#soundcloud-playback"), loadSoundCloudQueue
+  );
+  soundCloudMedia?.addEventListener("error", () => {
+    if (media !== soundCloudMedia) return;
+    soundCloudStatus.textContent = "SoundCloud could not start playback. You can open the playlist in SoundCloud below.";
+    soundCloudStatus.hidden = false;
+    saveState({ wasPlaying: false });
     render();
-    if (state.wasPlaying) play();
   });
-  audio.addEventListener("play", render);
-  audio.addEventListener("pause", render);
-  audio.addEventListener("timeupdate", () => {
-    render();
-    if (Math.abs(audio.currentTime - lastPositionSave) >= 5) {
-      lastPositionSave = audio.currentTime;
+
+  for (const element of [audio, video, soundCloudMedia].filter(Boolean)) {
+    element.addEventListener("loadedmetadata", () => {
+      if (element !== media) return;
+      if (state.trackId === current().id) {
+        media.currentTime = Math.min(state.position, media.duration || state.position);
+        if (state.wasPlaying && media.paused) play();
+      }
+      render();
+    });
+    for (const event of ["play", "pause"]) element.addEventListener(event, () => {
+      if (element !== media || element.ended) return;
       saveState();
-    }
-  });
-  audio.addEventListener("volumechange", () => { volume.value = String(audio.volume); });
-  audio.addEventListener("ended", () => {
-    if (trackIndex < playlist.length - 1) { setTrack(trackIndex + 1, { autoplay: true }); return; }
-    saveState({ position: 0, wasPlaying: false });
-    render();
+      render();
+    });
+    element.addEventListener("timeupdate", () => {
+      if (element !== media) return;
+      render();
+      if (Math.abs(media.currentTime - lastPositionSave) >= 5) {
+        lastPositionSave = media.currentTime;
+        saveState();
+      }
+    });
+    element.addEventListener("volumechange", () => {
+      if (element === media) volume.value = String(media.volume);
+    });
+    element.addEventListener("ended", () => {
+      if (element !== media) return;
+      const next = playlist[trackIndex + 1];
+      if (next && (!current().id.startsWith("demo-") || next.id.startsWith("demo-"))) {
+        setTrack(trackIndex + 1, { autoplay: true });
+        return;
+      }
+      saveState({ position: 0, wasPlaying: false });
+      render();
+    });
+  }
+  video?.addEventListener("error", () => {
+    if (media !== video) return;
+    videoStatus.hidden = false;
+    videoStatus.textContent = "HLF could not load. Try playing it again or open the Untitled collection.";
   });
 
   document.addEventListener("click", (event) => {
@@ -348,20 +559,22 @@
   window.addEventListener("pagehide", () => saveState());
   document.addEventListener("visibilitychange", () => { if (document.hidden) saveState(); });
 
-  if ("mediaSession" in navigator) {
+  if (navigator.mediaSession && typeof MediaMetadata === "function") {
     navigator.mediaSession.metadata = new MediaMetadata({ title: TRACK.title, artist: TRACK.artist });
     navigator.mediaSession.setActionHandler("play", play);
-    navigator.mediaSession.setActionHandler("pause", () => { audio.pause(); saveState({ wasPlaying: false }); render(); });
+    navigator.mediaSession.setActionHandler("pause", () => { media.pause(); saveState({ wasPlaying: false }); render(); });
   }
 
-  setCollapsed(mobile.matches ? true : uiState.collapsed);
+  setCollapsed(demos ? false : mobile.matches ? true : uiState.collapsed);
   const handleViewportChange = (event) => {
-    if (event.matches) setCollapsed(true);
+    if (!demos && event.matches) setCollapsed(true);
   };
   if (mobile.addEventListener) mobile.addEventListener("change", handleViewportChange);
   else mobile.addListener(handleViewportChange);
 
+  if (demos) renderIdentity();
   render();
+  queueMicrotask(loadPlaylist);
 })();
 
 /* Home-only editorial teaser for the inaugural ASHWOOD Dispatch. */
