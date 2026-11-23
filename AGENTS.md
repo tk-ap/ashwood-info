@@ -77,6 +77,7 @@ ASHWOOD's UI and private Workspace should feel alive: a living, breathing workin
 ### Sandbox vs Production Guardrail
 
 - **Vercel is production-only for ASHWOOD.** Do not create, require, wait for, or troubleshoot Vercel Preview deployments for ordinary sandbox/review work.
+- **Owner-authorized modeling exception (2026-11-09):** TK requested Vercel previews for modeling portfolio updates. `feature/adobe-archive-stories` may deploy to Vercel Preview for this review; keep production promotion human-gated. Other sandbox work retains the here.now default.
 - **here.now is the canonical sandbox / preview surface.** Use the stable sandbox defined in `.agent-os/deployment.yaml` for visual review, branch validation, and pre-production verification.
 - A branch named `preview`, a preview-scoped environment variable, or a PR does **not** imply that Vercel Preview is part of the release path.
 - Before any deployment action, resolve the target from `.agent-os/deployment.yaml`: sandbox work goes to here.now; production work goes to Vercel.
