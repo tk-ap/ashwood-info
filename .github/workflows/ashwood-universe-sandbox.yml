@@ -2,6 +2,9 @@ name: ASHWOOD Universe sandbox preview
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - codex/ashwood-universe-destin-inspo-20261124
 
 permissions:
   contents: read
