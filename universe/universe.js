@@ -11,6 +11,8 @@ if (root) {
   const viewport = root.querySelector('[data-universe-viewport]');
   const resetFieldButton = root.querySelector('[data-universe-reset]');
   const fieldStatus = root.querySelector('[data-universe-view-status]');
+  const field = root.querySelector('[data-universe-field]');
+  const entranceActions = root.querySelectorAll('[data-universe-enter]');
   const byId = new Map(universeEntries.map(entry => [entry.id, entry]));
   let activeGroup = 'all';
   let activeId = 'modeling';
@@ -248,4 +250,22 @@ if (root) {
   resetFieldButton?.addEventListener('click', () => resetField({ announce: true }));
 
   render();
+
+  entranceActions.forEach(action => {
+    action.addEventListener('click', event => {
+      event.preventDefault();
+      const group = action.dataset.universeGroup || 'all';
+      activeGroup = universeGroups.some(candidate => candidate.id === group) ? group : 'all';
+      const next = visibleEntries()[0];
+      if (next) activeId = next.id;
+      render();
+      resetField({ announce: true });
+      field?.classList.add('is-entering');
+      window.setTimeout(() => field?.classList.remove('is-entering'), 900);
+      field?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start'
+      });
+    });
+  });
 }

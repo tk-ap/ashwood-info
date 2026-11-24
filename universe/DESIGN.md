@@ -16,6 +16,7 @@
 | Clear destinations | Every signal still opens an established ASHWOOD route; held material remains visibly non-public. |
 | Input guidance | The field prints its available controls and includes a reset action plus a live view scale. |
 | Alternate grammar | Mobile remains a linear signal list. Reduced-motion users get the stable map/index with navigation controls removed. |
+| Immediate offer | The opening is a concise threshold: one all-field action and three real group routes that scroll, filter, and visibly arrive at the map. |
 
 ## Acceptance boundaries
 
