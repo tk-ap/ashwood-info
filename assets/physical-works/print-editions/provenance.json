@@ -1,0 +1,35 @@
+{
+  "policy": "Public images are web-sized derivatives of the actual submitted print raster. Original photography remains in the original gallery. Do not publish printable masters.",
+  "sourceDimensionsPx": [
+    3600,
+    4800
+  ],
+  "sourceDpi": 200,
+  "displayDimensionsPx": [
+    960,
+    1280
+  ],
+  "entries": [
+    {
+      "name": "Yellow Portrait",
+      "webAsset": "yellow-portrait.webp",
+      "source": "ASHWOOD_Yellow_Portrait_18x24_200DPI_Octavia_Lab_Submission.png",
+      "sourceRasterSha256": "21002a49992eac972965cb4e92afdd5b1e78f93162e713e150b26f2444477dc5",
+      "gitBlobSha": "f5401553288664f8a8522e1a09d1aa9c82b7d078"
+    },
+    {
+      "name": "Red Portrait",
+      "webAsset": "red-portrait.webp",
+      "source": "ASHWOOD_Red_Portrait_SIGNED_2026_18x24_200DPI.png",
+      "sourceRasterSha256": "deaabfa89ff8764ce106b9dc7e819d76ec86a49dc9d2abe3d78012d7907866ea",
+      "gitBlobSha": "7e71f57fd6e3fe57cd377e90c925a0cf36453d7d"
+    },
+    {
+      "name": "Nothing Is Good",
+      "webAsset": "nothing-is-good.webp",
+      "source": "02_Nothing_Is_Good_18x24_200DPI.pdf (embedded raster)",
+      "sourceRasterSha256": "8f172f10277bf7164760a68ae9b30c06bc5a84aa5e699d27661ee7c5471d633d",
+      "gitBlobSha": "ad406ae26b3cfa5d9c819799cabdf31bf0aefc6b"
+    }
+  ]
+}
