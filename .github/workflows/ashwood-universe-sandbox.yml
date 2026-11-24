@@ -1,7 +1,14 @@
 name: ASHWOOD Universe sandbox preview
 
+# One branch-scoped run is needed because GitHub does not expose manual
+# dispatch for workflows that exist only on a feature branch. This is restored
+# to manual-only immediately after the sandbox receipt is captured.
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - codex/ashwood-universe-destin-inspo-20261124
+    paths:
+      - '.github/workflows/ashwood-universe-sandbox.yml'
 
 permissions:
   contents: read
