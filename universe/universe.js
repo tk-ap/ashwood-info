@@ -8,9 +8,14 @@ if (root) {
   const index = root.querySelector('[data-universe-index]');
   const inspector = root.querySelector('[data-universe-inspector]');
   const count = root.querySelector('[data-universe-count]');
+  const viewport = root.querySelector('[data-universe-viewport]');
+  const resetFieldButton = root.querySelector('[data-universe-reset]');
+  const fieldStatus = root.querySelector('[data-universe-view-status]');
   const byId = new Map(universeEntries.map(entry => [entry.id, entry]));
   let activeGroup = 'all';
   let activeId = 'modeling';
+  let fieldView = { x: 0, y: 0, scale: 1 };
+  let dragState = null;
 
   const visibleEntries = () => universeEntries.filter(entry => activeGroup === 'all' || entry.group === activeGroup);
   const make = (tag, className, text) => {
@@ -20,7 +25,48 @@ if (root) {
     return node;
   };
 
-  const inspect = (id, { focus = false } = {}) => {
+  const canNavigateField = () => Boolean(
+    viewport &&
+    window.matchMedia('(min-width: 721px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches
+  );
+
+  const clamp = (value, limit) => Math.min(limit, Math.max(-limit, value));
+
+  const normalizeFieldView = () => {
+    if (!viewport) return;
+    fieldView.scale = Math.min(1.65, Math.max(1, fieldView.scale));
+    const bounds = viewport.getBoundingClientRect();
+    fieldView.x = clamp(fieldView.x, bounds.width * (fieldView.scale - 1) * .46);
+    fieldView.y = clamp(fieldView.y, bounds.height * (fieldView.scale - 1) * .46);
+  };
+
+  const updateFieldView = ({ announce = false } = {}) => {
+    if (!stage) return;
+    if (!canNavigateField()) {
+      stage.style.removeProperty('transform');
+      return;
+    }
+    normalizeFieldView();
+    stage.style.transform = `translate(${fieldView.x}px, ${fieldView.y}px) scale(${fieldView.scale})`;
+    if (resetFieldButton) resetFieldButton.disabled = fieldView.scale === 1 && fieldView.x === 0 && fieldView.y === 0;
+    if (fieldStatus && announce) fieldStatus.textContent = `Field view · ${Math.round(fieldView.scale * 100)}%`;
+  };
+
+  const resetField = ({ announce = false } = {}) => {
+    fieldView = { x: 0, y: 0, scale: 1 };
+    updateFieldView({ announce });
+  };
+
+  const travelTo = (entry) => {
+    if (!canNavigateField() || !viewport) return;
+    const bounds = viewport.getBoundingClientRect();
+    fieldView.scale = Math.max(fieldView.scale, 1.14);
+    fieldView.x = -((entry.x / 100) - .5) * bounds.width * fieldView.scale;
+    fieldView.y = -((entry.y / 100) - .5) * bounds.height * fieldView.scale;
+    updateFieldView({ announce: true });
+  };
+
+  const inspect = (id, { focus = false, travel = false } = {}) => {
     const entry = byId.get(id);
     if (!entry) return;
     activeId = id;
@@ -48,6 +94,7 @@ if (root) {
       const [from, to] = line.dataset.connection.split(':');
       line.classList.toggle('is-active', from === id || to === id);
     });
+    if (travel) travelTo(entry);
     if (focus) inspector.focus({ preventScroll: true });
   };
 
@@ -105,7 +152,7 @@ if (root) {
         make('span', 'universe-node__label', entry.label),
         make('strong', 'universe-node__title', entry.title)
       );
-      button.addEventListener('click', () => inspect(entry.id, { focus: true }));
+      button.addEventListener('click', () => inspect(entry.id, { focus: true, travel: true }));
       button.addEventListener('focus', () => inspect(entry.id));
       button.addEventListener('mouseenter', () => inspect(entry.id));
       stage.append(button);
@@ -141,7 +188,39 @@ if (root) {
       ? `${publicCount} public ${publicCount === 1 ? 'thread' : 'threads'} · ${heldCount} held for review`
       : `${publicCount} public ${publicCount === 1 ? 'thread' : 'threads'}`;
     inspect(activeId);
+    updateFieldView();
   };
+
+  if (viewport) {
+    viewport.addEventListener('pointerdown', event => {
+      if (!canNavigateField() || event.pointerType !== 'mouse' || event.target.closest('[data-entry]')) return;
+      dragState = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, originX: fieldView.x, originY: fieldView.y };
+      viewport.setPointerCapture(event.pointerId);
+      viewport.classList.add('is-dragging');
+    });
+    viewport.addEventListener('pointermove', event => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      fieldView.x = dragState.originX + event.clientX - dragState.startX;
+      fieldView.y = dragState.originY + event.clientY - dragState.startY;
+      updateFieldView();
+    });
+    const finishDrag = event => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      dragState = null;
+      viewport.classList.remove('is-dragging');
+      updateFieldView({ announce: true });
+    };
+    viewport.addEventListener('pointerup', finishDrag);
+    viewport.addEventListener('pointercancel', finishDrag);
+    viewport.addEventListener('wheel', event => {
+      if (!canNavigateField()) return;
+      event.preventDefault();
+      fieldView.scale += event.deltaY < 0 ? .08 : -.08;
+      updateFieldView({ announce: true });
+    }, { passive: false });
+    window.addEventListener('resize', () => updateFieldView());
+  }
+  resetFieldButton?.addEventListener('click', () => resetField({ announce: true }));
 
   render();
 }

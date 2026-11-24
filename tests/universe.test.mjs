@@ -26,11 +26,16 @@ test('the Universe offers both optional interaction and a readable reduced-motio
     readFile(new URL('../universe/universe.js', import.meta.url), 'utf8')
   ]);
   assert.match(html, /data-universe-stage/);
+  assert.match(html, /data-universe-viewport/);
+  assert.match(html, /data-universe-reset/);
   assert.match(html, /data-universe-index/);
   assert.match(html, /<noscript>/);
   assert.match(html, /aria-live="polite"/);
   assert.match(runtime, /universeEntries/);
   assert.match(runtime, /aria-pressed/);
+  assert.match(runtime, /pointerdown/);
+  assert.match(runtime, /wheel/);
+  assert.match(runtime, /prefers-reduced-motion: no-preference/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /@media \(max-width:720px\)/);
 });
