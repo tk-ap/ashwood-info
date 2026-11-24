@@ -83,6 +83,31 @@ if (root) {
     } else {
       inspector.append(make('p', 'universe-inspector__held', 'This thread is intentionally not public yet.'));
     }
+    if (entry.previewHref) {
+      const preview = make('section', 'universe-preview');
+      preview.setAttribute('aria-label', `${entry.title} preview`);
+      preview.append(
+        make('p', 'universe-preview__eyebrow', 'Live Vercel preview · read-only'),
+        make('p', 'universe-preview__title', entry.previewLabel || `${entry.title} preview`)
+      );
+      const frame = document.createElement('iframe');
+      frame.className = 'universe-preview__frame';
+      frame.src = entry.previewHref;
+      frame.title = `${entry.title} preview render`;
+      frame.loading = 'lazy';
+      frame.tabIndex = -1;
+      frame.setAttribute('aria-hidden', 'true');
+      frame.setAttribute('sandbox', 'allow-scripts');
+      frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+      preview.append(frame);
+      preview.append(make('p', 'universe-preview__notice', 'The render is intentionally non-interactive here. Open the preview in a new tab to test the listening-room flow.'));
+      const previewLink = make('a', 'universe-preview__link', 'Open live music preview ↗');
+      previewLink.href = entry.previewHref;
+      previewLink.target = '_blank';
+      previewLink.rel = 'noopener noreferrer';
+      preview.append(previewLink);
+      inspector.append(preview);
+    }
     [...stage.querySelectorAll('[data-entry]')].forEach(node => {
       const candidate = byId.get(node.dataset.entry);
       const related = candidate?.related?.includes(id) || entry.related.includes(candidate?.id);

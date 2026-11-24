@@ -17,6 +17,8 @@ test('the Universe registry keeps public threads distinct and publishable', () =
   }
   assert.equal(universePublicationGuide.source, 'universe/content.mjs');
   assert.ok(universeEntries.some(entry => entry.group === 'archive' && entry.href === null), 'unpublished work is visibly held rather than invented');
+  const music = universeEntries.find(entry => entry.id === 'music');
+  assert.match(music.previewHref, /^https:\/\//, 'music preview is an explicit HTTPS render');
 });
 
 test('the Universe offers both optional interaction and a readable reduced-motion-safe index', async () => {
@@ -35,6 +37,8 @@ test('the Universe offers both optional interaction and a readable reduced-motio
   assert.match(runtime, /aria-pressed/);
   assert.match(runtime, /pointerdown/);
   assert.match(runtime, /wheel/);
+  assert.match(runtime, /previewHref/);
+  assert.match(runtime, /sandbox', 'allow-scripts/);
   assert.match(runtime, /prefers-reduced-motion: no-preference/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /@media \(max-width:720px\)/);

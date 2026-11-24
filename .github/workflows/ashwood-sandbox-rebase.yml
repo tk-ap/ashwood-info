@@ -1,0 +1,42 @@
+name: Rebase ASHWOOD here.now sandbox
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ashwood-here-now-mighty-yoga-pgph
+  cancel-in-progress: false
+
+jobs:
+  rebase-public-sandbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+      ASHWOOD_LIVE_REF: origin/main
+    steps:
+      - name: Check out the reviewed Universe overlay and production source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch current production source
+        run: git fetch origin main:refs/remotes/origin/main
+      - name: Check publisher safety contracts
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/rebase-sandbox-from-live.py
+          git merge-base --is-ancestor origin/main HEAD
+          grep -Fq 'prefers-reduced-motion' universe/universe.css
+          grep -Fq 'href: null' universe/content.mjs
+      - name: Establish protected no-write provider plan
+        env:
+          ASHWOOD_PUBLISH_DRY_RUN: "true"
+        run: python3 scripts/rebase-sandbox-from-live.py
+      - name: Rebase the public sandbox in place
+        env:
+          ASHWOOD_PUBLISH_DRY_RUN: "false"
+        run: python3 scripts/rebase-sandbox-from-live.py

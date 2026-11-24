@@ -52,8 +52,10 @@ export const universeEntries = Object.freeze([
   {
     id: 'music', group: 'creative', x: 84, y: 34, kind: 'practice',
     label: '03 / sound', title: 'Music',
-    summary: 'Released work, works becoming, and listening context.',
-    href: '/music/', status: 'Current', related: ['performance', 'writing']
+    summary: 'Released work, works becoming, and a live preview of the demoDanceR listening-room entrance.',
+    href: '/music/', status: 'Current', related: ['performance', 'writing'],
+    previewHref: 'https://ashwood-ia34rz8l9-alvira2.vercel.app/music',
+    previewLabel: 'demoDanceR listening room'
   },
   {
     id: 'writing', group: 'writing', x: 84, y: 65, kind: 'thinking',

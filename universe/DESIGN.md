@@ -22,3 +22,4 @@
 1. No new media is introduced; existing public routes and approved assets remain canonical.
 2. The map never becomes the only way to find work: filters, inspector, index, and `noscript` links remain available.
 3. The feature is preview-only until TK visually approves it. Vercel production remains outside this work.
+4. The Music signal may show a verified Vercel preview as a read-only frame. Its form cannot submit inside the Universe; the canonical Music route remains separate and the external preview link is explicit.
