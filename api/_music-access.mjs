@@ -35,7 +35,7 @@ function renderGate(res, error = "", status = 200) {
 .music-entry__video p { margin-top: 10px; text-align: center; }
 </style></head>
 <body class="music-page music-page--demos"><main class="music-shell music-entry">
-<a class="music-entry__home" href="/">ASHWOOD</a>
+<a class="music-entry__home" href="/">ASHWOOD</a> <a class="music-entry__home" href="/physical-works/" style="margin-left:18px">Showroom</a>
 <section class="music-entry__door" aria-labelledby="music-access-title">
 <header class="music-entry__art">
   <img src="/music/media/hlf-feature.webp" alt="" fetchpriority="high">

@@ -116,6 +116,7 @@
           <summary>Creative practice</summary>
           <a href="/modeling/"><small>05</small><span>Modeling</span><b>↗</b></a>
           <a href="/music/"><small>06</small><span>Music</span><b>↗</b></a>
+          <a href="/physical-works/"><small>06b</small><span>Showroom</span><b>↗</b></a>
           <a href="/performance/"><small>07</small><span>Performance</span><b>↗</b></a>
           <a href="/portfolio/"><small>08</small><span>Portfolio</span><b>↗</b></a>
         </details>

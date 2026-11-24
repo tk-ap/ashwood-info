@@ -11,7 +11,8 @@
       "ops/*": false,
       "chore/*": false,
       "docs/*": false,
-      "verify/music-release-signup": true
+      "verify/music-release-signup": true,
+      "preview/creative-showroom-music-20261123": true
     }
   },
   "github": {

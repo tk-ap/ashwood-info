@@ -164,6 +164,7 @@
   const primaryRoutes = [
     { path: "/portfolio", label: "Modeling" },
     { path: "/music", label: "Music" },
+    { path: "/physical-works", label: "Showroom" },
     { path: "/journal", label: "Builds" },
     { path: "/about", label: "About" },
     { path: "/connect", label: "Connect" }
